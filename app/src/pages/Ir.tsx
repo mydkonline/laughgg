@@ -43,11 +43,21 @@ export function Ir() {
             </li>
           ))}
         </ol>
-        <dl className="mt-6 flex flex-wrap gap-x-12 gap-y-4 border-t border-line pt-5">
-          <IrStat k="주 수익원" v="게임사 구독" />
-          <IrStat k="거래 수수료" v="8% 단일" />
-          <IrStat k="창작자 정산" v="92%" />
-          <IrStat k="기준일" v="2026년 7월" />
+        {/* 요약. IR 은 결론부터 읽는 사람이 많아 머리말 바로 아래 둔다.
+            값은 전부 본문에서 가져오므로 따로 관리하지 않는다. */}
+        <dl className="mt-6 grid gap-x-10 gap-y-6 border-t border-line pt-6 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            ["퀄리티 검증률", "38.8%", "7항목 모두 통과"],
+            ["합계 MRR", `${STREAM_TOTAL.mrr.toLocaleString("ko-KR")}만원`, "구독 95%"],
+            ["누적 손익분기", "13개월", "고정비 월 1,700만원"],
+            ["거래 수수료", "8%", "Epic 12%, Unity 30%"],
+          ].map(([k, v, note]) => (
+            <div key={k}>
+              <dt className="text-xs text-faint">{k}</dt>
+              <dd className="num m-0 mt-1 text-4xl leading-none text-ink">{v}</dd>
+              <dd className="m-0 mt-1.5 text-xs text-faint">{note}</dd>
+            </div>
+          ))}
         </dl>
         </div>
       </header>
@@ -428,15 +438,6 @@ function CountStat({ label, value, unit, note }: { label: string; value: string;
         <span className="ml-1 text-base text-muted">{unit}</span>
       </p>
       <p className="mt-2 text-xs text-muted">{note}</p>
-    </div>
-  );
-}
-
-function IrStat({ k, v }: { k: string; v: string }) {
-  return (
-    <div>
-      <dt className="text-xs text-faint">{k}</dt>
-      <dd className="m-0 text-xs font-semibold text-ink">{v}</dd>
     </div>
   );
 }

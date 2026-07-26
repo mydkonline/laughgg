@@ -17,6 +17,8 @@ import { PALETTES } from "../data/palettes";
 import { useCart } from "../lib/cart";
 import { useUploads } from "../lib/uploads";
 import { PromptBuilder, toPrompt } from "../components/PromptBuilder";
+import { ExportPicker } from "../components/ExportPicker";
+import { TARGETS } from "../data/formats";
 import { useCredit } from "../lib/credit";
 import { useFeed } from "../lib/feed";
 import { Preview } from "../three/Preview";
@@ -59,6 +61,8 @@ export function Workshop() {
   const [raster, setRaster] = useState<RasterSet>(() => CONCEPTS[0]!.raster);
   const [asSprite, setAsSprite] = useState(false);
   const [tuning, setTuning] = useState(false);
+  const [target, setTarget] = useState(TARGETS[0]!.id);
+  const [picks, setPicks] = useState<string[]>(TARGETS[0]!.picks);
   const [published, setPublished] = useState<string | null>(null);
   const [dropping, setDropping] = useState(false);
 
@@ -249,6 +253,34 @@ export function Workshop() {
         {/* 조작 패널. 그림 옆에 둔다 — 프롬프트가 이 제품이 파는 것이라
             스크롤을 내려야 보이면 안 된다. */}
         <aside className="flex flex-col gap-5">
+          {/* 컨셉이 먼저다. 대부분은 이것만 눌러 보고 끝낸다. */}
+          <div>
+            <div className="mb-2.5 flex flex-wrap items-baseline gap-3">
+              <h2 className="text-xs font-bold text-ink">게임 컨셉</h2>
+              <p className="text-xs text-faint">
+                {CONCEPTS.find((c) => c.id === conceptId)?.note ?? "파라미터를 직접 조정한 상태입니다."}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {CONCEPTS.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => applyConcept(c.id)}
+                  aria-pressed={conceptId === c.id}
+                  className={[
+                    "cursor-pointer rounded-full border px-3 py-1 text-xs",
+                    conceptId === c.id
+                      ? "border-transparent bg-ink font-bold text-ground"
+                      : "border-line text-muted hover:border-accent hover:text-ink",
+                  ].join(" ")}
+                >
+                  {c.name}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div>
         <div className="mb-3 flex flex-wrap items-center gap-3">
           <h2 className="text-xs font-bold text-ink">프롬프트</h2>
@@ -409,6 +441,14 @@ export function Workshop() {
           파라미터 직접 조정 {tuning ? "닫기" : "열기"}
         </button>
           </div>
+          <ExportPicker
+            tex={piece.tex}
+            target={target}
+            onTarget={setTarget}
+            picks={picks}
+            onPicks={setPicks}
+          />
+
           <div className="flex flex-col rounded-xl border border-line bg-surface p-4">
           <div className="flex items-baseline gap-2.5">
             <span className="text-xs text-faint">분석</span>
@@ -466,31 +506,6 @@ export function Workshop() {
       </section>
 
 
-      {/* 3 — 컨셉으로도 고를 수 있다 */}
-      <section className="mt-6">
-        <div className="mb-2.5 flex flex-wrap items-baseline gap-3">
-          <h2 className="text-xs font-bold text-ink">게임 컨셉</h2>
-          <p className="text-xs text-faint">{CONCEPTS.find((c) => c.id === conceptId)?.note ?? "파라미터를 직접 조정한 상태입니다."}</p>
-        </div>
-        <div className="flex flex-wrap gap-1.5">
-          {CONCEPTS.map((c) => (
-            <button
-              key={c.id}
-              type="button"
-              onClick={() => applyConcept(c.id)}
-              aria-pressed={conceptId === c.id}
-              className={[
-                "cursor-pointer rounded-full border px-3.5 py-1.5 text-xs",
-                conceptId === c.id
-                  ? "border-transparent bg-ink font-bold text-ground"
-                  : "border-line text-muted hover:border-accent hover:text-ink",
-              ].join(" ")}
-            >
-              {c.name}
-            </button>
-          ))}
-        </div>
-      </section>
 
 
       {/* 4 — 손조작. 접어 둔다. 대부분은 안 연다. */}

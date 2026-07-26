@@ -48,8 +48,9 @@ export function useCountUp(target: number, decimals = 0) {
 }
 
 /**
- * 검증률 링. 몇이 기준을 넘었는지를 숫자 하나로 말한다.
- * 도넛은 조각이 둘일 때만 읽힌다. 셋 넘어가면 막대가 낫다.
+ * 검증 지표. 링 하나만 두면 오른쪽이 비어 아래 섹션들과 폭이 안 맞는다.
+ * 같은 3열로 채우되 셋이 한 이야기를 하게 둔다 — 얼마나 걸러지고,
+ * 무엇 때문에 걸러지고, 걸러진 뒤에 어떻게 되는가.
  */
 export function Donut({ percent, label, sub }: { percent: number; label: string; sub: string }) {
   const [ref, shown] = useCountUp(percent, 1);
@@ -71,36 +72,57 @@ export function Donut({ percent, label, sub }: { percent: number; label: string;
   }, []);
 
   return (
-    <div ref={box} className="flex flex-wrap items-center justify-between gap-8">
-      <div className="min-w-0">
-        <p className="num text-[64px] leading-none text-ink">
-          <span ref={ref}>{shown}</span>
-          <span className="text-2xl text-muted">%</span>
-        </p>
-        <p className="mt-3 text-base font-bold text-ink">{label}</p>
-        <p className="mt-1 max-w-[36ch] text-xs text-faint">{sub}</p>
+    <div ref={box} className="grid gap-x-12 gap-y-8 sm:grid-cols-3">
+      <div className="flex items-center gap-5">
+        <svg
+          viewBox="0 0 220 220"
+          className="h-24 w-24 shrink-0 -rotate-90"
+          role="img"
+          aria-label={`${percent}% ${label}`}
+        >
+          <circle cx="110" cy="110" r={R} fill="none" stroke="var(--surface-2)" strokeWidth="30" />
+          <circle
+            cx="110"
+            cy="110"
+            r={R}
+            fill="none"
+            stroke="var(--accent)"
+            strokeWidth="30"
+            strokeLinecap="butt"
+            strokeDasharray={C}
+            strokeDashoffset={on ? C * (1 - percent / 100) : C}
+            style={{ transition: "stroke-dashoffset 1.2s cubic-bezier(.22,1,.36,1)" }}
+          />
+        </svg>
+        <div className="min-w-0">
+          <p className="num text-4xl leading-none text-ink">
+            <span ref={ref}>{shown}</span>
+            <span className="text-base text-muted">%</span>
+          </p>
+          <p className="mt-2 text-xs font-bold text-ink">{label}</p>
+          <p className="mt-1 text-xs text-faint">{sub}</p>
+        </div>
       </div>
 
-      <svg
-        viewBox="0 0 220 220"
-        className="h-40 w-40 shrink-0 -rotate-90 sm:h-48 sm:w-48"
-        role="img"
-        aria-label={`${percent}% ${label}`}
-      >
-        <circle cx="110" cy="110" r={R} fill="none" stroke="var(--surface-2)" strokeWidth="26" />
-        <circle
-          cx="110"
-          cy="110"
-          r={R}
-          fill="none"
-          stroke="var(--accent)"
-          strokeWidth="26"
-          strokeLinecap="butt"
-          strokeDasharray={C}
-          strokeDashoffset={on ? C * (1 - percent / 100) : C}
-          style={{ transition: "stroke-dashoffset 1.2s cubic-bezier(.22,1,.36,1)" }}
-        />
-      </svg>
+      <div>
+        <p className="num text-4xl leading-none text-ink">
+          22<span className="text-base text-muted">%</span>
+        </p>
+        <p className="mt-2 text-xs font-bold text-ink">가장 무거운 항목</p>
+        <p className="mt-1 text-xs text-faint">
+          라이선스 출처. 다른 여섯은 고칠 수 있고 이것만 못 고칩니다.
+        </p>
+      </div>
+
+      <div>
+        <p className="num text-4xl leading-none text-ink">
+          11<span className="text-base text-muted">종</span>
+        </p>
+        <p className="mt-2 text-xs font-bold text-ink">걸러진 뒤 할 일</p>
+        <p className="mt-1 text-xs text-faint">
+          통과한 에셋은 게임 컨셉에 맞춰 변환해 내려받습니다.
+        </p>
+      </div>
     </div>
   );
 }
