@@ -316,10 +316,20 @@
     <a class="igg-cta" href="community.html">에셋 올리기</a>
   </div></div>
   <div class="igg-r2"><div class="igg-r2in">
-    <div class="igg-tabs"><a href="index.html">홈</a><a href="market.html">마켓</a><a href="community.html" aria-current="page">커뮤니티</a><a href="scene.html">화풍 시연<sup>N</sup></a><a href="viewer3d.html">3D 뷰어</a></div>
+    <div class="igg-tabs"><a href="index.html">홈</a><a href="about.html">서비스 소개</a><a href="market.html">마켓</a><a href="community.html" aria-current="page">커뮤니티</a><a href="scene.html">에셋 시연<sup>N</sup></a><a href="viewer3d.html">3D 뷰어</a></div>
     <span class="igg-search">🔍<input placeholder="에셋 · 창작자 · 게임 검색" autocomplete="off"></span>
   </div></div>
 </nav>
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -369,7 +379,7 @@
   <div class="page" id="p-genre">
     <h2 class="sec">이달의 베스트 킷</h2>
     <p class="lead">이번 달 가장 많이 팔린 에셋 킷입니다. 각 킷은 검수를 통과했고, 등급과 판매량이 그대로 공개됩니다.
-      <b style="color:var(--ink)">화풍 시연</b>을 누르면 그 킷을 실제 게임 화면에 올려 볼 수 있습니다.</p>
+      <b style="color:var(--ink)">에셋 시연</b>을 누르면 그 킷을 실제 게임 화면에 올려 볼 수 있습니다.</p>
 
     <div class="toolbar">
       <div class="chips" id="kitcat"></div>
@@ -794,7 +804,7 @@
           <div class="kfoot"><span class="kp">$${k.price}</span><span class="ks2">이달 ${k.sales.toLocaleString()}개 판매</span></div>
         </div>
         <div class="kact">
-          <a href="community.html?style=${k.st}">화풍 시연</a>
+          <a href="community.html?style=${k.st}">에셋 시연</a>
           <a class="buy" href="#" data-buy="1">담기</a>
         </div>`;
       $('[data-buy]', c).onclick = ev => { ev.preventDefault(); toast(`${k.n} 담았습니다 · $${k.price}`); };
