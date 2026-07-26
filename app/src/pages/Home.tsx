@@ -6,6 +6,7 @@ import { PALETTES } from "../data/palettes";
 import { Spin } from "../three/Spin";
 import { modelSrc } from "../data/pieces";
 import { RankIcon, BADGE_LABEL, type BadgeKey } from "../components/Rank";
+import { HomeStage } from "../components/HomeStage";
 
 /* 홈 — 무엇을 파는 곳인지 한 화면에서 끝난다.
    에셋을 파는 게 아니라 "쓸 만한지 보증"을 판다는 게 요지고, 그건 글보다
@@ -105,6 +106,10 @@ export function Home() {
 
         <HeroShot />
       </section>
+
+      {/* 시연이 두 번째다. 히어로에서 "컨셉에 맞춰 변환합니다" 라고 말했으니
+          그다음에 와야 할 것은 다음 설명이 아니라 그 말의 증거다. */}
+      <HomeStage />
 
       {/* 진행 순서 */}
       <section className="border-t border-line bg-surface">

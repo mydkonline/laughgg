@@ -2332,6 +2332,7 @@ export const SCENE_GAMES: SceneGame[] = [
 
 /** 시연에 쓸 실제 모델. 원본의 스프라이트 키 대신 마켓 상품을 건다. */
 export const PLACE_MODEL: Record<string, string> = {
+  // 판타지 3D
   "s-character-human": "gothic_statue",
   "s-character-orc": "horse_statue_01",
   "s-weapon-sword": "kite_shield",
@@ -2340,6 +2341,23 @@ export const PLACE_MODEL: Record<string, string> = {
   "s-barrel": "barrel_03",
   "s-chest": "GothicCabinet_01",
   "s-column": "gothic_statue",
+  "s-banner": "lantern_chandelier_01",
   "rp-wooden_crate_02": "barrel_03",
   "rp-steel_frame_shelves_01": "WoodenTable_02",
+
+  // SF
+  "sf-unit01": "bronze_whale_statue",
+  "sf-struct01": "WoodenTable_02",
+
+  // 도트. 원본 모델은 3D 지만 무대에서 게임 보정을 먹으므로 실루엣만 쓴다.
+  "px-char1": "gothic_statue",
+  "px-char2": "horse_statue_01",
+  "px-char3": "bronze_whale_statue",
+  "px-mon1": "horse_statue_01",
+  "px-mon3": "bronze_whale_statue",
+  "px-item1": "brass_goblets",
+  "px-item2": "Lantern_01",
+  "px-item4": "barrel_03",
+  "px-item5": "gothic_coffee_table",
+  "px-item6": "Chandelier_01",
 };
