@@ -8,7 +8,7 @@ import { CONCEPTS, NEUTRAL_RASTER } from "../data/concepts";
    여기 있는 것들이 각 섹션의 본문이고, 글은 그 밑에 붙는 설명이다. */
 
 /** 숫자가 화면에 들어올 때 올라간다. 정지한 숫자는 그냥 글자다. */
-function useCountUp(target: number, decimals = 0) {
+export function useCountUp(target: number, decimals = 0) {
   const ref = useRef<HTMLSpanElement>(null);
   const [n, setN] = useState(0);
 
@@ -160,7 +160,7 @@ export function AssetRail() {
       <div className="flex w-max gap-4 motion-safe:animate-[rail_46s_linear_infinite]">
         {loop.map((p, i) => (
           <figure key={`${p.id}-${i}`} className="m-0 w-40 shrink-0">
-            <div className="aspect-square rounded-xl border border-line bg-gradient-to-b from-surface-2 to-surface p-3">
+            <div className="relative aspect-square rounded-xl border border-line bg-gradient-to-b from-surface-2 to-surface">
               <Thumb piece={p} />
             </div>
             <figcaption className="truncate pt-2 text-xs text-faint">{p.t}</figcaption>

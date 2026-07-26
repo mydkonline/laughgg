@@ -1,15 +1,26 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { MARKET, MARKET_SOURCE, MODEL, CHECK_WEIGHTS, REVIEWS, AI_DEV, AI_DEV_SOURCE } from "../data/ir";
 import { PIECES } from "../data/pieces";
 import { Sprite } from "../three/Sprite";
 import { CONCEPTS } from "../data/concepts";
-import { Donut, CheckWeights, AssetRail, ConceptGrid, CompareBars } from "../components/Infographic";
+import { Donut, CheckWeights, AssetRail, ConceptGrid, CompareBars, useCountUp } from "../components/Infographic";
 
 /* IR — 얼마나 큰 시장이고, 누가 쓰고, 어떻게 버는가.
    인용값과 우리 가정을 절대 같은 줄에 놓지 않는다. 섞이면 자료가 아니다. */
 
 export function Ir() {
+  const [used, setUsed] = useState("전체");
+  /* 리뷰가 실제로 언급한 기능만 칩으로 낸다. 손으로 적어 두면 리뷰가 늘 때 어긋난다. */
+  const features = useMemo(
+    () => [...new Set(REVIEWS.flatMap((r) => r.used.split(",").map((x) => x.trim())))],
+    [],
+  );
+  const shown = useMemo(
+    () => (used === "전체" ? REVIEWS : REVIEWS.filter((r) => r.used.includes(used))),
+    [used],
+  );
+
   return (
     <main className="mx-auto max-w-[1240px] px-5 pb-24">
       <header className="py-10">
@@ -89,22 +100,41 @@ export function Ir() {
             숫자는 시장이 있다는 말이고, 리뷰는 그 시장이 이걸 쓴다는 말이다. */}
         <div className="mb-4 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-3">
           {AI_DEV.map((f) => (
-            <div key={f.label} className="bg-surface p-5">
-              <p className="text-xs text-faint">{f.label}</p>
-              <p className="num mt-3 text-4xl leading-none text-ink">
-                {f.value}
-                <span className="ml-1 text-base text-muted">{f.unit}</span>
-              </p>
-              <p className="mt-2 text-xs text-muted">{f.note}</p>
-            </div>
+            <CountStat key={f.label} label={f.label} value={f.value} unit={f.unit ?? ""} note={f.note} />
           ))}
         </div>
-        <p className="mb-6 text-xs text-faint">출처 {AI_DEV_SOURCE}</p>
+        <p className="mb-5 text-xs text-faint">출처 {AI_DEV_SOURCE}</p>
 
+        {/* 어떤 기능 때문에 쓰는지로 걸러 본다. 수요는 숫자가 아니라 쓰임새로 드러난다. */}
+        <div className="mb-4 flex flex-wrap gap-1.5">
+          {["전체", ...features].map((f) => (
+            <button
+              key={f}
+              type="button"
+              onClick={() => setUsed(f)}
+              aria-pressed={used === f}
+              className={[
+                "cursor-pointer rounded-full border px-3.5 py-1.5 text-xs transition-colors",
+                used === f
+                  ? "border-transparent bg-ink font-bold text-ground"
+                  : "border-line text-muted hover:border-accent hover:text-ink",
+              ].join(" ")}
+            >
+              {f}
+              <span className={used === f ? "ml-1.5 opacity-60" : "ml-1.5 text-faint"}>
+                {f === "전체" ? REVIEWS.length : REVIEWS.filter((r) => r.used.includes(f)).length}
+              </span>
+            </button>
+          ))}
+        </div>
 
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-          {REVIEWS.map((r) => (
-            <figure key={r.initials + r.role} className="m-0 flex flex-col rounded-2xl border border-line bg-surface p-5">
+          {shown.map((r, i) => (
+            <figure
+              key={r.initials + r.role}
+              style={{ animationDelay: `${i * 45}ms` }}
+              className="m-0 flex animate-[fade_.4s_both] flex-col rounded-2xl border border-line bg-surface p-5 transition-colors hover:border-accent"
+            >
               <blockquote className="m-0 flex-1 text-xs leading-relaxed text-muted">{r.body}</blockquote>
               <figcaption className="mt-4 flex items-center gap-3 border-t border-line pt-4">
                 {/* 사진을 안 쓴다. 실명과 얼굴은 본인이 직접 줘야 하는 것이다. */}
@@ -122,6 +152,7 @@ export function Ir() {
             </figure>
           ))}
         </div>
+        <style>{`@keyframes fade { from { opacity: 0; translate: 0 8px } to { opacity: 1; translate: 0 0 } }`}</style>
 
         <p className="mt-4 text-xs text-faint">
           소속만 인증하고 신원은 가립니다. 실명으로는 프로덕션에서 터진 얘기가 나오지 않습니다.
@@ -188,6 +219,28 @@ export function Ir() {
         </Link>
       </div>
     </main>
+  );
+}
+
+/* 화면에 들어올 때 올라가는 지표. 소수점이 있으면 자릿수를 유지한다. */
+function CountStat({ label, value, unit, note }: { label: string; value: string; unit: string; note: string }) {
+  const digits = value.replace(/,/g, "");
+  const decimals = digits.includes(".") ? digits.split(".")[1]!.length : 0;
+  const [ref, shown] = useCountUp(Number(digits), decimals);
+  const pretty = Number(shown).toLocaleString("ko-KR", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
+
+  return (
+    <div className="bg-surface p-5">
+      <p className="text-xs text-faint">{label}</p>
+      <p className="num mt-3 text-4xl leading-none text-ink">
+        <span ref={ref}>{pretty}</span>
+        <span className="ml-1 text-base text-muted">{unit}</span>
+      </p>
+      <p className="mt-2 text-xs text-muted">{note}</p>
+    </div>
   );
 }
 

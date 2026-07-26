@@ -220,7 +220,7 @@ function Detail({ p }: { p: Piece }) {
                 to={`/market/${o.id}`}
                 className="flex flex-col overflow-hidden rounded-xl border border-line bg-surface no-underline hover:border-accent"
               >
-                <div className="aspect-square bg-gradient-to-b from-surface-2 to-surface p-3">
+                <div className="relative aspect-square bg-gradient-to-b from-surface-2 to-surface">
                   <Thumb piece={o} />
                 </div>
                 <div className="flex items-baseline justify-between gap-2 p-2.5">

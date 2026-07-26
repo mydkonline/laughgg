@@ -440,8 +440,8 @@ export function Workshop() {
                   p.id === piece.id ? "border-accent" : "border-line hover:border-chrome-600",
                 ].join(" ")}
               >
-                <span className="block aspect-square">
-                  <Thumb piece={p} />
+                <span className="relative block aspect-square">
+                  <Thumb piece={p} pad="8%" />
                 </span>
                 <span className="block truncate pt-1 text-[10px] text-faint">{p.t}</span>
               </button>

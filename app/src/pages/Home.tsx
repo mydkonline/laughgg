@@ -67,8 +67,7 @@ export function Home() {
       {/* 히어로 */}
       <section className="mx-auto grid max-w-[1240px] items-center gap-10 px-5 py-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
         <div>
-          <p className="text-xs tracking-wide text-accent">게임 에셋 마켓</p>
-          <h1 className="mt-2 text-4xl leading-[1.2] font-bold text-ink">검증된 게임 에셋 마켓</h1>
+          <h1 className="text-4xl leading-[1.2] font-bold text-ink">검증된 게임 에셋 마켓</h1>
           <p className="mt-3 max-w-[52ch] text-xs text-muted">
             올라온 에셋을 AI 정적 분석 7항목으로 채점해 배지를 매깁니다. 구매한 에셋은 에디터에서
             게임 컨셉에 맞춰 변환해 내려받습니다.

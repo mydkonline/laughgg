@@ -95,7 +95,7 @@ function Card({ post }: { post: Post }) {
     <article className="rounded-xl border border-line bg-surface p-4">
       <div className="flex gap-4">
         {piece && (
-          <Link to={`/market/${piece.id}`} className="block aspect-square w-20 flex-none rounded-lg bg-surface-2 p-2">
+          <Link to={`/market/${piece.id}`} className="relative block aspect-square w-20 flex-none rounded-lg bg-surface-2">
             <Thumb piece={piece} />
           </Link>
         )}

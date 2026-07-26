@@ -133,7 +133,7 @@ export function Market() {
               className="group flex flex-col overflow-hidden rounded-xl border border-line bg-surface no-underline transition-[border-color,translate] hover:-translate-y-0.5 hover:border-accent"
             >
               {/* 그림 자리는 언제나 정사각이다. 피사체 모양이 달라도 칸이 안 흔들린다. */}
-              <div className="relative aspect-square bg-gradient-to-b from-surface-2 to-surface p-3">
+              <div className="relative aspect-square bg-gradient-to-b from-surface-2 to-surface">
                 <span className="absolute top-2 left-2 z-10 flex items-center rounded bg-ground/70 p-0.5">
                   <RankIcon badge={badgeOf(p.score)} size={14} />
                 </span>
