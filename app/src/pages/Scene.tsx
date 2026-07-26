@@ -98,8 +98,11 @@ export function Scene() {
       </header>
 
       <div className="grid gap-x-10 gap-y-8 lg:grid-cols-[260px_minmax(0,1fr)]">
-        {/* 고르는 자리는 왼쪽으로 몬다. 오른쪽은 시연만 본다. */}
-        <div className="lg:sticky lg:top-[100px] lg:self-start">
+        {/* 고르는 자리는 왼쪽으로 몬다. 오른쪽은 시연만 본다.
+            좁은 화면에서는 좌우가 위아래로 쌓이는데, 그대로 두면 게임 196개
+            목록을 다 지나야 시연이 나온다. 이 페이지에서 제일 먼저 보여야 할
+            것은 시연이므로 순서를 뒤집는다. */}
+        <div className="order-2 lg:order-1 lg:sticky lg:top-[100px] lg:self-start">
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -175,7 +178,7 @@ export function Scene() {
         </div>
 
         {/* 시연. 이 화면에서 제일 크게 보여야 하는 것이다. */}
-        <div className="min-w-0">
+        <div className="order-1 min-w-0 lg:order-2">
           <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2">
             <span className="text-base font-bold text-ink">{game.n}</span>
             <span className="text-xs text-faint">
