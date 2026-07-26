@@ -1,7 +1,7 @@
 import { useCallback, useSyncExternalStore } from "react";
 import type { Piece } from "../data/pieces";
 
-/* 가진 작업물을 가져오는 자리. 공방인데 자기 파일을 못 올리면 공방이 아니다.
+/* 가진 작업물을 가져오는 자리. 스튜디오인데 자기 파일을 못 올리면 스튜디오가 아니다.
 
    파일은 브라우저 안에만 있다. 서버로 보내지 않고 objectURL 로만 참조하므로
    새로고침하면 사라진다 — 시연 단계에서 남의 원본을 우리 쪽에 쌓아 둘 이유가 없다.

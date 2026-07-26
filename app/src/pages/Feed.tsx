@@ -6,7 +6,7 @@ import { KNOB_LABEL, type Knobs } from "../data/concepts";
 import { Thumb } from "../components/Thumb";
 
 /* 작업물 피드 — 게시판이 아니다.
-   공방에서 뭔가 끝내면 그게 게시물이 된다. 빈 글쓰기 칸은 어디에도 없다.
+   스튜디오에서 뭔가 끝내면 그게 게시물이 된다. 빈 글쓰기 칸은 어디에도 없다.
    공개 지표는 포크 수 하나뿐이다 — 사람이 아니라 물건에 점수를 붙인다. */
 
 type Sort = "new" | "forks" | "drop";
@@ -31,11 +31,11 @@ export function Feed() {
     <main className="mx-auto max-w-[840px] px-5 pb-20">
       <header className="py-8">
         <p className="text-xs tracking-wide text-accent">작업물</p>
-        <h1 className="mt-1 text-4xl font-bold text-ink">남이 만든 프리셋 쓰기</h1>
-        <p className="mt-2 text-base text-muted">적용하면 내 에셋에 같은 설정이 걸립니다.</p>
+        <h1 className="mt-1 text-base font-bold text-ink">남이 만든 프리셋 쓰기</h1>
+        <p className="mt-2 text-xs text-muted">적용하면 내 에셋에 같은 설정이 걸립니다.</p>
         <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-t border-line pt-4">
           <FeedSpec k="공개" v="프롬프트, 파라미터 9개, 점수 변화" />
-          <FeedSpec k="적용" v="공방으로 이동" />
+          <FeedSpec k="적용" v="스튜디오로 이동" />
           <FeedSpec k="댓글" v="익명, 소속만 인증" />
         </dl>
       </header>
@@ -61,7 +61,7 @@ export function Feed() {
           to="/workshop"
           className="ml-auto rounded-lg bg-accent px-3.5 py-1.5 text-xs font-bold text-white no-underline hover:bg-accent-strong"
         >
-          공방에서 만들기
+          스튜디오에서 만들기
         </Link>
       </div>
 
@@ -86,7 +86,7 @@ function Card({ post }: { post: Post }) {
   const send = () => {
     const body = draft.trim();
     if (!body) return;
-    const by: Author = anon ? { name: "익명" } : { name: "익명", studio: "국내 모바일 스튜디오", verified: true };
+    const by: Author = anon ? { name: "익명" } : { name: "익명", studio: "국내 모바일 게임사", verified: true };
     comment(post.id, body, by);
     setDraft("");
   };
@@ -115,7 +115,7 @@ function Card({ post }: { post: Post }) {
 
           <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs">
             <span className="text-faint">
-              검수 <b className="tabular-nums text-muted line-through">{post.before}</b>{" "}
+              분석 <b className="tabular-nums text-muted line-through">{post.before}</b>{" "}
               <b className={`tabular-nums ${diff >= 0 ? "text-accent" : "text-[#FF6B7A]"}`}>
                 {post.after} ({diff >= 0 ? `+${diff}` : diff})
               </b>
@@ -192,7 +192,7 @@ function FeedSpec({ k, v }: { k: string; v: string }) {
   return (
     <div>
       <dt className="text-xs text-faint">{k}</dt>
-      <dd className="m-0 text-base font-semibold text-ink">{v}</dd>
+      <dd className="m-0 text-xs font-semibold text-ink">{v}</dd>
     </div>
   );
 }

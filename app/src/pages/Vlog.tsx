@@ -39,9 +39,9 @@ export function Vlog() {
     <main className="mx-auto max-w-[1240px] px-5 pb-20">
       <header className="py-8">
         <p className="text-xs tracking-wide text-accent">개발 브이로그</p>
-        <h1 className="mt-1 text-4xl font-bold text-ink">에셋 하나가 완성되기까지</h1>
-        <p className="mt-2 text-base text-muted">
-          블록아웃부터 검수 통과까지 단계마다 무엇을 왜 했는지 남깁니다. 사는 쪽이 판단할 근거가 됩니다.
+        <h1 className="mt-1 text-base font-bold text-ink">에셋 하나가 완성되기까지</h1>
+        <p className="mt-2 text-xs text-muted">
+          블록아웃부터 분석 통과까지 단계마다 무엇을 왜 했는지 남깁니다. 사는 쪽이 판단할 근거가 됩니다.
         </p>
         <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-t border-line pt-4">
           <Stat k="기록한 단계" v={`${EPISODES.length}편`} />
@@ -75,10 +75,10 @@ export function Vlog() {
           <p className="text-xs text-faint">
             {ep.day}, {ep.date}
           </p>
-          <h2 className="mt-1 text-2xl font-bold text-ink">{ep.t}</h2>
+          <h2 className="mt-1 text-base font-bold text-ink">{ep.t}</h2>
           <p className="mt-1 text-xs text-faint">{ep.cap}</p>
 
-          <p className="mt-4 max-w-[62ch] text-base leading-relaxed text-muted">{ep.body}</p>
+          <p className="mt-3 max-w-[74ch] text-xs leading-relaxed text-muted">{ep.body}</p>
 
           <dl className="mt-5 flex flex-wrap gap-x-8 gap-y-3 border-t border-line pt-4">
             {ep.delta.map(([k, v, dir]) => (
@@ -101,8 +101,8 @@ export function Vlog() {
           <div className="mt-7 flex flex-col gap-4 border-t border-line pt-5">
             {ep.qa.map(([q, a]) => (
               <div key={q}>
-                <p className="text-base font-bold text-ink">{q}</p>
-                <p className="mt-1 max-w-[62ch] text-base leading-relaxed text-muted">{a}</p>
+                <p className="text-xs font-bold text-ink">{q}</p>
+                <p className="mt-1 max-w-[74ch] text-xs leading-relaxed text-muted">{a}</p>
               </div>
             ))}
           </div>
@@ -151,7 +151,7 @@ function Stat({ k, v }: { k: string; v: string }) {
   return (
     <div>
       <dt className="text-xs text-faint">{k}</dt>
-      <dd className="m-0 text-base font-semibold text-ink">{v}</dd>
+      <dd className="m-0 text-xs font-semibold text-ink">{v}</dd>
     </div>
   );
 }

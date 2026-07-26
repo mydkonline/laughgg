@@ -2,7 +2,7 @@ import { useCallback, useSyncExternalStore } from "react";
 import type { Knobs, RasterSet } from "../data/concepts";
 
 /* 커뮤니티를 게시판으로 만들지 않는다. 빈 글쓰기 칸이 커뮤니티를 죽인다.
-   공방에서 작업을 끝내면 그게 곧 게시물이 된다 — 아무도 "글을 쓰지" 않는데
+   스튜디오에서 작업을 끝내면 그게 곧 게시물이 된다 — 아무도 "글을 쓰지" 않는데
    결과물이 쌓이고, 댓글은 그 결과물에 달린다.
 
    기여는 사람이 아니라 물건에 붙는다. 사람한테 점수를 주면 서열이 생기므로
@@ -63,7 +63,7 @@ const SEED: Post[] = [
     knobs: { tone: 78, warm: 28, gloss: 64, facet: 8, sat: 34, line: 10 },
     before: 94,
     after: 92,
-    by: { name: "익명", studio: "국내 모바일 스튜디오", verified: true },
+    by: { name: "익명", studio: "국내 모바일 게임사", verified: true },
     at: daysAgo(3),
     forks: 137,
     seeded: true,

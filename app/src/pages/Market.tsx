@@ -8,7 +8,7 @@ import { won } from "../lib/format";
 type Sort = "score" | "dl" | "new" | "price";
 
 const SORTS: [Sort, string][] = [
-  ["score", "검수 점수순"],
+  ["score", "분석 점수순"],
   ["dl", "내려받기순"],
   ["new", "최신순"],
   ["price", "가격순"],
@@ -63,7 +63,7 @@ export function Market() {
             className="min-w-0 flex-1 rounded-full border border-line bg-surface px-5 py-3 text-base text-ink placeholder:text-faint"
           />
           <label className="flex items-center gap-3 text-xs text-faint">
-            검수 점수
+            분석 점수
             <input
               type="range"
               min={0}
@@ -139,9 +139,9 @@ export function Market() {
                 <Thumb piece={p} className="drop-shadow-[0_6px_14px_rgb(0_0_0/0.28)]" />
               </div>
               <div className="flex flex-1 flex-col gap-2 p-3.5">
-                <span className="text-base font-bold text-ink">{p.t}</span>
+                <span className="text-xs font-bold text-ink">{p.t}</span>
                 <div className="mt-auto flex items-baseline justify-between gap-2">
-                  <span className="text-base font-bold text-ink">{won(p.price)}</span>
+                  <span className="text-xs font-bold text-ink">{won(p.price)}</span>
                   <span className="truncate text-xs text-faint">
                     {p.eng.map((e) => ENGINE_NAME[e]).join(", ")}
                   </span>

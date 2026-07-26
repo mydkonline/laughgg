@@ -23,7 +23,7 @@ import { Sprite } from "../three/Sprite";
 import { Thumb } from "../components/Thumb";
 import { RankIcon, badgeOf, BADGE_LABEL } from "../components/Rank";
 
-/* 공방 — 가진 에셋을 이 게임의 느낌으로 가져오는 자리.
+/* 스튜디오 — 가진 에셋을 이 게임의 느낌으로 가져오는 자리.
 
    들어오는 문은 셋(프롬프트·컨셉·손조작)인데 도착지는 하나다:
    Knobs 여섯 개 + RasterSet 셋. 이 아홉 숫자가 유일한 상태라서 결과가 재현되고
@@ -125,20 +125,20 @@ export function Workshop() {
   return (
     <main className="mx-auto max-w-[1240px] px-5 pb-20">
       <header className="py-8">
-        <p className="text-xs tracking-wide text-accent">공방</p>
+        <p className="text-xs tracking-wide text-accent">스튜디오</p>
         <h1 className="mt-1 text-4xl leading-tight font-bold text-ink">에셋을 게임 컨셉에 맞춥니다</h1>
-        <p className="mt-2 text-base text-muted">3D 는 조명과 재질을, 2D 는 팔레트와 도트를 바꿉니다.</p>
+        <p className="mt-2 text-xs text-muted">3D 는 조명과 재질을, 2D 는 팔레트와 도트를 바꿉니다.</p>
         <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-t border-line pt-4">
           <Spec k="입력" v="3D 모델, 2D 스프라이트" />
           <Spec k="컨셉" v={`${CONCEPTS.length}종, 팔레트 ${PALETTES.length - 1}종`} />
-          <Spec k="출력" v="에셋, 검수 리포트, 프리셋" />
+          <Spec k="출력" v="에셋, 정적 분석 리포트, 프리셋" />
         </dl>
       </header>
 
       {/* 1 — 말로 쓴다. 대부분 여기서 끝난다. */}
       <section className="rounded-xl border border-line bg-surface p-4">
         <div className="flex flex-wrap items-center gap-2">
-          <h2 className="text-base font-bold text-ink">프롬프트</h2>
+          <h2 className="text-xs font-bold text-ink">프롬프트</h2>
         </div>
         <div className="mt-3 flex gap-2">
           <input
@@ -174,7 +174,7 @@ export function Workshop() {
       {/* 2 — 골라도 된다 */}
       <section className="mt-6">
         <div className="mb-2.5 flex flex-wrap items-baseline gap-3">
-          <h2 className="text-base font-bold text-ink">게임 컨셉</h2>
+          <h2 className="text-xs font-bold text-ink">게임 컨셉</h2>
           <p className="text-xs text-faint">{CONCEPTS.find((c) => c.id === conceptId)?.note ?? "파라미터를 직접 조정한 상태입니다."}</p>
         </div>
         <div className="flex flex-wrap gap-1.5">
@@ -219,9 +219,9 @@ export function Workshop() {
         {/* 검수 결과 — 자랑도 실패도 같은 자리에 나온다 */}
         <aside className="flex flex-col rounded-xl border border-line bg-surface p-4">
           <div className="flex items-baseline gap-2.5">
-            <span className="text-xs text-faint">검수</span>
+            <span className="text-xs text-faint">분석</span>
             <b className="text-base tabular-nums text-faint line-through">{piece.score}</b>
-            <b className="text-4xl font-bold tabular-nums text-ink">{after}</b>
+            <b className="num text-4xl text-ink">{after}</b>
           </div>
           <span className="mt-2 flex w-fit items-center gap-1.5 rounded-full bg-accent-soft px-2.5 py-1 text-xs font-extrabold text-accent">
             <RankIcon badge={badgeOf(after)} size={14} />
@@ -408,7 +408,7 @@ export function Workshop() {
         }}
       >
         <div className="mb-2.5 flex flex-wrap items-center gap-3">
-          <span className="text-base font-bold text-ink">재료</span>
+          <span className="text-xs font-bold text-ink">재료</span>
           <span className="text-xs text-faint">
             {mine.length ? `내 파일 ${mine.length}개` : cartIds.length ? "장바구니에 담은 에셋" : "마켓 상위"}
           </span>
@@ -481,7 +481,7 @@ function Spec({ k, v }: { k: string; v: string }) {
   return (
     <div>
       <dt className="text-xs text-faint">{k}</dt>
-      <dd className="m-0 text-base font-semibold text-ink">{v}</dd>
+      <dd className="m-0 text-xs font-semibold text-ink">{v}</dd>
     </div>
   );
 }

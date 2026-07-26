@@ -107,7 +107,7 @@ function Detail({ p }: { p: Piece }) {
         {/* 구매 패널 */}
         <aside className="lg:sticky lg:top-[120px] lg:self-start">
           <span className="text-xs text-faint">{CAT_NAME[p.cat]}</span>
-          <h1 className="mt-1 text-2xl font-bold text-ink">{p.t}</h1>
+          <h1 className="mt-1 text-base font-bold text-ink">{p.t}</h1>
           <p className="mt-1 text-xs text-faint">{p.by}</p>
 
           <div className="mt-4 flex items-center gap-3">
@@ -120,7 +120,7 @@ function Detail({ p }: { p: Piece }) {
           </div>
 
           <div className="mt-5 flex items-baseline gap-3 border-t border-line pt-5">
-            <b className="text-4xl font-bold text-ink">{won(p.price)}</b>
+            <b className="text-2xl font-bold text-ink">{won(p.price)}</b>
             <span className="text-xs text-faint">
               {p.price ? `창작자에게 ${won(Math.round(p.price * 0.92 * 100) / 100)} 정산` : "무료 배포"}
             </span>
@@ -137,7 +137,7 @@ function Detail({ p }: { p: Piece }) {
           <ul className="mt-4 flex list-none flex-col gap-2 border-t border-line pt-4 pl-0 text-xs text-muted">
             <li>결제 즉시 내려받습니다. 배송이 없습니다.</li>
             <li>내려받기 전이면 <b className="text-ink">7일 안에 전액 환불</b>됩니다.</li>
-            <li>검수 <b className="text-ink">7항목</b>을 통과한 에셋만 올라옵니다.</li>
+            <li>AI 정적 분석 <b className="text-ink">7항목</b>을 통과한 에셋만 올라옵니다.</li>
           </ul>
 
           {/* 결제 수단 — 아이콘 없이 워드마크 텍스트로만 */}
@@ -161,10 +161,10 @@ function Detail({ p }: { p: Piece }) {
       {/* 본문 */}
       <div className="mt-12 max-w-[760px]">
         <Acc title="상품 설명" open>
-          <p className="text-base leading-relaxed text-muted">{p.desc}</p>
+          <p className="text-xs leading-relaxed text-muted">{p.desc}</p>
         </Acc>
 
-        <Acc title={`검수 리포트 (종합 ${p.score}점)`}>
+        <Acc title={`정적 분석 리포트 (종합 ${p.score}점)`}>
           <div className="flex flex-col gap-2.5">
             {CHECKS.map((c, i) => {
               const v = scores[i] ?? 0;
@@ -224,7 +224,7 @@ function Detail({ p }: { p: Piece }) {
                   <Thumb piece={o} />
                 </div>
                 <div className="flex items-baseline justify-between gap-2 p-3.5">
-                  <span className="text-base font-bold text-ink">{o.t}</span>
+                  <span className="text-xs font-bold text-ink">{o.t}</span>
                   <span className="text-base text-muted">{won(o.price)}</span>
                 </div>
               </Link>

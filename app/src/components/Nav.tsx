@@ -11,11 +11,11 @@ const GROUPS: Group[] = [
   { label: "마켓", to: "/market" },
   { label: "게임 스택", to: "/stack" },
   {
-    label: "공방",
+    label: "스튜디오",
     to: "/workshop",
     badge: "N",
     subs: [
-      { label: "맞추기", to: "/workshop", badge: "N" },
+      { label: "에디터", to: "/workshop", badge: "N" },
       { label: "작업물", to: "/feed" },
       { label: "에셋 시연", to: "/scene" },
       { label: "3D 뷰어", to: "/viewer" },

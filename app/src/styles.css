@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+
 /* ── 팔레트 ────────────────────────────────────────────────────────────
    op.gg 의 실제 CSS 번들에서 뽑은 토큰만 쓴다. 색은 셋 + 흰색이다.
      크롬   darkpurple  900 #1C1C1F · 850 #282830 · 800 #31313C
@@ -110,6 +111,15 @@
     [role="button"]:active {
       scale: 0.97;
     }
+  }
+}
+
+/* 숫자는 크게, 글은 작게. 지표가 본문이고 설명은 각주다. */
+@layer components {
+  .num {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
   }
 }
 

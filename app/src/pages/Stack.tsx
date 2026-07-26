@@ -36,8 +36,8 @@ export function Stack() {
     <main className="mx-auto max-w-[1240px] px-5 pb-20">
       <header className="py-8">
         <p className="text-xs tracking-wide text-accent">게임 스택</p>
-        <h1 className="mt-1 text-4xl font-bold text-ink">출시작이 무엇으로 만들어졌는지 봅니다</h1>
-        <p className="mt-2 text-base text-muted">
+        <h1 className="mt-1 text-base font-bold text-ink">출시작이 무엇으로 만들어졌는지 봅니다</h1>
+        <p className="mt-2 text-xs text-muted">
           엔진과 제작 도구를 게임별로 정리했습니다. 에셋을 고르기 전에 붙일 곳부터 확인하세요.
         </p>
         <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-t border-line pt-4">
@@ -164,7 +164,7 @@ function Stat({ k, v }: { k: string; v: string }) {
   return (
     <div>
       <dt className="text-xs text-faint">{k}</dt>
-      <dd className="m-0 text-base font-semibold text-ink">{v}</dd>
+      <dd className="m-0 text-xs font-semibold text-ink">{v}</dd>
     </div>
   );
 }

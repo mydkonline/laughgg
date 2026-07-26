@@ -15,7 +15,7 @@ const HERO = PIECES.find((p) => p.m === "gothic_statue") ?? PIECES[0]!;
 
 const STEPS: [string, string][] = [
   ["업로드", "glb, gltf, png"],
-  ["자동 검수", "7항목, 라이선스 60 미만 탈락"],
+  ["AI 정적 분석", "7항목, 라이선스 60 미만 탈락"],
   ["개선 코드", "떨어진 항목만"],
   ["컨셉 정합", "톤과 팔레트 변경"],
 ];
@@ -34,13 +34,13 @@ export function Home() {
       <section className="mx-auto grid max-w-[1240px] items-center gap-10 px-5 py-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
         <div>
           <p className="text-xs tracking-wide text-accent">게임 에셋 마켓</p>
-          <h1 className="mt-2 text-6xl leading-[1.1] font-bold text-ink">
+          <h1 className="mt-2 text-4xl leading-[1.2] font-bold text-ink">
             쓸 만한지
             <br />
             사기 전에 압니다
           </h1>
-          <p className="mt-4 max-w-[42ch] text-base text-muted">
-            7항목으로 채점해 배지를 매깁니다. 사는 쪽은 점수로 고르고 컨셉에 맞춰 내려받습니다.
+          <p className="mt-3 max-w-[52ch] text-xs text-muted">
+            AI 정적 분석 7항목으로 배지를 매깁니다. 사는 쪽은 점수로 고르고 컨셉에 맞춰 내려받습니다.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Link
@@ -53,7 +53,7 @@ export function Home() {
               to="/workshop"
               className="rounded-xl border border-line px-6 py-3.5 text-base font-semibold text-muted no-underline hover:border-accent hover:text-ink"
             >
-              공방에서 맞춰 보기
+              스튜디오에서 맞춰 보기
             </Link>
           </div>
 
@@ -70,12 +70,12 @@ export function Home() {
       {/* 진행 순서 */}
       <section className="border-t border-line bg-surface">
         <div className="mx-auto max-w-[1240px] px-5 py-16">
-          <h2 className="text-4xl font-bold text-ink">파이프라인</h2>
+          <h2 className="text-2xl font-bold text-ink">파이프라인</h2>
           <ol className="mt-8 grid list-none gap-px overflow-hidden rounded-xl border border-line bg-line p-0 sm:grid-cols-2 lg:grid-cols-4">
             {STEPS.map(([t, d], i) => (
               <li key={t} className="bg-surface p-5">
                 <b className="text-xs tabular-nums text-faint">{String(i + 1).padStart(2, "0")}</b>
-                <p className="mt-2 text-2xl font-bold text-ink">{t}</p>
+                <p className="mt-2 text-base font-bold text-ink">{t}</p>
                 <p className="mt-2 text-xs text-faint">{d}</p>
               </li>
             ))}
@@ -85,7 +85,7 @@ export function Home() {
 
       {/* 배지 */}
       <section className="mx-auto max-w-[1240px] px-5 py-16">
-        <h2 className="text-4xl font-bold text-ink">배지가 노출 순위를 정합니다</h2>
+        <h2 className="text-2xl font-bold text-ink">배지가 노출 순위를 정합니다</h2>
         <p className="mt-2 text-xs text-muted">수수료는 8% 단일. 배지는 자리를 정합니다.</p>
         <div className="mt-8 grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
           {TIERS.map((t) => (
@@ -103,23 +103,23 @@ export function Home() {
       <section className="border-t border-line bg-surface">
         <div className="mx-auto grid max-w-[1240px] gap-10 px-5 py-16 sm:grid-cols-2">
           <div>
-            <p className="text-6xl font-bold tabular-nums text-ink">92%</p>
+            <p className="num text-6xl text-ink">92%</p>
             <p className="mt-2 text-xs text-muted">창작자 정산</p>
           </div>
           <div>
-            <p className="text-6xl font-bold tabular-nums text-ink">8%</p>
+            <p className="num text-6xl text-ink">8%</p>
             <p className="mt-2 text-xs text-muted">단일 수수료. Epic Fab 12%, Unity 30%</p>
           </div>
         </div>
       </section>
 
       <section className="mx-auto max-w-[1240px] px-5 py-20 text-center">
-        <h2 className="text-4xl font-bold text-ink">가진 에셋이 몇 점인지 보기</h2>
+        <h2 className="text-2xl font-bold text-ink">가진 에셋이 몇 점인지 보기</h2>
         <Link
           to="/workshop"
           className="mt-6 inline-block rounded-xl bg-accent px-8 py-4 text-base font-bold text-white no-underline hover:bg-accent-strong"
         >
-          공방 열기
+          스튜디오 열기
         </Link>
       </section>
     </main>
@@ -164,7 +164,7 @@ function HeroShot() {
         >
           <div className="flex items-baseline gap-2 border-b border-dashed border-line pb-1">
             <span className="text-xs text-faint">{label}</span>
-            <b className="text-2xl font-bold tabular-nums text-ink">{score}</b>
+            <b className="num text-2xl text-ink">{score}</b>
           </div>
         </div>
       ))}
@@ -187,7 +187,7 @@ function Stat({ k, v }: { k: string; v: string }) {
   return (
     <div>
       <dt className="text-xs text-faint">{k}</dt>
-      <dd className="m-0 text-2xl font-bold tabular-nums text-ink">{v}</dd>
+      <dd className="num m-0 text-2xl text-ink">{v}</dd>
     </div>
   );
 }

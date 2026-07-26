@@ -62,7 +62,7 @@ export function Donut({ percent, label, sub }: { percent: number; label: string;
 
   return (
     <div ref={box} className="flex flex-wrap items-center gap-10">
-      <svg viewBox="0 0 220 220" className="h-56 w-56 shrink-0 -rotate-90" role="img" aria-label={`${percent}% ${label}`}>
+      <svg viewBox="0 0 220 220" className="h-44 w-44 shrink-0 -rotate-90" role="img" aria-label={`${percent}% ${label}`}>
         <circle cx="110" cy="110" r={R} fill="none" stroke="var(--surface-2)" strokeWidth="22" />
         <circle
           cx="110"
@@ -79,11 +79,11 @@ export function Donut({ percent, label, sub }: { percent: number; label: string;
       </svg>
 
       <div>
-        <p className="text-[80px] leading-none font-bold tabular-nums text-ink">
+        <p className="num text-6xl leading-none text-ink">
           <span ref={ref}>{shown}</span>
-          <span className="text-4xl text-muted">%</span>
+          <span className="text-2xl text-muted">%</span>
         </p>
-        <p className="mt-3 text-2xl font-bold text-ink">{label}</p>
+        <p className="mt-4 text-base font-bold text-ink">{label}</p>
         <p className="mt-1 text-xs text-faint">{sub}</p>
       </div>
     </div>
@@ -91,41 +91,54 @@ export function Donut({ percent, label, sub }: { percent: number; label: string;
 }
 
 /**
- * 검수 항목 계단. 좌우로 엇갈려 내려가면서 항목마다 실제 모델을 건다.
- * 표로 만들면 일곱 줄짜리 목록이고, 계단으로 두면 훑는 동안 눈이 안 쉰다.
+ * 검수 가중치. 합이 100 이므로 누적 막대 하나로 비율을 한 번에 보여준다.
+ * 항목마다 카드를 만들면 일곱 장이 되고, 비율은 오히려 안 보인다.
  */
-export function CheckStair({ items }: { items: [string, number, string][] }) {
-  const models = PIECES.filter((p) => p.m).slice(0, items.length);
+export function CheckWeights({ items }: { items: [string, number, string][] }) {
+  const [on, setOn] = useState(false);
+  const box = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = box.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => e?.isIntersecting && setOn(true), { threshold: 0.3 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  /* 라이선스만 액센트로 둔다. 유일하게 단독 탈락 사유라 다른 항목과 성격이 다르다. */
+  const shade = (i: number) => (i === 0 ? "var(--accent)" : `color-mix(in srgb, var(--accent) ${34 - i * 4}%, var(--surface-2))`);
 
   return (
-    <ol className="m-0 flex list-none flex-col gap-4 p-0">
-      {items.map(([name, weight, why], i) => {
-        const piece = models[i % models.length];
-        const right = i % 2 === 1;
-        return (
-          <li
+    <div ref={box}>
+      <div className="flex h-14 w-full overflow-hidden rounded-lg border border-line">
+        {items.map(([name, w], i) => (
+          <span
             key={name}
-            className={[
-              "flex items-center gap-5 rounded-2xl border border-line bg-surface p-3",
-              right ? "flex-row-reverse text-right lg:ml-[22%]" : "lg:mr-[22%]",
-            ].join(" ")}
+            title={`${name} ${w}%`}
+            className="grid place-items-center transition-[flex-grow] duration-700"
+            style={{ flexGrow: on ? w : 0, background: shade(i) }}
           >
-            <div className="aspect-square w-24 shrink-0 rounded-xl bg-gradient-to-b from-surface-2 to-surface p-1.5">
-              {piece && <Thumb piece={piece} />}
-            </div>
+            <b className="num text-xs text-ground/90 mix-blend-luminosity">{w}</b>
+          </span>
+        ))}
+      </div>
 
-            <div className="min-w-0 flex-1">
-              <p className="text-4xl leading-none font-bold tabular-nums text-ink">
-                {weight}
-                <span className="text-base text-muted">%</span>
-              </p>
-              <p className="mt-1.5 text-2xl font-bold text-ink">{name}</p>
-              <p className="mt-1 text-xs text-faint">{why}</p>
-            </div>
-          </li>
-        );
-      })}
-    </ol>
+      <dl className="mt-5 grid gap-x-8 gap-y-2.5 sm:grid-cols-2">
+        {items.map(([name, w, why], i) => (
+          <div key={name} className="flex items-baseline gap-3 border-b border-line-soft pb-2">
+            <span className="h-2.5 w-2.5 shrink-0 rounded-sm" style={{ background: shade(i) }} />
+            <dt className="shrink-0 text-xs font-semibold text-ink">{name}</dt>
+            <dd className="m-0 min-w-0 flex-1 truncate text-xs text-faint">{why}</dd>
+            <dd className="num m-0 shrink-0 text-base text-ink">{w}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <p className="mt-5 rounded-lg border border-accent bg-accent-soft px-4 py-3 text-xs text-ink">
+        라이선스 출처 <b className="num text-base">60</b> 미만이면 다른 점수와 무관하게 탈락합니다.
+      </p>
+    </div>
   );
 }
 
@@ -184,9 +197,9 @@ export function CompareBars({ rows }: { rows: [string, number, string][] }) {
       {rows.map(([name, v, tag], i) => (
         <div key={name}>
           <div className="flex items-baseline justify-between gap-3">
-            <span className={`text-base ${i === 0 ? "font-bold text-ink" : "text-muted"}`}>{name}</span>
+            <span className={`text-xs ${i === 0 ? "font-bold text-ink" : "text-muted"}`}>{name}</span>
             <span className="flex items-baseline gap-2">
-              <b className={`text-4xl font-bold tabular-nums ${i === 0 ? "text-accent" : "text-ink"}`}>{v}%</b>
+              <b className={`num text-2xl ${i === 0 ? "text-accent" : "text-ink"}`}>{v}%</b>
               <span className="text-xs text-faint">{tag}</span>
             </span>
           </div>

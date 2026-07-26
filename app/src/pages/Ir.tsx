@@ -4,7 +4,7 @@ import { MARKET, MARKET_SOURCE, REACH, MODEL, CHECK_WEIGHTS } from "../data/ir";
 import { PIECES } from "../data/pieces";
 import { Sprite } from "../three/Sprite";
 import { CONCEPTS } from "../data/concepts";
-import { Donut, CheckStair, AssetRail, ConceptGrid, CompareBars } from "../components/Infographic";
+import { Donut, CheckWeights, AssetRail, ConceptGrid, CompareBars } from "../components/Infographic";
 
 /* IR — 얼마나 큰 시장이고, 누가 쓰고, 어떻게 버는가.
    인용값과 우리 가정을 절대 같은 줄에 놓지 않는다. 섞이면 자료가 아니다. */
@@ -14,10 +14,10 @@ export function Ir() {
     <main className="mx-auto max-w-[1240px] px-5 pb-24">
       <header className="py-10">
         <p className="text-xs tracking-wide text-accent">IR</p>
-        <h1 className="mt-1 max-w-[20ch] text-6xl leading-[1.1] font-bold text-ink">
+        <h1 className="mt-1 max-w-[26ch] text-4xl leading-[1.2] font-bold text-ink">
           에셋을 만들지 않고 배지를 만듭니다
         </h1>
-        <p className="mt-4 max-w-[44ch] text-base text-muted">
+        <p className="mt-3 max-w-[52ch] text-xs text-muted">
           생성이 흔해질수록 희소해지는 건 보증입니다. 보증을 팔고, 사는 쪽 컨셉에 맞춰 내보냅니다.
         </p>
       </header>
@@ -27,7 +27,7 @@ export function Ir() {
       </div>
 
       <Section n="01" title="탈락률">
-        <Donut percent={61.2} label="올라온 에셋이 검수에서 떨어집니다" sub="떨어뜨리는 게 상품입니다" />
+        <Donut percent={61.2} label="올라온 에셋이 정적 분석에서 떨어집니다" sub="떨어뜨리는 게 상품입니다" />
       </Section>
 
       <Section n="02" title="시장">
@@ -35,9 +35,9 @@ export function Ir() {
           {MARKET.map((f) => (
             <div key={f.label} className="bg-surface p-6">
               <p className="text-xs text-faint">{f.label}</p>
-              <p className="mt-3 text-6xl leading-none font-bold tabular-nums text-ink">
+              <p className="num mt-4 text-4xl leading-none text-ink">
                 {f.value}
-                <span className="ml-1 text-2xl font-semibold text-muted">{f.unit}</span>
+                <span className="ml-1 text-base text-muted">{f.unit}</span>
               </p>
               <p className="mt-3 text-xs text-muted">{f.note}</p>
             </div>
@@ -46,11 +46,11 @@ export function Ir() {
         <p className="mt-3 text-xs text-faint">출처 {MARKET_SOURCE}</p>
       </Section>
 
-      <Section n="03" title="검수" lead="라이선스 출처가 60 미만이면 무조건 탈락">
-        <CheckStair items={CHECK_WEIGHTS} />
+      <Section n="03" title="정적 분석" lead="라이선스 출처가 60 미만이면 무조건 탈락">
+        <CheckWeights items={CHECK_WEIGHTS} />
       </Section>
 
-      <Section n="04" title="맞추기" lead="같은 에셋, 다른 게임 컨셉">
+      <Section n="04" title="에디터" lead="같은 에셋, 다른 게임 컨셉">
         <ConceptGrid ids={["real", "dark", "high", "toon"]} />
         <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {["gb", "pico", "one", "sepia"].map((id) => {
@@ -79,16 +79,16 @@ export function Ir() {
         <div className="grid gap-4 lg:grid-cols-[280px_minmax(0,1fr)]">
           <div className="rounded-xl border border-line bg-surface p-6">
             <p className="text-xs text-faint">{REACH.headline.label}</p>
-            <p className="mt-2 text-6xl leading-none font-bold tabular-nums text-ink">
+            <p className="num mt-3 text-4xl leading-none text-ink">
               {REACH.headline.value}
-              <span className="ml-1 text-2xl font-semibold text-muted">{REACH.headline.unit}</span>
+              <span className="ml-1 text-base text-muted">{REACH.headline.unit}</span>
             </p>
             <p className="mt-3 text-xs text-muted">범위 {REACH.band}</p>
             <dl className="mt-5 flex flex-col gap-3 border-t border-line pt-4">
               {REACH.derived.map(([k, v, note]) => (
                 <div key={k}>
                   <dt className="text-xs text-faint">{k}</dt>
-                  <dd className="m-0 text-2xl font-bold tabular-nums text-ink">{v}</dd>
+                  <dd className="num m-0 text-2xl text-ink">{v}</dd>
                   <dd className="m-0 text-xs text-faint">{note}</dd>
                 </div>
               ))}
@@ -112,7 +112,7 @@ export function Ir() {
               {MODEL.assumptions.map(([k, v, unit]) => (
                 <div key={k}>
                   <dt className="text-xs text-faint">{k}</dt>
-                  <dd className="m-0 text-2xl font-bold tabular-nums text-ink">
+                  <dd className="num m-0 text-2xl text-ink">
                     {v}
                     <span className="ml-1 text-xs font-normal text-faint">{unit}</span>
                   </dd>
@@ -128,7 +128,7 @@ export function Ir() {
               {MODEL.milestones.map(([k, v]) => (
                 <div key={k}>
                   <dt className="text-xs text-faint">{k}</dt>
-                  <dd className="m-0 text-2xl font-bold tabular-nums text-ink">{v}</dd>
+                  <dd className="num m-0 text-2xl text-ink">{v}</dd>
                 </div>
               ))}
             </dl>
@@ -154,7 +154,7 @@ export function Ir() {
           to="/workshop"
           className="rounded-xl bg-accent px-6 py-3.5 text-base font-bold text-white no-underline hover:bg-accent-strong"
         >
-          공방 열기
+          스튜디오 열기
         </Link>
         <Link
           to="/market"
@@ -202,7 +202,7 @@ function Section({ n, title, lead, children }: { n: string; title: string; lead?
     >
       <div className="mb-6 flex flex-wrap items-baseline gap-x-4 gap-y-1">
         <span className="text-xs tabular-nums text-faint">{n}</span>
-        <h2 className="text-4xl font-bold text-ink">{title}</h2>
+        <h2 className="text-2xl font-bold text-ink">{title}</h2>
         {lead && <p className="text-xs text-muted">{lead}</p>}
       </div>
       {children}
@@ -229,7 +229,7 @@ function Funnel({ way }: { way: (typeof REACH.ways)[number] }) {
                 {s.label}
                 {s.rate && <span className="ml-1.5 text-faint">{s.rate}</span>}
               </span>
-              <b className="shrink-0 text-base tabular-nums text-ink">{s.show}</b>
+              <b className="num shrink-0 text-base text-ink">{s.show}</b>
             </div>
             <span
               className={`mt-1 block h-2 rounded-sm ${i === way.steps.length - 1 ? "bg-accent" : "bg-chrome-700"}`}
