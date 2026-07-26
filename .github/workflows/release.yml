@@ -27,17 +27,17 @@ jobs:
       - uses: Swatinem/rust-cache@v2
 
       - name: Build
-        run: cargo build --release -p indygg-api --target ${{ matrix.target }}
+        run: cargo build --release -p laughgg-api --target ${{ matrix.target }}
 
       - name: Package
         run: |
           mkdir -p dist
-          tar czf "dist/indygg-api-${{ matrix.target }}.tar.gz" \
-            -C "target/${{ matrix.target }}/release" indygg-api
+          tar czf "dist/laughgg-api-${{ matrix.target }}.tar.gz" \
+            -C "target/${{ matrix.target }}/release" laughgg-api
 
       - uses: actions/upload-artifact@v4
         with:
-          name: indygg-api-${{ matrix.target }}
+          name: laughgg-api-${{ matrix.target }}
           path: dist/*.tar.gz
 
   publish:

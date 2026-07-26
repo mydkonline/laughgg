@@ -1,11 +1,11 @@
 [package]
-name = "indygg-api"
+name = "laughgg-api"
 version = "0.1.0"
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
-description = "IndyGG — game asset marketplace API"
+description = "LaughGG — game asset marketplace API"
 
 [dependencies]
 axum.workspace = true

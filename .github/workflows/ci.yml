@@ -16,15 +16,15 @@ jobs:
         image: mysql:8.4
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: indygg
-          MYSQL_USER: indygg
-          MYSQL_PASSWORD: indygg
+          MYSQL_DATABASE: laughgg
+          MYSQL_USER: laughgg
+          MYSQL_PASSWORD: laughgg
         ports: ["3306:3306"]
         options: >-
           --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
           --health-interval=5s --health-timeout=5s --health-retries=20
     env:
-      DATABASE_URL: mysql://indygg:indygg@127.0.0.1:3306/indygg
+      DATABASE_URL: mysql://laughgg:laughgg@127.0.0.1:3306/laughgg
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
@@ -42,4 +42,4 @@ jobs:
         run: cargo test --all-features
 
       - name: Build release
-        run: cargo build --release -p indygg-api
+        run: cargo build --release -p laughgg-api

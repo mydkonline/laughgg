@@ -1,4 +1,4 @@
-//! `IndyGG` API 서버.
+//! `LaughGG` API 서버.
 //!
 //! 게임 에셋 마켓의 백엔드다. 창작자가 에셋을 올리면 7개 항목을 채점해 등급을 매기고,
 //! 게임 스튜디오가 구독으로 카탈로그에 접근한다. 수수료는 8% 단일이며 주 수익원은 구독이다.
@@ -54,7 +54,7 @@ where
 type ApiResult<T> = Result<T, ApiError>;
 
 async fn health() -> Json<serde_json::Value> {
-    Json(json!({ "status": "ok", "service": "indygg-api" }))
+    Json(json!({ "status": "ok", "service": "laughgg-api" }))
 }
 
 async fn get_assets(
@@ -112,12 +112,12 @@ async fn main() -> Result<()> {
     tracing_subscriber::fmt()
         .with_env_filter(
             tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| "indygg_api=info,tower_http=info".into()),
+                .unwrap_or_else(|_| "laughgg_api=info,tower_http=info".into()),
         )
         .init();
 
     let db_url = std::env::var("DATABASE_URL")
-        .unwrap_or_else(|_| "mysql://indygg:indygg@127.0.0.1:3306/indygg".into());
+        .unwrap_or_else(|_| "mysql://laughgg:laughgg@127.0.0.1:3306/laughgg".into());
     let port: u16 = std::env::var("PORT")
         .ok()
         .and_then(|p| p.parse().ok())

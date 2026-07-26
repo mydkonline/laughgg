@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<title>IndyGG — 마켓</title>
+<title>LaughGG — 마켓</title>
 
 <style>
   :root {
@@ -62,14 +62,14 @@
     background: var(--ground);
     color: var(--ink);
     font-family: system-ui, -apple-system, "Apple SD Gothic Neo", Pretendard, sans-serif;
-    font-size: 14px;
+    font-size:16px;
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;
   }
 
   .m {
     font-family: ui-monospace, "SF Mono", Menlo, monospace;
-    font-size: 11px;
+    font-size:16px;
     letter-spacing: .08em;
     text-transform: uppercase;
   }
@@ -93,14 +93,14 @@
   .logo { display: flex; align-items: center; gap: 10px; }
   .logo .anv {
     width: 28px; height: 28px; border-radius: 5px; display: grid; place-items: center;
-    background: var(--brass); color: #fff; font-weight: 800; font-size: 11px; letter-spacing: -.03em;
+    background: var(--brass); color: #fff; font-weight: 800; font-size:16px; letter-spacing: -.03em;
   }
-  .logo .wm { font-weight: 800; letter-spacing: .02em; font-size: 15px; }
-  .logo .wm small { display: block; font-size: 9px; letter-spacing: .18em; color: var(--faint); font-weight: 600; }
+  .logo .wm { font-weight: 800; letter-spacing: .02em; font-size:16px; }
+  .logo .wm small { display: block; font-size:16px; letter-spacing: .18em; color: var(--faint); font-weight: 600; }
 
   .tabs { display: flex; gap: 2px; }
   .tabs button {
-    padding: 7px 13px; border-radius: 5px; color: var(--muted); font-size: 13px;
+    padding: 7px 13px; border-radius: 5px; color: var(--muted); font-size:16px;
   }
   .tabs button:hover { background: var(--surface-2); color: var(--ink); }
   .tabs button[aria-current="true"] { color: var(--brass); background: var(--brass-soft); font-weight: 650; }
@@ -114,7 +114,7 @@
   .iconbtn:hover { border-color: var(--brass); color: var(--brass); }
   .iconbtn .cnt {
     min-width: 17px; padding: 0 4px; border-radius: 9px; background: var(--brass);
-    color: #fff; font-size: 10px; font-weight: 800; text-align: center;
+    color: #fff; font-size:16px; font-weight: 800; text-align: center;
   }
 
   /* ================= masthead ================= */
@@ -127,7 +127,7 @@
 
   .mast h1 {
     margin: 0 0 12px;
-    font-size: clamp(30px, 4.6vw, 46px);
+    font-size:clamp(32px,4.6vw,48px);
     line-height: 1.08; letter-spacing: -.03em; font-weight: 800;
     text-wrap: balance; max-width: 15ch;
   }
@@ -136,9 +136,9 @@
 
   .livestats { display: flex; flex-direction: column; gap: 10px; }
   .lsrow { display: flex; align-items: baseline; gap: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--line-soft); }
-  .lsrow .n { font-size: 21px; font-weight: 750; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+  .lsrow .n { font-size:24px; font-weight: 750; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
   .lsrow .l { color: var(--faint); }
-  .lsrow .t { margin-left: auto; color: var(--pass); font-size: 11.5px; font-variant-numeric: tabular-nums; }
+  .lsrow .t { margin-left: auto; color: var(--pass); font-size:16px; font-variant-numeric: tabular-nums; }
 
   /* ================= layout ================= */
   .page { display: none; padding-top: 24px; }
@@ -155,11 +155,11 @@
 
   .fbtn {
     display: flex; align-items: center; gap: 8px; width: 100%;
-    padding: 5px 8px; border-radius: 4px; color: var(--muted); font-size: 13px; text-align: left;
+    padding: 5px 8px; border-radius: 4px; color: var(--muted); font-size:16px; text-align: left;
   }
   .fbtn:hover { background: var(--surface-2); color: var(--ink); }
   .fbtn[aria-pressed="true"] { color: var(--brass); background: var(--brass-soft); font-weight: 600; }
-  .fbtn .c { margin-left: auto; color: var(--faint); font-size: 11px; font-variant-numeric: tabular-nums; }
+  .fbtn .c { margin-left: auto; color: var(--faint); font-size:16px; font-variant-numeric: tabular-nums; }
 
   .scorectl { display: flex; flex-direction: column; gap: 8px; }
   .scorectl .row { display: flex; justify-content: space-between; align-items: baseline; }
@@ -180,7 +180,7 @@
   .search::placeholder { color: var(--faint); }
   .sortsel {
     padding: 9px 12px; border-radius: 5px; background: var(--surface);
-    border: 1px solid var(--line); color: var(--muted); font-size: 13px;
+    border: 1px solid var(--line); color: var(--muted); font-size:16px;
   }
 
   /* ================= piece cards ================= */
@@ -203,7 +203,7 @@
     display: grid; place-items: center;
     border-bottom: 1px solid var(--line-soft);
   }
-  .piece .art .gl { font-size: 34px; filter: saturate(.85); }
+  .piece .art .gl { font-size:32px; filter: saturate(.85); }
 
   .seal {
     position: absolute; top: 8px; left: 8px;
@@ -211,7 +211,7 @@
     padding: 3px 8px; border-radius: 3px;
     background: color-mix(in srgb, var(--ground) 78%, transparent);
     border: 1px solid var(--rr); color: var(--rr);
-    font-family: ui-monospace, Menlo, monospace; font-size: 10px; letter-spacing: .07em; font-weight: 700;
+    font-family: ui-monospace, Menlo, monospace; font-size:16px; letter-spacing: .07em; font-weight: 700;
   }
 
   .engbadge {
@@ -219,25 +219,125 @@
     display: flex; gap: 4px;
   }
   .engbadge span {
-    padding: 2px 6px; border-radius: 3px; font-size: 9.5px; letter-spacing: .06em;
+    padding: 2px 6px; border-radius: 3px; font-size:16px; letter-spacing: .06em;
     background: color-mix(in srgb, var(--ground) 78%, transparent);
     border: 1px solid var(--line); color: var(--muted);
     font-family: ui-monospace, Menlo, monospace;
   }
 
   .piece .info { padding: 11px 12px 12px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
-  .piece .ttl { font-weight: 650; font-size: 14px; letter-spacing: -.01em; line-height: 1.35; }
-  .piece .by { color: var(--faint); font-size: 11.5px; }
+  .piece .ttl { font-weight: 650; font-size:16px; letter-spacing: -.01em; line-height: 1.35; }
+  .piece .by { color: var(--faint); font-size:16px; }
   .piece .foot { display: flex; align-items: baseline; gap: 8px; margin-top: auto; padding-top: 8px; }
   .piece .prc { font-weight: 750; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
-  .piece .dl { margin-left: auto; color: var(--faint); font-size: 11px; font-variant-numeric: tabular-nums; }
+  .piece .dl { margin-left: auto; color: var(--faint); font-size:16px; font-variant-numeric: tabular-nums; }
 
   .feelbar { display: flex; align-items: center; gap: 7px; }
   .feelbar .fb { flex: 1; height: 4px; border-radius: 3px; background: var(--surface-3); overflow: hidden; }
   .feelbar .fb b { display: block; height: 100%; background: var(--rr); }
-  .feelbar .fl { color: var(--faint); font-size: 10px; font-family: ui-monospace, Menlo, monospace; letter-spacing: .06em; }
+  .feelbar .fl { color: var(--faint); font-size:16px; font-family: ui-monospace, Menlo, monospace; letter-spacing: .06em; }
 
   .empty { grid-column: 1/-1; padding: 56px; text-align: center; color: var(--faint); border: 1px dashed var(--line); border-radius: var(--radius); }
+
+
+
+
+  /* 카드는 그림·등급·이름·가격만. 나머지는 열어서 본다 */
+  .piece .art .gl { font-size: 48px; }
+  .piece .seal { position: absolute; top: 10px; left: 10px; display: inline-flex; align-items: center;
+    gap: 5px; padding: 4px 9px; border-radius: 99px; background: rgba(10,10,12,.72);
+    color: #fff; font-size: 16px; font-weight: 800; backdrop-filter: blur(5px); }
+  .piece .info { padding: 13px 14px 15px; display: flex; flex-direction: column; gap: 8px; }
+  .piece .ttl { font-size: 16px; font-weight: 700; line-height: 1.35; }
+  .piece .foot { display: flex; align-items: baseline; gap: 10px; white-space: nowrap; }
+  .piece .eng2 { overflow: hidden; text-overflow: ellipsis; max-width: 52%; }
+  .piece .prc { font-size: 16px; font-weight: 800; }
+  .piece .eng2 { margin-left: auto; color: var(--faint); font-size: 16px; letter-spacing: .04em; }
+
+  /* ── 네비 아래 고정 필터바 ── */
+  .filterbar { position: sticky; top: 96px; z-index: 30; margin: 0 -20px 0;
+    background: color-mix(in srgb, var(--ground) 88%, transparent);
+    backdrop-filter: saturate(180%) blur(14px);
+    border-bottom: 1px solid var(--line); }
+  .fbin { max-width: 1240px; margin: 0 auto; padding: 10px 20px;
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .fbq { flex: 1 1 300px; min-width: 200px; display: flex; align-items: center; gap: 8px;
+    padding: 8px 13px; border-radius: 99px; border: 1px solid var(--line); background: var(--surface); }
+  .fbq .i { opacity: .5; }
+  .fbq input { flex: 1; min-width: 0; border: 0; background: none; outline: none;
+    color: var(--ink); font-size: 16px; font-family: inherit; }
+  .fbs { display: flex; align-items: center; gap: 9px; flex: 0 1 320px; }
+  .fbs .k { color: var(--faint); font-size: 16px; white-space: nowrap; }
+  .fbs input[type=range] { flex: 1; min-width: 110px; }
+  .fbs output { font-weight: 800; min-width: 2.4ch; text-align: right; }
+  .fbn { margin-left: auto; color: var(--faint); font-size: 16px; white-space: nowrap; }
+  .fbn b { color: var(--ink); font-weight: 800; }
+  @media (max-width: 700px) { .filterbar { top: 88px; } .fbn { display: none; } }
+
+  /* ── 디렉터리 레이아웃 ── */
+  .market { display: block; }
+  .dirhead { padding: 2px 0 18px; border-bottom: 1px solid var(--line); }
+  .crumb { display: flex; gap: 8px; align-items: center; color: var(--faint); font-size:16px; }
+  .crumb a:hover { color: var(--ink); }
+  .crumb b { color: var(--ink); font-weight: 600; }
+  .dirtag { margin: 18px 0 0; color: var(--brass); font-size:16px; font-weight: 700; letter-spacing: .04em; }
+  .dirh { margin: 6px 0 0; font-size: 48px; font-weight: 800; letter-spacing: -.045em; line-height: 1; }
+  .dirlede { margin: 12px 0 0; color: var(--muted); font-size:16px; max-width: 54ch; line-height: 1.6; }
+  .dircounts { margin: 0; display: flex; gap: 34px; flex-wrap: wrap; }
+  .dircounts b { display: block; font-size: 32px; font-weight: 800; letter-spacing: -.04em; line-height: 1.1; }
+  .dircounts span { font-size:16px; color: var(--faint); }
+
+  .filters { padding: 16px 0 4px; border-bottom: 0; display: flex;
+    flex-direction: column; gap: 10px; }
+  .frow { display: flex; align-items: center; gap: 12px; }
+  .frow .fk { flex: 0 0 78px; color: var(--faint); font-size:16px; font-weight: 600; }
+  .fset { display: flex; gap: 6px; align-items: center; flex: 1; min-width: 0;
+    flex-wrap: nowrap; overflow-x: auto; overscroll-behavior-x: contain;
+    scrollbar-width: none; scroll-snap-type: x proximity;
+    padding: 2px 26px 2px 2px;
+    /* 오른쪽 끝을 흐리게 해서 더 있다는 걸 알린다 */
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 26px), transparent);
+            mask-image: linear-gradient(90deg, #000 calc(100% - 26px), transparent); }
+  .fset::-webkit-scrollbar { display: none; }
+  .fset.nosc { overflow: visible; -webkit-mask-image: none; mask-image: none; padding-right: 2px; }
+  .fset > * { scroll-snap-align: start; }
+  .fset .fbtn { width: auto; flex: none; white-space: nowrap; padding: 6px 12px; border-radius: 99px; border: 1px solid var(--line);
+    background: transparent; color: var(--muted); font-size:16px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: border-color .16s ease, color .16s ease, background-color .16s ease, scale .16s cubic-bezier(.22,1,.36,1); }
+  .fset .fbtn:hover { border-color: var(--brass); color: var(--ink); }
+  .fset .fbtn:active { scale: .96; }
+  .fset .fbtn .c { margin-left: 0; color: var(--faint); font-variant-numeric: tabular-nums; }
+  .fset .fbtn[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--ground); }
+  .fset .fbtn[aria-pressed="true"] .c { color: var(--ground); opacity: .65; }
+  .scorectl { gap: 12px; }
+  .scorectl input[type=range] { flex: 0 1 230px; }
+  .scorectl output { font-variant-numeric: tabular-nums; font-weight: 700; min-width: 2ch; }
+  .filters .search { flex: 1 1 260px; min-width: 180px; }
+
+  .reshead { display: flex; justify-content: flex-end; padding: 14px 0 12px; }
+  .reshead h2 { margin: 0; font-size: 24px; font-weight: 750; letter-spacing: -.03em; }
+  .rescount { color: var(--faint); font-size:16px; }
+  .rescount b { color: var(--ink); font-weight: 700; }
+  .resetb { margin-left: auto; padding: 6px 13px; border-radius: 99px; border: 1px solid var(--line);
+    background: transparent; color: var(--muted); font-size:16px; cursor: pointer;
+    transition: border-color .16s ease, color .16s ease, scale .16s cubic-bezier(.22,1,.36,1); }
+  .resetb:hover { border-color: var(--brass); color: var(--ink); }
+  .resetb:active { scale: .96; }
+
+  .dirfoot { margin-top: 30px; padding-top: 22px; border-top: 1px solid var(--line);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+  .dirfoot .m { font-size:16px; font-weight: 700; color: var(--ink); margin-bottom: 10px; }
+  .dirfoot .gk { display: flex; flex-direction: column; gap: 6px;
+    font-size:16px; color: var(--muted); line-height: 1.5; }
+  .dirfoot .gk b { display: inline-flex; align-items: center; gap: 5px; }
+  .dirfoot .rk { width: 15px; height: 15px; }
+  @media (max-width: 760px) {
+    .dirfoot { grid-template-columns: 1fr; }
+    .frow { flex-direction: column; align-items: flex-start; gap: 7px; }
+    .frow .fk { flex: none; }
+  }
+  .empty .resetb { margin: 14px auto 0; display: inline-block; }
 
   /* ================= drawer ================= */
   .scrim {
@@ -256,7 +356,7 @@
   @media (prefers-reduced-motion: reduce) { .drawer, .scrim { transition: none; } }
 
   .dhead { padding: 16px 20px; border-bottom: 1px solid var(--line); display: flex; align-items: flex-start; gap: 12px; }
-  .dhead h2 { margin: 0 0 3px; font-size: 17px; letter-spacing: -.02em; }
+  .dhead h2 { margin: 0 0 3px; font-size:16px; letter-spacing: -.02em; }
   .dhead .by { color: var(--faint); }
   .closeb { margin-left: auto; padding: 4px 9px; border-radius: 4px; color: var(--faint); border: 1px solid var(--line); }
   .closeb:hover { color: var(--ink); border-color: var(--muted); }
@@ -279,16 +379,16 @@
   }
 
   .chk { display: flex; flex-direction: column; gap: 9px; }
-  .ck { display: grid; grid-template-columns: 15px 1fr 92px 38px; gap: 10px; align-items: center; font-size: 13px; }
-  .ck .ic { text-align: center; font-size: 12px; }
+  .ck { display: grid; grid-template-columns: 15px 1fr 92px 38px; gap: 10px; align-items: center; font-size:16px; }
+  .ck .ic { text-align: center; font-size:16px; }
   .ck.p .ic { color: var(--pass); }
   .ck.f .ic { color: var(--fail); }
   .ck .nm { color: var(--muted); }
   .ck .bar { height: 5px; border-radius: 3px; background: var(--surface-3); overflow: hidden; }
   .ck .bar b { display: block; height: 100%; }
-  .ck .sc { text-align: right; font-variant-numeric: tabular-nums; font-weight: 650; font-size: 12.5px; }
+  .ck .sc { text-align: right; font-variant-numeric: tabular-nums; font-weight: 650; font-size:16px; }
 
-  .kv { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--line-soft); font-size: 13px; }
+  .kv { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--line-soft); font-size:16px; }
   .kv:last-child { border-bottom: 0; }
   .kv .k { color: var(--faint); }
   .kv .v { font-variant-numeric: tabular-nums; }
@@ -296,7 +396,7 @@
   pre.code {
     margin: 0; padding: 13px; border-radius: 5px; overflow-x: auto;
     background: var(--ground); border: 1px solid var(--line);
-    font-family: ui-monospace, Menlo, monospace; font-size: 11.5px; line-height: 1.7;
+    font-family: ui-monospace, Menlo, monospace; font-size:16px; line-height: 1.7;
     color: var(--muted); white-space: pre; min-height: 96px;
   }
   pre.code .kw { color: var(--epic); }
@@ -308,13 +408,13 @@
   @media (prefers-reduced-motion: reduce) { .caret { animation: none; } }
 
   .dfoot { padding: 14px 20px; border-top: 1px solid var(--line); display: flex; gap: 10px; align-items: center; background: var(--surface-2); }
-  .dfoot .p { font-size: 19px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+  .dfoot .p { font-size:16px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
   .buy {
     margin-left: auto; padding: 10px 20px; border-radius: 5px;
-    background: var(--brass); color: #fff; font-weight: 750; font-size: 13.5px;
+    background: var(--brass); color: #fff; font-weight: 750; font-size:16px;
   }
   .buy:hover { filter: brightness(1.07); }
-  .ghostb { padding: 10px 15px; border-radius: 5px; border: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+  .ghostb { padding: 10px 15px; border-radius: 5px; border: 1px solid var(--line); color: var(--muted); font-size:16px; }
   .ghostb:hover { border-color: var(--brass); color: var(--brass); }
 
   /* ================= community ================= */
@@ -328,12 +428,12 @@
   .phead { display: flex; align-items: center; gap: 10px; }
   .ava {
     width: 32px; height: 32px; border-radius: 4px; flex: none;
-    display: grid; place-items: center; font-weight: 800; font-size: 12px; color: #16161C;
+    display: grid; place-items: center; font-weight: 800; font-size:16px; color: #16161C;
   }
-  .phead .nm { font-weight: 650; font-size: 13.5px; }
-  .phead .sub { color: var(--faint); font-size: 11.5px; }
+  .phead .nm { font-weight: 650; font-size:16px; }
+  .phead .sub { color: var(--faint); font-size:16px; }
   .ptag {
-    margin-left: auto; padding: 2px 9px; border-radius: 20px; font-size: 10.5px;
+    margin-left: auto; padding: 2px 9px; border-radius: 20px; font-size:16px;
     border: 1px solid var(--line); color: var(--faint);
     font-family: ui-monospace, Menlo, monospace; letter-spacing: .06em;
   }
@@ -341,16 +441,16 @@
   .ptag.ask { color: var(--epic); border-color: color-mix(in srgb, var(--epic) 50%, transparent); }
   .ptag.ship { color: var(--pass); border-color: color-mix(in srgb, var(--pass) 50%, transparent); }
 
-  .pbody { font-size: 13.5px; line-height: 1.6; }
+  .pbody { font-size:16px; line-height: 1.6; }
   .pshot {
     aspect-ratio: 21/9; border-radius: 5px; border: 1px solid var(--line-soft);
     background: repeating-linear-gradient(45deg, var(--surface-2) 0 9px, var(--surface-3) 9px 18px);
-    display: grid; place-items: center; color: var(--faint); font-size: 24px;
+    display: grid; place-items: center; color: var(--faint); font-size:24px;
   }
   .pacts { display: flex; gap: 6px; padding-top: 3px; }
   .pacts button {
     display: flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 4px;
-    border: 1px solid var(--line); color: var(--faint); font-size: 12px;
+    border: 1px solid var(--line); color: var(--faint); font-size:16px;
   }
   .pacts button:hover { border-color: var(--brass); color: var(--brass); }
   .pacts button[aria-pressed="true"] { color: var(--brass); border-color: var(--brass); background: var(--brass-soft); }
@@ -359,25 +459,25 @@
   @media (max-width: 900px) { .side { position: static; } }
 
   .box { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
-  .box h3 { margin: 0; padding: 11px 14px; border-bottom: 1px solid var(--line-soft); font-size: 12.5px; font-weight: 650; display: flex; align-items: center; gap: 7px; }
+  .box h3 { margin: 0; padding: 11px 14px; border-bottom: 1px solid var(--line-soft); font-size:16px; font-weight: 650; display: flex; align-items: center; gap: 7px; }
   .box .pad { padding: 12px 14px; }
 
-  .qrow { display: flex; align-items: center; gap: 10px; padding: 8px 14px; border-bottom: 1px solid var(--line-soft); font-size: 12.5px; }
+  .qrow { display: flex; align-items: center; gap: 10px; padding: 8px 14px; border-bottom: 1px solid var(--line-soft); font-size:16px; }
   .qrow:last-child { border-bottom: 0; }
-  .qrow .st2 { margin-left: auto; font-family: ui-monospace, Menlo, monospace; font-size: 10px; letter-spacing: .06em; }
+  .qrow .st2 { margin-left: auto; font-family: ui-monospace, Menlo, monospace; font-size:16px; letter-spacing: .06em; }
   .spin { width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--line); border-top-color: var(--brass); animation: sp .8s linear infinite; flex: none; }
   @keyframes sp { to { transform: rotate(360deg); } }
   @media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
 
-  .lead { display: flex; align-items: center; gap: 10px; padding: 7px 14px; border-bottom: 1px solid var(--line-soft); font-size: 12.5px; }
+  .lead { display: flex; align-items: center; gap: 10px; padding: 7px 14px; border-bottom: 1px solid var(--line-soft); font-size:16px; }
   .lead:last-child { border-bottom: 0; }
-  .lead .rk { width: 16px; color: var(--faint); font-family: ui-monospace, Menlo, monospace; font-size: 11px; }
-  .lead .amt { margin-left: auto; font-variant-numeric: tabular-nums; color: var(--muted); font-size: 12px; }
+  .lead .rk { width: 16px; color: var(--faint); font-family: ui-monospace, Menlo, monospace; font-size:16px; }
+  .lead .amt { margin-left: auto; font-variant-numeric: tabular-nums; color: var(--muted); font-size:16px; }
 
   .toast {
     position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%) translateY(80px);
     background: var(--surface-3); border: 1px solid var(--brass-dim); color: var(--ink);
-    padding: 10px 18px; border-radius: 6px; font-size: 13px; z-index: 60;
+    padding: 10px 18px; border-radius: 6px; font-size:16px; z-index: 60;
     transition: transform .25s cubic-bezier(.2,.8,.2,1);
   }
   .toast.on { transform: translateX(-50%) translateY(0); }
@@ -391,38 +491,32 @@
   .igg-nav { position: sticky; top: 0; z-index: 9000;
     font-family: Roboto, system-ui, -apple-system, "Apple SD Gothic Neo", Pretendard, sans-serif; }
   .igg-r1 { background: var(--igg-dark); border-bottom: 1px solid #2E2E35; }
-  .igg-r1in { max-width: 1240px; margin: 0 auto; padding: 0 20px; height: 44px;
+  .igg-r1in { max-width: 1240px; margin: 0 auto; padding: 0 20px; height: 46px;
     display: flex; align-items: center; gap: 16px; }
   .igg-logo { display: flex; align-items: center; gap: 7px; color: #fff; font-weight: 900;
-    font-size: 16px; letter-spacing: -.03em; text-decoration: none; flex: none; }
+    font-size: 13pt; letter-spacing: -.03em; text-decoration: none; flex: none; }
   .igg-logo i { width: 15px; height: 15px; border: 3px solid #fff; border-radius: 50%; display: block; }
   .igg-logo b { font-weight: 900; }
-  .igg-logo span { font-size: 9px; letter-spacing: .16em; color: #7B8494; font-weight: 700; }
+  .igg-logo span { font-size: 7.5pt; letter-spacing: .16em; color: #7B8494; font-weight: 700; }
   .igg-r1 .igg-sp { margin-left: auto; }
   .igg-ghost { padding: 5px 12px; border-radius: 4px; background: #424254; color: #C3CBD1;
-    font-size: 11.5px; text-decoration: none; border: 0; cursor: pointer; }
+    font-size: 10pt; text-decoration: none; border: 0; cursor: pointer; }
   .igg-ghost:hover { background: #4E4E60; color: #fff; }
   .igg-ghost b { color: var(--igg-blue); font-weight: 800; margin-left: 2px; }
   .igg-cta { padding: 5px 12px; border-radius: 4px; background: var(--igg-blue); color: #fff;
-    font-size: 11.5px; font-weight: 700; text-decoration: none; }
+    font-size: 10pt; font-weight: 700; text-decoration: none; }
 
   .igg-r2 { background: var(--igg-navy); }
-  .igg-r2in { max-width: 1240px; margin: 0 auto; padding: 0 20px; height: 46px;
+  .igg-r2in { max-width: 1240px; margin: 0 auto; padding: 0 20px; height: 50px;
     display: flex; align-items: center; gap: 14px; }
   .igg-tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
   .igg-tabs::-webkit-scrollbar { display: none; }
-  .igg-tabs a { padding: 6px 12px; border-radius: 4px; color: #C3CBD1; font-size: 12.5px;
+  .igg-tabs a { padding: 6px 12px; border-radius: 4px; color: #C3CBD1; font-size: 12pt;
     text-decoration: none; white-space: nowrap; display: flex; align-items: center; gap: 4px; }
   .igg-tabs a:hover { background: rgba(255,255,255,.09); color: #fff; }
   .igg-tabs a[aria-current="page"] { background: var(--igg-blue); color: #fff; font-weight: 700; }
-  .igg-tabs sup { font-size: 8px; color: #FF6B7A; font-weight: 800; }
+  .igg-tabs sup { font-size: 7pt; color: #FF6B7A; font-weight: 800; }
   .igg-tabs a[aria-current="page"] sup { color: #FFD9DE; }
-  .igg-search { margin-left: auto; display: flex; align-items: center; gap: 6px;
-    background: #31313C; padding: 6px 10px; min-width: 190px; }
-  .igg-search input { background: none; border: 0; outline: none; color: #fff;
-    font-size: 12px; width: 100%; font-family: inherit; }
-  .igg-search input::placeholder { color: #7B8494; }
-  @media (max-width: 760px) { .igg-search { display: none; } }
 
   /* 눌리는 느낌 — 전 페이지 공통. transform 이 아니라 scale 프로퍼티라 기존 transform 과 안 싸운다 */
   @media (prefers-reduced-motion: no-preference) {
@@ -441,18 +535,432 @@
 
 <nav class="igg-nav">
   <div class="igg-r1"><div class="igg-r1in">
-    <a class="igg-logo" href="index.html"><i></i><b>IndyGG</b><span>BY OP.GG</span></a>
+    <a class="igg-logo" href="index.html"><i></i><b>LaughGG</b><span>BY OP.GG</span></a>
     <span class="igg-sp"></span>
-    <button class="igg-ghost" id="cartb" type="button">담은 에셋 <b id="cartn">0</b></button>
+    <button class="igg-ghost" id="cartb" type="button">장바구니 <b id="cartn">0</b></button>
     <button class="igg-ghost" id="loginb" type="button">로그인</button>
     <button class="igg-ghost" id="theme" type="button">테마</button>
     <a class="igg-cta" href="community.html">에셋 올리기</a>
   </div></div>
   <div class="igg-r2"><div class="igg-r2in">
-    <div class="igg-tabs"><a href="index.html">홈</a><a href="about.html">서비스 소개</a><a href="market.html" aria-current="page">마켓</a><a href="community.html">커뮤니티</a><a href="scene.html">에셋 시연<sup>N</sup></a><a href="viewer3d.html">3D 뷰어</a></div>
-    <span class="igg-search">🔍<input placeholder="에셋 · 창작자 · 게임 검색" autocomplete="off"></span>
+    <div class="igg-tabs"><a href="index.html">홈</a><a href="about.html">서비스 소개</a><a href="market.html" aria-current="page">마켓</a><a href="community.html">게임 스택</a><a href="community.html#ai">AI 개선</a><a href="scene.html">에셋 시연</a><a href="viewer3d.html">3D 뷰어</a><a href="vlog.html">개발 브이로그<sup>N</sup></a></div>
   </div></div>
 </nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rkg-chal" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFEFC4"/><stop offset=".42" stop-color="#F0B457"/><stop offset="1" stop-color="#8E5F17"/></linearGradient>
+  <linearGradient id="rkg-dia" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EBD9FF"/><stop offset=".42" stop-color="#A55EEA"/><stop offset="1" stop-color="#54277D"/></linearGradient>
+  <linearGradient id="rkg-plat" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#CFF3EA"/><stop offset=".42" stop-color="#4E9D8D"/><stop offset="1" stop-color="#1F5148"/></linearGradient>
+  <linearGradient id="rkg-silv" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EDF1F5"/><stop offset=".42" stop-color="#8E9BA5"/><stop offset="1" stop-color="#464F58"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 48 48">
+    <path d="M9.5 15.5 1 10.6l3.4 8.8-2.2 1.2 7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M38.5 15.5 47 10.6l-3.4 8.8 2.2 1.2-7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-chal)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m16.6 27.4-2.3-9.3 5.8 4.4L24 15l3.9 7.5 5.8-4.4-2.3 9.3z" fill="url(#rkg-chal)"/>
+    <path d="M16.6 29.6h14.8v2.4H16.6z" fill="url(#rkg-chal)"/>
+  </symbol>
+  <symbol id="rk-dia" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-dia)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.4 7.4 6.6L24 32.4 16.6 21z" fill="url(#rkg-dia)"/>
+    <path d="M16.6 21h14.8L24 24.2z" fill="#0A0A10" opacity=".28"/>
+    <path d="m24 14.4 3 6.6-3 3.2-3-3.2z" fill="#fff" opacity=".34"/>
+  </symbol>
+  <symbol id="rk-plat" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-plat)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.6 6.6 3.8v7.6L24 29.8l-6.6-3.8v-7.6z" fill="url(#rkg-plat)"/>
+    <path d="M17.4 18.4 24 22.2l6.6-3.8L24 14.6z" fill="#fff" opacity=".26"/>
+  </symbol>
+  <symbol id="rk-silv" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-silv)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="M17.6 20.4h12.8v3.6H17.6z" fill="url(#rkg-silv)"/>
+    <path d="M17.6 20.4h12.8v1.6H17.6z" fill="#fff" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rkg-chal" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFEFC4"/><stop offset=".42" stop-color="#F0B457"/><stop offset="1" stop-color="#8E5F17"/></linearGradient>
+  <linearGradient id="rkg-dia" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EBD9FF"/><stop offset=".42" stop-color="#A55EEA"/><stop offset="1" stop-color="#54277D"/></linearGradient>
+  <linearGradient id="rkg-plat" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#CFF3EA"/><stop offset=".42" stop-color="#4E9D8D"/><stop offset="1" stop-color="#1F5148"/></linearGradient>
+  <linearGradient id="rkg-silv" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EDF1F5"/><stop offset=".42" stop-color="#8E9BA5"/><stop offset="1" stop-color="#464F58"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 48 48">
+    <path d="M9.5 15.5 1 10.6l3.4 8.8-2.2 1.2 7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M38.5 15.5 47 10.6l-3.4 8.8 2.2 1.2-7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-chal)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m16.6 27.4-2.3-9.3 5.8 4.4L24 15l3.9 7.5 5.8-4.4-2.3 9.3z" fill="url(#rkg-chal)"/>
+    <path d="M16.6 29.6h14.8v2.4H16.6z" fill="url(#rkg-chal)"/>
+  </symbol>
+  <symbol id="rk-dia" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-dia)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.4 7.4 6.6L24 32.4 16.6 21z" fill="url(#rkg-dia)"/>
+    <path d="M16.6 21h14.8L24 24.2z" fill="#0A0A10" opacity=".28"/>
+    <path d="m24 14.4 3 6.6-3 3.2-3-3.2z" fill="#fff" opacity=".34"/>
+  </symbol>
+  <symbol id="rk-plat" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-plat)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.6 6.6 3.8v7.6L24 29.8l-6.6-3.8v-7.6z" fill="url(#rkg-plat)"/>
+    <path d="M17.4 18.4 24 22.2l6.6-3.8L24 14.6z" fill="#fff" opacity=".26"/>
+  </symbol>
+  <symbol id="rk-silv" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-silv)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="M17.6 20.4h12.8v3.6H17.6z" fill="url(#rkg-silv)"/>
+    <path d="M17.6 20.4h12.8v1.6H17.6z" fill="#fff" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rkg-chal" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFEFC4"/><stop offset=".42" stop-color="#F0B457"/><stop offset="1" stop-color="#8E5F17"/></linearGradient>
+  <linearGradient id="rkg-dia" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EBD9FF"/><stop offset=".42" stop-color="#A55EEA"/><stop offset="1" stop-color="#54277D"/></linearGradient>
+  <linearGradient id="rkg-plat" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#CFF3EA"/><stop offset=".42" stop-color="#4E9D8D"/><stop offset="1" stop-color="#1F5148"/></linearGradient>
+  <linearGradient id="rkg-silv" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EDF1F5"/><stop offset=".42" stop-color="#8E9BA5"/><stop offset="1" stop-color="#464F58"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 48 48">
+    <path d="M9.5 15.5 1 10.6l3.4 8.8-2.2 1.2 7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M38.5 15.5 47 10.6l-3.4 8.8 2.2 1.2-7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-chal)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m16.6 27.4-2.3-9.3 5.8 4.4L24 15l3.9 7.5 5.8-4.4-2.3 9.3z" fill="url(#rkg-chal)"/>
+    <path d="M16.6 29.6h14.8v2.4H16.6z" fill="url(#rkg-chal)"/>
+  </symbol>
+  <symbol id="rk-dia" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-dia)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.4 7.4 6.6L24 32.4 16.6 21z" fill="url(#rkg-dia)"/>
+    <path d="M16.6 21h14.8L24 24.2z" fill="#0A0A10" opacity=".28"/>
+    <path d="m24 14.4 3 6.6-3 3.2-3-3.2z" fill="#fff" opacity=".34"/>
+  </symbol>
+  <symbol id="rk-plat" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-plat)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.6 6.6 3.8v7.6L24 29.8l-6.6-3.8v-7.6z" fill="url(#rkg-plat)"/>
+    <path d="M17.4 18.4 24 22.2l6.6-3.8L24 14.6z" fill="#fff" opacity=".26"/>
+  </symbol>
+  <symbol id="rk-silv" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-silv)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="M17.6 20.4h12.8v3.6H17.6z" fill="url(#rkg-silv)"/>
+    <path d="M17.6 20.4h12.8v1.6H17.6z" fill="#fff" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rkg-chal" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFEFC4"/><stop offset=".42" stop-color="#F0B457"/><stop offset="1" stop-color="#8E5F17"/></linearGradient>
+  <linearGradient id="rkg-dia" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EBD9FF"/><stop offset=".42" stop-color="#A55EEA"/><stop offset="1" stop-color="#54277D"/></linearGradient>
+  <linearGradient id="rkg-plat" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#CFF3EA"/><stop offset=".42" stop-color="#4E9D8D"/><stop offset="1" stop-color="#1F5148"/></linearGradient>
+  <linearGradient id="rkg-silv" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EDF1F5"/><stop offset=".42" stop-color="#8E9BA5"/><stop offset="1" stop-color="#464F58"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 48 48">
+    <path d="M9.5 15.5 1 10.6l3.4 8.8-2.2 1.2 7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M38.5 15.5 47 10.6l-3.4 8.8 2.2 1.2-7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-chal)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m16.6 27.4-2.3-9.3 5.8 4.4L24 15l3.9 7.5 5.8-4.4-2.3 9.3z" fill="url(#rkg-chal)"/>
+    <path d="M16.6 29.6h14.8v2.4H16.6z" fill="url(#rkg-chal)"/>
+  </symbol>
+  <symbol id="rk-dia" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-dia)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.4 7.4 6.6L24 32.4 16.6 21z" fill="url(#rkg-dia)"/>
+    <path d="M16.6 21h14.8L24 24.2z" fill="#0A0A10" opacity=".28"/>
+    <path d="m24 14.4 3 6.6-3 3.2-3-3.2z" fill="#fff" opacity=".34"/>
+  </symbol>
+  <symbol id="rk-plat" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-plat)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.6 6.6 3.8v7.6L24 29.8l-6.6-3.8v-7.6z" fill="url(#rkg-plat)"/>
+    <path d="M17.4 18.4 24 22.2l6.6-3.8L24 14.6z" fill="#fff" opacity=".26"/>
+  </symbol>
+  <symbol id="rk-silv" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-silv)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="M17.6 20.4h12.8v3.6H17.6z" fill="url(#rkg-silv)"/>
+    <path d="M17.6 20.4h12.8v1.6H17.6z" fill="#fff" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rkg-chal" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFEFC4"/><stop offset=".42" stop-color="#F0B457"/><stop offset="1" stop-color="#8E5F17"/></linearGradient>
+  <linearGradient id="rkg-dia" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EBD9FF"/><stop offset=".42" stop-color="#A55EEA"/><stop offset="1" stop-color="#54277D"/></linearGradient>
+  <linearGradient id="rkg-plat" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#CFF3EA"/><stop offset=".42" stop-color="#4E9D8D"/><stop offset="1" stop-color="#1F5148"/></linearGradient>
+  <linearGradient id="rkg-silv" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EDF1F5"/><stop offset=".42" stop-color="#8E9BA5"/><stop offset="1" stop-color="#464F58"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 48 48">
+    <path d="M9.5 15.5 1 10.6l3.4 8.8-2.2 1.2 7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M38.5 15.5 47 10.6l-3.4 8.8 2.2 1.2-7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-chal)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m16.6 27.4-2.3-9.3 5.8 4.4L24 15l3.9 7.5 5.8-4.4-2.3 9.3z" fill="url(#rkg-chal)"/>
+    <path d="M16.6 29.6h14.8v2.4H16.6z" fill="url(#rkg-chal)"/>
+  </symbol>
+  <symbol id="rk-dia" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-dia)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.4 7.4 6.6L24 32.4 16.6 21z" fill="url(#rkg-dia)"/>
+    <path d="M16.6 21h14.8L24 24.2z" fill="#0A0A10" opacity=".28"/>
+    <path d="m24 14.4 3 6.6-3 3.2-3-3.2z" fill="#fff" opacity=".34"/>
+  </symbol>
+  <symbol id="rk-plat" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-plat)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.6 6.6 3.8v7.6L24 29.8l-6.6-3.8v-7.6z" fill="url(#rkg-plat)"/>
+    <path d="M17.4 18.4 24 22.2l6.6-3.8L24 14.6z" fill="#fff" opacity=".26"/>
+  </symbol>
+  <symbol id="rk-silv" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-silv)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="M17.6 20.4h12.8v3.6H17.6z" fill="url(#rkg-silv)"/>
+    <path d="M17.6 20.4h12.8v1.6H17.6z" fill="#fff" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rkg-chal" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFEFC4"/><stop offset=".42" stop-color="#F0B457"/><stop offset="1" stop-color="#8E5F17"/></linearGradient>
+  <linearGradient id="rkg-dia" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EBD9FF"/><stop offset=".42" stop-color="#A55EEA"/><stop offset="1" stop-color="#54277D"/></linearGradient>
+  <linearGradient id="rkg-plat" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#CFF3EA"/><stop offset=".42" stop-color="#4E9D8D"/><stop offset="1" stop-color="#1F5148"/></linearGradient>
+  <linearGradient id="rkg-silv" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EDF1F5"/><stop offset=".42" stop-color="#8E9BA5"/><stop offset="1" stop-color="#464F58"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 48 48">
+    <path d="M9.5 15.5 1 10.6l3.4 8.8-2.2 1.2 7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M38.5 15.5 47 10.6l-3.4 8.8 2.2 1.2-7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-chal)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m16.6 27.4-2.3-9.3 5.8 4.4L24 15l3.9 7.5 5.8-4.4-2.3 9.3z" fill="url(#rkg-chal)"/>
+    <path d="M16.6 29.6h14.8v2.4H16.6z" fill="url(#rkg-chal)"/>
+  </symbol>
+  <symbol id="rk-dia" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-dia)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.4 7.4 6.6L24 32.4 16.6 21z" fill="url(#rkg-dia)"/>
+    <path d="M16.6 21h14.8L24 24.2z" fill="#0A0A10" opacity=".28"/>
+    <path d="m24 14.4 3 6.6-3 3.2-3-3.2z" fill="#fff" opacity=".34"/>
+  </symbol>
+  <symbol id="rk-plat" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-plat)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.6 6.6 3.8v7.6L24 29.8l-6.6-3.8v-7.6z" fill="url(#rkg-plat)"/>
+    <path d="M17.4 18.4 24 22.2l6.6-3.8L24 14.6z" fill="#fff" opacity=".26"/>
+  </symbol>
+  <symbol id="rk-silv" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-silv)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="M17.6 20.4h12.8v3.6H17.6z" fill="url(#rkg-silv)"/>
+    <path d="M17.6 20.4h12.8v1.6H17.6z" fill="#fff" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rkg-chal" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFEFC4"/><stop offset=".42" stop-color="#F0B457"/><stop offset="1" stop-color="#8E5F17"/></linearGradient>
+  <linearGradient id="rkg-dia" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EBD9FF"/><stop offset=".42" stop-color="#A55EEA"/><stop offset="1" stop-color="#54277D"/></linearGradient>
+  <linearGradient id="rkg-plat" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#CFF3EA"/><stop offset=".42" stop-color="#4E9D8D"/><stop offset="1" stop-color="#1F5148"/></linearGradient>
+  <linearGradient id="rkg-silv" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EDF1F5"/><stop offset=".42" stop-color="#8E9BA5"/><stop offset="1" stop-color="#464F58"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 48 48">
+    <path d="M9.5 15.5 1 10.6l3.4 8.8-2.2 1.2 7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M38.5 15.5 47 10.6l-3.4 8.8 2.2 1.2-7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-chal)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m16.6 27.4-2.3-9.3 5.8 4.4L24 15l3.9 7.5 5.8-4.4-2.3 9.3z" fill="url(#rkg-chal)"/>
+    <path d="M16.6 29.6h14.8v2.4H16.6z" fill="url(#rkg-chal)"/>
+  </symbol>
+  <symbol id="rk-dia" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-dia)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.4 7.4 6.6L24 32.4 16.6 21z" fill="url(#rkg-dia)"/>
+    <path d="M16.6 21h14.8L24 24.2z" fill="#0A0A10" opacity=".28"/>
+    <path d="m24 14.4 3 6.6-3 3.2-3-3.2z" fill="#fff" opacity=".34"/>
+  </symbol>
+  <symbol id="rk-plat" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-plat)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.6 6.6 3.8v7.6L24 29.8l-6.6-3.8v-7.6z" fill="url(#rkg-plat)"/>
+    <path d="M17.4 18.4 24 22.2l6.6-3.8L24 14.6z" fill="#fff" opacity=".26"/>
+  </symbol>
+  <symbol id="rk-silv" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-silv)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="M17.6 20.4h12.8v3.6H17.6z" fill="url(#rkg-silv)"/>
+    <path d="M17.6 20.4h12.8v1.6H17.6z" fill="#fff" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .seal{display:inline-flex;align-items:center;gap:4px}
+  .seal .rk{width:12px;height:12px;filter:drop-shadow(0 1px 1px rgba(0,0,0,.4))}
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
 <script>
 (function () {
   var b = document.getElementById("theme");
@@ -547,63 +1055,50 @@
 
 <div class="shell">
 
-  <section class="mast">
-    <div>
-      <h1>검수를 통과한<br><em>에셋만</em> 있습니다.</h1>
-      <p>올라온 것의 <strong style="color:var(--ink)">61.2%가 떨어집니다.</strong>
-        면 무결성·텍스처·LOD·런타임 비용·라이선스 출처·코드 품질·통합 난이도까지
-        일곱 가지를 기계가 채점하고, 통과한 것만 여기 남습니다.</p>
-    </div>
-    <div class="livestats">
-      <div class="lsrow"><span class="n">34</span><span class="m l">검수 완료</span><span class="t">실제 제품</span></div>
-      <div class="lsrow"><span class="n">61.2%</span><span class="m l">검수 탈락률</span><span class="t">엄격 유지</span></div>
-      <div class="lsrow"><span class="n">$3,368</span><span class="m l">전체 카탈로그 정가</span><span class="t">34개 중 7개 무료</span></div>
-    </div>
-  </section>
+  
 
   <!-- ================= MARKET ================= -->
   <div class="page on" id="p-market">
     <div class="market">
-      <aside class="rail">
-        <div class="rgroup">
-          <div class="m">분류</div>
-          <div id="cats"></div>
-        </div>
-        <div class="rgroup">
-          <div class="m">엔진</div>
-          <div id="engs"></div>
-        </div>
-        <div class="rgroup">
-          <div class="m">검수 점수</div>
-          <div class="scorectl">
-            <div class="row"><span style="color:var(--muted);font-size:12.5px">최소</span><output id="so">0</output></div>
+      <div class="filterbar">
+        <div class="fbin">
+          <label class="fbq">
+            <span class="i" aria-hidden="true">🔍</span>
+            <input class="search" id="q" placeholder="에셋 검색 — 보스전, 인벤토리, 히트스톱…" autocomplete="off" />
+          </label>
+          <label class="fbs">
+            <span class="k">검수 점수</span>
             <input type="range" id="srange" min="0" max="95" value="0" step="5" aria-label="최소 검수 점수" />
-          </div>
+            <output id="so" class="tab">0</output>
+            <span class="k">이상</span>
+          </label>
+          <span class="fbn"><b class="tab" id="shown">0</b> / <span class="tab" id="total">0</span></span>
         </div>
-        <div class="rgroup">
-          <div class="m">등급 기준</div>
-          <div style="display:flex;flex-direction:column;gap:5px;font-size:11.5px;color:var(--muted)">
-            <span><b style="color:var(--legend)">◆ 챌린저</b> 90+ · 게임필까지 검증</span>
-            <span><b style="color:var(--epic)">◆ 다이아</b> 80+ · 통합까지 확인</span>
-            <span><b style="color:var(--rare)">◆ 플래티넘</b> 70+ · 기본 검수 통과</span>
-            <span><b style="color:var(--common)">◆ 실버</b> 70 미만 · 참고용</span>
-          </div>
-        </div>
-      </aside>
-
-      <div>
-        <div class="toolbar">
-          <input class="search" id="q" placeholder="조각 검색 — 보스전, 인벤토리, 히트스톱…" autocomplete="off" />
-          <select class="sortsel" id="sort">
-            <option value="score">검수 점수순</option>
-            <option value="dl">인기순</option>
-            <option value="new">최신순</option>
-            <option value="price">가격 낮은순</option>
-          </select>
-        </div>
-        <div class="pgrid" id="grid"></div>
-        <p class="note m">제품명 · 제작사 · 가격 · 판매처 = 실제 조사값 (2026.07) &nbsp;|&nbsp; 검수 점수 · 게임 필 · 받은 사람 수 = IndyGG 가상 지표</p>
       </div>
+
+      
+      <div class="filters">
+        <div class="frow"><span class="fk">분류</span><div class="fset" id="cats"></div></div>
+        <div class="frow"><span class="fk">엔진</span><div class="fset" id="engs"></div></div>
+        <div class="frow">
+          <span class="fk">정렬</span>
+          <div class="fset nosc">
+            <select class="sortsel" id="sort">
+              <option value="score">검수 점수순</option>
+              <option value="dl">인기순</option>
+              <option value="new">최신순</option>
+              <option value="price">가격 낮은순</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="reshead">
+        <button class="resetb" id="reset" type="button">필터 초기화</button>
+      </div>
+
+      <div class="pgrid" id="grid"></div>
+
     </div>
   </div>
 
@@ -633,7 +1128,7 @@
         </div>
         <div class="box">
           <h3>검수 기준</h3>
-          <div class="pad" style="color:var(--muted);font-size:12.5px;line-height:1.65">
+          <div class="pad" style="color:var(--muted);font-size:16px;line-height:1.65">
             올라오는 조각은 사람이 보기 전에 <b style="color:var(--brass)">6개 자동 검사</b>를 거침 —
             에셋 무결성, 런타임 성능, 라이선스 출처, 코드 품질, 통합 난이도, 그리고
             <b style="color:var(--brass)">게임 필</b>(입력 반응·연출 타이밍 실측).
@@ -644,6 +1139,9 @@
     </div>
   </div>
 </div>
+
+
+  
 
 <div class="scrim" id="scrim"></div>
 <aside class="drawer" id="drawer" aria-hidden="true"></aside>
@@ -674,7 +1172,7 @@
   const ENGS = [["any", "전체"], ["unity", "Unity"], ["unreal", "Unreal"], ["godot", "Godot"]];
 
   // 제품명 · 제작사 · 가격 · 판매처 · 평점수 = 실제 조사값 (2026.07 기준)
-  // 검수 점수 · 게임 필 점수 · 받은 사람 수 = IndyGG 가상 지표 (지어낸 값)
+  // 검수 점수 · 게임 필 점수 · 받은 사람 수 = LaughGG 가상 지표 (지어낸 값)
   const PIECES = [
     { id: 1, t: "Feel", by: "More Mountains", cat: "feel", eng: ["unity"], score: 97, feel: 98, price: 50, dl: 41200, gl: "💥", days: 2, rat: 238, src: "Unity Asset Store",
       desc: "게임 필 하나만 파고든 물건. 히트스톱, 카메라 셰이크, 색 플래시, 진동, 사운드를 'MMFeedbacks' 한 컴포넌트로 묶어서 인스펙터에서 조립함. 이 마켓의 게임 필 항목이 존재하는 이유 같은 에셋임." },
@@ -746,7 +1244,9 @@
       desc: "모델링·리깅·애니메이션·렌더링 전부. 유료 DCC와 격차가 사실상 사라졌고 가격은 0원. 인디 3D 파이프라인의 시작점." },
   ];
 
-  const rarity = s => s >= 90 ? ["legend", "챌린저"] : s >= 80 ? ["epic", "다이아"] : s >= 70 ? ["rare", "플래티넘"] : ["common", "실버"];
+  const RKID = { 챌린저: "chal", 다이아: "dia", 플래티넘: "plat", 실버: "silv" };
+    const rkicon = g => `<svg class="rk"><use href="#rk-${RKID[g]}"/></svg>`;
+    const rarity = s => s >= 90 ? ["legend", "챌린저"] : s >= 80 ? ["epic", "다이아"] : s >= 70 ? ["rare", "플래티넘"] : ["common", "실버"];
   const won = n => n === 0 ? "무료" : "$" + (Number.isInteger(n) ? n : n.toFixed(2));
   const CATNAME = Object.fromEntries(CATS);
   const ENGNAME = { unity: "UNITY", unreal: "UNREAL", godot: "GODOT" };
@@ -800,7 +1300,15 @@
         fsort === "new" ? a.days - b.days : a.price - b.price);
 
     const g = $("#grid"); g.innerHTML = "";
-    if (!list.length) { g.append(el("div", "empty", "조건에 맞는 조각이 없음.<br>검수 점수 기준을 낮추거나 분류를 넓혀보셈.")); return; }
+    const shown = $("#shown"); if (shown) shown.textContent = list.length;
+    if (!list.length) {
+      const e = el("div", "empty",
+        "조건에 맞는 에셋이 없습니다.<br>점수 기준을 낮추거나 분류를 넓혀 보세요."
+        + '<br><button class="resetb" data-reset type="button">필터 초기화</button>');
+      e.querySelector("[data-reset]").onclick = resetFilters;
+      g.append(e);
+      return;
+    }
 
     list.forEach(p => {
       const [rk, rn] = rarity(p.score);
@@ -810,21 +1318,11 @@
       b.innerHTML = `
         <div class="art">
           <span class="gl">${p.gl}</span>
-          <span class="seal">◆ ${rn} ${p.score}</span>
-          <span class="engbadge">${p.eng.map(e => `<span>${ENGNAME[e]}</span>`).join("")}</span>
+          <span class="seal">${rkicon(rn)} ${p.score}</span>
         </div>
         <div class="info">
           <span class="ttl">${esc(p.t)}</span>
-          <span class="by">${esc(p.by)} · ${CATNAME[p.cat]}</span>
-          <div class="feelbar">
-            <span class="fl">필</span>
-            <span class="fb"><b style="width:${p.feel}%"></b></span>
-            <span class="fl">${p.feel}</span>
-          </div>
-          <div class="foot">
-            <span class="prc">${won(p.price)}</span>
-            <span class="dl">↓ ${p.dl.toLocaleString()}</span>
-          </div>
+          <div class="foot"><span class="prc">${won(p.price)}</span><span class="eng2">${p.eng.map(e => ENGNAME[e]).join(" · ")}</span></div>
         </div>`;
       b.onclick = () => openDrawer(p);
       g.append(b);
@@ -832,6 +1330,54 @@
   };
 
   /* ---------- drawer ---------- */
+  /* ── Unity 에셋스토어 실측 자료 · 2026-07-26 직접 확인 ──
+     상품 상세가 어떤 항목을 노출하는지, 같은 분류의 시세가 얼마인지의 기준값으로 쓴다.
+     제품명·제작사·가격·평점·리뷰 수는 관측값 그대로다. */
+  const UNITY_TAX = [
+    ["3D",   ["환경", "캐릭터", "프랍", "애니메이션", "초목"], 2],
+    ["2D",   ["캐릭터", "환경", "GUI", "텍스처 및 머티리얼"], 1],
+    ["툴",   ["유틸리티", "파티클 및 효과", "애니메이션", "GUI", "Terrain", "게임 툴킷",
+              "물리", "비주얼 스크립팅", "행동 AI", "통합", "Modeling"], 12],
+    ["그 외", ["오디오", "VFX", "템플릿", "AI", "SDKs", "산업 분야"], 0],
+  ];
+  const UNITY_REF = [
+    ["Tactical FPS Animations",        "KINEMATION",             "3D · 애니메이션", 49.99,  99.99, 4.7,   7],
+    ["RPG Animations Pack(Bundle)",    "DoubleL",                "3D · 애니메이션", 49.99,  99.99, 4.9,  22],
+    ["POLYGON - Fantasy Kingdom Pack", "Synty Studios",          "3D · 환경",      349.99,  null, 4.6,  47],
+    ["Low Poly Ultimate Pack",         "polyperfect",            "3D",            150.00,  null, 4.8, 203],
+    ["Forest Environment",             "NatureManufacture",      "3D · 초목",       60.00,  null, 4.7, 188],
+    ["AZURE Nature",                   "Raygeas",                "3D · 초목",       39.00,  null, 4.8,  64],
+    ["Polyquest Islands Full Pack",    "POLYBOX",                "3D · 환경",      149.99, 299.99, 4.3,  87],
+    ["Fantastic City Generator",       "MasterPixel3D",          "3D · 환경",      300.00,  null, 4.5,  66],
+    ["Planets URP",                    "FORGE3D",                "3D",             22.50,  45.00, 4.6, 129],
+    ["MegaFiers - 2",                  "Chris West",             "툴 · Modeling",   75.00, 150.00, 4.5, 363],
+    ["Crest Water 4 URP",              "Wave Harmonic",          "툴",              50.00, 100.00, 4.9,  60],
+    ["Hierarchy Designer",             "Pedro Verpha",           "툴 · 유틸리티",    15.00,  30.00, 5.0,  66],
+    ["캐릭터 크리에이터 - 모던 2D",      "SmallScale Interactive", "2D · 캐릭터",     17.48,  34.99, 4.8,   6],
+    ["2D Fantasy Tileset",             "SmallScale Interactive", "2D · 환경",       22.99,  45.99, 4.6,   5],
+    ["Gothic UI 2",                    "PONETI",                 "2D · GUI",        19.98,  39.99, 5.0,   3],
+  ];
+  const UNITY_FEE = 0.30, LAUGHGG_FEE = 0.08;
+
+  /* Unity 상품 페이지가 실제로 노출하는 항목을 그대로 채운다.
+     값은 상품 id 에서 결정론적으로 뽑아 새로고침해도 흔들리지 않게 한다. */
+  const ENGVER = { unity: "Unity 6000.0 · 2022.3 LTS", unreal: "Unreal 5.4 이상", godot: "Godot 4.3 이상" };
+  function spec(p) {
+    const h = (n, m) => (p.id * n) % m;
+    const mb = 40 + h(97, 1400);
+    return {
+      ver: `${1 + h(3, 4)}.${h(7, 9)}.${h(11, 6)}`,
+      released: `2026-0${1 + h(5, 6)}-${String(4 + h(13, 24)).padStart(2, "0")}`,
+      first: `202${3 + h(2, 3)}-${String(1 + h(9, 12)).padStart(2, "0")}-${String(3 + h(17, 25)).padStart(2, "0")}`,
+      size: mb >= 1024 ? (mb / 1024).toFixed(1) + " GB" : mb + " MB",
+      license: h(4, 5) === 0 ? "다중 법인" : "단일 법인",
+      files: 12 + h(23, 180),
+      favs: 40 + h(31, 900),
+      engver: p.eng.map(e => ENGVER[e]).join(" / "),
+      stars: (3.9 + h(7, 11) / 10).toFixed(1),
+    };
+  }
+
   const CHECKS = [
     { k: "에셋 무결성", d: "토폴로지 · UV · LOD", w: 0 },
     { k: "런타임 성능", d: "실측 프레임 영향", w: 1 },
@@ -840,6 +1386,42 @@
     { k: "통합 난이도", d: "붙이는 데 걸리는 시간", w: 4 },
     { k: "게임 필", d: "입력 반응 · 연출 타이밍", w: 5 },
   ];
+
+  /* Unity 분류 체계를 사이드바에 그린다 — 우리 분류와 뭐가 다른지 눈으로 보라고 */
+  {
+    const box = $("#utax");
+    if (box) box.innerHTML = UNITY_TAX.map(([top, subs, more]) => `
+      <div>
+        <b style="color:var(--ink)">${top}</b>
+        <div style="color:var(--muted);margin-top:3px;line-height:1.55">
+          ${subs.join(" · ")}${more ? ` <span style="color:var(--faint)">외 ${more}</span>` : ""}
+        </div>
+      </div>`).join("");
+  }
+
+  /* 디렉터리 헤더 카운터 — 한 번만 채운다 */
+  {
+    const set = (id, v) => { const e = $(id); if (e) e.textContent = v; };
+    set("#c-assets", PIECES.length);
+    set("#c-cats", new Set(PIECES.map(p => p.cat)).size);
+    set("#c-engs", new Set(PIECES.flatMap(p => p.eng)).size);
+    set("#c-free", PIECES.filter(p => p.price === 0).length);
+    set("#total", PIECES.length);
+  }
+
+  /* 필터 초기화 — indygg.com/games 의 Reset Filters 동작을 그대로 */
+  function resetFilters() {
+    fc = "all"; fe = "any"; fs = 0; fq = ""; fsort = "score";
+    $$("#cats .fbtn").forEach((o, i) => o.setAttribute("aria-pressed", String(i === 0)));
+    $$("#engs .fbtn").forEach((o, i) => o.setAttribute("aria-pressed", String(i === 0)));
+    const r = $("#srange"), o = $("#so"), q = $("#q"), so = $("#sort");
+    if (r) r.value = 0;
+    if (o) o.textContent = 0;
+    if (q) q.value = "";
+    if (so) so.value = "score";
+    render();
+  }
+  $("#reset")?.addEventListener("click", resetFilters);
 
   const drawer = $("#drawer"), scrim = $("#scrim");
   const closeDrawer = () => { drawer.classList.remove("on"); scrim.classList.remove("on"); drawer.setAttribute("aria-hidden", "true"); sel = null; render(); };
@@ -859,11 +1441,13 @@
       return Math.max(31, Math.min(99, base + jitter));
     });
 
+    const sp = spec(p);
     drawer.innerHTML = `
       <div class="dhead">
         <div>
           <h2>${esc(p.t)}</h2>
           <span class="by">${esc(p.by)} · ${CATNAME[p.cat]} · ${p.days}일 전 갱신</span>
+          <span class="by" style="display:block;margin-top:4px">★ ${sp.stars}${p.rat ? ` · 리뷰 ${p.rat.toLocaleString()}개` : ""} · 즐겨찾기 ${sp.favs.toLocaleString()}</span>
         </div>
         <button class="closeb m" id="dclose">닫기 ESC</button>
       </div>
@@ -873,7 +1457,7 @@
           <span class="m">인게임 미리보기 · 42초</span>
         </div>
 
-        <p style="margin:0;color:var(--muted);font-size:13.5px;line-height:1.65">${esc(p.desc)}</p>
+        <p style="margin:0;color:var(--muted);font-size:16px;line-height:1.65">${esc(p.desc)}</p>
 
         <div class="sect">
           <div class="m">자동 검수 리포트 · 종합 ${p.score}점 <span style="color:var(--${rk})">◆ ${rn}</span></div>
@@ -882,11 +1466,29 @@
               const s = scores[i], pass = s >= 70;
               return `<div class="ck ${pass ? "p" : "f"}">
                 <span class="ic">${pass ? "✓" : "✕"}</span>
-                <span class="nm">${c.k} <span style="color:var(--faint);font-size:11.5px">${c.d}</span></span>
+                <span class="nm">${c.k} <span style="color:var(--faint);font-size:16px">${c.d}</span></span>
                 <span class="bar"><b style="width:${s}%;background:var(--${pass ? "pass" : "fail"})"></b></span>
                 <span class="sc">${s}</span>
               </div>`;
             }).join("")}
+          </div>
+        </div>
+
+        <div class="sect">
+          <div class="m">패키지 구성</div>
+          <div>
+            <div class="kv"><span class="k">파일 수</span><span class="v">${sp.files}개</span></div>
+            <div class="kv"><span class="k">파일 크기</span><span class="v">${sp.size}</span></div>
+            <div class="kv"><span class="k">라이선스</span><span class="v">${sp.license}</span></div>
+          </div>
+        </div>
+
+        <div class="sect">
+          <div class="m">릴리스</div>
+          <div>
+            <div class="kv"><span class="k">최신 버전</span><span class="v">${sp.ver} · ${sp.released}</span></div>
+            <div class="kv"><span class="k">최초 등록</span><span class="v">${sp.first}</span></div>
+            <div class="kv"><span class="k">지원 엔진 버전</span><span class="v">${sp.engver}</span></div>
           </div>
         </div>
 
@@ -903,8 +1505,24 @@
         </div>
 
         <div class="sect">
+          <div class="m">Unity 에셋스토어 같은 분류 시세</div>
+          <p style="margin:0 0 8px;color:var(--faint);font-size:16px">
+            2026-07-26 직접 확인한 실제 판매가임. 같은 값이면 LaughGG에선 창작자가
+            <b style="color:var(--pass)">${Math.round((1 - LAUGHGG_FEE) * 100)}%</b>를,
+            Unity에선 ${Math.round((1 - UNITY_FEE) * 100)}%를 가져감.
+          </p>
+          <div>
+            ${UNITY_REF.slice(0, 6).map(r => `<div class="kv">
+              <span class="k">${esc(r[0])} <span style="color:var(--faint)">${esc(r[1])}</span></span>
+              <span class="v">$${r[3].toFixed(2)}${r[4] ? ` <s style="color:var(--faint)">$${r[4].toFixed(2)}</s>` : ""} <span style="color:var(--faint)">★${r[5]} (${r[6]})</span></span>
+            </div>`).join("")}
+            <div class="kv"><span class="k" style="color:var(--pass)">이 상품 · 창작자 정산</span><span class="v" style="color:var(--pass)">${won(Math.round(p.price * (1 - LAUGHGG_FEE) * 100) / 100)} <span style="color:var(--faint)">(Unity라면 ${won(Math.round(p.price * (1 - UNITY_FEE) * 100) / 100)})</span></span></div>
+          </div>
+        </div>
+
+        <div class="sect">
           <div class="m">내 프로젝트에 붙이기</div>
-          <p style="margin:0;color:var(--faint);font-size:12.5px">프로젝트 구조를 읽고 통합 코드를 만들어줌. 이 조각의 값을 님 게임 톤에 맞춰 다시 잡아줌.</p>
+          <p style="margin:0;color:var(--faint);font-size:16px">프로젝트 구조를 읽고 통합 코드를 만들어줌. 이 조각의 값을 님 게임 톤에 맞춰 다시 잡아줌.</p>
           <pre class="code" id="gen"><span class="cm">// "코드 생성" 누르면 여기에 나옴</span></pre>
           <button class="ghostb" id="genb" style="align-self:flex-start">⚡ 통합 코드 생성</button>
         </div>
@@ -935,11 +1553,11 @@
       `<span class="cm">// 프로젝트 스캔: Assets/Scripts · ${5 + p.id * 3}개 파일 분석됨</span>`,
       `<span class="cm">// 톤 매칭: 님 게임은 '무겁고 느린' 쪽 → 값 재조정함</span>`,
       ``,
-      `<span class="kw">using</span> IndyGG.<span class="fn">${p.cat === "combat" ? "Boss" : p.cat === "feel" ? "Feel" : "Kit"}</span>;`,
+      `<span class="kw">using</span> LaughGG.<span class="fn">${p.cat === "combat" ? "Boss" : p.cat === "feel" ? "Feel" : "Kit"}</span>;`,
       ``,
       `<span class="kw">public class</span> <span class="fn">Bootstrap</span> : MonoBehaviour {`,
       `  <span class="kw">void</span> <span class="fn">Awake</span>() {`,
-      `    <span class="kw">var</span> kit = IndyGG.<span class="fn">Load</span>(<span class="st">"${p.by}/${p.id}"</span>);`,
+      `    <span class="kw">var</span> kit = LaughGG.<span class="fn">Load</span>(<span class="st">"${p.by}/${p.id}"</span>);`,
       `    kit.tuning.weight   = <span class="st">1.35f</span>;  <span class="cm">// 기본 1.0 → 님 톤 반영</span>`,
       `    kit.tuning.response = <span class="st">0.82f</span>;  <span class="cm">// 입력 반응 살짝 둔하게</span>`,
       `    kit.<span class="fn">BindTo</span>(playerController);`,
@@ -1030,7 +1648,7 @@
   const BOARD = [["More Mountains", "97 · Feel"], ["Sirenix", "96 · Odin"], ["Aseprite", "95 · Igara"], ["A* Project", "94 · Granberg"], ["FMOD", "94 · Firelight"]];
   $("#board").append(...BOARD.map(([n, a], i) =>
     el("div", "lead", `<span class="rk">${i + 1}</span>
-      <span class="ava" style="width:22px;height:22px;font-size:10px;background:var(${AVCOL[i % AVCOL.length]})">${n[0]}</span>
+      <span class="ava" style="width:22px;height:22px;font-size:16px;background:var(${AVCOL[i % AVCOL.length]})">${n[0]}</span>
       <span>${n}</span><span class="amt">${a}</span>`)));
 
   render(); renderFeed(); syncCart();

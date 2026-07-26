@@ -6,7 +6,7 @@ members = ["crates/api"]
 edition = "2024"
 rust-version = "1.90"
 license = "MIT"
-repository = "https://github.com/mydkonline/indygg"
+repository = "https://github.com/mydkonline/laughgg"
 
 [workspace.dependencies]
 axum = { version = "0.8", features = ["macros"] }

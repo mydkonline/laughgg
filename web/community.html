@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<title>IndyGG — 커뮤니티</title>
+<title>LaughGG — 커뮤니티</title>
 
 <style>
   :root {
@@ -37,9 +37,9 @@
   body {
     margin: 0; background: var(--ground); color: var(--ink);
     font-family: Roboto, system-ui, -apple-system, "Apple SD Gothic Neo", Pretendard, sans-serif;
-    font-size: 13px; line-height: 1.5; -webkit-font-smoothing: antialiased;
+    font-size:16px; line-height: 1.5; -webkit-font-smoothing: antialiased;
   }
-  .m { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+  .m { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size:16px; letter-spacing: .08em; text-transform: uppercase; }
   button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
   input, textarea, select { font: inherit; color: inherit; }
   :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -55,27 +55,27 @@
   header.top .logo .wm { color: #fff; }
   .topin { max-width: 1200px; margin: 0 auto; padding: 0 22px; height: 56px; display: flex; align-items: center; gap: 18px; }
   .logo { display: flex; align-items: center; gap: 9px; flex: none; }
-  .logo .mk { width: 27px; height: 27px; border-radius: 5px; background: var(--accent); color: #fff; display: grid; place-items: center; font-weight: 800; font-size: 10.5px; }
-  .logo .wm { font-weight: 800; font-size: 14.5px; letter-spacing: .02em; }
-  .logo .wm small { display: block; font-size: 8.5px; letter-spacing: .18em; color: var(--faint); font-weight: 600; }
+  .logo .mk { width: 27px; height: 27px; border-radius: 5px; background: var(--accent); color: #fff; display: grid; place-items: center; font-weight: 800; font-size:16px; }
+  .logo .wm { font-weight: 800; font-size:16px; letter-spacing: .02em; }
+  .logo .wm small { display: block; font-size:16px; letter-spacing: .18em; color: var(--faint); font-weight: 600; }
   .tabs { display: flex; gap: 1px; overflow-x: auto; }
-  .tabs button { padding: 7px 12px; border-radius: 5px; color: var(--muted); font-size: 13px; white-space: nowrap; }
+  .tabs button { padding: 7px 12px; border-radius: 5px; color: var(--muted); font-size:16px; white-space: nowrap; }
   .tabs button:hover { background: var(--surface-2); color: var(--ink); }
   .tabs button[aria-current="true"] { color: var(--accent); background: var(--accent-soft); font-weight: 650; }
   .spacer { margin-left: auto; }
-  .gbtn { padding: 6px 12px; border: 1px solid var(--line); border-radius: 5px; color: var(--muted); font-size: 12.5px; white-space: nowrap; }
+  .gbtn { padding: 6px 12px; border: 1px solid var(--line); border-radius: 5px; color: var(--muted); font-size:16px; white-space: nowrap; }
   .gbtn:hover { border-color: var(--accent); color: var(--accent); }
   .gbtn.solid { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 650; }
   .me { display: flex; align-items: center; gap: 8px; padding: 4px 10px 4px 4px; border: 1px solid var(--line); border-radius: 20px; }
-  .me .av { width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; font-size: 10px; font-weight: 800; }
+  .me .av { width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; font-size:16px; font-weight: 800; }
 
   .page { display: none; padding-top: 26px; }
   .page.on { display: block; }
-  h2.sec { margin: 0 0 4px; font-size: 24px; letter-spacing: -.025em; font-weight: 800; }
+  h2.sec { margin: 0 0 4px; font-size:24px; letter-spacing: -.025em; font-weight: 800; }
   p.lead { margin: 0 0 22px; color: var(--muted); max-width: 62ch; }
 
   .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); }
-  .card > h3 { margin: 0; padding: 12px 15px; border-bottom: 1px solid var(--line-soft); font-size: 13px; font-weight: 650; display: flex; align-items: center; gap: 8px; }
+  .card > h3 { margin: 0; padding: 12px 15px; border-bottom: 1px solid var(--line-soft); font-size:16px; font-weight: 650; display: flex; align-items: center; gap: 8px; }
   .card > h3 .r { margin-left: auto; color: var(--faint); font-weight: 400; }
   .pad { padding: 15px; }
   .g2 { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 16px; }
@@ -87,48 +87,48 @@
   input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--accent); border: 2px solid var(--surface); }
 
   .prow { display: grid; grid-template-columns: 108px 1fr 54px; gap: 12px; align-items: center; padding: 5px 0; }
-  .prow .nm { color: var(--muted); font-size: 12.5px; }
-  .prow output { text-align: right; font-variant-numeric: tabular-nums; font-weight: 650; font-size: 12.5px; }
+  .prow .nm { color: var(--muted); font-size:16px; }
+  .prow output { text-align: right; font-variant-numeric: tabular-nums; font-weight: 650; font-size:16px; }
 
-  .kv { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--line-soft); font-size: 13px; }
+  .kv { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--line-soft); font-size:16px; }
   .kv:last-child { border-bottom: 0; }
   .kv .k { color: var(--faint); }
   .kv .v { font-variant-numeric: tabular-nums; font-weight: 600; }
 
   .big { display: flex; flex-direction: column; gap: 1px; }
-  .big .n { font-size: 27px; font-weight: 800; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+  .big .n { font-size:24px; font-weight: 800; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
   .big .l { color: var(--faint); }
 
-  .alert { display: flex; gap: 8px; padding: 9px 12px; border-radius: var(--r); font-size: 12.5px; border: 1px solid; }
+  .alert { display: flex; gap: 8px; padding: 9px 12px; border-radius: var(--r); font-size:16px; border: 1px solid; }
   .alert.w { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 42%, transparent); background: color-mix(in srgb, var(--warn) 9%, transparent); }
   .alert.b { color: var(--fail); border-color: color-mix(in srgb, var(--fail) 42%, transparent); background: color-mix(in srgb, var(--fail) 9%, transparent); }
   .alert.g { color: var(--pass); border-color: color-mix(in srgb, var(--pass) 42%, transparent); background: color-mix(in srgb, var(--pass) 9%, transparent); }
 
   /* ===== 스택 ===== */
   .hero { padding: 34px 0 26px; text-align: center; border-bottom: 1px solid var(--line); }
-  .hero h1 { margin: 0 0 8px; font-size: clamp(26px, 4vw, 40px); letter-spacing: -.03em; font-weight: 800; text-wrap: balance; }
+  .hero h1 { margin: 0 0 8px; font-size:clamp(24px,4vw,48px); letter-spacing: -.03em; font-weight: 800; text-wrap: balance; }
   .hero h1 em { font-style: normal; color: var(--accent); }
   .hero p { margin: 0 auto 20px; color: var(--muted); max-width: 52ch; }
   .bigsearch { max-width: 560px; margin: 0 auto; display: flex; gap: 8px; }
-  .bigsearch input { flex: 1; padding: 12px 16px; border-radius: 0; background: var(--surface); border: 1px solid var(--line); font-size: 15px; }
+  .bigsearch input { flex: 1; padding: 12px 16px; border-radius: 0; background: var(--surface); border: 1px solid var(--line); font-size:16px; }
   .bigsearch input::placeholder { color: var(--faint); }
   .quick { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
-  .quick button { padding: 4px 11px; border-radius: 20px; border: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+  .quick button { padding: 4px 11px; border-radius: 20px; border: 1px solid var(--line); color: var(--muted); font-size:16px; }
   .quick button:hover { border-color: var(--accent); color: var(--accent); }
 
-  .grow { display: grid; grid-template-columns: 34px 1fr 130px 92px; gap: 12px; align-items: center; width: 100%; padding: 10px 15px; border-bottom: 1px solid var(--line-soft); text-align: left; font-size: 13px; }
+  .grow { display: grid; grid-template-columns: 34px 1fr 130px 92px; gap: 12px; align-items: center; width: 100%; padding: 10px 15px; border-bottom: 1px solid var(--line-soft); text-align: left; font-size:16px; }
   .grow:last-child { border-bottom: 0; }
   .grow:hover { background: var(--surface-2); }
   .grow[aria-pressed="true"] { background: var(--accent-soft); }
-  .grow .ico { font-size: 18px; text-align: center; }
+  .grow .ico { font-size:16px; text-align: center; }
   .grow .t { font-weight: 620; }
-  .grow .s { color: var(--faint); font-size: 11.5px; }
-  .grow .eng { color: var(--muted); font-size: 12px; }
-  .grow .yr { color: var(--faint); font-variant-numeric: tabular-nums; font-size: 12px; text-align: right; }
+  .grow .s { color: var(--faint); font-size:16px; }
+  .grow .eng { color: var(--muted); font-size:16px; }
+  .grow .yr { color: var(--faint); font-variant-numeric: tabular-nums; font-size:16px; text-align: right; }
 
-  .stackrow { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line-soft); font-size: 13px; }
+  .stackrow { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line-soft); font-size:16px; }
   .stackrow:last-child { border-bottom: 0; }
-  .conf { font-size: 10px; padding: 1px 7px; border-radius: 20px; font-family: ui-monospace, Menlo, monospace; letter-spacing: .06em; }
+  .conf { font-size:16px; padding: 1px 7px; border-radius: 20px; font-family: ui-monospace, Menlo, monospace; letter-spacing: .06em; }
   .conf.hi { color: var(--pass); background: color-mix(in srgb, var(--pass) 13%, transparent); }
   .conf.lo { color: var(--faint); background: var(--surface-3); }
 
@@ -143,17 +143,17 @@
   .gcard::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 3px; background: var(--gc); }
   .gcard:hover { transform: translateY(-2px); border-color: var(--gc); }
   .gcard[aria-pressed="true"] { border-color: var(--gc); background: color-mix(in srgb, var(--gc) 9%, var(--surface)); }
-  .gcard .gt { font-weight: 750; font-size: 15px; letter-spacing: -.015em; }
-  .gcard .gs { color: var(--faint); font-size: 11.5px; }
-  .gcard .gn { margin-top: 6px; font-size: 12px; color: var(--gc); font-weight: 650; font-variant-numeric: tabular-nums; }
+  .gcard .gt { font-weight: 750; font-size:16px; letter-spacing: -.015em; }
+  .gcard .gs { color: var(--faint); font-size:16px; }
+  .gcard .gn { margin-top: 6px; font-size:16px; color: var(--gc); font-weight: 650; font-variant-numeric: tabular-nums; }
 
   .kit { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 13px; }
   .kitem { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--gc); border-radius: var(--r); padding: 13px 14px; display: flex; flex-direction: column; gap: 7px; }
-  .kitem .kt { font-weight: 650; font-size: 13.5px; }
-  .kitem .kd { color: var(--muted); font-size: 12.5px; line-height: 1.55; }
+  .kitem .kt { font-weight: 650; font-size:16px; }
+  .kitem .kd { color: var(--muted); font-size:16px; line-height: 1.55; }
   .kitem .kf { display: flex; align-items: baseline; gap: 8px; margin-top: auto; padding-top: 6px; border-top: 1px solid var(--line-soft); }
   .kitem .kp { font-weight: 750; font-variant-numeric: tabular-nums; }
-  .kitem .ks { margin-left: auto; font-size: 11px; font-family: ui-monospace, Menlo, monospace; color: var(--gc); }
+  .kitem .ks { margin-left: auto; font-size:16px; font-family: ui-monospace, Menlo, monospace; color: var(--gc); }
 
   /* ===== 손맛 ===== */
   .duel { display: grid; grid-template-columns: 1fr 54px 1fr; gap: 14px; align-items: stretch; }
@@ -166,14 +166,14 @@
   .ball { position: absolute; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); left: 20px; bottom: 14px; }
   .ground { position: absolute; left: 0; right: 0; bottom: 0; height: 14px; background: var(--line); }
   .vs { display: grid; place-items: center; color: var(--faint); font-weight: 800; }
-  .revealed { display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; }
+  .revealed { display: flex; flex-direction: column; gap: 4px; font-size:16px; }
   .revealed .lbl { color: var(--faint); }
   .elo { font-variant-numeric: tabular-nums; font-weight: 750; }
 
   /* ===== 프롬프트 ===== */
   textarea.pin { width: 100%; min-height: 88px; padding: 12px; border-radius: var(--r); background: var(--ground); border: 1px solid var(--line); resize: vertical; line-height: 1.6; }
   textarea.pin::placeholder { color: var(--faint); }
-  pre.code { margin: 0; padding: 13px; border-radius: var(--r); overflow-x: auto; background: var(--ground); border: 1px solid var(--line); font-family: ui-monospace, Menlo, monospace; font-size: 11.5px; line-height: 1.75; color: var(--muted); white-space: pre; min-height: 200px; }
+  pre.code { margin: 0; padding: 13px; border-radius: var(--r); overflow-x: auto; background: var(--ground); border: 1px solid var(--line); font-family: ui-monospace, Menlo, monospace; font-size:16px; line-height: 1.75; color: var(--muted); white-space: pre; min-height: 200px; }
   pre.code .kw { color: var(--auto); } pre.code .st { color: var(--pass); }
   pre.code .cm { color: var(--faint); } pre.code .fn { color: var(--warn); } pre.code .nu { color: var(--fps); }
   .caret { border-right: 2px solid var(--accent); animation: bl .9s steps(1) infinite; }
@@ -193,20 +193,20 @@
   .kitcard:hover { transform: translateY(-2px); border-color: var(--tc); }
   .kitcard .rk { position: absolute; top: 8px; left: 8px; z-index: 2; width: 24px; height: 24px;
     display: grid; place-items: center; border-radius: 4px; background: rgba(10,10,14,.82);
-    color: var(--tc); font-weight: 900; font-size: 12px; border: 1px solid var(--tc); }
+    color: var(--tc); font-weight: 900; font-size:16px; border: 1px solid var(--tc); }
   .kitcard img { display: block; width: 100%; aspect-ratio: 4/3; object-fit: cover; background: var(--surface-2); }
   .kitcard .kb { padding: 12px 13px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
-  .kitcard .kn { font-weight: 700; font-size: 14px; letter-spacing: -.01em; }
-  .kitcard .kby { color: var(--faint); font-size: 11.5px; }
-  .kitcard .ktag { display: inline-flex; gap: 5px; align-items: center; font-size: 10.5px;
+  .kitcard .kn { font-weight: 700; font-size:16px; letter-spacing: -.01em; }
+  .kitcard .kby { color: var(--faint); font-size:16px; }
+  .kitcard .ktag { display: inline-flex; gap: 5px; align-items: center; font-size:16px;
     font-family: ui-monospace, Menlo, monospace; color: var(--tc); }
   .kitcard .kfoot { margin-top: auto; padding-top: 9px; border-top: 1px solid var(--line-soft);
     display: flex; align-items: baseline; gap: 8px; }
-  .kitcard .kp { font-weight: 800; font-variant-numeric: tabular-nums; font-size: 15px; }
-  .kitcard .ks2 { margin-left: auto; color: var(--faint); font-size: 11px; font-variant-numeric: tabular-nums; }
+  .kitcard .kp { font-weight: 800; font-variant-numeric: tabular-nums; font-size:16px; }
+  .kitcard .ks2 { margin-left: auto; color: var(--faint); font-size:16px; font-variant-numeric: tabular-nums; }
   .kitcard .kact { display: flex; gap: 6px; padding: 0 13px 13px; }
   .kitcard .kact a, .kitcard .kact button { flex: 1; text-align: center; padding: 7px; border-radius: 4px;
-    border: 1px solid var(--line); color: var(--muted); font-size: 11.5px; text-decoration: none; }
+    border: 1px solid var(--line); color: var(--muted); font-size:16px; text-decoration: none; }
   .kitcard .kact a:hover { border-color: var(--tc); color: var(--tc); }
   .kitcard .kact .buy { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 650; }
 
@@ -218,9 +218,9 @@
   .cside { display: flex; flex-direction: column; gap: 9px; }
   .cstage { display: block; width: 100%; height: auto; border-radius: var(--r); border: 1px solid var(--line); background: #08080c; }
   .cmeta { display: flex; gap: 14px; flex-wrap: wrap; padding: 10px 12px; background: var(--surface);
-    border: 1px solid var(--line); border-radius: var(--r); font-size: 12px; }
-  .cmeta b { display: block; font-size: 15px; font-weight: 750; font-variant-numeric: tabular-nums; }
-  .cmeta span { color: var(--faint); font-size: 10.5px; }
+    border: 1px solid var(--line); border-radius: var(--r); font-size:16px; }
+  .cmeta b { display: block; font-size:16px; font-weight: 750; font-variant-numeric: tabular-nums; }
+  .cmeta span { color: var(--faint); font-size:16px; }
 
   /* ===== 씬 조합 ===== */
   .scene { display: grid; grid-template-columns: 190px minmax(0,1fr); gap: 14px; }
@@ -229,19 +229,19 @@
     border-radius: var(--r); padding: 14px; align-self: start; }
   .pgrp { display: flex; flex-direction: column; gap: 7px; }
   .plab { color: var(--faint); }
-  .phint { color: var(--muted); font-size: 11.5px; }
+  .phint { color: var(--muted); font-size:16px; }
   .themes { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
-  .thb { padding: 7px 4px; border-radius: 4px; border: 1px solid var(--line); font-size: 11.5px; color: var(--muted); }
+  .thb { padding: 7px 4px; border-radius: 4px; border: 1px solid var(--line); font-size:16px; color: var(--muted); }
   .thb:hover { border-color: var(--accent); color: var(--ink); }
   .thb[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 700; }
   .thb i { display: block; height: 4px; border-radius: 2px; margin-bottom: 5px; background: var(--sw); }
   .tools { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
-  .tlb { padding: 7px 4px; border-radius: 4px; border: 1px solid var(--line); font-size: 11.5px; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .tlb { padding: 7px 4px; border-radius: 4px; border: 1px solid var(--line); font-size:16px; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 4px; }
   .tlb:hover { border-color: var(--accent); color: var(--ink); }
   .tlb[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 700; }
   .tlb canvas { display: block; border-radius: 3px; }
   .presets { display: flex; flex-direction: column; gap: 5px; }
-  .presets button { padding: 6px 9px; border-radius: 4px; border: 1px solid var(--line); color: var(--muted); font-size: 11.5px; text-align: left; }
+  .presets button { padding: 6px 9px; border-radius: 4px; border: 1px solid var(--line); color: var(--muted); font-size:16px; text-align: left; }
   .presets button:hover { border-color: var(--accent); color: var(--accent); }
   .sview { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
   .sview canvas#stage { display: block; width: 100%; height: auto; cursor: crosshair; background: #0b0b10; }
@@ -257,16 +257,31 @@
   .priceband .pin2 { position: absolute; top: -4px; width: 3px; height: 13px; border-radius: 2px; background: var(--accent); transform: translateX(-50%); }
   .revchart { width: 100%; height: auto; display: block; }
 
-  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface-3); border: 1px solid var(--accent); padding: 10px 18px; border-radius: 6px; font-size: 13px; z-index: 70; transition: transform .25s; }
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface-3); border: 1px solid var(--accent); padding: 10px 18px; border-radius: 6px; font-size:16px; z-index: 70; transition: transform .25s; }
   .toast.on { transform: translateX(-50%) translateY(0); }
 
   .scrim { position: fixed; inset: 0; background: rgba(6,6,10,.65); z-index: 60; display: none; place-items: center; padding: 20px; }
   .scrim.on { display: grid; }
   .modal { width: min(380px, 100%); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 22px; display: flex; flex-direction: column; gap: 14px; }
-  .modal h3 { margin: 0; font-size: 17px; letter-spacing: -.02em; }
-  .modal p { margin: 0; color: var(--muted); font-size: 13px; }
+  .modal h3 { margin: 0; font-size:16px; letter-spacing: -.02em; }
+  .modal p { margin: 0; color: var(--muted); font-size:16px; }
 
   .note { margin-top: 30px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--faint); max-width: 66ch; }
+
+  /* 필터 칩은 줄바꿈 대신 좌우 스크롤 — 여러 줄로 흩어지면 산만하다 */
+  .quick, .chips, #plats, #scales, #kitsort {
+    flex-wrap: nowrap !important; overflow-x: auto; overscroll-behavior-x: contain;
+    scrollbar-width: none; scroll-snap-type: x proximity;
+    justify-content: flex-start !important; padding: 2px 26px 2px 2px;
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 26px), transparent);
+            mask-image: linear-gradient(90deg, #000 calc(100% - 26px), transparent);
+  }
+  .quick::-webkit-scrollbar, .chips::-webkit-scrollbar,
+  #plats::-webkit-scrollbar, #scales::-webkit-scrollbar,
+  #kitsort::-webkit-scrollbar { display: none; }
+  .quick > *, .chips > *, #plats > *, #scales > *, #kitsort > * {
+    flex: none; white-space: nowrap; scroll-snap-align: start;
+  }
 </style>
 
 <style id="igg-nav-css">
@@ -275,38 +290,32 @@
   .igg-nav { position: sticky; top: 0; z-index: 9000;
     font-family: Roboto, system-ui, -apple-system, "Apple SD Gothic Neo", Pretendard, sans-serif; }
   .igg-r1 { background: var(--igg-dark); border-bottom: 1px solid #2E2E35; }
-  .igg-r1in { max-width: 1240px; margin: 0 auto; padding: 0 20px; height: 44px;
+  .igg-r1in { max-width: 1240px; margin: 0 auto; padding: 0 20px; height: 46px;
     display: flex; align-items: center; gap: 16px; }
   .igg-logo { display: flex; align-items: center; gap: 7px; color: #fff; font-weight: 900;
-    font-size: 16px; letter-spacing: -.03em; text-decoration: none; flex: none; }
+    font-size: 13pt; letter-spacing: -.03em; text-decoration: none; flex: none; }
   .igg-logo i { width: 15px; height: 15px; border: 3px solid #fff; border-radius: 50%; display: block; }
   .igg-logo b { font-weight: 900; }
-  .igg-logo span { font-size: 9px; letter-spacing: .16em; color: #7B8494; font-weight: 700; }
+  .igg-logo span { font-size: 7.5pt; letter-spacing: .16em; color: #7B8494; font-weight: 700; }
   .igg-r1 .igg-sp { margin-left: auto; }
   .igg-ghost { padding: 5px 12px; border-radius: 4px; background: #424254; color: #C3CBD1;
-    font-size: 11.5px; text-decoration: none; border: 0; cursor: pointer; }
+    font-size: 10pt; text-decoration: none; border: 0; cursor: pointer; }
   .igg-ghost:hover { background: #4E4E60; color: #fff; }
   .igg-ghost b { color: var(--igg-blue); font-weight: 800; margin-left: 2px; }
   .igg-cta { padding: 5px 12px; border-radius: 4px; background: var(--igg-blue); color: #fff;
-    font-size: 11.5px; font-weight: 700; text-decoration: none; }
+    font-size: 10pt; font-weight: 700; text-decoration: none; }
 
   .igg-r2 { background: var(--igg-navy); }
-  .igg-r2in { max-width: 1240px; margin: 0 auto; padding: 0 20px; height: 46px;
+  .igg-r2in { max-width: 1240px; margin: 0 auto; padding: 0 20px; height: 50px;
     display: flex; align-items: center; gap: 14px; }
   .igg-tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
   .igg-tabs::-webkit-scrollbar { display: none; }
-  .igg-tabs a { padding: 6px 12px; border-radius: 4px; color: #C3CBD1; font-size: 12.5px;
+  .igg-tabs a { padding: 6px 12px; border-radius: 4px; color: #C3CBD1; font-size: 12pt;
     text-decoration: none; white-space: nowrap; display: flex; align-items: center; gap: 4px; }
   .igg-tabs a:hover { background: rgba(255,255,255,.09); color: #fff; }
   .igg-tabs a[aria-current="page"] { background: var(--igg-blue); color: #fff; font-weight: 700; }
-  .igg-tabs sup { font-size: 8px; color: #FF6B7A; font-weight: 800; }
+  .igg-tabs sup { font-size: 7pt; color: #FF6B7A; font-weight: 800; }
   .igg-tabs a[aria-current="page"] sup { color: #FFD9DE; }
-  .igg-search { margin-left: auto; display: flex; align-items: center; gap: 6px;
-    background: #31313C; padding: 6px 10px; min-width: 190px; }
-  .igg-search input { background: none; border: 0; outline: none; color: #fff;
-    font-size: 12px; width: 100%; font-family: inherit; }
-  .igg-search input::placeholder { color: #7B8494; }
-  @media (max-width: 760px) { .igg-search { display: none; } }
 
   /* 눌리는 느낌 — 전 페이지 공통. transform 이 아니라 scale 프로퍼티라 기존 transform 과 안 싸운다 */
   @media (prefers-reduced-motion: no-preference) {
@@ -325,18 +334,430 @@
 
 <nav class="igg-nav">
   <div class="igg-r1"><div class="igg-r1in">
-    <a class="igg-logo" href="index.html"><i></i><b>IndyGG</b><span>BY OP.GG</span></a>
+    <a class="igg-logo" href="index.html"><i></i><b>LaughGG</b><span>BY OP.GG</span></a>
     <span class="igg-sp"></span>
-    <button class="igg-ghost" id="cartb" type="button">담은 에셋 <b id="cartn">0</b></button>
+    <button class="igg-ghost" id="cartb" type="button">장바구니 <b id="cartn">0</b></button>
     <button class="igg-ghost" id="loginb" type="button">로그인</button>
     <button class="igg-ghost" id="theme" type="button">테마</button>
     <a class="igg-cta" href="community.html">에셋 올리기</a>
   </div></div>
   <div class="igg-r2"><div class="igg-r2in">
-    <div class="igg-tabs"><a href="index.html">홈</a><a href="about.html">서비스 소개</a><a href="market.html">마켓</a><a href="community.html" aria-current="page">커뮤니티</a><a href="scene.html">에셋 시연<sup>N</sup></a><a href="viewer3d.html">3D 뷰어</a></div>
-    <span class="igg-search">🔍<input placeholder="에셋 · 창작자 · 게임 검색" autocomplete="off"></span>
+    <div class="igg-tabs"><a href="index.html">홈</a><a href="about.html">서비스 소개</a><a href="market.html">마켓</a><a href="community.html" aria-current="page">게임 스택</a><a href="community.html#ai">AI 개선</a><a href="scene.html">에셋 시연</a><a href="viewer3d.html">3D 뷰어</a><a href="vlog.html">개발 브이로그<sup>N</sup></a></div>
   </div></div>
 </nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rkg-chal" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFEFC4"/><stop offset=".42" stop-color="#F0B457"/><stop offset="1" stop-color="#8E5F17"/></linearGradient>
+  <linearGradient id="rkg-dia" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EBD9FF"/><stop offset=".42" stop-color="#A55EEA"/><stop offset="1" stop-color="#54277D"/></linearGradient>
+  <linearGradient id="rkg-plat" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#CFF3EA"/><stop offset=".42" stop-color="#4E9D8D"/><stop offset="1" stop-color="#1F5148"/></linearGradient>
+  <linearGradient id="rkg-silv" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EDF1F5"/><stop offset=".42" stop-color="#8E9BA5"/><stop offset="1" stop-color="#464F58"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 48 48">
+    <path d="M9.5 15.5 1 10.6l3.4 8.8-2.2 1.2 7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M38.5 15.5 47 10.6l-3.4 8.8 2.2 1.2-7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-chal)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m16.6 27.4-2.3-9.3 5.8 4.4L24 15l3.9 7.5 5.8-4.4-2.3 9.3z" fill="url(#rkg-chal)"/>
+    <path d="M16.6 29.6h14.8v2.4H16.6z" fill="url(#rkg-chal)"/>
+  </symbol>
+  <symbol id="rk-dia" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-dia)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.4 7.4 6.6L24 32.4 16.6 21z" fill="url(#rkg-dia)"/>
+    <path d="M16.6 21h14.8L24 24.2z" fill="#0A0A10" opacity=".28"/>
+    <path d="m24 14.4 3 6.6-3 3.2-3-3.2z" fill="#fff" opacity=".34"/>
+  </symbol>
+  <symbol id="rk-plat" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-plat)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.6 6.6 3.8v7.6L24 29.8l-6.6-3.8v-7.6z" fill="url(#rkg-plat)"/>
+    <path d="M17.4 18.4 24 22.2l6.6-3.8L24 14.6z" fill="#fff" opacity=".26"/>
+  </symbol>
+  <symbol id="rk-silv" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-silv)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="M17.6 20.4h12.8v3.6H17.6z" fill="url(#rkg-silv)"/>
+    <path d="M17.6 20.4h12.8v1.6H17.6z" fill="#fff" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rkg-chal" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFEFC4"/><stop offset=".42" stop-color="#F0B457"/><stop offset="1" stop-color="#8E5F17"/></linearGradient>
+  <linearGradient id="rkg-dia" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EBD9FF"/><stop offset=".42" stop-color="#A55EEA"/><stop offset="1" stop-color="#54277D"/></linearGradient>
+  <linearGradient id="rkg-plat" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#CFF3EA"/><stop offset=".42" stop-color="#4E9D8D"/><stop offset="1" stop-color="#1F5148"/></linearGradient>
+  <linearGradient id="rkg-silv" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EDF1F5"/><stop offset=".42" stop-color="#8E9BA5"/><stop offset="1" stop-color="#464F58"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 48 48">
+    <path d="M9.5 15.5 1 10.6l3.4 8.8-2.2 1.2 7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M38.5 15.5 47 10.6l-3.4 8.8 2.2 1.2-7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-chal)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m16.6 27.4-2.3-9.3 5.8 4.4L24 15l3.9 7.5 5.8-4.4-2.3 9.3z" fill="url(#rkg-chal)"/>
+    <path d="M16.6 29.6h14.8v2.4H16.6z" fill="url(#rkg-chal)"/>
+  </symbol>
+  <symbol id="rk-dia" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-dia)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.4 7.4 6.6L24 32.4 16.6 21z" fill="url(#rkg-dia)"/>
+    <path d="M16.6 21h14.8L24 24.2z" fill="#0A0A10" opacity=".28"/>
+    <path d="m24 14.4 3 6.6-3 3.2-3-3.2z" fill="#fff" opacity=".34"/>
+  </symbol>
+  <symbol id="rk-plat" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-plat)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.6 6.6 3.8v7.6L24 29.8l-6.6-3.8v-7.6z" fill="url(#rkg-plat)"/>
+    <path d="M17.4 18.4 24 22.2l6.6-3.8L24 14.6z" fill="#fff" opacity=".26"/>
+  </symbol>
+  <symbol id="rk-silv" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-silv)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="M17.6 20.4h12.8v3.6H17.6z" fill="url(#rkg-silv)"/>
+    <path d="M17.6 20.4h12.8v1.6H17.6z" fill="#fff" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rkg-chal" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFEFC4"/><stop offset=".42" stop-color="#F0B457"/><stop offset="1" stop-color="#8E5F17"/></linearGradient>
+  <linearGradient id="rkg-dia" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EBD9FF"/><stop offset=".42" stop-color="#A55EEA"/><stop offset="1" stop-color="#54277D"/></linearGradient>
+  <linearGradient id="rkg-plat" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#CFF3EA"/><stop offset=".42" stop-color="#4E9D8D"/><stop offset="1" stop-color="#1F5148"/></linearGradient>
+  <linearGradient id="rkg-silv" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EDF1F5"/><stop offset=".42" stop-color="#8E9BA5"/><stop offset="1" stop-color="#464F58"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 48 48">
+    <path d="M9.5 15.5 1 10.6l3.4 8.8-2.2 1.2 7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M38.5 15.5 47 10.6l-3.4 8.8 2.2 1.2-7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-chal)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m16.6 27.4-2.3-9.3 5.8 4.4L24 15l3.9 7.5 5.8-4.4-2.3 9.3z" fill="url(#rkg-chal)"/>
+    <path d="M16.6 29.6h14.8v2.4H16.6z" fill="url(#rkg-chal)"/>
+  </symbol>
+  <symbol id="rk-dia" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-dia)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.4 7.4 6.6L24 32.4 16.6 21z" fill="url(#rkg-dia)"/>
+    <path d="M16.6 21h14.8L24 24.2z" fill="#0A0A10" opacity=".28"/>
+    <path d="m24 14.4 3 6.6-3 3.2-3-3.2z" fill="#fff" opacity=".34"/>
+  </symbol>
+  <symbol id="rk-plat" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-plat)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.6 6.6 3.8v7.6L24 29.8l-6.6-3.8v-7.6z" fill="url(#rkg-plat)"/>
+    <path d="M17.4 18.4 24 22.2l6.6-3.8L24 14.6z" fill="#fff" opacity=".26"/>
+  </symbol>
+  <symbol id="rk-silv" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-silv)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="M17.6 20.4h12.8v3.6H17.6z" fill="url(#rkg-silv)"/>
+    <path d="M17.6 20.4h12.8v1.6H17.6z" fill="#fff" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rkg-chal" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFEFC4"/><stop offset=".42" stop-color="#F0B457"/><stop offset="1" stop-color="#8E5F17"/></linearGradient>
+  <linearGradient id="rkg-dia" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EBD9FF"/><stop offset=".42" stop-color="#A55EEA"/><stop offset="1" stop-color="#54277D"/></linearGradient>
+  <linearGradient id="rkg-plat" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#CFF3EA"/><stop offset=".42" stop-color="#4E9D8D"/><stop offset="1" stop-color="#1F5148"/></linearGradient>
+  <linearGradient id="rkg-silv" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EDF1F5"/><stop offset=".42" stop-color="#8E9BA5"/><stop offset="1" stop-color="#464F58"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 48 48">
+    <path d="M9.5 15.5 1 10.6l3.4 8.8-2.2 1.2 7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M38.5 15.5 47 10.6l-3.4 8.8 2.2 1.2-7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-chal)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m16.6 27.4-2.3-9.3 5.8 4.4L24 15l3.9 7.5 5.8-4.4-2.3 9.3z" fill="url(#rkg-chal)"/>
+    <path d="M16.6 29.6h14.8v2.4H16.6z" fill="url(#rkg-chal)"/>
+  </symbol>
+  <symbol id="rk-dia" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-dia)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.4 7.4 6.6L24 32.4 16.6 21z" fill="url(#rkg-dia)"/>
+    <path d="M16.6 21h14.8L24 24.2z" fill="#0A0A10" opacity=".28"/>
+    <path d="m24 14.4 3 6.6-3 3.2-3-3.2z" fill="#fff" opacity=".34"/>
+  </symbol>
+  <symbol id="rk-plat" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-plat)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.6 6.6 3.8v7.6L24 29.8l-6.6-3.8v-7.6z" fill="url(#rkg-plat)"/>
+    <path d="M17.4 18.4 24 22.2l6.6-3.8L24 14.6z" fill="#fff" opacity=".26"/>
+  </symbol>
+  <symbol id="rk-silv" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-silv)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="M17.6 20.4h12.8v3.6H17.6z" fill="url(#rkg-silv)"/>
+    <path d="M17.6 20.4h12.8v1.6H17.6z" fill="#fff" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rkg-chal" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFEFC4"/><stop offset=".42" stop-color="#F0B457"/><stop offset="1" stop-color="#8E5F17"/></linearGradient>
+  <linearGradient id="rkg-dia" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EBD9FF"/><stop offset=".42" stop-color="#A55EEA"/><stop offset="1" stop-color="#54277D"/></linearGradient>
+  <linearGradient id="rkg-plat" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#CFF3EA"/><stop offset=".42" stop-color="#4E9D8D"/><stop offset="1" stop-color="#1F5148"/></linearGradient>
+  <linearGradient id="rkg-silv" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EDF1F5"/><stop offset=".42" stop-color="#8E9BA5"/><stop offset="1" stop-color="#464F58"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 48 48">
+    <path d="M9.5 15.5 1 10.6l3.4 8.8-2.2 1.2 7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M38.5 15.5 47 10.6l-3.4 8.8 2.2 1.2-7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-chal)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m16.6 27.4-2.3-9.3 5.8 4.4L24 15l3.9 7.5 5.8-4.4-2.3 9.3z" fill="url(#rkg-chal)"/>
+    <path d="M16.6 29.6h14.8v2.4H16.6z" fill="url(#rkg-chal)"/>
+  </symbol>
+  <symbol id="rk-dia" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-dia)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.4 7.4 6.6L24 32.4 16.6 21z" fill="url(#rkg-dia)"/>
+    <path d="M16.6 21h14.8L24 24.2z" fill="#0A0A10" opacity=".28"/>
+    <path d="m24 14.4 3 6.6-3 3.2-3-3.2z" fill="#fff" opacity=".34"/>
+  </symbol>
+  <symbol id="rk-plat" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-plat)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.6 6.6 3.8v7.6L24 29.8l-6.6-3.8v-7.6z" fill="url(#rkg-plat)"/>
+    <path d="M17.4 18.4 24 22.2l6.6-3.8L24 14.6z" fill="#fff" opacity=".26"/>
+  </symbol>
+  <symbol id="rk-silv" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-silv)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="M17.6 20.4h12.8v3.6H17.6z" fill="url(#rkg-silv)"/>
+    <path d="M17.6 20.4h12.8v1.6H17.6z" fill="#fff" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rkg-chal" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFEFC4"/><stop offset=".42" stop-color="#F0B457"/><stop offset="1" stop-color="#8E5F17"/></linearGradient>
+  <linearGradient id="rkg-dia" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EBD9FF"/><stop offset=".42" stop-color="#A55EEA"/><stop offset="1" stop-color="#54277D"/></linearGradient>
+  <linearGradient id="rkg-plat" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#CFF3EA"/><stop offset=".42" stop-color="#4E9D8D"/><stop offset="1" stop-color="#1F5148"/></linearGradient>
+  <linearGradient id="rkg-silv" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EDF1F5"/><stop offset=".42" stop-color="#8E9BA5"/><stop offset="1" stop-color="#464F58"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 48 48">
+    <path d="M9.5 15.5 1 10.6l3.4 8.8-2.2 1.2 7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M38.5 15.5 47 10.6l-3.4 8.8 2.2 1.2-7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-chal)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m16.6 27.4-2.3-9.3 5.8 4.4L24 15l3.9 7.5 5.8-4.4-2.3 9.3z" fill="url(#rkg-chal)"/>
+    <path d="M16.6 29.6h14.8v2.4H16.6z" fill="url(#rkg-chal)"/>
+  </symbol>
+  <symbol id="rk-dia" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-dia)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.4 7.4 6.6L24 32.4 16.6 21z" fill="url(#rkg-dia)"/>
+    <path d="M16.6 21h14.8L24 24.2z" fill="#0A0A10" opacity=".28"/>
+    <path d="m24 14.4 3 6.6-3 3.2-3-3.2z" fill="#fff" opacity=".34"/>
+  </symbol>
+  <symbol id="rk-plat" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-plat)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.6 6.6 3.8v7.6L24 29.8l-6.6-3.8v-7.6z" fill="url(#rkg-plat)"/>
+    <path d="M17.4 18.4 24 22.2l6.6-3.8L24 14.6z" fill="#fff" opacity=".26"/>
+  </symbol>
+  <symbol id="rk-silv" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-silv)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="M17.6 20.4h12.8v3.6H17.6z" fill="url(#rkg-silv)"/>
+    <path d="M17.6 20.4h12.8v1.6H17.6z" fill="#fff" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rkg-chal" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFEFC4"/><stop offset=".42" stop-color="#F0B457"/><stop offset="1" stop-color="#8E5F17"/></linearGradient>
+  <linearGradient id="rkg-dia" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EBD9FF"/><stop offset=".42" stop-color="#A55EEA"/><stop offset="1" stop-color="#54277D"/></linearGradient>
+  <linearGradient id="rkg-plat" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#CFF3EA"/><stop offset=".42" stop-color="#4E9D8D"/><stop offset="1" stop-color="#1F5148"/></linearGradient>
+  <linearGradient id="rkg-silv" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EDF1F5"/><stop offset=".42" stop-color="#8E9BA5"/><stop offset="1" stop-color="#464F58"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 48 48">
+    <path d="M9.5 15.5 1 10.6l3.4 8.8-2.2 1.2 7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M38.5 15.5 47 10.6l-3.4 8.8 2.2 1.2-7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-chal)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m16.6 27.4-2.3-9.3 5.8 4.4L24 15l3.9 7.5 5.8-4.4-2.3 9.3z" fill="url(#rkg-chal)"/>
+    <path d="M16.6 29.6h14.8v2.4H16.6z" fill="url(#rkg-chal)"/>
+  </symbol>
+  <symbol id="rk-dia" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-dia)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.4 7.4 6.6L24 32.4 16.6 21z" fill="url(#rkg-dia)"/>
+    <path d="M16.6 21h14.8L24 24.2z" fill="#0A0A10" opacity=".28"/>
+    <path d="m24 14.4 3 6.6-3 3.2-3-3.2z" fill="#fff" opacity=".34"/>
+  </symbol>
+  <symbol id="rk-plat" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-plat)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.6 6.6 3.8v7.6L24 29.8l-6.6-3.8v-7.6z" fill="url(#rkg-plat)"/>
+    <path d="M17.4 18.4 24 22.2l6.6-3.8L24 14.6z" fill="#fff" opacity=".26"/>
+  </symbol>
+  <symbol id="rk-silv" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-silv)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="M17.6 20.4h12.8v3.6H17.6z" fill="url(#rkg-silv)"/>
+    <path d="M17.6 20.4h12.8v1.6H17.6z" fill="#fff" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
 <script>
 (function () {
   var b = document.getElementById("theme");
@@ -434,11 +855,10 @@
   <!-- ================= 게임 스택 ================= -->
   <div class="page on" id="p-xray">
     <div class="hero">
-      <h1>이 게임은 <em>뭘로 만들어졌나</em></h1>
-      <p>소환사 검색하듯 게임을 검색합니다. 어떤 엔진에 어떤 도구를 썼는지 스택을 보여줍니다.
-        내가 만들 게임의 부품표를 남의 성공작에서 가져오는 게 제일 빠름.</p>
+      <h1>내 에셋이 <em>어느 게임에 맞는지</em> 봅니다</h1>
+        <p>게임을 고르면 엔진·화풍·규모가 나옵니다. 그 화면에 내 에셋을 그대로 올려 확인합니다.</p>
       <div class="bigsearch">
-        <input id="gq" placeholder="게임 이름 검색 — Balatro, 데드셀, 발라트로…" autocomplete="off" />
+        <input id="gq" placeholder="만들려는 게임과 비슷한 걸 넣어 보세요 — Balatro, 데드셀, 하데스…" autocomplete="off" />
         <button class="gbtn solid" id="gsearch" style="padding:12px 20px">검색</button>
       </div>
       <div class="quick" id="quick"></div>
@@ -513,7 +933,7 @@
 
   <!-- ================= AI 프롬프트 ================= -->
   <div class="page" id="p-prompt">
-    <h2 class="sec">AI 프롬프트</h2>
+    <h2 class="sec" id="ai" style="scroll-margin-top:110px">AI 프롬프트</h2>
     <p class="lead">원하는 게임 규칙을 한국어로 쓰면 코드랑 밸런스 파라미터를 같이 뽑음.
       뽑은 값은 그대로 <b style="color:var(--ink)">데이터 탭</b>으로 넘겨서 시뮬레이션 돌릴 수 있음.</p>
     <div class="g2">
@@ -605,7 +1025,7 @@
 
 <div class="scrim" id="scrim">
   <div class="modal">
-    <h3>IndyGG 커뮤니티 로그인</h3>
+    <h3>LaughGG 커뮤니티 로그인</h3>
     <p>조각 올리기와 손맛 투표는 로그인이 필요함. OP.GG 계정으로 이어짐 (데모라 아무 이름이나 됨).</p>
     <input class="field" id="nick" placeholder="닉네임" value="돌아온그남자" autocomplete="off" />
     <div style="display:flex;gap:8px">
@@ -645,7 +1065,7 @@
   $("#dologin").onclick = () => {
     const n = $("#nick").value.trim() || "익명";
     user = n; scrim.classList.remove("on");
-    $("#loginb").outerHTML = `<button class="me" id="loginb"><span class="av">${esc(n[0])}</span><span style="font-size:12.5px">${esc(n)}</span></button>`;
+    $("#loginb").outerHTML = `<button class="me" id="loginb"><span class="av">${esc(n[0])}</span><span style="font-size:16px">${esc(n)}</span></button>`;
     $("#loginb").onclick = () => logout();
     toast(n + " 님으로 로그인됨");
     renderUp(); renderDuelMeta();
@@ -812,7 +1232,7 @@
       const b2 = el("button", "grow");
       b2.setAttribute("aria-pressed", String(i === gsel));
       b2.innerHTML = `<span class="ico">${g.ico}</span>
-        <span><span class="t">${esc(g.n)}${g.rank ? ` <span class="conf hi" style="font-size:9px">스팀 ${g.rank}위</span>` : ""}</span><br>
+        <span><span class="t">${esc(g.n)}${g.rank ? ` <span class="conf hi" style="font-size:16px">스팀 ${g.rank}위</span>` : ""}</span><br>
           <span class="s">${esc(g.dev)} · ${SCALE[g.sc]}</span></span>
         <span class="eng">${esc(g.eng)}${g.ok ? "" : ' <span style="color:var(--faint)">추정</span>'}</span>
         <span class="yr">${g.yr}</span>`;
@@ -827,13 +1247,13 @@
     if (!g) { d.innerHTML = `<h3>스택</h3><div class="pad" style="color:var(--faint)">선택된 게임 없음</div>`; return; }
     d.innerHTML = `<h3>${esc(g.n)} <span class="m r">${CATS[g.cat]} · ${SCALE[g.sc]}</span></h3>
       <div class="pad" style="display:flex;flex-direction:column;gap:14px">
-        <div class="big"><span class="m l">엔진 ${g.ok ? "· 확인됨" : "· 추정"}</span><span class="n" style="font-size:19px">${esc(g.eng)}</span><span style="color:var(--faint);font-size:11.5px">${esc(g.dev)} · ${g.yr}</span></div>
-        <p style="margin:0;color:var(--muted);font-size:13px;line-height:1.6">${esc(g.note)}</p>
+        <div class="big"><span class="m l">엔진 ${g.ok ? "· 확인됨" : "· 추정"}</span><span class="n" style="font-size:16px">${esc(g.eng)}</span><span style="color:var(--faint);font-size:16px">${esc(g.dev)} · ${g.yr}</span></div>
+        <p style="margin:0;color:var(--muted);font-size:16px;line-height:1.6">${esc(g.note)}</p>
         <div>
           <div class="m" style="color:var(--faint);padding-bottom:6px;border-bottom:1px solid var(--line-soft)">현재 스택</div>
           ${g.stack.map(([n, k, hi]) => `<div class="stackrow">
             <span>${esc(n)}</span>
-            <span style="color:var(--faint);font-size:11.5px">${esc(k)}</span>
+            <span style="color:var(--faint);font-size:16px">${esc(k)}</span>
             <span class="conf ${hi ? "hi" : "lo"}">${hi ? "확인됨" : "추정"}</span></div>`).join("")}
         </div>
         <a class="gbtn solid" style="text-align:center;text-decoration:none;display:block;padding:10px"
@@ -1473,8 +1893,8 @@
     });
     const A = CATALOG[CMP.a], B = CATALOG[CMP.b];
     const lighter = (+A.ms < +B.ms) ? A : B, better = (A.score > B.score) ? A : B;
-    $("#cmpreport").innerHTML = `<div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;font-size:13px">
-      <div class="big"><span class="m l">같은 조건</span><span class="n" style="font-size:15px">${PLATS[CMP.plat].n} · ${TPLS[CMP.tpl].n} · ${STYLES[CMP.sty].n}</span></div>
+    $("#cmpreport").innerHTML = `<div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;font-size:16px">
+      <div class="big"><span class="m l">같은 조건</span><span class="n" style="font-size:16px">${PLATS[CMP.plat].n} · ${TPLS[CMP.tpl].n} · ${STYLES[CMP.sty].n}</span></div>
       <div style="flex:1;min-width:260px;color:var(--muted)">
         검수 점수는 <b style="color:var(--ink)">${better.n}</b>이 높고,
         프레임 부담은 <b style="color:var(--ink)">${lighter.n}</b>이 가볍습니다.
@@ -1593,11 +2013,11 @@
       : D.sty === "pixel" && D.glow > 70 ? `<span style="color:var(--warn)">도트 화면에서는 발광이 과하면 형태가 뭉갭니다. 낮춰 보세요.</span>`
       : `<span style="color:var(--pass)">${TPLS[D.tpl].n}의 ${S.n} 환경에서 균형이 좋습니다. 다른 템플릿도 확인해 보세요.</span>`;
     $("#fitlab").textContent = big || small ? "크기 조정 필요" : "적합";
-    $("#sreport").innerHTML = `<div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;font-size:13px">
-      <div class="big"><span class="m l">장르</span><span class="n" style="font-size:15px">${TPLS[D.tpl].n}</span></div>
-      <div class="big"><span class="m l">화질</span><span class="n" style="font-size:15px">${S.n}</span></div>
-      <div class="big"><span class="m l">플랫폼</span><span class="n" style="font-size:15px">${PLATS[D.plat].n}</span></div>
-      <div class="big"><span class="m l">가능한 조합</span><span class="n" style="font-size:15px">${Object.keys(PLATS).length * Object.keys(TPLS).length * Object.keys(STYLES).length}가지</span></div>
+    $("#sreport").innerHTML = `<div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;font-size:16px">
+      <div class="big"><span class="m l">장르</span><span class="n" style="font-size:16px">${TPLS[D.tpl].n}</span></div>
+      <div class="big"><span class="m l">화질</span><span class="n" style="font-size:16px">${S.n}</span></div>
+      <div class="big"><span class="m l">플랫폼</span><span class="n" style="font-size:16px">${PLATS[D.plat].n}</span></div>
+      <div class="big"><span class="m l">가능한 조합</span><span class="n" style="font-size:16px">${Object.keys(PLATS).length * Object.keys(TPLS).length * Object.keys(STYLES).length}가지</span></div>
       <div style="flex:1;min-width:260px">${tip}</div></div>`;
   }
 
@@ -1650,17 +2070,17 @@
           <div class="prow" style="grid-template-columns:80px 1fr 62px">
             <span class="nm">판매가</span>
             <input type="range" id="uprice" min="0" max="200" step="1" value="${U.price}" aria-label="판매가" />
-            <output id="uout" style="font-size:15px">$${U.price}</output>
+            <output id="uout" style="font-size:16px">$${U.price}</output>
           </div>
           <div>
             <div class="priceband"><div class="band" id="uband"></div><div class="pin2" id="upin"></div></div>
             <span class="m" style="color:var(--faint)">파란 구간 = 검수 ${U.score}점대 평균 판매가 ($28–64)</span>
           </div>
-          <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)">
+          <label style="display:flex;align-items:center;gap:8px;font-size:16px;color:var(--muted)">
             <input type="checkbox" id="ufree" /> 무료로 배포함 (수익 0, 대신 노출 우선)
           </label>
           <div>
-            <div class="kv"><span class="k">IndyGG 수수료 12%</span><span class="v" id="ufee">−$3.84</span></div>
+            <div class="kv"><span class="k">LaughGG 수수료 12%</span><span class="v" id="ufee">−$3.84</span></div>
             <div class="kv"><span class="k">건당 내 수령액</span><span class="v" style="color:var(--pass)" id="unet">$28.16</span></div>
           </div>
           <canvas class="revchart" id="rev" width="520" height="170"></canvas>
