@@ -37,3 +37,26 @@ Barrel 03 · Metal Jug · Ceramic Pot · Jug 01 · Brass Pot 01 · Bolt Action R
 Brown Photostudio 02 (HDRI 1k)
 
 품질을 섞지 않기 위해 스타일라이즈드 로우폴리(Quaternius)는 쓰지 않았습니다.
+
+### 표지 장면 (Ruined Chapel)
+
+| 자산 | 용도 |
+|---|---|
+| Gothic Statue · Gothic Cabinet 01 · Gothic Coffee Table | 배치 오브젝트 |
+| Kite Shield · Barrel 03 · Coast Rocks 01 · Brass Candleholders | 배치 오브젝트 |
+| Cobblestone Floor 04 (텍스처 1k) | 바닥 |
+| Castle Brick 02 Red (텍스처 1k) | 벽 |
+
+전부 Poly Haven CC0. 장면은 three.js 로 실시간 렌더하며 사전 렌더 이미지가 아닙니다.
+
+## 수치 출처
+
+| 값 | 출처 |
+|---|---|
+| Steam 신작 19,606개 (2025) · 전년 대비 +14.3% | Code Monkey 집계 (2026-01 확인) |
+| 엔진 점유 Unity 51% · Unreal 28% · Godot 5% | Video Game Insights, Steam 2024 출시작 |
+| Unity 생태계 개발자 약 500만 | Unity 2026 Game Development Report |
+| 게임 아트 외주 시장 $5.8B → $12.4B · 외주율 68% | Dataintelo · Business Research Insights · Juego Studio |
+
+깔때기의 팀당 출시 1.3개, 유료 에셋 실구매 40%, 침투율 3%는 **가정치**입니다.
+구독 성장 곡선의 순증 4곳/월·이탈 2%·고정비 1,700만원도 가정이며 실측이 아닙니다.
