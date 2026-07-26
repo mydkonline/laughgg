@@ -17,6 +17,7 @@ import { PALETTES } from "../data/palettes";
 import { useCart } from "../lib/cart";
 import { useUploads } from "../lib/uploads";
 import { PromptBuilder, toPrompt } from "../components/PromptBuilder";
+import { useCredit } from "../lib/credit";
 import { useFeed } from "../lib/feed";
 import { Preview } from "../three/Preview";
 import { Sprite } from "../three/Sprite";
@@ -38,6 +39,7 @@ export function Workshop() {
   const { ids: cartIds } = useCart();
   const { list, publish, fork } = useFeed();
   const { list: mine, add: addFiles, remove: dropFile } = useUploads();
+  const { remaining, free, spend } = useCredit();
 
   /* 올린 파일이 맨 앞이다. 자기 것부터 보여야 남의 마켓이 아니라 내 작업대로 읽힌다. */
   const pool = useMemo(() => {
@@ -92,6 +94,7 @@ export function Workshop() {
   const applyPrompt = () => {
     const text = prompt.trim();
     if (!text) return;
+    if (!spend()) return;
     setKnobs(knobsFromPrompt(text, knobs));
     setRaster(rasterFromPrompt(text, raster));
     if (promptWantsSprite(text)) setAsSprite(true);
@@ -159,13 +162,20 @@ export function Workshop() {
           >
             {typing ? "블록으로 조립" : "직접 입력"}
           </button>
-          <button
-            type="button"
-            onClick={applyPrompt}
-            className="ml-auto cursor-pointer rounded-lg border-0 bg-accent px-5 py-2 text-xs font-bold text-white hover:bg-accent-strong"
-          >
-            적용
-          </button>
+          {/* 무료 횟수를 넘긴 요청만 과금하는 게 수익 구조라 화면에서도 그렇게 보여야 한다. */}
+          <span className="ml-auto flex items-center gap-2 text-xs">
+            <span className="text-faint">
+              크레딧 <b className="num text-ink">{remaining}</b> / {free}
+            </span>
+            <button
+              type="button"
+              onClick={applyPrompt}
+              disabled={remaining < 1 || !prompt.trim()}
+              className="cursor-pointer rounded-lg border-0 bg-accent px-5 py-2 text-xs font-bold text-white hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              적용 <span className="opacity-70">1 크레딧</span>
+            </button>
+          </span>
         </div>
 
         {typing ? (
@@ -189,6 +199,9 @@ export function Workshop() {
 
         {prompt && (
           <p className="mt-2.5 rounded-lg bg-surface px-3 py-2 font-mono text-xs text-muted">{prompt}</p>
+        )}
+        {remaining < 1 && (
+          <p className="mt-2 text-xs text-[#FF6B7A]">무료 크레딧을 다 썼습니다. 컨셉 프리셋과 직접 조정은 계속 무료입니다.</p>
         )}
       </section>
 
@@ -391,20 +404,24 @@ export function Workshop() {
       {tuning && (
         <section className="mt-4 grid gap-x-8 gap-y-3 rounded-xl border border-line bg-surface p-4 sm:grid-cols-2 lg:grid-cols-3">
           {(Object.keys(KNOB_LABEL) as (keyof Knobs)[]).map((k) => (
-            <label key={k} className="grid grid-cols-[52px_minmax(0,1fr)_84px] items-center gap-2.5">
+            <label key={k} className="flex flex-col gap-1">
               <span className="text-xs font-semibold text-ink">{KNOB_LABEL[k][0]}</span>
-              <input
-                type="range"
-                min={0}
-                max={100}
-                value={knobs[k]}
-                onChange={(e) => {
-                  setKnobs((prev) => ({ ...prev, [k]: +e.target.value }));
-                  setConceptId("custom");
-                }}
-                className="accent-[var(--accent)]"
-              />
-              <span className="text-right text-xs text-faint">{KNOB_LABEL[k][1]}</span>
+              {/* 양끝을 슬라이더 좌우에 붙인다. 어느 쪽으로 미는지가 바로 보인다. */}
+              <span className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2.5">
+                <span className="text-xs text-faint">{KNOB_LABEL[k][1]}</span>
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  value={knobs[k]}
+                  onChange={(e) => {
+                    setKnobs((prev) => ({ ...prev, [k]: +e.target.value }));
+                    setConceptId("custom");
+                  }}
+                  className="accent-[var(--accent)]"
+                />
+                <span className="text-xs text-faint">{KNOB_LABEL[k][2]}</span>
+              </span>
             </label>
           ))}
         </section>

@@ -83,7 +83,7 @@ export function Home() {
               to="/workshop"
               className="rounded-xl border border-line px-6 py-3.5 text-base font-semibold text-muted no-underline hover:border-accent hover:text-ink"
             >
-              스튜디오에서 맞춰 보기
+              에셋 프롬프트 조정
             </Link>
           </div>
 

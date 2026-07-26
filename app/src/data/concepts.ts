@@ -21,13 +21,15 @@ export type Knobs = {
 
 export const NEUTRAL: Knobs = { tone: 50, warm: 50, gloss: 50, facet: 0, sat: 50, line: 0 };
 
-export const KNOB_LABEL: Record<keyof Knobs, [string, string]> = {
-  tone: ["분위기", "밝게 → 어둡게"],
-  warm: ["색온도", "차갑게 → 따뜻하게"],
-  gloss: ["재질", "거칠게 → 광택"],
-  facet: ["면 처리", "부드럽게 → 각지게"],
-  sat: ["채도", "빛바래게 → 쨍하게"],
-  line: ["외곽선", "없이 → 두껍게"],
+/* 양극 척도라 이름과 양끝을 따로 갖는다. 화살표로 잇지 않고
+   슬라이더 좌우에 각각 붙여야 어느 쪽으로 미는지가 바로 보인다. */
+export const KNOB_LABEL: Record<keyof Knobs, [name: string, low: string, high: string]> = {
+  tone: ["분위기", "밝게", "어둡게"],
+  warm: ["색온도", "차갑게", "따뜻하게"],
+  gloss: ["재질", "거칠게", "광택"],
+  facet: ["면 처리", "부드럽게", "각지게"],
+  sat: ["채도", "빛바래게", "쨍하게"],
+  line: ["외곽선", "없이", "두껍게"],
 };
 
 /** 2D 로 뽑을 때만 쓰는 설정. 3D 미리보기에는 영향이 없다. */
