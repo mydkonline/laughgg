@@ -111,7 +111,10 @@ export function Home() {
       </section>
 
       <section className="mx-auto max-w-[1240px] px-5 py-20 text-center">
-        <h2 className="text-2xl font-bold text-ink">내 에셋 점수 확인</h2>
+        <h2 className="text-2xl font-bold text-ink">AI 스튜디오</h2>
+        <p className="mx-auto mt-2 max-w-[46ch] text-xs text-muted">
+          파일을 올리면 점수가 나오고, 게임 컨셉에 맞춰 변환해 내려받습니다. 3D 와 2D 둘 다 됩니다.
+        </p>
         <Link
           to="/workshop"
           className="mt-6 inline-block rounded-xl bg-accent px-8 py-4 text-base font-bold text-white no-underline hover:bg-accent-strong"
