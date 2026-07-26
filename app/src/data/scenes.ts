@@ -253,6 +253,25 @@ export function fitReport(g: SceneGame): FitReport {
   return { score: Math.round(100 - avg * 62), axes };
 }
 
+/* 사람이 읽는 한 문장 진단.
+
+   0.86 / 1.22 / -6° 같은 값은 기계가 쓰는 숫자다. 사는 사람은 "밝기 0.86 이
+   필요하다" 고 생각하지 않고 "이 게임보다 밝다" 고 생각한다.
+   축 다섯 개를 다 나열하면 "전부 다름" 이라는 말이라 아무 정보가 없으므로,
+   가장 크게 어긋난 둘만 골라 사람 말로 옮긴다. */
+export function fitSummary(g: SceneGame): string {
+  const { grade } = g;
+  const said: [number, string][] = [
+    [Math.abs(1 - grade.br), grade.br < 1 ? "이 게임보다 밝습니다" : "이 게임보다 어둡습니다"],
+    [Math.abs(1 - grade.ct), grade.ct > 1 ? "명암이 약합니다" : "명암이 셉니다"],
+    [Math.abs(1 - grade.sat), grade.sat < 1 ? "색이 강합니다" : "색이 흐립니다"],
+    [Math.abs(grade.hue) / 12, grade.hue < 0 ? "색조가 따뜻한 쪽에 있습니다" : "색조가 차가운 쪽에 있습니다"],
+    [grade.sep / 0.2, "탈색 톤이 빠져 있습니다"],
+  ];
+  const top = said.sort((a, b) => b[0] - a[0]).slice(0, 2).filter(([w]) => w > 0.15);
+  return top.length ? top.map(([, t]) => t).join(", ") : "이 게임 기준 안에 있습니다";
+}
+
 /** 조정 없이 써도 되는가. 60 아래면 손봐야 한다. */
 export function fitVerdict(score: number): { label: string; tone: "ok" | "warn" | "bad" } {
   if (score >= 80) return { label: "그대로 사용 가능", tone: "ok" };

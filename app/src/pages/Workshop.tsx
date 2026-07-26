@@ -165,12 +165,16 @@ export function Workshop() {
         }}
       >
         <div className="mb-2.5 flex flex-wrap items-center gap-3">
-          <span className="text-xs font-bold text-ink">재료</span>
+          <span className="text-xs font-bold text-ink">내 라이브러리</span>
           <span className="text-xs text-faint">
-            {mine.length ? `내 파일 ${mine.length}개` : cartIds.length ? "장바구니에 담은 에셋" : "마켓 상위"}
+            {mine.length
+              ? `올린 파일 ${mine.length}개`
+              : cartIds.length
+                ? `산 에셋 ${cartIds.length}개`
+                : "아직 비어 있어 마켓 상위를 올려 뒀습니다"}
           </span>
           <label className="ml-auto cursor-pointer rounded-lg border border-line px-3 py-1.5 text-xs text-muted hover:border-accent hover:text-ink">
-            내 파일 올리기
+            파일 올리기
             <input
               type="file"
               multiple
@@ -282,13 +286,17 @@ export function Workshop() {
               </button>
             </div>
           ) : (
-            <button
-              type="button"
-              onClick={onPublish}
-              className="mt-auto w-full cursor-pointer rounded-lg border-0 bg-accent px-4 py-3 pt-3 text-base font-bold text-white hover:bg-accent-strong"
-            >
-              프리셋으로 올리기
-            </button>
+            <div className="mt-auto pt-3">
+              <button
+                type="button"
+                onClick={onPublish}
+                className="w-full cursor-pointer rounded-lg border-0 bg-accent px-4 py-3 text-xs font-bold text-white hover:bg-accent-strong"
+              >
+                프리셋 저장
+              </button>
+              {/* 저장이라고 부르되 공개된다는 사실을 숨기지 않는다. */}
+              <p className="mt-2 text-xs text-faint">저장하면 공략집에 공개됩니다.</p>
+            </div>
           )}
         </aside>
       </section>

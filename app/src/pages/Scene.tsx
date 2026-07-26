@@ -4,10 +4,12 @@ import {
   PLACE_MODEL,
   fitReport,
   fitVerdict,
+  fitSummary,
   type SceneGame,
 } from "../data/scenes";
 import { useCart } from "../lib/cart";
 import { Pager } from "../components/Pager";
+import { Link } from "react-router-dom";
 import { PIECES, modelSrc, type Piece } from "../data/pieces";
 import { bakeView } from "../three/baker";
 
@@ -256,29 +258,46 @@ export function Scene() {
   );
 }
 
-/* 검토 결과. 숫자를 먼저 내고 무대는 그 근거로 아래에 둔다.
+/* 검토 결과.
 
-   조치 문장을 축마다 붙이면 길이가 제각각이라 줄이 어긋난다.
-   표는 이름·게이지·목표값 세 열로 고정하고, 고쳐야 할 축은 아래 한 줄로 모은다. */
+   사는 사람이 알아야 할 건 셋이다 — 써도 되나, 뭐가 문제인가, 고칠 수 있나.
+   축별 수치는 그 셋 중 어느 것도 아니라 아래로 접어 둔다. 0.86 은 기계가 쓰는
+   값이고 사람은 "이 게임보다 밝다" 로 판단한다. */
 function FitPanel({ game, piece }: { game: SceneGame; piece: Piece }) {
   const report = fitReport(game);
   const verdict = fitVerdict(report.score);
   const tone =
     verdict.tone === "ok" ? "text-accent" : verdict.tone === "warn" ? "text-ink" : "text-[#FF6B7A]";
-  const off = report.axes.filter((a) => a.gap > 0.2);
 
   return (
-    <div className="grid gap-x-12 gap-y-6 border-b border-line pb-8 lg:grid-cols-[180px_minmax(0,1fr)]">
-      <div>
-        <p className="text-xs text-faint">
-          {piece.t} → {game.n}
-        </p>
-        <p className="num mt-2 text-6xl leading-none text-ink">{report.score}</p>
-        <p className={`mt-2 text-xs font-bold ${tone}`}>{verdict.label}</p>
+    <div className="border-b border-line pb-8">
+      <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
+        <div>
+          <p className="text-xs text-faint">
+            {piece.t} → {game.n}
+          </p>
+          <p className="num mt-2 text-6xl leading-none text-ink">{report.score}</p>
+        </div>
+
+        <div className="min-w-0 flex-1">
+          <p className={`text-base font-bold ${tone}`}>{verdict.label}</p>
+          <p className="mt-1.5 text-xs text-muted">{fitSummary(game)}</p>
+        </div>
+
+        {report.score < 80 && (
+          <Link
+            to="/workshop"
+            className="shrink-0 rounded-lg bg-accent px-4 py-2.5 text-xs font-bold text-white no-underline hover:bg-accent-strong"
+          >
+            에디터에서 맞추기
+          </Link>
+        )}
       </div>
 
-      <div>
-        <dl className="grid gap-x-12 gap-y-2 sm:grid-cols-2">
+      {/* 수치는 확인하고 싶은 사람만 편다. 대부분은 위 세 줄이면 끝난다. */}
+      <details className="mt-5">
+        <summary className="cursor-pointer text-xs text-faint">축별 수치</summary>
+        <dl className="mt-3 grid gap-x-12 gap-y-2 sm:grid-cols-2">
           {report.axes.map((a) => (
             <div key={a.label} className="grid grid-cols-[44px_minmax(0,1fr)_44px] items-center gap-3">
               <dt className={`text-xs ${a.gap > 0.2 ? "text-ink" : "text-faint"}`}>{a.label}</dt>
@@ -294,17 +313,7 @@ function FitPanel({ game, piece }: { game: SceneGame; piece: Piece }) {
             </div>
           ))}
         </dl>
-
-        <p className="mt-4 text-xs text-faint">
-          {off.length ? (
-            <>
-              조정 필요 <b className="text-ink">{off.map((a) => a.label).join(", ")}</b>
-            </>
-          ) : (
-            "모든 축이 기준 안에 있습니다."
-          )}
-        </p>
-      </div>
+      </details>
     </div>
   );
 }
