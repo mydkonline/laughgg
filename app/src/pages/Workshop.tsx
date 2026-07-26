@@ -9,7 +9,6 @@ import {
   knobsFromPrompt,
   rasterFromPrompt,
   promptWantsSprite,
-  matchedAxes,
   scoreDelta,
   type Knobs,
   type RasterSet,
@@ -17,6 +16,7 @@ import {
 import { PALETTES } from "../data/palettes";
 import { useCart } from "../lib/cart";
 import { useUploads } from "../lib/uploads";
+import { PromptBuilder, toPrompt } from "../components/PromptBuilder";
 import { useFeed } from "../lib/feed";
 import { Preview } from "../three/Preview";
 import { Sprite } from "../three/Sprite";
@@ -50,6 +50,9 @@ export function Workshop() {
 
   const [conceptId, setConceptId] = useState("dark");
   const [prompt, setPrompt] = useState("");
+  /* 블록으로 조립해도 결과는 같은 문자열이라 해석기를 그대로 탄다. */
+  const [blocks, setBlocks] = useState<string[]>([]);
+  const [typing, setTyping] = useState(false);
   const [knobs, setKnobs] = useState<Knobs>(() => CONCEPTS[0]!.knobs);
   const [raster, setRaster] = useState<RasterSet>(() => CONCEPTS[0]!.raster);
   const [asSprite, setAsSprite] = useState(false);
@@ -103,7 +106,6 @@ export function Workshop() {
   const sprite = asSprite || spriteOnly;
   const delta = scoreDelta(knobs);
   const after = Math.max(31, Math.min(99, piece.score + Math.round((delta.런타임 + delta.면구성 + delta.텍스처) / 2)));
-  const hits = matchedAxes(prompt);
   const conceptName = CONCEPTS.find((c) => c.id === conceptId)?.name ?? "직접 조정";
   const palette = PALETTES.find((p) => p.id === raster.palette);
 
@@ -146,40 +148,48 @@ export function Workshop() {
         </dl>
       </header>
 
-      {/* 1 — 말로 쓴다. 대부분 여기서 끝난다. */}
-      <section className="rounded-xl border border-line bg-surface p-4">
-        <div className="flex flex-wrap items-center gap-2">
+      {/* 1 — 프롬프트를 조립한다. 빈 입력창은 무엇을 쓸 수 있는지 알려 주지 않는다. */}
+      <section>
+        <div className="mb-3 flex flex-wrap items-center gap-3">
           <h2 className="text-xs font-bold text-ink">프롬프트</h2>
+          <button
+            type="button"
+            onClick={() => setTyping((v) => !v)}
+            className="cursor-pointer border-0 bg-transparent text-xs text-faint hover:text-ink"
+          >
+            {typing ? "블록으로 조립" : "직접 입력"}
+          </button>
+          <button
+            type="button"
+            onClick={applyPrompt}
+            className="ml-auto cursor-pointer rounded-lg border-0 bg-accent px-5 py-2 text-xs font-bold text-white hover:bg-accent-strong"
+          >
+            적용
+          </button>
         </div>
-        <div className="mt-3 flex gap-2">
+
+        {typing ? (
           <input
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && applyPrompt()}
             placeholder="어둡고 축축한 던전, 게임보이 초록 4색, 굵은 도트"
             aria-label="변형 프롬프트"
-            className="min-w-0 flex-1 rounded-lg border border-line bg-ground px-4 py-3 text-base text-ink placeholder:text-faint"
+            className="w-full rounded-lg border border-line bg-surface px-4 py-3 text-xs text-ink placeholder:text-faint"
           />
-          <button
-            type="button"
-            onClick={applyPrompt}
-            className="cursor-pointer rounded-lg border-0 bg-accent px-6 py-3 text-base font-bold text-white hover:bg-accent-strong"
-          >
-            적용
-          </button>
-        </div>
-        <p className="mt-2 text-xs text-faint">
-          {hits.length || promptWantsSprite(prompt) ? (
-            <>
-              인식한 파라미터 —{" "}
-              {[...hits.map((h) => KNOB_LABEL[h][0]), promptWantsSprite(prompt) ? "2D 팔레트" : null]
-                .filter(Boolean)
-                .join(", ")}
-            </>
-          ) : (
-            "어둡게, 금속, 로우폴리, 만화, 게임보이, 세피아, 네온, 굵은 도트"
-          )}
-        </p>
+        ) : (
+          <PromptBuilder
+            picked={blocks}
+            onChange={(next) => {
+              setBlocks(next);
+              setPrompt(toPrompt(next));
+            }}
+          />
+        )}
+
+        {prompt && (
+          <p className="mt-2.5 rounded-lg bg-surface px-3 py-2 font-mono text-xs text-muted">{prompt}</p>
+        )}
       </section>
 
       {/* 2 — 골라도 된다 */}

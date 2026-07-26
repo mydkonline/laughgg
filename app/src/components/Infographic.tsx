@@ -71,31 +71,36 @@ export function Donut({ percent, label, sub }: { percent: number; label: string;
   }, []);
 
   return (
-    <div ref={box} className="flex flex-wrap items-center gap-10">
-      <svg viewBox="0 0 220 220" className="h-44 w-44 shrink-0 -rotate-90" role="img" aria-label={`${percent}% ${label}`}>
-        <circle cx="110" cy="110" r={R} fill="none" stroke="var(--surface-2)" strokeWidth="22" />
+    <div ref={box} className="flex flex-wrap items-center justify-between gap-8">
+      <div className="min-w-0">
+        <p className="num text-[64px] leading-none text-ink">
+          <span ref={ref}>{shown}</span>
+          <span className="text-2xl text-muted">%</span>
+        </p>
+        <p className="mt-3 text-base font-bold text-ink">{label}</p>
+        <p className="mt-1 max-w-[36ch] text-xs text-faint">{sub}</p>
+      </div>
+
+      <svg
+        viewBox="0 0 220 220"
+        className="h-40 w-40 shrink-0 -rotate-90 sm:h-48 sm:w-48"
+        role="img"
+        aria-label={`${percent}% ${label}`}
+      >
+        <circle cx="110" cy="110" r={R} fill="none" stroke="var(--surface-2)" strokeWidth="26" />
         <circle
           cx="110"
           cy="110"
           r={R}
           fill="none"
           stroke="var(--accent)"
-          strokeWidth="22"
+          strokeWidth="26"
           strokeLinecap="butt"
           strokeDasharray={C}
           strokeDashoffset={on ? C * (1 - percent / 100) : C}
           style={{ transition: "stroke-dashoffset 1.2s cubic-bezier(.22,1,.36,1)" }}
         />
       </svg>
-
-      <div>
-        <p className="num text-6xl leading-none text-ink">
-          <span ref={ref}>{shown}</span>
-          <span className="text-2xl text-muted">%</span>
-        </p>
-        <p className="mt-4 text-base font-bold text-ink">{label}</p>
-        <p className="mt-1 text-xs text-faint">{sub}</p>
-      </div>
     </div>
   );
 }
@@ -125,7 +130,7 @@ export function CheckWeights({ items }: { items: [string, number, string][] }) {
 
   return (
     <div ref={box}>
-      <div className="flex h-14 w-full overflow-hidden rounded-lg border border-line">
+      <div className="flex h-12 w-full overflow-hidden rounded-lg border border-line">
         {items.map(([name, w], i) => (
           <span
             key={name}
@@ -138,7 +143,7 @@ export function CheckWeights({ items }: { items: [string, number, string][] }) {
         ))}
       </div>
 
-      <dl className="mt-5 grid gap-x-8 gap-y-2.5 sm:grid-cols-2">
+      <dl className="mt-7 grid gap-x-10 gap-y-4 sm:grid-cols-2">
         {items.map(([name, w, why], i) => (
           <div key={name} className="flex items-baseline gap-3 border-b border-line-soft pb-2">
             <span className="h-2.5 w-2.5 shrink-0 rounded-sm" style={{ background: shade(i) }} />
@@ -203,7 +208,7 @@ export function CompareBars({ rows }: { rows: [string, number][] }) {
   const max = Math.max(...rows.map((r) => r[1]));
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-6">
       {rows.map(([name, v], i) => (
         <div key={name}>
           <div className="flex items-baseline justify-between gap-3">

@@ -87,7 +87,7 @@ export function Home() {
             </Link>
           </div>
 
-          <dl className="mt-9 flex flex-wrap gap-x-10 gap-y-3 border-t border-line pt-5">
+          <dl className="mt-10 flex flex-wrap gap-x-12 gap-y-4 border-t border-line pt-6">
             <Stat k="등록된 에셋" v={`${PIECES.length}종`} />
             <Stat k="맞출 수 있는 컨셉" v={`${CONCEPTS.length}종`} />
             <Stat k="고정 팔레트" v={`${PALETTES.length - 1}종`} />
@@ -103,7 +103,7 @@ export function Home() {
           <h2 className="text-2xl font-bold text-ink">작동 방식</h2>
           <ol className="mt-8 grid list-none gap-px overflow-hidden rounded-xl border border-line bg-line p-0 sm:grid-cols-2 lg:grid-cols-4">
             {STEPS.map(([icon, t, d], i) => (
-              <li key={t} className="flex flex-col items-start gap-3 bg-surface p-5">
+              <li key={t} className="flex flex-col items-start gap-4 bg-surface p-6">
                 <span className="flex w-full items-start justify-between">
                   <svg
                     viewBox="0 0 24 24"
@@ -133,7 +133,7 @@ export function Home() {
         <p className="mt-2 text-xs text-muted">점수에 따라 부여되며 노출 순위를 정합니다. 수수료와는 무관합니다.</p>
         <div className="mt-8 grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
           {TIERS.map((t) => (
-            <div key={t.badge} className="flex flex-col items-start gap-3 bg-surface p-6">
+            <div key={t.badge} className="flex flex-col items-start gap-4 bg-surface p-7">
               <RankIcon badge={t.badge} size={48} />
               <p className="text-2xl font-bold text-ink">{BADGE_LABEL[t.badge]}</p>
               <p className="text-xs tabular-nums text-faint">{t.range}</p>
@@ -143,16 +143,57 @@ export function Home() {
         </div>
       </section>
 
-      {/* 정산 */}
+      {/* 정산. 숫자 둘만 놓으면 비교가 안 된다.
+          게임에서 익숙한 전리품 분배 막대로 보여 준다. */}
       <section className="border-t border-line bg-surface">
-        <div className="mx-auto grid max-w-[1240px] gap-10 px-5 py-16 sm:grid-cols-2">
-          <div>
-            <p className="num text-6xl text-ink">92%</p>
-            <p className="mt-2 text-xs text-muted">창작자 정산 비율</p>
+        <div className="mx-auto max-w-[1240px] px-5 py-16">
+          <h2 className="text-2xl font-bold text-ink">정산</h2>
+          <p className="mt-2 text-xs text-muted">에셋 하나가 팔릴 때 어디로 얼마가 가는지.</p>
+
+          <div className="mt-8 flex h-16 overflow-hidden rounded-lg border border-line">
+            <span className="flex items-center justify-center bg-accent" style={{ flexGrow: 92 }}>
+              <b className="num text-2xl text-white">92%</b>
+            </span>
+            <span className="flex items-center justify-center bg-chrome-700" style={{ flexGrow: 8 }}>
+              <b className="num text-xs text-white">8%</b>
+            </span>
           </div>
-          <div>
-            <p className="num text-6xl text-ink">8%</p>
-            <p className="mt-2 text-xs text-muted">거래 수수료. Epic Fab 12%, Unity 30%</p>
+
+          <dl className="mt-4 grid gap-x-10 gap-y-4 sm:grid-cols-2">
+            <div className="flex items-baseline gap-2.5">
+              <span className="h-2.5 w-2.5 shrink-0 translate-y-[-1px] rounded-sm bg-accent" />
+              <dt className="text-xs font-bold text-ink">창작자</dt>
+              <dd className="m-0 text-xs text-faint">만든 사람 몫</dd>
+            </div>
+            <div className="flex items-baseline gap-2.5">
+              <span className="h-2.5 w-2.5 shrink-0 translate-y-[-1px] rounded-sm bg-chrome-700" />
+              <dt className="text-xs font-bold text-ink">LaughGG</dt>
+              <dd className="m-0 text-xs text-faint">거래 수수료</dd>
+            </div>
+          </dl>
+
+          {/* 남의 몫과 비교해야 8% 가 낮다는 게 보인다. */}
+          <div className="mt-10 flex flex-col gap-3 border-t border-line pt-6">
+            {[
+              ["LaughGG", 8],
+              ["Epic Fab", 12],
+              ["Unity Asset Store", 30],
+            ].map(([name, v], i) => (
+              <div key={name as string} className="flex items-center gap-3">
+                <span className={`w-32 shrink-0 text-xs ${i === 0 ? "font-bold text-ink" : "text-muted"}`}>
+                  {name}
+                </span>
+                <span className="block h-2.5 flex-1 overflow-hidden rounded-sm bg-surface-2">
+                  <b
+                    className={`block h-full ${i === 0 ? "bg-accent" : "bg-chrome-700"}`}
+                    style={{ width: `${((v as number) / 30) * 100}%` }}
+                  />
+                </span>
+                <b className={`num w-10 shrink-0 text-right text-xs ${i === 0 ? "text-accent" : "text-ink"}`}>
+                  {v}%
+                </b>
+              </div>
+            ))}
           </div>
         </div>
       </section>

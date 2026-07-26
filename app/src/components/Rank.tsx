@@ -8,14 +8,11 @@ export function RankDefs() {
     <stop offset="0" stopColor="#FFF3D2"/><stop offset=".34" stopColor="#F2C066"/>
     <stop offset=".68" stopColor="#C68F2E"/><stop offset="1" stopColor="#7A551A"/></linearGradient>
   <linearGradient id="rg-dia" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
-    <stop offset="0" stopColor="#F2F5FA"/><stop offset=".34" stopColor="#C3CBD8"/>
-    <stop offset=".68" stopColor="#8A94A5"/><stop offset="1" stopColor="#4E5666"/></linearGradient>
+    <stop offset="0" stopColor="#E8F7FF"/><stop offset=".34" stopColor="#7FD4F5"/><stop offset=".68" stopColor="#2E86B8"/><stop offset="1" stopColor="#14405E"/></linearGradient>
   <linearGradient id="rg-plat" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
-    <stop offset="0" stopColor="#E4E9F0"/><stop offset=".34" stopColor="#AAB3C0"/>
-    <stop offset=".68" stopColor="#727B88"/><stop offset="1" stopColor="#3E454F"/></linearGradient>
+    <stop offset="0" stopColor="#DFF7F2"/><stop offset=".34" stopColor="#6FD9C8"/><stop offset=".68" stopColor="#2E8C82"/><stop offset="1" stopColor="#13453F"/></linearGradient>
   <linearGradient id="rg-silv" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
-    <stop offset="0" stopColor="#D6DBE2"/><stop offset=".34" stopColor="#98A0AC"/>
-    <stop offset=".68" stopColor="#646C78"/><stop offset="1" stopColor="#353B44"/></linearGradient>
+    <stop offset="0" stopColor="#EFF2F6"/><stop offset=".34" stopColor="#B9C2CE"/><stop offset=".68" stopColor="#7A8494"/><stop offset="1" stopColor="#3B434E"/></linearGradient>
   <linearGradient id="rg-sheen" x1="12" y1="6" x2="52" y2="34" gradientUnits="userSpaceOnUse">
     <stop offset="0" stopColor="#fff" stopOpacity=".55"/>
     <stop offset=".52" stopColor="#fff" stopOpacity=".08"/>

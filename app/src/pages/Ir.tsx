@@ -30,7 +30,7 @@ export function Ir() {
         <h1 className="text-4xl leading-[1.2] font-bold text-ink">
           게임 에셋 검증 및 컨셉 정합 플랫폼
         </h1>
-        <ol className="mt-5 grid list-none gap-x-10 gap-y-4 p-0 sm:grid-cols-3">
+        <ol className="mt-6 grid list-none gap-x-12 gap-y-6 p-0 sm:grid-cols-3">
           {[
             ["창작자", "에셋 등록"],
             ["플랫폼", "정적 분석 7항목, 배지 부여"],
@@ -43,7 +43,7 @@ export function Ir() {
             </li>
           ))}
         </ol>
-        <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-t border-line pt-4">
+        <dl className="mt-6 flex flex-wrap gap-x-12 gap-y-4 border-t border-line pt-5">
           <IrStat k="주 수익원" v="게임사 구독" />
           <IrStat k="거래 수수료" v="8% 단일" />
           <IrStat k="창작자 정산" v="92%" />
@@ -66,7 +66,7 @@ export function Ir() {
       </Section>
 
       <Section n="02" title="시장">
-        <div className="grid gap-x-10 gap-y-6 sm:grid-cols-3">
+        <div className="grid gap-x-12 gap-y-8 sm:grid-cols-3">
           {MARKET.map((f) => (
             <div key={f.label}>
               <p className="text-xs text-faint">{f.label}</p>
@@ -109,7 +109,7 @@ export function Ir() {
       <Section n="05" title="수요">
         {/* 추정치는 한 줄로 접어 두고 실제로 쓴 사람의 말을 본문에 세운다.
             숫자는 시장이 있다는 말이고, 리뷰는 그 시장이 이걸 쓴다는 말이다. */}
-        <div className="mb-4 grid gap-x-10 gap-y-6 sm:grid-cols-3">
+        <div className="mb-6 grid gap-x-12 gap-y-8 sm:grid-cols-3">
           {AI_DEV.map((f) => (
             <CountStat key={f.label} label={f.label} value={f.value} unit={f.unit ?? ""} note={f.note} />
           ))}
@@ -139,7 +139,7 @@ export function Ir() {
           ))}
         </div>
 
-        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-x-10 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
           {shown.map((r, i) => (
             <figure
               key={r.initials + r.role}
@@ -159,7 +159,6 @@ export function Ir() {
                   </span>
                 </span>
               </figcaption>
-              <p className="mt-2 text-xs text-faint">{r.used}</p>
             </figure>
           ))}
         </div>
@@ -170,7 +169,7 @@ export function Ir() {
         <RevenueFunnel />
 
         {/* 가정을 가로 한 줄로 눕힌다. 두 칸으로 나누면 왼쪽이 반쯤 빈다. */}
-        <dl className="mb-8 grid gap-x-8 gap-y-5 border-b border-line pb-6 sm:grid-cols-3 lg:grid-cols-5">
+        <dl className="mb-10 grid gap-x-10 gap-y-7 border-b border-line pb-8 sm:grid-cols-3 lg:grid-cols-5">
           {MODEL.assumptions.map(([k, v, unit]) => (
             <div key={k}>
               <dt className="text-xs text-faint">{k}</dt>
@@ -184,7 +183,7 @@ export function Ir() {
 
         <div>
           <Curve />
-          <dl className="mt-5 grid grid-cols-2 gap-4 border-t border-line pt-4 sm:grid-cols-4">
+          <dl className="mt-8 grid grid-cols-2 gap-6 border-t border-line pt-6 sm:grid-cols-4">
             {MODEL.milestones.map(([k, v]) => (
               <div key={k}>
                 <dt className="text-xs text-faint">{k}</dt>
@@ -239,7 +238,7 @@ function RevenueFunnel() {
 
   return (
     <div ref={box} className="mb-8">
-      <div className="flex flex-col gap-3.5">
+      <div className="flex flex-col gap-5">
         {REVENUE_FUNNEL.map((s) => (
           <div key={s.label}>
             <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
@@ -288,7 +287,7 @@ function CountStat({ label, value, unit, note }: { label: string; value: string;
   });
 
   return (
-    <div className="bg-surface p-5">
+    <div>
       <p className="text-xs text-faint">{label}</p>
       <p className="num mt-3 text-4xl leading-none text-ink">
         <span ref={ref}>{pretty}</span>
@@ -337,7 +336,7 @@ function Section({ n, title, lead, children }: { n: string; title: string; lead?
     <section
       ref={ref}
       className={[
-        "grid gap-x-10 gap-y-4 border-t border-line pt-8 pb-16 transition-all duration-700",
+        "grid gap-x-12 gap-y-6 border-t border-line pt-12 pb-24 transition-all duration-700",
         "lg:grid-cols-[184px_minmax(0,1fr)]",
         on ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0",
       ].join(" ")}
@@ -347,7 +346,7 @@ function Section({ n, title, lead, children }: { n: string; title: string; lead?
         <h2 className="mt-1 text-2xl leading-snug font-bold text-ink">{title}</h2>
         {lead && <p className="mt-2 truncate text-xs text-muted" title={lead}>{lead}</p>}
       </div>
-      <div className="min-w-0">{children}</div>
+      <div className="min-w-0 lg:pr-8">{children}</div>
     </section>
   );
 }
