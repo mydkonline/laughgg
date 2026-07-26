@@ -48,7 +48,7 @@ export function useCountUp(target: number, decimals = 0) {
 }
 
 /**
- * 탈락률 링. 이 제품이 파는 게 통과가 아니라 탈락이라는 걸 숫자 하나로 말한다.
+ * 검증률 링. 몇이 기준을 넘었는지를 숫자 하나로 말한다.
  * 도넛은 조각이 둘일 때만 읽힌다. 셋 넘어가면 막대가 낫다.
  */
 export function Donut({ percent, label, sub }: { percent: number; label: string; sub: string }) {

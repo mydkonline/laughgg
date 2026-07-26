@@ -82,7 +82,7 @@ export function Ir() {
         <p className="mt-3 text-xs text-faint">출처 {MARKET_SOURCE}</p>
       </Section>
 
-      <Section n="03" title="정적 분석" lead="라이선스 60 미만 탈락">
+      <Section n="03" title="정적 분석" lead="학습 소스 역추적 채점">
         <CheckWeights items={CHECK_WEIGHTS} />
       </Section>
 

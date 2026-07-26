@@ -49,7 +49,7 @@ const ICONS: Record<string, React.ReactNode> = {
 
 const STEPS: [keyof typeof ICONS, string, string][] = [
   ["upload", "업로드", "glb, gltf, png"],
-  ["scan", "AI 정적 분석", "7항목, 라이선스 60 미만 탈락"],
+  ["scan", "AI 정적 분석", "학습 소스 역추적, 7항목 가중 채점"],
   ["fix", "개선 코드", "떨어진 항목만"],
   ["match", "컨셉 정합", "톤과 팔레트 변경"],
 ];
