@@ -11,6 +11,20 @@ env:
 jobs:
   check:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: indygg
+          MYSQL_USER: indygg
+          MYSQL_PASSWORD: indygg
+        ports: ["3306:3306"]
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      DATABASE_URL: mysql://indygg:indygg@127.0.0.1:3306/indygg
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable

@@ -2,6 +2,7 @@
 //!
 //! 게임 에셋 마켓의 백엔드다. 창작자가 에셋을 올리면 7개 항목을 채점해 등급을 매기고,
 //! 게임 스튜디오가 구독으로 카탈로그에 접근한다. 수수료는 8% 단일이며 주 수익원은 구독이다.
+//! 저장소는 `MySQL` 8.0 이상을 쓴다.
 
 mod db;
 mod domain;
@@ -17,14 +18,14 @@ use axum::{
     routing::{get, post},
 };
 use serde_json::json;
-use sqlx::SqlitePool;
+use sqlx::MySqlPool;
 use tower_http::{cors::CorsLayer, services::ServeDir, trace::TraceLayer};
 
 use crate::db::{AssetQuery, NewAsset};
 
 #[derive(Clone)]
 struct AppState {
-    pool: SqlitePool,
+    pool: MySqlPool,
 }
 
 /// HTTP 경계에서의 오류. 내부 사정은 로그로 남기고 클라이언트에는 요약만 준다.
@@ -115,8 +116,8 @@ async fn main() -> Result<()> {
         )
         .init();
 
-    let db_url =
-        std::env::var("DATABASE_URL").unwrap_or_else(|_| "sqlite:indygg.db?mode=rwc".into());
+    let db_url = std::env::var("DATABASE_URL")
+        .unwrap_or_else(|_| "mysql://indygg:indygg@127.0.0.1:3306/indygg".into());
     let port: u16 = std::env::var("PORT")
         .ok()
         .and_then(|p| p.parse().ok())

@@ -1,188 +1,131 @@
 <meta charset="utf-8">
 <title>IndyGG — 게임 에셋 마켓</title>
-
 <style>
   :root {
-    --ground: #1C1C1F; --surface: #23232A; --surface-2: #2A2A33; --surface-3: #31313C;
-    --line: #3A3A47; --line-soft: #27272E;
-    --ink: #EBEBEF; --muted: #9AA4AF; --faint: #6E6E7C;
-    --accent: #5383E8; --accent-soft: rgba(83,131,232,.14); --link: #B3CDFF;
-    --navy: #28344E;
-    --pass: #5383E8; --fail: #E84057; --warn: #F0B457;
-    --s: #F0B457; --a: #A55EEA; --b: #5383E8; --c: #4E9D8D;
+    --ground:#1C1C1F; --surface:#23232A; --surface-2:#2A2A33; --surface-3:#31313C;
+    --line:#3A3A47; --line-soft:#27272E;
+    --ink:#EBEBEF; --muted:#9AA4AF; --faint:#6E6E7C;
+    --accent:#5383E8; --accent-2:#7AA3F5; --accent-soft:rgba(83,131,232,.13);
+    --pass:#3FBF8F; --fail:#E8556A;
+    --chal:#F0B457; --dia:#A55EEA; --plat:#4E9D8D; --silv:#8E9BA5;
   }
-  :root[data-theme="light"] {
-    --ground: #EBEEF1; --surface: #FFF; --surface-2: #F7F7F9; --surface-3: #E8EBEF;
-    --line: #D5D9DE; --line-soft: #E8EBEF;
-    --ink: #202D37; --muted: #57646F; --faint: #8894A0;
-    --accent: #2B5FD9; --accent-soft: rgba(43,95,217,.09); --link: #2B5FD9;
-    --pass: #2B5FD9; --fail: #D0344B; --warn: #A9720C;
-    --s: #B07B18; --a: #7038C0; --b: #2B5FD9; --c: #337F70;
+  :root[data-theme="light"]{
+    --ground:#FBFAF8; --surface:#FFF; --surface-2:#F4F5F7; --surface-3:#EAECF0;
+    --line:#E0E2E7; --line-soft:#EFF1F4;
+    --ink:#171A1F; --muted:#56606C; --faint:#8A929C;
+    --accent:#2B5FD9; --accent-2:#1D46A8; --accent-soft:rgba(43,95,217,.07);
+    --pass:#17805C; --fail:#C42A3F;
+    --chal:#A87415; --dia:#6D3FB8; --plat:#2F7565; --silv:#74808A;
   }
-  @media (prefers-color-scheme: light) {
-    :root:not([data-theme="dark"]) {
-      --ground: #EBEEF1; --surface: #FFF; --surface-2: #F7F7F9; --surface-3: #E8EBEF;
-      --line: #D5D9DE; --line-soft: #E8EBEF;
-      --ink: #202D37; --muted: #57646F; --faint: #8894A0;
-      --accent: #2B5FD9; --accent-soft: rgba(43,95,217,.09); --link: #2B5FD9;
-      --pass: #2B5FD9; --fail: #D0344B; --warn: #A9720C;
-      --s: #B07B18; --a: #7038C0; --b: #2B5FD9; --c: #337F70;
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --ground:#FBFAF8; --surface:#FFF; --surface-2:#F4F5F7; --surface-3:#EAECF0;
+      --line:#E0E2E7; --line-soft:#EFF1F4;
+      --ink:#171A1F; --muted:#56606C; --faint:#8A929C;
+      --accent:#2B5FD9; --accent-2:#1D46A8; --accent-soft:rgba(43,95,217,.07);
+      --pass:#17805C; --fail:#C42A3F;
+      --chal:#A87415; --dia:#6D3FB8; --plat:#2F7565; --silv:#74808A;
     }
   }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  body{margin:0;background:var(--ground);color:var(--ink);
+    font-family:Roboto,system-ui,-apple-system,"Apple SD Gothic Neo",Pretendard,sans-serif;
+    font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;letter-spacing:-.01em}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+  .tab{font-variant-numeric:tabular-nums}
+  .in{max-width:1080px;margin:0 auto;padding:0 24px}
 
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--ground); color: var(--ink);
-    font-family: Roboto, system-ui, -apple-system, "Apple SD Gothic Neo", Pretendard, sans-serif;
-    font-size: 14px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
-  .m { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; }
-  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
-  a { color: inherit; }
-  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 22px; }
+  .hero{text-align:center;padding:clamp(70px,10vw,128px) 0 clamp(52px,7vw,88px);
+    background:radial-gradient(70% 52% at 50% 0%,var(--accent-soft),transparent 72%)}
+  .eyebrow{display:inline-block;padding:5px 14px;border-radius:980px;border:1px solid var(--line);
+    color:var(--muted);font-size:12.5px;margin-bottom:24px}
+  .eyebrow b{color:var(--accent);font-weight:700}
+  h1{margin:0 auto;font-size:clamp(34px,5.6vw,62px);line-height:1.08;letter-spacing:-.04em;
+    font-weight:800;max-width:17ch;text-wrap:balance}
+  h1 em{font-style:normal;color:var(--accent)}
+  .sub{margin:22px auto 0;font-size:clamp(16px,1.8vw,19px);color:var(--muted);max-width:44ch;line-height:1.55}
+  .ctas{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:34px}
+  .btn{padding:13px 26px;border-radius:980px;font-size:15px;font-weight:650}
+  .btn.p{background:var(--accent);color:#fff}
+  .btn.p:hover{background:var(--accent-2)}
+  .btn.s{border:1px solid var(--line);color:var(--ink);background:var(--surface)}
+  .btn.s:hover{border-color:var(--accent);color:var(--accent)}
+  .btn small{display:block;font-size:11.5px;font-weight:400;opacity:.72;margin-top:2px}
 
-  /* ===== OP.GG 글로벌 헤더 ===== */
-  .gnb1 { background: #1C1C1F; border-bottom: 1px solid #2E2E35; }
-  .gnb1in { max-width: 1080px; margin: 0 auto; padding: 0 22px; height: 44px; display: flex; align-items: center; gap: 14px; }
-  .oplogo { display: flex; align-items: center; gap: 6px; flex: none; color: #fff; font-weight: 900; font-size: 17px; letter-spacing: -.03em; }
-  .oplogo .o { width: 17px; height: 17px; border: 3px solid #fff; border-radius: 50%; }
-  .gtabs { display: flex; overflow-x: auto; scrollbar-width: none; flex: 1; }
-  .gtabs::-webkit-scrollbar { display: none; }
-  .gtabs a { padding: 0 9px; height: 44px; display: flex; align-items: center; gap: 4px; color: #9AA4AF; font-size: 11.5px; white-space: nowrap; text-decoration: none; border-bottom: 2px solid transparent; }
-  .gtabs a:hover { color: #fff; }
-  .gtabs a.cur { color: #fff; font-weight: 700; border-bottom-color: var(--accent); }
-  .bad2 { font-size: 8px; padding: 0 3px; border-radius: 2px; background: #424254; color: #C3CBD1; letter-spacing: .04em; }
-  .bad2.new { background: var(--fail); color: #fff; }
-  .acts { display: flex; align-items: center; gap: 7px; flex: none; }
-  .signin { padding: 5px 12px; border-radius: 4px; background: #424254; color: #C3CBD1; font-size: 11.5px; }
-  .dlbtn { padding: 5px 12px; border-radius: 4px; background: var(--accent); color: #fff; font-size: 11.5px; font-weight: 650; }
-  .gnb2 { background: var(--navy); }
-  .gnb2in { max-width: 1080px; margin: 0 auto; padding: 0 22px; height: 46px; display: flex; align-items: center; gap: 14px; }
-  .snav { display: flex; gap: 1px; overflow-x: auto; scrollbar-width: none; }
-  .snav::-webkit-scrollbar { display: none; }
-  .snav a { padding: 5px 10px; border-radius: 4px; color: #C3CBD1; font-size: 12px; text-decoration: none; white-space: nowrap; display: flex; align-items: center; gap: 3px; }
-  .snav a:hover { background: rgba(255,255,255,.09); color: #fff; }
-  .snav a.cur { background: var(--accent); color: #fff; font-weight: 700; }
-  .snav sup { font-size: 8px; color: var(--fail); font-weight: 800; }
-  .snav a.cur sup { color: #FFD9DE; }
-  .gsearch { margin-left: auto; display: flex; align-items: center; gap: 6px; background: #31313C; padding: 6px 10px; min-width: 190px; }
-  .gsearch input { background: none; border: 0; outline: none; color: #fff; font-size: 12px; width: 100%; }
-  .gsearch input::placeholder { color: #7B8494; }
-  .themeb { padding: 5px 10px; border: 1px solid rgba(255,255,255,.22); border-radius: 4px; color: #C3CBD1; }
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-top:56px;
+    background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  @media (max-width:720px){.stats{grid-template-columns:repeat(2,1fr)}}
+  .stats div{background:var(--surface);padding:22px 14px}
+  .stats b{display:block;font-size:clamp(24px,3vw,32px);font-weight:800;letter-spacing:-.035em}
+  .stats span{display:block;margin-top:5px;font-size:12.5px;color:var(--faint)}
 
-  /* ===== hero ===== */
-  .hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line);
-    background: radial-gradient(90% 120% at 82% 0%, rgba(83,131,232,.18), transparent 62%), var(--ground); }
-  .heroin { max-width: 1080px; margin: 0 auto; padding: 72px 22px 62px;
-    display: grid; grid-template-columns: minmax(0,1.15fr) minmax(0,1fr); gap: 48px; align-items: center; }
-  @media (max-width: 900px) { .heroin { grid-template-columns: 1fr; gap: 34px; padding: 48px 22px 42px; } }
-  .eyebrow { display: inline-flex; align-items: center; gap: 7px; padding: 4px 11px; border: 1px solid var(--accent);
-    border-radius: 20px; color: var(--accent); background: var(--accent-soft); margin-bottom: 18px; }
-  h1 { margin: 0 0 16px; font-size: clamp(32px, 5.2vw, 54px); line-height: 1.06; letter-spacing: -.04em; font-weight: 900; text-wrap: balance; }
-  h1 em { font-style: normal; color: var(--accent); }
-  .sub { margin: 0 0 26px; color: var(--muted); font-size: 16px; max-width: 46ch; }
-  .cta { display: flex; gap: 10px; flex-wrap: wrap; }
-  .btn { padding: 12px 24px; border-radius: 4px; font-weight: 700; font-size: 14px; }
-  .btn.p { background: var(--accent); color: #fff; }
-  .btn.p:hover { filter: brightness(1.08); }
-  .btn.s { border: 1px solid var(--line); color: var(--muted); }
-  .btn.s:hover { border-color: var(--accent); color: var(--accent); }
+  section{padding:clamp(64px,9vw,108px) 0;border-top:1px solid var(--line)}
+  .alt{background:var(--surface-2)}
+  .shead{text-align:center;max-width:46ch;margin:0 auto clamp(38px,5vw,60px)}
+  .kick{font-size:12.5px;font-weight:700;letter-spacing:.04em;color:var(--accent);margin:0 0 12px}
+  h2{margin:0;font-size:clamp(26px,3.8vw,40px);line-height:1.14;letter-spacing:-.035em;font-weight:800;text-wrap:balance}
+  .shead p{margin:16px 0 0;color:var(--muted);font-size:16px}
 
-  /* hero art — 티어 카드 스택 */
-  .stack { position: relative; height: 300px; }
-  .scard { position: absolute; width: 156px; background: var(--surface); border: 1px solid var(--tc);
-    border-radius: 5px; padding: 11px; box-shadow: 0 18px 40px -20px rgba(0,0,0,.8); }
-  .scard .fig { aspect-ratio: 1; display: grid; place-items: center; border-radius: 4px; color: var(--tc);
-    background: radial-gradient(120% 90% at 50% 115%, color-mix(in srgb, var(--tc) 30%, transparent), transparent 66%),
-      repeating-linear-gradient(135deg, var(--surface-2) 0 9px, var(--surface) 9px 18px); }
-  .scard .nm { margin-top: 8px; font-weight: 700; font-size: 12.5px; }
-  .scard .by { color: var(--faint); font-size: 10.5px; }
-  .scard .tg { position: absolute; top: 6px; left: 6px; width: 20px; height: 20px; display: grid; place-items: center;
-    border-radius: 3px; background: var(--tc); color: #16161C; font-weight: 900; font-size: 11px; }
-  .scard .vt { margin-top: 7px; padding-top: 7px; border-top: 1px solid var(--line-soft); display: flex; justify-content: space-between;
-    font-size: 10.5px; color: var(--faint); font-variant-numeric: tabular-nums; }
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  @media (max-width:860px){.steps{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:520px){.steps{grid-template-columns:1fr}}
+  .step .n{display:flex;align-items:center;gap:9px;margin-bottom:12px}
+  .step .n i{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;
+    display:grid;place-items:center;font-size:12.5px;font-weight:800;font-style:normal;flex:none}
+  .step .n u{text-decoration:none;height:1px;background:var(--line);flex:1}
+  .step h3{margin:0 0 8px;font-size:17px;letter-spacing:-.02em;font-weight:700}
+  .step p{margin:0;color:var(--muted);font-size:14px;line-height:1.62}
 
-  /* ===== sections ===== */
-  section { padding: 66px 0; border-bottom: 1px solid var(--line); }
-  .shead { margin-bottom: 34px; max-width: 60ch; }
-  .shead .m { color: var(--accent); display: block; margin-bottom: 9px; }
-  h2 { margin: 0 0 10px; font-size: clamp(24px, 3.4vw, 34px); letter-spacing: -.03em; font-weight: 800; text-wrap: balance; }
-  .shead p { margin: 0; color: var(--muted); font-size: 15px; }
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  @media (max-width:860px){.cards{grid-template-columns:1fr}}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:28px;
+    display:flex;flex-direction:column;gap:12px}
+  .card .who{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--accent)}
+  .card h3{margin:0;font-size:20px;letter-spacing:-.025em;font-weight:750}
+  .card p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.65}
+  .card ul{margin:4px 0 0;padding-left:18px;color:var(--muted);font-size:14px}
+  .card li{margin-bottom:6px}
+  .card li b{color:var(--ink);font-weight:650}
+  .card .go{margin-top:auto;padding-top:14px;border-top:1px solid var(--line-soft);
+    color:var(--accent);font-size:14px;font-weight:650}
+  .card .go:hover{text-decoration:underline}
 
-  .g3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px; }
-  @media (max-width: 860px) { .g3 { grid-template-columns: 1fr; } }
-  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 5px; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
-  .card .who { display: flex; align-items: center; gap: 9px; }
-  .card .step { width: 24px; height: 24px; border-radius: 3px; background: var(--accent); color: #fff;
-    display: grid; place-items: center; font-weight: 800; font-size: 12px; flex: none; }
-  .card h3 { margin: 0; font-size: 16px; letter-spacing: -.02em; }
-  .card p { margin: 0; color: var(--muted); font-size: 13.5px; }
-  .card .pay { margin-top: auto; padding-top: 11px; border-top: 1px solid var(--line-soft); display: flex; align-items: baseline; gap: 8px; }
-  .card .pay b { font-size: 19px; font-weight: 800; letter-spacing: -.02em; }
-  .card .pay span { color: var(--faint); font-size: 11.5px; }
+  .checks{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--line);
+    border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  @media (max-width:900px){.checks{grid-template-columns:repeat(4,1fr)}}
+  @media (max-width:560px){.checks{grid-template-columns:repeat(2,1fr)}}
+  .checks div{background:var(--surface);padding:20px 14px;text-align:center}
+  .checks b{display:block;font-size:19px;font-weight:800;letter-spacing:-.03em;color:var(--accent)}
+  .checks span{display:block;margin-top:6px;font-size:12.5px;color:var(--muted);line-height:1.45}
 
-  /* 선례 표 */
-  .tbl { width: 100%; border-collapse: collapse; font-size: 13.5px; }
-  .tbl th { text-align: left; padding: 9px 12px; color: var(--faint); font-weight: 600; border-bottom: 1px solid var(--line);
-    font-family: ui-monospace, Menlo, monospace; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; }
-  .tbl td { padding: 11px 12px; border-bottom: 1px solid var(--line-soft); font-variant-numeric: tabular-nums; }
-  .tbl tr:last-child td { border-bottom: 0; }
-  .tbl td:first-child { font-weight: 650; }
-  .tbl .hi { color: var(--accent); font-weight: 700; }
-  .scroller { overflow-x: auto; border: 1px solid var(--line); border-radius: 5px; background: var(--surface); }
+  .tiers{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  @media (max-width:780px){.tiers{grid-template-columns:repeat(2,1fr)}}
+  .tier{text-align:center;padding:24px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+  .tier .lb{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--tc)}
+  .tier .sc{display:block;font-size:clamp(26px,3.6vw,36px);font-weight:800;letter-spacing:-.04em;color:var(--tc);margin:8px 0 6px}
+  .tier .ds{font-size:12.5px;color:var(--muted);line-height:1.5}
 
-  /* AI 블록 */
-  .aigrid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.1fr); gap: 26px; align-items: center; }
-  @media (max-width: 860px) { .aigrid { grid-template-columns: 1fr; } }
-  .prompt { background: var(--surface); border: 1px solid var(--line); border-radius: 5px; overflow: hidden; }
-  .prompt .bar { padding: 9px 13px; border-bottom: 1px solid var(--line-soft); color: var(--faint); background: var(--surface-2); }
-  .prompt .body { padding: 14px; display: flex; flex-direction: column; gap: 11px; }
-  .prompt .said { padding: 10px 13px; border-radius: 5px; background: var(--accent); color: #fff; font-size: 13px; align-self: flex-end; max-width: 88%; }
-  .code { margin: 0; padding: 12px; border-radius: 4px; background: var(--ground); border: 1px solid var(--line);
-    font-family: ui-monospace, Menlo, monospace; font-size: 11px; line-height: 1.75; color: var(--muted); overflow-x: auto; white-space: pre; }
-  .code .kw { color: var(--a); } .code .st { color: var(--pass); } .code .cm { color: var(--faint); } .code .nu { color: var(--fail); }
-  .deltas { display: flex; flex-direction: column; gap: 9px; }
-  .delta { display: grid; grid-template-columns: 116px 1fr 84px; gap: 12px; align-items: center; font-size: 13px; }
-  .delta .n2 { color: var(--muted); }
-  .dbar { height: 6px; border-radius: 3px; background: var(--surface-3); position: relative; overflow: hidden; }
-  .dbar .was { position: absolute; inset: 0 auto 0 0; background: var(--faint); }
-  .dbar .now { position: absolute; inset: 0 auto 0 0; background: var(--accent); }
-  .delta .v2 { text-align: right; font-variant-numeric: tabular-nums; }
-  .delta .v2 b { color: var(--pass); }
+  .scroll{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+  table{width:100%;border-collapse:collapse;font-size:14.5px}
+  th{text-align:left;padding:15px 18px;font-size:12.5px;font-weight:600;color:var(--faint);
+    border-bottom:1px solid var(--line);white-space:nowrap}
+  td{padding:15px 18px;border-bottom:1px solid var(--line-soft)}
+  tr:last-child td{border-bottom:0}
+  td:first-child{font-weight:650}
+  .num{text-align:right;font-variant-numeric:tabular-nums}
+  .hi{color:var(--accent);font-weight:750}
+  .good{color:var(--pass)} .bad{color:var(--fail)}
+  tr.mk{background:var(--accent-soft)}
 
-  .trust { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); }
-  .trust div { display: flex; flex-direction: column; }
-  .trust b { font-size: 17px; font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
-  .trust span { color: var(--faint); font-size: 11px; }
-
-  .pain { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px; }
-  @media (max-width: 860px) { .pain { grid-template-columns: 1fr; } }
-  .pain .p1 { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--fail); border-radius: 5px; padding: 18px; }
-  .pain .p1 q { display: block; font-size: 15px; font-weight: 650; letter-spacing: -.01em; margin-bottom: 8px; quotes: none; }
-  .pain .p1 p { margin: 0; color: var(--muted); font-size: 13.5px; }
-
-  .agitate { background: var(--surface); border: 1px solid var(--line); border-radius: 5px; padding: 26px; display: grid;
-    grid-template-columns: repeat(3, minmax(0,1fr)); gap: 22px; margin-top: 18px; text-align: center; }
-  @media (max-width: 760px) { .agitate { grid-template-columns: 1fr; } }
-  .agitate b { display: block; font-size: 26px; font-weight: 800; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
-  .agitate span { color: var(--faint); font-size: 12px; }
-
-  .faq { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
-  @media (max-width: 820px) { .faq { grid-template-columns: 1fr; } }
-  .qa { background: var(--surface); border: 1px solid var(--line); border-radius: 5px; padding: 17px 18px; }
-  .qa h4 { margin: 0 0 7px; font-size: 14px; letter-spacing: -.01em; display: flex; gap: 8px; }
-  .qa h4::before { content: "Q"; color: var(--accent); font-weight: 900; flex: none; }
-  .qa p { margin: 0; color: var(--muted); font-size: 13px; }
-  .qa p b { color: var(--ink); }
-
-  .urg { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 20px;
-    border: 1px solid var(--warn); color: var(--warn); background: color-mix(in srgb, var(--warn) 10%, transparent); margin-bottom: 18px; }
-  .risk { margin-top: 14px; color: var(--faint); font-size: 12.5px; }
-
-  .final { padding: 74px 0 90px; text-align: center; }
-  .final h2 { max-width: 20ch; margin: 0 auto 12px; }
-  .final p { color: var(--muted); max-width: 52ch; margin: 0 auto 26px; font-size: 15px; }
-  footer { padding: 26px 0 40px; color: var(--faint); font-size: 12px; }
-  .disc { margin-top: 12px; max-width: 78ch; line-height: 1.65; }
+  .final{text-align:center;padding:clamp(74px,10vw,118px) 0}
+  .final h2{max-width:20ch;margin:0 auto}
+  .final p{margin:18px auto 0;color:var(--muted);max-width:42ch;font-size:16px}
+  .note{margin:18px auto 0;color:var(--faint);font-size:12.5px;max-width:52ch;line-height:1.6}
+  footer{border-top:1px solid var(--line);padding:34px 0 56px;color:var(--faint);font-size:12.5px;line-height:1.75}
 </style>
 
 <style id="igg-nav-css">
@@ -202,6 +145,7 @@
   .igg-ghost { padding: 5px 12px; border-radius: 4px; background: #424254; color: #C3CBD1;
     font-size: 11.5px; text-decoration: none; border: 0; cursor: pointer; }
   .igg-ghost:hover { background: #4E4E60; color: #fff; }
+  .igg-ghost b { color: var(--igg-blue); font-weight: 800; margin-left: 2px; }
   .igg-cta { padding: 5px 12px; border-radius: 4px; background: var(--igg-blue); color: #fff;
     font-size: 11.5px; font-weight: 700; text-decoration: none; }
 
@@ -228,7 +172,9 @@
   <div class="igg-r1"><div class="igg-r1in">
     <a class="igg-logo" href="index.html"><i></i><b>IndyGG</b><span>BY OP.GG</span></a>
     <span class="igg-sp"></span>
-    <button class="igg-ghost" type="button">로그인</button>
+    <button class="igg-ghost" id="cartb" type="button">담은 에셋 <b id="cartn">0</b></button>
+    <button class="igg-ghost" id="loginb" type="button">로그인</button>
+    <button class="igg-ghost" id="theme" type="button">테마</button>
     <a class="igg-cta" href="community.html">에셋 올리기</a>
   </div></div>
   <div class="igg-r2"><div class="igg-r2in">
@@ -236,248 +182,196 @@
     <span class="igg-search">🔍<input placeholder="에셋 · 창작자 · 게임 검색" autocomplete="off"></span>
   </div></div>
 </nav>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="hero">
-  <div class="heroin">
-    <div>
-      <span class="eyebrow m">◆ 게임 에셋 마켓 · 창작자 모집</span>
-      <h1>만든 에셋,<br><em>92%</em>를 가져가십니다.</h1>
-      <p class="sub">에셋을 올리면 <b style="color:var(--ink)">3일 안에 점수가 나옵니다.</b>
-        부족한 부분은 AI가 고쳐 드리고, 사는 쪽은 게임 스튜디오입니다.</p>
-      <div class="cta">
-        <a class="btn p" href="community.html">내 에셋 올리기</a>
-        <a class="btn s" href="community.html">에셋 시연 먼저 보기</a>
-      </div>
-      <div class="trust">
-        <div><b>92%</b><span>창작자 정산 비율</span></div>
-        <div><b>0원</b><span>업로드 · 재제출 비용</span></div>
-        <div><b>3일</b><span>업로드 → 검수 완료</span></div>
-        <div><b>무제한</b><span>AI 품질 개선 요청</span></div>
-      </div>
-    </div>
-    <div class="stack" id="stack"></div>
-  </div>
-</div>
-
-<div class="wrap">
-
-  <section>
-    <div class="shead">
-      <span class="m">문제</span>
-      <h2>안 팔리는 건 실력 탓이 아닙니다</h2>
-      <p>에셋을 올려보셨다면 이 중 하나는 겪으셨을 겁니다.</p>
-    </div>
-    <div class="pain">
-      <div class="p1"><q>올렸는데 안 보입니다</q>
-        <p>하루에 수백 개가 올라옵니다. AI로 만든 것까지 섞이면서 좋은 것을 골라내기가 어려워졌습니다.</p></div>
-      <div class="p1"><q>이유를 알 수 없습니다</q>
-        <p>보이는 건 조회수뿐입니다. 면이 지저분한 건지, 텍스처가 문제인지, 붙이기 어려워서인지 알려주는 곳이 없습니다.</p></div>
-      <div class="p1"><q>30%를 떼입니다</q>
-        <p>하나 팔아도 마켓이 먼저 가져갑니다. 들인 시간은 정산서에 나오지 않습니다.</p></div>
-    </div>
-    <div class="agitate">
-      <div><b style="color:var(--fail)">30%</b><span>Unity 에셋스토어 수수료</span></div>
-      <div><b style="color:var(--warn)">12%</b><span>Epic Fab 수수료</span></div>
-      <div><b style="color:var(--accent)">8%</b><span>IndyGG 수수료</span></div>
-    </div>
-    <p style="color:var(--muted);margin:18px 0 0;max-width:64ch">수수료보다 더 답답한 건 이겁니다.
-      <b style="color:var(--ink)">무엇을 고쳐야 팔리는지 아무도 알려주지 않습니다.</b></p>
-  </section>
-
-  <section>
-    <div class="shead">
-      <span class="m">해결</span>
-      <h2>올리면 3일 안에 답이 옵니다</h2>
-      <p>통과하면 바로 판매가 시작되고, 떨어지면 무엇을 고쳐야 하는지 알려 드립니다.</p>
-    </div>
-    <div class="g3">
-      <div class="card">
-        <div class="who"><span class="step">1</span><h3>일곱 가지를 봅니다</h3></div>
-        <p>면이 깔끔한지, 텍스처가 잘 입혀지는지, 멀리서 가벼워지는지, 게임이 느려지지 않는지,
-          남의 재료가 섞이지 않았는지, 붙이는 데 몇 분 걸리는지. <b style="color:var(--ink)">사람이 아니라 기계가 채점</b>합니다.</p>
-        <div class="pay"><b style="color:var(--accent)">0원</b><span>횟수 제한 없음</span></div>
-      </div>
-      <div class="card">
-        <div class="who"><span class="step">2</span><h3>떨어져도 다시 만들지 않습니다</h3></div>
-        <p>어느 항목이 몇 점인지 보여주고, <b style="color:var(--ink)">고치는 코드까지 만들어 드립니다.</b>
-          빛 반사를 살리거나, 멀리서 가벼워지게 하거나, 형태를 또렷하게 하거나.</p>
-        <div class="pay"><b style="color:var(--accent)">플래티넘 → 챌린저</b><span>한 번의 개선으로</span></div>
-      </div>
-      <div class="card">
-        <div class="who"><span class="step">3</span><h3>사는 쪽이 다릅니다</h3></div>
-        <p>취미로 만드는 사람이 아니라 <b style="color:var(--ink)">외주에 예산을 쓰는 게임 회사</b>입니다.
-          단가가 다르고, 한 번 쓰기 시작하면 계속 삽니다.</p>
-        <div class="pay"><b style="color:var(--accent)">92%</b><span>판매액 정산</span></div>
-      </div>
-    </div>
-    <div class="cta" style="margin-top:22px"><a class="btn p" href="community.html">내 에셋 올리기</a></div>
-  </section>
-
-  <section>
-    <div class="shead">
-      <span class="m">등급</span>
-      <h2>등급이 낮아도 손해는 없습니다</h2>
-      <p>수수료는 등급과 상관없이 <b style="color:var(--ink)">누구나 8%</b>입니다.
-        등급이 바꾸는 건 하나뿐입니다 — 검색에서 얼마나 위에 보이는가.</p>
-    </div>
-    <div class="scroller">
-      <table class="tbl">
-        <thead><tr><th>등급</th><th class="num">검수 점수</th><th>의미</th><th>노출</th><th class="num">수수료</th></tr></thead>
-        <tbody>
-          <tr><td style="color:var(--s)">챌린저</td><td class="num">90+</td><td>고치지 않고 바로 쓸 수 있음</td><td>최상위</td><td class="num hi">8%</td></tr>
-          <tr><td style="color:var(--a)">다이아</td><td class="num">80+</td><td>붙여 봤고 값만 조금 만지면 됨</td><td>상위</td><td class="num hi">8%</td></tr>
-          <tr><td style="color:var(--c)">플래티넘</td><td class="num">70+</td><td>기본은 통과, 손볼 곳 있음</td><td>일반</td><td class="num hi">8%</td></tr>
-          <tr><td style="color:var(--faint)">실버</td><td class="num">70 미만</td><td>게임에 바로 쓰긴 어려움</td><td>제한</td><td class="num hi">8%</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p style="color:var(--muted);margin-top:16px;max-width:64ch">현재 올라온 것의 <b style="color:var(--ink)">61.2%가 떨어집니다.</b>
-      까다로운 게 창작자에게 불리해 보이지만, 통과한 에셋이 묻히지 않는 이유이기도 합니다.</p>
-  </section>
-
-  <section>
-    <div class="shead">
-      <span class="m">에셋 시연</span>
-      <h2>올리기 전에<br><em style="font-style:normal;color:var(--accent)">직접 놓아 보세요</em></h2>
-      <p>만든 에셋을 실제 게임 화면에 올려 봅니다. 디아블로 IV, 라스트 오브 어스, 사이버펑크, 할로우 나이트 등
-        <b style="color:var(--ink)">17개 게임의 공식 화면</b>에 내 작업물을 놓고 어울리는지 확인하실 수 있습니다.</p>
-    </div>
-    <div class="aigrid">
-      <div class="prompt">
-        <div class="bar m">AI 품질 개선 · 서리한 대검</div>
-        <div class="body">
-          <div class="said">서리 느낌 더 강하게, 멀리서도 알아보이게</div>
-          <pre class="code"><span class="cm">// 진단: 표면 반사 밋밋 · 32px 혼동률 39%</span>
-<span class="kw">half</span> rim = pow(<span class="nu">1</span> - dot(N,V), <span class="nu">3.2</span>);
-<span class="kw">half</span> ice = voronoi(uv * <span class="nu">11</span>) * <span class="nu">0.6</span>;
-col.rgb += _RimColor * rim * (<span class="nu">0.7</span> + ice);
-mat.SetFloat(<span class="st">"_OutlineWidth"</span>, <span class="nu">0.024f</span>);
-
-<span class="cm">// 결과: 혼동률 39% → 11%</span></pre>
-        </div>
-      </div>
-      <div class="deltas" id="deltas"></div>
-    </div>
-    <div class="cta" style="margin-top:22px"><a class="btn s" href="community.html">에셋 시연 열어보기 →</a></div>
-  </section>
-
-  <section>
-    <div class="shead">
-      <span class="m">비교</span>
-      <h2>다른 곳과 비교하면</h2>
-    </div>
-    <div class="scroller">
-      <table class="tbl">
-        <thead><tr><th>마켓</th><th class="num">창작자 몫</th><th>왜 안 팔리는지</th><th>품질 보증</th><th>구매자</th></tr></thead>
-        <tbody>
-          <tr><td>Unity 에셋스토어</td><td class="num">70%</td><td>알 수 없음</td><td>사실상 없음</td><td>혼재</td></tr>
-          <tr><td>Epic Fab</td><td class="num">88%</td><td>알 수 없음</td><td>사실상 없음</td><td>혼재</td></tr>
-          <tr><td>프리랜서 매칭</td><td class="num">수수료 20% 내외</td><td>건별 협의</td><td>개인 편차</td><td>스튜디오</td></tr>
-          <tr style="background:var(--accent-soft)"><td>IndyGG</td><td class="num hi"><b>92%</b></td><td><b>점수 + 개선 코드</b></td><td><b>등급 · 검수 리포트</b></td><td><b>스튜디오 중심</b></td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p style="color:var(--muted);margin-top:14px">Unity 에셋스토어 30%, Epic Fab 12%는 공개 확인값입니다.</p>
-  </section>
-
-  <section style="border-bottom:0">
-    <div class="shead">
-      <span class="m">궁금할 만한 것</span>
-      <h2>먼저 답해둡니다</h2>
-    </div>
-    <div class="faq">
-      <div class="qa"><h4>떨어지면 시간만 날리는 거 아닌가요?</h4>
-        <p>떨어진 항목과 점수를 그대로 보여주고 <b>고칠 코드를 만들어 드립니다</b>. 재제출은 횟수 제한도 비용도 없습니다. 검수를 문지기가 아니라 도구로 설계했습니다.</p></div>
-      <div class="qa"><h4>왜 8%만 받나요? 뭘로 버나요?</h4>
-        <p>주 수익은 <b>스튜디오 구독료</b>입니다. 창작자는 공급이지 수익원이 아니라고 봅니다. 그래서 수수료를 업계 최저로 두고 좋은 에셋을 최대한 모으는 쪽을 택했습니다.</p></div>
-      <div class="qa"><h4>AI가 고친 건 제 작업물이 맞나요?</h4>
-        <p>AI는 <b>고칠 코드와 값을 제안</b>할 뿐 적용 여부는 창작자가 정합니다. 저작권은 전부 창작자에게 남습니다.</p></div>
-      <div class="qa"><h4>등급이 낮으면 손해인가요?</h4>
-        <p>수수료는 등급과 무관하게 8%입니다. 등급은 <b>노출 순위</b>만 바꿉니다. 그리고 등급은 AI 개선으로 올릴 수 있습니다.</p></div>
-      <div class="qa"><h4>남의 에셋이 섞였는지 어떻게 아나요?</h4>
-        <p>업로드 단계에서 <b>의존 재료를 자동으로 검사</b>하고 출처 목록을 함께 발급합니다. 출처가 불분명한 재료가 섞이면 산 사람의 게임 전체가 문제가 되기 때문입니다.</p></div>
-      <div class="qa"><h4>이미 다른 마켓에 올린 것도 되나요?</h4>
-        <p>됩니다. 독점 계약을 요구하지 않습니다. 다른 곳에 올린 것을 그대로 올리셔도 됩니다.</p></div>
-    </div>
-  </section>
-
-  <div class="final">
-    <span class="urg m">⏳ 초기 창작자 모집 중 · 검수 우선 처리</span>
-    <h2>안 팔릴 걸 만드는 시간이<br>가장 아깝습니다</h2>
-    <p>올리기 전에 어울리는지 보고, 떨어지면 고칠 방법을 받습니다.
-      돈은 들지 않고, 안 팔려도 잃는 게 없습니다.</p>
-    <div class="cta" style="justify-content:center">
-      <a class="btn p" href="community.html">내 첫 에셋 올리기</a>
-      <a class="btn s" href="community.html">스튜디오로 문의하기</a>
-    </div>
-    <p class="risk">업로드 비용 0원 · 재제출 무제한 · 독점 계약 없음 · 저작권은 창작자 보유</p>
-  </div>
-
-  <footer>
-    <span class="m">IndyGG · OP.GG 신사업 컨셉 데모</span>
-    <p class="disc">Unity 에셋스토어 30%, Epic Fab 12%는 공개 확인값입니다.
-      화면의 에셋 이미지는 Kenney·Cethiel·Poly Haven이 CC0로 공개한 것이며, 상업적 이용에 제한이 없습니다.
-      검수 점수와 등급, 탈락률 61.2%, 판매 건수와 정산액은 프로토타입 데모의 가정치이며 실측이 아닙니다.
-      에셋 시연의 배경은 전부 CC0 에셋으로 구성했습니다.</p>
-  </footer>
-</div>
-
 <script>
-(() => {
-  const $ = s => document.querySelector(s);
-  $("#theme").onclick = () => {
-    const cur = document.documentElement.getAttribute("data-theme");
-    const dark = cur ? cur === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
-    document.documentElement.setAttribute("data-theme", dark ? "light" : "dark");
-  };
-
-  const ART = {
-    greatsword: '<path d="M32 3 38 15v26l-6 6-6-6V15z"/><rect x="13" y="42" width="38" height="5" rx="2"/><rect x="29" y="47" width="6" height="10"/><circle cx="32" cy="59" r="4"/>',
-    observer: '<path fill-rule="evenodd" d="M32 4c-12 0-19 9-19 20L7 58h50l-6-34c0-11-7-20-19-20zm0 13c6 0 11 4 11 7s-5 7-11 7-11-4-11-7 5-7 11-7z"/><circle cx="32" cy="24" r="3.5"/>',
-    monster: '<path fill-rule="evenodd" d="M13 21 5 4l16 10c6-3 16-3 22 0L59 4l-8 17c5 9 3 24-5 32-7 6-21 6-28 0-8-8-10-23-5-32zm9 11h8v7h-8zm12 0h8v7h-8zm-7 15h14l-3 6h-8z"/>',
-  };
-  const CARDS = [
-    { k: "greatsword", n: "서리한 대검", by: "빙결공방", t: "S", tc: "--s", v: "판매 1,284", p: "검수 94", x: "48%", y: "2%", rot: "6deg", z: 3 },
-    { k: "observer", n: "고딕 던전 킷", by: "무쇠공방", t: "S", tc: "--a", v: "판매 964", p: "검수 91", x: "4%", y: "20%", rot: "-7deg", z: 2 },
-    { k: "monster", n: "몬스터 팩 12종", by: "루나틱", t: "A", tc: "--c", v: "판매 742", p: "검수 87", x: "27%", y: "48%", rot: "2deg", z: 1 },
-  ];
-  $("#stack").innerHTML = CARDS.map(c => `
-    <div class="scard" style="--tc:var(${c.tc});left:${c.x};top:${c.y};transform:rotate(${c.rot});z-index:${c.z}">
-      <span class="tg">${c.t}</span>
-      <div class="fig"><svg viewBox="0 0 64 64" width="62" height="62" fill="currentColor" aria-hidden="true">${ART[c.k]}</svg></div>
-      <div class="nm">${c.n}</div><div class="by">${c.by}</div>
-      <div class="vt"><span>${c.v}</span><span>${c.p}</span></div>
-    </div>`).join("");
-
-  const D = [["실루엣 판독성", 78, 93], ["아트 바이블 부합", 84, 96], ["원거리 가독성", 61, 90], ["런타임 비용", 72, 88], ["예상 선호도", 74, 89]];
-  $("#deltas").innerHTML = D.map(([n, a, b]) => `
-    <div class="delta">
-      <span class="n2">${n}</span>
-      <span class="dbar"><span class="now" style="width:${b}%"></span><span class="was" style="width:${a}%"></span></span>
-      <span class="v2"><span style="color:var(--faint)">${a}</span> → <b>${b}</b></span>
-    </div>`).join("");
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
 })();
 </script>
+
+
+
+
+
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
+
+
+<div class="hero"><div class="in">
+  <span class="eyebrow">게임 에셋 마켓 · <b>검수 통과분만</b></span>
+  <h1>쓸 만한 에셋인지<br><em>사기 전에</em> 알 수 있습니다.</h1>
+  <p class="sub">창작자가 올리면 일곱 가지를 기계가 채점해 등급을 매깁니다.
+    게임 스튜디오는 열어보지 않고도 품질을 압니다.</p>
+  <div class="ctas">
+    <a class="btn p" href="community.html">에셋 올리기<small>창작자 · 정산 92%</small></a>
+    <a class="btn s" href="market.html">카탈로그 둘러보기<small>스튜디오 · 등급별 검색</small></a>
+  </div>
+  <div class="stats">
+    <div><b class="tab">92%</b><span>창작자 정산 비율</span></div>
+    <div><b class="tab">61.2%</b><span>검수 탈락률</span></div>
+    <div><b class="tab">7</b><span>자동 검사 항목</span></div>
+    <div><b class="tab">3일</b><span>업로드 → 결과</span></div>
+  </div>
+</div></div>
+
+<section class="alt"><div class="in">
+  <div class="shead">
+    <p class="kick">작동 방식</p>
+    <h2>올리고, 채점하고, 고치고, 팝니다</h2>
+    <p>사람이 하나하나 열어보지 않습니다. 올라온 순간부터 기계가 처리합니다.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="n"><i>1</i><u></u></div><h3>올립니다</h3>
+      <p>비용도 횟수 제한도 없습니다. 다른 마켓에 이미 올린 것도 그대로 올릴 수 있습니다.</p></div>
+    <div class="step"><div class="n"><i>2</i><u></u></div><h3>채점합니다</h3>
+      <p>면·텍스처·LOD·성능·출처·코드·통합 난이도. 3일 안에 점수와 등급이 나옵니다.</p></div>
+    <div class="step"><div class="n"><i>3</i><u></u></div><h3>고칩니다</h3>
+      <p>떨어져도 끝이 아닙니다. 어디가 부족한지 짚고 고치는 코드까지 만들어 드립니다.</p></div>
+    <div class="step"><div class="n"><i>4</i></div><h3>팔립니다</h3>
+      <p>구매자는 게임 스튜디오입니다. 판매액의 92%가 창작자에게 갑니다.</p></div>
+  </div>
+</div></section>
+
+<section><div class="in">
+  <div class="shead">
+    <p class="kick">누구를 위한 것인가</p>
+    <h2>양쪽 모두의 문제를 하나로 풉니다</h2>
+    <p>만드는 쪽은 팔 곳이 없고, 사는 쪽은 믿을 곳이 없었습니다.</p>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <span class="who">창작자</span><h3>만든 만큼 가져갑니다</h3>
+      <p>실력은 되는데 팔 통로가 없던 분들을 위한 자리입니다.</p>
+      <ul><li>수수료 <b>8%</b> — 업계에서 가장 낮습니다</li>
+        <li>왜 안 팔리는지 <b>점수로</b> 알려 드립니다</li>
+        <li>AI가 <b>고칠 코드</b>를 만들어 드립니다</li>
+        <li>독점 계약 없음 · 저작권은 창작자 보유</li></ul>
+      <a class="go" href="community.html">에셋 올리기 →</a>
+    </div>
+    <div class="card">
+      <span class="who">게임 스튜디오</span><h3>열어보기 전에 압니다</h3>
+      <p>외주는 비싸고 느리며, 에셋 마켓은 품질을 믿기 어려웠습니다.</p>
+      <ul><li>등급과 <b>검수 리포트</b>가 함께 옵니다</li>
+        <li>어디서 온 재료인지 <b>출처 목록</b>을 발급합니다</li>
+        <li>팀 라이선스 <b>일괄 관리</b></li>
+        <li>월 <b>49만원</b> 구독</li></ul>
+      <a class="go" href="about.html">서비스 자세히 보기 →</a>
+    </div>
+    <div class="card">
+      <span class="who">모두</span><h3>내 게임에 놓아 봅니다</h3>
+      <p>사기 전에, 올리기 전에, 어울리는지 눈으로 확인합니다.</p>
+      <ul><li>실제 게임 화면에 <b>에셋을 배치</b></li>
+        <li>2D 도트부터 사실적 3D까지 <b>화풍별 비교</b></li>
+        <li>플랫폼·장르·화질 <b>조합 시연</b></li>
+        <li>실시간 3D 뷰어 제공</li></ul>
+      <a class="go" href="scene.html">에셋 시연 열기 →</a>
+    </div>
+  </div>
+</div></section>
+
+<section class="alt"><div class="in">
+  <div class="shead">
+    <p class="kick">검수</p>
+    <h2>일곱 가지를 봅니다</h2>
+    <p>가중치가 가장 큰 항목은 출처입니다. 남의 재료가 섞이면 산 사람의 게임 전체가 문제가 되기 때문입니다.</p>
+  </div>
+  <div class="checks">
+    <div><b>22%</b><span>어디서 온<br>재료인지</span></div>
+    <div><b>18%</b><span>게임이 느려지지<br>않는지</span></div>
+    <div><b>15%</b><span>면이 깔끔하게<br>짜였는지</span></div>
+    <div><b>13%</b><span>텍스처가 잘<br>입혀지는지</span></div>
+    <div><b>12%</b><span>멀리서 가벼워<br>지는지</span></div>
+    <div><b>12%</b><span>붙이는 데<br>걸리는 시간</span></div>
+    <div><b>8%</b><span>코드 품질</span></div>
+  </div>
+  <p class="note">출처 점수가 60점 미만이면 나머지가 모두 만점이어도 탈락합니다.</p>
+</div></section>
+
+<section><div class="in">
+  <div class="shead">
+    <p class="kick">등급</p>
+    <h2>등급이 낮아도 손해는 없습니다</h2>
+    <p>수수료는 등급과 상관없이 누구나 8%입니다. 등급이 바꾸는 건 검색에서 얼마나 위에 보이는가 하나뿐입니다.</p>
+  </div>
+  <div class="tiers">
+    <div class="tier" style="--tc:var(--chal)"><span class="lb">챌린저</span><b class="sc tab">90+</b>
+      <span class="ds">고치지 않고<br>바로 쓸 수 있습니다</span></div>
+    <div class="tier" style="--tc:var(--dia)"><span class="lb">다이아</span><b class="sc tab">80+</b>
+      <span class="ds">붙여 봤습니다.<br>값만 조금 만지면 됩니다</span></div>
+    <div class="tier" style="--tc:var(--plat)"><span class="lb">플래티넘</span><b class="sc tab">70+</b>
+      <span class="ds">기본은 통과했습니다.<br>손볼 곳이 있습니다</span></div>
+    <div class="tier" style="--tc:var(--silv)"><span class="lb">실버</span><b class="sc tab">70−</b>
+      <span class="ds">참고용입니다.<br>바로 쓰긴 어렵습니다</span></div>
+  </div>
+</div></section>
+
+<section class="alt"><div class="in">
+  <div class="shead"><p class="kick">비교</p><h2>다른 곳과 무엇이 다른가</h2></div>
+  <div class="scroll"><table>
+    <thead><tr><th>구분</th><th class="num">창작자 몫</th><th>왜 안 팔리는지</th><th>품질 보증</th><th>주 구매자</th></tr></thead>
+    <tbody>
+      <tr><td>외주 스튜디오</td><td class="num bad">해당 없음</td><td>해당 없음</td><td class="good">계약으로 보증</td><td>게임 회사</td></tr>
+      <tr><td>Unity 에셋스토어</td><td class="num">70%</td><td class="bad">알 수 없음</td><td class="bad">사실상 없음</td><td>혼재</td></tr>
+      <tr><td>Epic Fab</td><td class="num">88%</td><td class="bad">알 수 없음</td><td class="bad">사실상 없음</td><td>혼재</td></tr>
+      <tr class="mk"><td>IndyGG</td><td class="num hi">92%</td><td class="good"><b>점수 + 개선 코드</b></td><td class="good"><b>등급 · 검수 리포트</b></td><td><b>게임 스튜디오</b></td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">Unity 에셋스토어 30%, Epic Fab 12% 수수료는 공개 확인값입니다.</p>
+</div></section>
+
+<div class="final"><div class="in">
+  <h2>안 팔릴 걸 만드는 시간이<br>가장 아깝습니다</h2>
+  <p>올리기 전에 어울리는지 보고, 떨어지면 고칠 방법을 받습니다.
+    돈은 들지 않고, 안 팔려도 잃는 게 없습니다.</p>
+  <div class="ctas">
+    <a class="btn p" href="community.html">첫 에셋 올리기</a>
+    <a class="btn s" href="scene.html">먼저 시연해 보기</a>
+  </div>
+  <p class="note">업로드 비용 0원 · 재제출 무제한 · 독점 계약 없음 · 저작권은 창작자 보유</p>
+</div></div>
+
+<footer><div class="in">
+  <p>IndyGG · OP.GG</p>
+  <p style="margin-top:8px">Unity 에셋스토어 30%, Epic Fab 12%는 공개 확인값입니다.
+    화면의 에셋 이미지는 Kenney · Cethiel · Project Utumno · Poly Haven이 CC0로 공개한 것이며 상업적 이용에 제한이 없습니다.
+    검수 점수와 등급, 탈락률 61.2%, 판매 건수와 정산액은 프로토타입 데모의 가정치이며 실측이 아닙니다.
+    에셋 시연의 배경은 전부 CC0 에셋으로 구성했습니다.</p>
+</div></footer>

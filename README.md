@@ -46,12 +46,15 @@ AI가 에셋 생성을 흔하게 만들수록 희소해지는 것은 만드는 �
 
 ## 실행
 
+MySQL 8.0 이상이 필요하다. 로컬은 docker로 띄우면 된다.
+
 ```sh
+docker compose up -d mysql     # MySQL 8.4, DB/계정 자동 생성
 cargo run -p indygg-api
 # http://127.0.0.1:8420
 ```
 
-환경변수: `DATABASE_URL`(기본 `sqlite:indygg.db?mode=rwc`), `PORT`(기본 `8420`).
+환경변수: `DATABASE_URL`(기본 `mysql://indygg:indygg@127.0.0.1:3306/indygg`), `PORT`(기본 `8420`).
 첫 실행 시 마이그레이션이 자동 적용되고 게임 스택 25종이 시드된다.
 
 ## API
@@ -88,9 +91,9 @@ curl -X POST localhost:8420/api/assets -H 'content-type: application/json' -d '{
 ```
 crates/api/
   src/domain.rs      검수 채점·등급 판정·정산 (단위 테스트 12종)
-  src/db.rs          SQLite 조회·쓰기
+  src/db.rs          MySQL 조회·쓰기 (SQLx)
   src/main.rs        axum 라우터·정적 서빙
-  migrations/        스키마 + 게임 스택 시드
+  migrations/        MySQL 스키마 + 게임 스택 시드
 web/                 정적 페이지 (마켓·커뮤니티·창작자 랜딩)
 ```
 

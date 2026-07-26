@@ -206,6 +206,7 @@
   .igg-ghost { padding: 5px 12px; border-radius: 4px; background: #424254; color: #C3CBD1;
     font-size: 11.5px; text-decoration: none; border: 0; cursor: pointer; }
   .igg-ghost:hover { background: #4E4E60; color: #fff; }
+  .igg-ghost b { color: var(--igg-blue); font-weight: 800; margin-left: 2px; }
   .igg-cta { padding: 5px 12px; border-radius: 4px; background: var(--igg-blue); color: #fff;
     font-size: 11.5px; font-weight: 700; text-decoration: none; }
 
@@ -232,7 +233,9 @@
   <div class="igg-r1"><div class="igg-r1in">
     <a class="igg-logo" href="index.html"><i></i><b>IndyGG</b><span>BY OP.GG</span></a>
     <span class="igg-sp"></span>
-    <button class="igg-ghost" type="button">로그인</button>
+    <button class="igg-ghost" id="cartb" type="button">담은 에셋 <b id="cartn">0</b></button>
+    <button class="igg-ghost" id="loginb" type="button">로그인</button>
+    <button class="igg-ghost" id="theme" type="button">테마</button>
     <a class="igg-cta" href="community.html">에셋 올리기</a>
   </div></div>
   <div class="igg-r2"><div class="igg-r2in">
@@ -240,6 +243,57 @@
     <span class="igg-search">🔍<input placeholder="에셋 · 창작자 · 게임 검색" autocomplete="off"></span>
   </div></div>
 </nav>
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
 
 
 

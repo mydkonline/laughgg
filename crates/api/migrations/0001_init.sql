@@ -1,73 +1,78 @@
--- 창작자
 CREATE TABLE IF NOT EXISTS creators (
-    id          INTEGER PRIMARY KEY AUTOINCREMENT,
-    handle      TEXT    NOT NULL UNIQUE,
-    display_name TEXT   NOT NULL,
-    created_at  TEXT    NOT NULL DEFAULT (datetime('now'))
-);
+    id           BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    handle       VARCHAR(64)  NOT NULL UNIQUE,
+    display_name VARCHAR(128) NOT NULL,
+    created_at   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 에셋
 CREATE TABLE IF NOT EXISTS assets (
-    id          INTEGER PRIMARY KEY AUTOINCREMENT,
-    creator_id  INTEGER NOT NULL REFERENCES creators(id) ON DELETE CASCADE,
-    title       TEXT    NOT NULL,
-    category    TEXT    NOT NULL,          -- weapon | character | environment | ui | audio | tool
-    engine      TEXT    NOT NULL,          -- unity | unreal | godot | any
-    price_usd   REAL    NOT NULL CHECK (price_usd >= 0),
-    art_style   TEXT    NOT NULL,          -- pixel | lowpoly | realistic | stylized
-    created_at  TEXT    NOT NULL DEFAULT (datetime('now'))
-);
-CREATE INDEX IF NOT EXISTS idx_assets_creator  ON assets(creator_id);
-CREATE INDEX IF NOT EXISTS idx_assets_category ON assets(category);
+    id         BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    creator_id BIGINT UNSIGNED NOT NULL,
+    title      VARCHAR(200) NOT NULL,
+    category   VARCHAR(32)  NOT NULL,
+    engine     VARCHAR(32)  NOT NULL,
+    price_usd  DECIMAL(10,2) NOT NULL,
+    art_style  VARCHAR(32)  NOT NULL,
+    created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_assets_creator FOREIGN KEY (creator_id) REFERENCES creators(id) ON DELETE CASCADE,
+    CONSTRAINT chk_assets_price CHECK (price_usd >= 0),
+    INDEX idx_assets_creator (creator_id),
+    INDEX idx_assets_category (category)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 검수 결과 (에셋당 최신 1건)
 CREATE TABLE IF NOT EXISTS reviews (
-    id              INTEGER PRIMARY KEY AUTOINCREMENT,
-    asset_id        INTEGER NOT NULL REFERENCES assets(id) ON DELETE CASCADE,
-    mesh_integrity  INTEGER NOT NULL CHECK (mesh_integrity  BETWEEN 0 AND 100),
-    texture_quality INTEGER NOT NULL CHECK (texture_quality BETWEEN 0 AND 100),
-    lod_setup       INTEGER NOT NULL CHECK (lod_setup       BETWEEN 0 AND 100),
-    runtime_cost    INTEGER NOT NULL CHECK (runtime_cost    BETWEEN 0 AND 100),
-    license_clean   INTEGER NOT NULL CHECK (license_clean   BETWEEN 0 AND 100),
-    code_quality    INTEGER NOT NULL CHECK (code_quality    BETWEEN 0 AND 100),
-    integration     INTEGER NOT NULL CHECK (integration     BETWEEN 0 AND 100),
-    total           INTEGER NOT NULL,
-    grade           TEXT    NOT NULL,      -- challenger | diamond | platinum | silver
-    reviewed_at     TEXT    NOT NULL DEFAULT (datetime('now'))
-);
-CREATE INDEX IF NOT EXISTS idx_reviews_asset ON reviews(asset_id);
+    id              BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    asset_id        BIGINT UNSIGNED NOT NULL,
+    mesh_integrity  TINYINT UNSIGNED NOT NULL,
+    texture_quality TINYINT UNSIGNED NOT NULL,
+    lod_setup       TINYINT UNSIGNED NOT NULL,
+    runtime_cost    TINYINT UNSIGNED NOT NULL,
+    license_clean   TINYINT UNSIGNED NOT NULL,
+    code_quality    TINYINT UNSIGNED NOT NULL,
+    integration     TINYINT UNSIGNED NOT NULL,
+    total           TINYINT UNSIGNED NOT NULL,
+    grade           VARCHAR(16) NOT NULL,
+    reviewed_at     TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_reviews_asset FOREIGN KEY (asset_id) REFERENCES assets(id) ON DELETE CASCADE,
+    CONSTRAINT chk_reviews_range CHECK (
+        mesh_integrity <= 100 AND texture_quality <= 100 AND lod_setup <= 100 AND
+        runtime_cost <= 100 AND license_clean <= 100 AND code_quality <= 100 AND integration <= 100
+    ),
+    INDEX idx_reviews_asset (asset_id),
+    INDEX idx_reviews_grade (grade)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 스튜디오 구독 (주 수익원)
 CREATE TABLE IF NOT EXISTS studios (
-    id           INTEGER PRIMARY KEY AUTOINCREMENT,
-    name         TEXT    NOT NULL UNIQUE,
-    plan         TEXT    NOT NULL,         -- trial | standard | enterprise
-    monthly_krw  INTEGER NOT NULL CHECK (monthly_krw >= 0),
-    started_at   TEXT    NOT NULL DEFAULT (datetime('now')),
-    active       INTEGER NOT NULL DEFAULT 1
-);
+    id          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name        VARCHAR(128) NOT NULL UNIQUE,
+    plan        VARCHAR(32)  NOT NULL,
+    monthly_krw INT UNSIGNED NOT NULL,
+    started_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    active      TINYINT(1)   NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 판매
 CREATE TABLE IF NOT EXISTS sales (
-    id          INTEGER PRIMARY KEY AUTOINCREMENT,
-    asset_id    INTEGER NOT NULL REFERENCES assets(id) ON DELETE CASCADE,
-    studio_id   INTEGER REFERENCES studios(id) ON DELETE SET NULL,
-    price_usd   REAL    NOT NULL,
-    fee_rate    REAL    NOT NULL DEFAULT 0.08,   -- D안: 8% 단일
-    sold_at     TEXT    NOT NULL DEFAULT (datetime('now'))
-);
-CREATE INDEX IF NOT EXISTS idx_sales_asset ON sales(asset_id);
+    id        BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    asset_id  BIGINT UNSIGNED NOT NULL,
+    studio_id BIGINT UNSIGNED NULL,
+    price_usd DECIMAL(10,2) NOT NULL,
+    fee_rate  DECIMAL(4,3)  NOT NULL DEFAULT 0.080,
+    sold_at   TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_sales_asset  FOREIGN KEY (asset_id)  REFERENCES assets(id)  ON DELETE CASCADE,
+    CONSTRAINT fk_sales_studio FOREIGN KEY (studio_id) REFERENCES studios(id) ON DELETE SET NULL,
+    INDEX idx_sales_asset (asset_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 게임 스택 (참고 데이터)
 CREATE TABLE IF NOT EXISTS games (
-    id         INTEGER PRIMARY KEY AUTOINCREMENT,
-    slug       TEXT    NOT NULL UNIQUE,
-    name       TEXT    NOT NULL,
-    developer  TEXT    NOT NULL,
-    engine     TEXT    NOT NULL,
-    confirmed  INTEGER NOT NULL DEFAULT 0,  -- 1=공개자료 확인, 0=추정
-    dimension  TEXT    NOT NULL,            -- 2D | 3D
-    platform   TEXT    NOT NULL,            -- steam | mobile | console | web
-    scale      TEXT    NOT NULL,            -- aaa | team | solo
-    year       INTEGER NOT NULL
-);
+    id        BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    slug      VARCHAR(64)  NOT NULL UNIQUE,
+    name      VARCHAR(128) NOT NULL,
+    developer VARCHAR(128) NOT NULL,
+    engine    VARCHAR(64)  NOT NULL,
+    confirmed TINYINT(1)   NOT NULL DEFAULT 0,
+    dimension VARCHAR(8)   NOT NULL,
+    platform  VARCHAR(16)  NOT NULL,
+    scale     VARCHAR(16)  NOT NULL,
+    year      SMALLINT UNSIGNED NOT NULL,
+    INDEX idx_games_platform (platform)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

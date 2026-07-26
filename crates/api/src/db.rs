@@ -1,8 +1,8 @@
-//! `SQLite` 연결과 조회.
+//! `MySQL` 연결과 조회.
 
 use anyhow::{Context as _, Result};
 use serde::{Deserialize, Serialize};
-use sqlx::{SqlitePool, sqlite::SqlitePoolOptions};
+use sqlx::{MySqlPool, mysql::MySqlPoolOptions};
 
 use crate::domain::{DEFAULT_FEE_RATE, Grade, ReviewScores, Settlement};
 
@@ -10,12 +10,12 @@ use crate::domain::{DEFAULT_FEE_RATE, Grade, ReviewScores, Settlement};
 ///
 /// # Errors
 /// 연결 또는 마이그레이션에 실패하면 오류를 반환한다.
-pub async fn connect(url: &str) -> Result<SqlitePool> {
-    let pool = SqlitePoolOptions::new()
+pub async fn connect(url: &str) -> Result<MySqlPool> {
+    let pool = MySqlPoolOptions::new()
         .max_connections(8)
         .connect(url)
         .await
-        .with_context(|| format!("opening sqlite database at {url}"))?;
+        .with_context(|| format!("connecting to mysql at {url}"))?;
     sqlx::migrate!("./migrations")
         .run(&pool)
         .await
@@ -25,14 +25,14 @@ pub async fn connect(url: &str) -> Result<SqlitePool> {
 
 #[derive(Debug, Serialize)]
 pub struct AssetRow {
-    pub id: i64,
+    pub id: u64,
     pub title: String,
     pub creator: String,
     pub category: String,
     pub engine: String,
     pub art_style: String,
     pub price_usd: f64,
-    pub total: Option<i64>,
+    pub total: Option<u8>,
     pub grade: Option<String>,
 }
 
@@ -48,37 +48,39 @@ pub struct AssetQuery {
 ///
 /// # Errors
 /// 조회 실패 시 오류를 반환한다.
-pub async fn list_assets(pool: &SqlitePool, q: &AssetQuery) -> Result<Vec<AssetRow>> {
+pub async fn list_assets(pool: &MySqlPool, q: &AssetQuery) -> Result<Vec<AssetRow>> {
     let limit = q.limit.unwrap_or(50).clamp(1, 200);
     let min_score = q.min_score.unwrap_or(0);
     let rows = sqlx::query_as::<
         _,
         (
-            i64,
+            u64,
             String,
             String,
             String,
             String,
             String,
             f64,
-            Option<i64>,
+            Option<u8>,
             Option<String>,
         ),
     >(
         r"
-        SELECT a.id, a.title, c.display_name, a.category, a.engine, a.art_style, a.price_usd,
-               r.total, r.grade
+        SELECT a.id, a.title, c.display_name, a.category, a.engine, a.art_style,
+               CAST(a.price_usd AS DOUBLE), r.total, r.grade
         FROM assets a
         JOIN creators c ON c.id = a.creator_id
         LEFT JOIN reviews r ON r.asset_id = a.id
-        WHERE (?1 IS NULL OR a.category = ?1)
-          AND (?2 IS NULL OR a.engine = ?2 OR a.engine = 'any')
-          AND COALESCE(r.total, 0) >= ?3
+        WHERE (? IS NULL OR a.category = ?)
+          AND (? IS NULL OR a.engine = ? OR a.engine = 'any')
+          AND COALESCE(r.total, 0) >= ?
         ORDER BY COALESCE(r.total, 0) DESC, a.id DESC
-        LIMIT ?4
+        LIMIT ?
         ",
     )
     .bind(q.category.as_deref())
+    .bind(q.category.as_deref())
+    .bind(q.engine.as_deref())
     .bind(q.engine.as_deref())
     .bind(min_score)
     .bind(limit)
@@ -131,7 +133,7 @@ pub struct NewAsset {
 
 #[derive(Debug, Serialize)]
 pub struct ReviewResult {
-    pub asset_id: i64,
+    pub asset_id: u64,
     pub total: u8,
     pub grade: Grade,
     pub production_ready: bool,
@@ -143,7 +145,7 @@ pub struct ReviewResult {
 ///
 /// # Errors
 /// 점수 범위가 잘못됐거나 DB 쓰기에 실패하면 오류를 반환한다.
-pub async fn create_asset(pool: &SqlitePool, input: &NewAsset) -> Result<ReviewResult> {
+pub async fn create_asset(pool: &MySqlPool, input: &NewAsset) -> Result<ReviewResult> {
     input
         .scores
         .validate()
@@ -151,21 +153,22 @@ pub async fn create_asset(pool: &SqlitePool, input: &NewAsset) -> Result<ReviewR
 
     let mut tx = pool.begin().await.context("starting transaction")?;
 
-    sqlx::query("INSERT OR IGNORE INTO creators (handle, display_name) VALUES (?1, ?1)")
+    sqlx::query("INSERT IGNORE INTO creators (handle, display_name) VALUES (?, ?)")
+        .bind(&input.creator_handle)
         .bind(&input.creator_handle)
         .execute(&mut *tx)
         .await
         .context("upserting creator")?;
 
-    let creator_id: i64 = sqlx::query_scalar("SELECT id FROM creators WHERE handle = ?1")
+    let creator_id: u64 = sqlx::query_scalar("SELECT id FROM creators WHERE handle = ?")
         .bind(&input.creator_handle)
         .fetch_one(&mut *tx)
         .await
         .context("resolving creator id")?;
 
-    let asset_id: i64 = sqlx::query_scalar(
+    let inserted = sqlx::query(
         r"INSERT INTO assets (creator_id, title, category, engine, price_usd, art_style)
-          VALUES (?1, ?2, ?3, ?4, ?5, ?6) RETURNING id",
+          VALUES (?, ?, ?, ?, ?, ?)",
     )
     .bind(creator_id)
     .bind(&input.title)
@@ -173,9 +176,10 @@ pub async fn create_asset(pool: &SqlitePool, input: &NewAsset) -> Result<ReviewR
     .bind(&input.engine)
     .bind(input.price_usd)
     .bind(&input.art_style)
-    .fetch_one(&mut *tx)
+    .execute(&mut *tx)
     .await
     .context("inserting asset")?;
+    let asset_id = inserted.last_insert_id();
 
     let s = input.scores;
     let total = s.total();
@@ -185,17 +189,17 @@ pub async fn create_asset(pool: &SqlitePool, input: &NewAsset) -> Result<ReviewR
         r"INSERT INTO reviews
           (asset_id, mesh_integrity, texture_quality, lod_setup, runtime_cost,
            license_clean, code_quality, integration, total, grade)
-          VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10)",
+          VALUES (?,?,?,?,?,?,?,?,?,?)",
     )
     .bind(asset_id)
-    .bind(i64::from(s.mesh_integrity))
-    .bind(i64::from(s.texture_quality))
-    .bind(i64::from(s.lod_setup))
-    .bind(i64::from(s.runtime_cost))
-    .bind(i64::from(s.license_clean))
-    .bind(i64::from(s.code_quality))
-    .bind(i64::from(s.integration))
-    .bind(i64::from(total))
+    .bind(u32::from(s.mesh_integrity))
+    .bind(u32::from(s.texture_quality))
+    .bind(u32::from(s.lod_setup))
+    .bind(u32::from(s.runtime_cost))
+    .bind(u32::from(s.license_clean))
+    .bind(u32::from(s.code_quality))
+    .bind(u32::from(s.integration))
+    .bind(u32::from(total))
     .bind(grade.as_str())
     .execute(&mut *tx)
     .await
@@ -223,14 +227,14 @@ pub struct GameRow {
     pub dimension: String,
     pub platform: String,
     pub scale: String,
-    pub year: i64,
+    pub year: u16,
 }
 
 /// 게임 스택 목록.
 ///
 /// # Errors
 /// 조회 실패 시 오류를 반환한다.
-pub async fn list_games(pool: &SqlitePool, platform: Option<&str>) -> Result<Vec<GameRow>> {
+pub async fn list_games(pool: &MySqlPool, platform: Option<&str>) -> Result<Vec<GameRow>> {
     let rows = sqlx::query_as::<
         _,
         (
@@ -238,18 +242,19 @@ pub async fn list_games(pool: &SqlitePool, platform: Option<&str>) -> Result<Vec
             String,
             String,
             String,
-            i64,
+            i8,
             String,
             String,
             String,
-            i64,
+            u16,
         ),
     >(
-        r"SELECT slug, name, developer, engine, confirmed, dimension, platform, scale, year
+        r"SELECT slug, name, developer, engine, confirmed, dimension, platform, `scale`, `year`
           FROM games
-          WHERE (?1 IS NULL OR platform = ?1)
-          ORDER BY year DESC, name",
+          WHERE (? IS NULL OR platform = ?)
+          ORDER BY `year` DESC, name",
     )
+    .bind(platform)
     .bind(platform)
     .fetch_all(pool)
     .await
@@ -292,7 +297,7 @@ pub struct Metrics {
 ///
 /// # Errors
 /// 조회 실패 시 오류를 반환한다.
-pub async fn metrics(pool: &SqlitePool) -> Result<Metrics> {
+pub async fn metrics(pool: &MySqlPool) -> Result<Metrics> {
     let assets: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM assets")
         .fetch_one(pool)
         .await
@@ -313,16 +318,18 @@ pub async fn metrics(pool: &SqlitePool) -> Result<Metrics> {
         .fetch_one(pool)
         .await
         .context("counting studios")?;
-    let monthly_subscription_krw: i64 =
-        sqlx::query_scalar("SELECT COALESCE(SUM(monthly_krw), 0) FROM studios WHERE active = 1")
-            .fetch_one(pool)
-            .await
-            .context("summing subscriptions")?;
-    let monthly_fee_usd: f64 =
-        sqlx::query_scalar("SELECT COALESCE(SUM(price_usd * fee_rate), 0.0) FROM sales")
-            .fetch_one(pool)
-            .await
-            .context("summing fees")?;
+    let monthly_subscription_krw: i64 = sqlx::query_scalar(
+        "SELECT CAST(COALESCE(SUM(monthly_krw), 0) AS SIGNED) FROM studios WHERE active = 1",
+    )
+    .fetch_one(pool)
+    .await
+    .context("summing subscriptions")?;
+    let monthly_fee_usd: f64 = sqlx::query_scalar(
+        "SELECT CAST(COALESCE(SUM(price_usd * fee_rate), 0) AS DOUBLE) FROM sales",
+    )
+    .fetch_one(pool)
+    .await
+    .context("summing fees")?;
 
     #[expect(
         clippy::cast_precision_loss,

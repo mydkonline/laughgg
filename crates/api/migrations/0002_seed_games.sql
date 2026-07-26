@@ -1,4 +1,4 @@
-INSERT OR IGNORE INTO games (slug,name,developer,engine,confirmed,dimension,platform,scale,year) VALUES
+INSERT IGNORE INTO games (slug,name,developer,engine,confirmed,dimension,platform,scale,year) VALUES
  ('cs2','Counter-Strike 2','Valve','Source 2',1,'3D','steam','aaa',2023),
  ('dota2','Dota 2','Valve','Source 2',1,'3D','steam','aaa',2013),
  ('palworld','Palworld','Pocketpair','Unreal Engine 5',1,'3D','steam','team',2024),
