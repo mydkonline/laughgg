@@ -227,8 +227,9 @@ export function Workshop() {
       </section>
       {/* 2 — 결과. 조작을 그림 위에 두면 보면서 못 만진다. 그림이 먼저고,
           원본과 나란히 두지 않으면 무엇이 달라졌는지 안 보인다. */}
-      <section className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_300px]">
-        <div className="grid gap-3 sm:grid-cols-2">
+      <section className="mt-6 grid gap-5 lg:grid-cols-[minmax(0,1fr)_380px]">
+        {/* 좁은 화면에서도 2단으로 둔다. 세로로 쌓으면 프롬프트가 화면 두 개 아래로 밀린다. */}
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
           <Frame label="원본">
             {sprite ? (
               <Sprite piece={piece} knobs={NEUTRAL} raster={NEUTRAL_RASTER} />
@@ -245,75 +246,33 @@ export function Workshop() {
           </Frame>
         </div>
 
-        {/* 검수 결과 — 자랑도 실패도 같은 자리에 나온다 */}
-        <aside className="flex flex-col rounded-xl border border-line bg-surface p-4">
-          <div className="flex items-baseline gap-2.5">
-            <span className="text-xs text-faint">분석</span>
-            <b className="text-base tabular-nums text-faint line-through">{piece.score}</b>
-            <b className="num text-4xl text-ink">{after}</b>
-          </div>
-          <span className="mt-2 flex w-fit items-center gap-1.5 rounded-full bg-accent-soft px-2.5 py-1 text-xs font-extrabold text-accent">
-            <RankIcon badge={badgeOf(after)} size={14} />
-            {BADGE_LABEL[badgeOf(after)]}
-          </span>
-
-          <dl className="mt-3 flex flex-col gap-1.5 border-t border-line pt-3">
-            {Object.entries(delta).map(([k, v]) => (
-              <div key={k} className="flex justify-between text-xs">
-                <dt className="text-muted">{k}</dt>
-                <dd className={`m-0 tabular-nums ${v > 0 ? "text-accent" : v < 0 ? "text-[#FF6B7A]" : "text-faint"}`}>
-                  {v > 0 ? `+${v}` : v}
-                </dd>
-              </div>
-            ))}
-          </dl>
-
-          {published ? (
-            <div className="mt-auto flex gap-2 pt-4">
-              <button
-                type="button"
-                onClick={() => navigate("/feed")}
-                className="flex-1 cursor-pointer rounded-lg border-0 bg-accent px-3 py-2.5 text-xs font-bold text-white"
-              >
-                피드에서 보기
-              </button>
-              <button
-                type="button"
-                onClick={() => setPublished(null)}
-                className="cursor-pointer rounded-lg border border-line bg-transparent px-3 py-2.5 text-xs text-muted"
-              >
-                더 만지기
-              </button>
-            </div>
-          ) : (
-            <div className="mt-auto pt-3">
-              <button
-                type="button"
-                onClick={onPublish}
-                className="w-full cursor-pointer rounded-lg border-0 bg-accent px-4 py-3 text-xs font-bold text-white hover:bg-accent-strong"
-              >
-                프리셋 저장
-              </button>
-              {/* 저장이라고 부르되 공개된다는 사실을 숨기지 않는다. */}
-              <p className="mt-2 text-xs text-faint">저장하면 공략집에 공개됩니다.</p>
-            </div>
-          )}
-        </aside>
-      </section>
-
-      {/* 3 — 프롬프트를 조립한다. 빈 입력창은 무엇을 쓸 수 있는지 알려 주지 않는다. */}
-      <section>
+        {/* 조작 패널. 그림 옆에 둔다 — 프롬프트가 이 제품이 파는 것이라
+            스크롤을 내려야 보이면 안 된다. */}
+        <aside className="flex flex-col gap-5">
+          <div>
         <div className="mb-3 flex flex-wrap items-center gap-3">
           <h2 className="text-xs font-bold text-ink">프롬프트</h2>
-          <button
-            type="button"
-            onClick={() => setTyping((v) => !v)}
-            className="cursor-pointer border-0 bg-transparent text-xs text-faint hover:text-ink"
-          >
-            {typing ? "블록으로 조립" : "직접 입력"}
-          </button>
+          <span className="flex overflow-hidden rounded-full border border-line">
+            {[
+              [false, "블록"],
+              [true, "직접 입력"],
+            ].map(([v, label]) => (
+              <button
+                key={String(v)}
+                type="button"
+                onClick={() => setTyping(v as boolean)}
+                aria-pressed={typing === v}
+                className={[
+                  "cursor-pointer border-0 px-3 py-1 text-xs",
+                  typing === v ? "bg-ink font-bold text-ground" : "bg-transparent text-muted hover:text-ink",
+                ].join(" ")}
+              >
+                {label as string}
+              </button>
+            ))}
+          </span>
           {/* 무료 횟수를 넘긴 요청만 과금하는 게 수익 구조라 화면에서도 그렇게 보여야 한다. */}
-          <span className="ml-auto flex items-center gap-2 text-xs">
+          <span className="flex w-full items-center gap-2 text-xs">
             <span className="text-faint">
               크레딧 <b className="num text-ink">{remaining}</b> / {free}
             </span>
@@ -321,7 +280,7 @@ export function Workshop() {
               type="button"
               onClick={applyPrompt}
               disabled={remaining < 1 || !prompt.trim()}
-              className="cursor-pointer rounded-lg border-0 bg-accent px-5 py-2 text-xs font-bold text-white hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-40"
+              className="ml-auto cursor-pointer rounded-lg border-0 bg-accent px-5 py-2 text-xs font-bold text-white hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-40"
             >
               적용 <span className="opacity-70">1 크레딧</span>
             </button>
@@ -353,36 +312,8 @@ export function Workshop() {
         {remaining < 1 && (
           <p className="mt-2 text-xs text-[#FF6B7A]">무료 크레딧을 다 썼습니다. 컨셉 프리셋과 직접 조정은 계속 무료입니다.</p>
         )}
-      </section>
-
-      {/* 4 — 골라도 된다 */}
-      <section className="mt-6">
-        <div className="mb-2.5 flex flex-wrap items-baseline gap-3">
-          <h2 className="text-xs font-bold text-ink">게임 컨셉</h2>
-          <p className="text-xs text-faint">{CONCEPTS.find((c) => c.id === conceptId)?.note ?? "파라미터를 직접 조정한 상태입니다."}</p>
-        </div>
-        <div className="flex flex-wrap gap-1.5">
-          {CONCEPTS.map((c) => (
-            <button
-              key={c.id}
-              type="button"
-              onClick={() => applyConcept(c.id)}
-              aria-pressed={conceptId === c.id}
-              className={[
-                "cursor-pointer rounded-full border px-3.5 py-1.5 text-xs",
-                conceptId === c.id
-                  ? "border-transparent bg-ink font-bold text-ground"
-                  : "border-line text-muted hover:border-accent hover:text-ink",
-              ].join(" ")}
-            >
-              {c.name}
-            </button>
-          ))}
-        </div>
-      </section>
-
-      {/* 5 — 형식과 2D 설정. 가로로 편다. */}
-      <section className="mt-4 flex flex-wrap items-center gap-x-8 gap-y-4 rounded-xl border border-line bg-surface px-4 py-3.5">
+          </div>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3 rounded-xl border border-line bg-surface px-4 py-3.5">
         <Field label="출력 형식">
           <div className="flex gap-1.5">
             {([false, true] as const).map((v) => (
@@ -477,9 +408,92 @@ export function Workshop() {
         >
           파라미터 직접 조정 {tuning ? "닫기" : "열기"}
         </button>
+          </div>
+          <div className="flex flex-col rounded-xl border border-line bg-surface p-4">
+          <div className="flex items-baseline gap-2.5">
+            <span className="text-xs text-faint">분석</span>
+            <b className="text-base tabular-nums text-faint line-through">{piece.score}</b>
+            <b className="num text-4xl text-ink">{after}</b>
+          </div>
+          <span className="mt-2 flex w-fit items-center gap-1.5 rounded-full bg-accent-soft px-2.5 py-1 text-xs font-extrabold text-accent">
+            <RankIcon badge={badgeOf(after)} size={14} />
+            {BADGE_LABEL[badgeOf(after)]}
+          </span>
+
+          <dl className="mt-3 flex flex-col gap-1.5 border-t border-line pt-3">
+            {Object.entries(delta).map(([k, v]) => (
+              <div key={k} className="flex justify-between text-xs">
+                <dt className="text-muted">{k}</dt>
+                <dd className={`m-0 tabular-nums ${v > 0 ? "text-accent" : v < 0 ? "text-[#FF6B7A]" : "text-faint"}`}>
+                  {v > 0 ? `+${v}` : v}
+                </dd>
+              </div>
+            ))}
+          </dl>
+
+          {published ? (
+            <div className="mt-auto flex gap-2 pt-4">
+              <button
+                type="button"
+                onClick={() => navigate("/feed")}
+                className="flex-1 cursor-pointer rounded-lg border-0 bg-accent px-3 py-2.5 text-xs font-bold text-white"
+              >
+                피드에서 보기
+              </button>
+              <button
+                type="button"
+                onClick={() => setPublished(null)}
+                className="cursor-pointer rounded-lg border border-line bg-transparent px-3 py-2.5 text-xs text-muted"
+              >
+                더 만지기
+              </button>
+            </div>
+          ) : (
+            <div className="mt-auto pt-3">
+              <button
+                type="button"
+                onClick={onPublish}
+                className="w-full cursor-pointer rounded-lg border-0 bg-accent px-4 py-3 text-xs font-bold text-white hover:bg-accent-strong"
+              >
+                프리셋 저장
+              </button>
+              {/* 저장이라고 부르되 공개된다는 사실을 숨기지 않는다. */}
+              <p className="mt-2 text-xs text-faint">저장하면 공략집에 공개됩니다.</p>
+            </div>
+          )}
+          </div>
+        </aside>
       </section>
 
-      {/* 6 — 손조작. 접어 둔다. 대부분은 안 연다. */}
+
+      {/* 3 — 컨셉으로도 고를 수 있다 */}
+      <section className="mt-6">
+        <div className="mb-2.5 flex flex-wrap items-baseline gap-3">
+          <h2 className="text-xs font-bold text-ink">게임 컨셉</h2>
+          <p className="text-xs text-faint">{CONCEPTS.find((c) => c.id === conceptId)?.note ?? "파라미터를 직접 조정한 상태입니다."}</p>
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {CONCEPTS.map((c) => (
+            <button
+              key={c.id}
+              type="button"
+              onClick={() => applyConcept(c.id)}
+              aria-pressed={conceptId === c.id}
+              className={[
+                "cursor-pointer rounded-full border px-3.5 py-1.5 text-xs",
+                conceptId === c.id
+                  ? "border-transparent bg-ink font-bold text-ground"
+                  : "border-line text-muted hover:border-accent hover:text-ink",
+              ].join(" ")}
+            >
+              {c.name}
+            </button>
+          ))}
+        </div>
+      </section>
+
+
+      {/* 4 — 손조작. 접어 둔다. 대부분은 안 연다. */}
       {tuning && (
         <section className="mt-4 grid gap-x-8 gap-y-3 rounded-xl border border-line bg-surface p-4 sm:grid-cols-2 lg:grid-cols-3">
           {(Object.keys(KNOB_LABEL) as (keyof Knobs)[]).map((k) => (

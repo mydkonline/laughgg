@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { MARKET, MARKET_SOURCE, MODEL, CHECK_WEIGHTS, REVIEWS, AI_DEV, AI_DEV_SOURCE, REVENUE_FUNNEL, FUNNEL_RESULT } from "../data/ir";
+import { MARKET, MARKET_SOURCE, MODEL, CHECK_WEIGHTS, REVIEWS, AI_DEV, AI_DEV_SOURCE, REVENUE_FUNNEL, FUNNEL_RESULT, STREAMS, STREAM_TOTAL } from "../data/ir";
 import { PIECES } from "../data/pieces";
 import { Sprite } from "../three/Sprite";
 import { CONCEPTS } from "../data/concepts";
@@ -78,7 +78,6 @@ export function Ir() {
             </div>
           ))}
         </div>
-        <p className="mt-3 text-xs text-faint">출처 {MARKET_SOURCE}</p>
       </Section>
 
       <Section n="03" title="정적 분석" lead="학습 소스 역추적 채점">
@@ -114,7 +113,7 @@ export function Ir() {
             <CountStat key={f.label} label={f.label} value={f.value} unit={f.unit ?? ""} note={f.note} />
           ))}
         </div>
-        <p className="mb-5 text-xs text-faint">출처 {AI_DEV_SOURCE}</p>
+        <div className="mb-5" />
 
         {/* 어떤 기능 때문에 쓰는지로 걸러 본다. 수요는 숫자가 아니라 쓰임새로 드러난다. */}
         <div className="mb-4 flex flex-wrap gap-1.5">
@@ -166,6 +165,7 @@ export function Ir() {
       </Section>
 
       <Section n="06" title="수익 모델">
+        <Streams />
         <RevenueFunnel />
 
         {/* 가정을 가로 한 줄로 눕힌다. 두 칸으로 나누면 왼쪽이 반쯤 빈다. */}
@@ -210,7 +210,150 @@ export function Ir() {
         </div>
       </Section>
 
+      {/* 부록. 출처를 본문에 흩어 두면 숫자마다 각주가 붙어 읽기가 끊긴다.
+          검증할 사람은 여기 한 번만 오면 된다. */}
+      <section className="grid gap-x-12 gap-y-6 border-t border-line pt-12 pb-16 lg:grid-cols-[184px_minmax(0,1fr)]">
+        <div>
+          <span className="num block text-xs text-faint">부록</span>
+          <h2 className="mt-1 text-2xl leading-snug font-bold text-ink">출처</h2>
+        </div>
+
+        <dl className="min-w-0 lg:pr-8">
+          {[
+            ["시장", MARKET_SOURCE],
+            ["수요", AI_DEV_SOURCE],
+            ["수익 모델", REVENUE_FUNNEL.map((f) => `${f.label} ${f.note}`).join(" · ")],
+          ].map(([k, v]) => (
+            <div key={k} className="grid grid-cols-[72px_minmax(0,1fr)] gap-4 border-b border-line py-3">
+              <dt className="text-xs font-semibold text-ink">{k}</dt>
+              <dd className="m-0 text-xs leading-relaxed text-faint">{v}</dd>
+            </div>
+          ))}
+          <div className="grid grid-cols-[72px_minmax(0,1fr)] gap-4 border-b border-line py-3">
+            <dt className="text-xs font-semibold text-ink">표기</dt>
+            <dd className="m-0 text-xs leading-relaxed text-faint">
+              인용은 출처가 있는 값이고, 가정은 우리가 세운 값입니다. 수익 모델 퍼널의 앞 세 단계가
+              인용이고 뒤 두 단계가 가정입니다.
+            </dd>
+          </div>
+          <div className="grid grid-cols-[72px_minmax(0,1fr)] gap-4 py-3">
+            <dt className="text-xs font-semibold text-ink">리뷰</dt>
+            <dd className="m-0 text-xs leading-relaxed text-faint">
+              소속만 인증하고 신원은 가립니다. 본문 인용구는 시연용으로 작성한 것이며 실제 인용이 아닙니다.
+            </dd>
+          </div>
+        </dl>
+      </section>
     </main>
+  );
+}
+
+/* 수익원 셋. 성격이 달라 한 표에 못 담는다 — 구독은 매달, 수수료는 거래마다,
+   크레딧은 쓴 만큼 받는다. 세로로 쌓으면 셋이 같은 무게로 읽혀 주 수익원이
+   무엇인지 안 보이므로, 옆으로 넘겨 하나씩 본다. */
+function Streams() {
+  const [i, setI] = useState(0);
+
+  return (
+    <div className="mb-10">
+      <div className="mb-4 flex flex-wrap items-center gap-1.5">
+        {STREAMS.map((s, k) => (
+          <button
+            key={s.no}
+            type="button"
+            onClick={() => setI(k)}
+            aria-pressed={i === k}
+            className={[
+              "flex cursor-pointer items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs",
+              i === k
+                ? "border-transparent bg-ink font-bold text-ground"
+                : "border-line text-muted hover:border-accent hover:text-ink",
+            ].join(" ")}
+          >
+            <span className="num opacity-60">{s.no}</span>
+            {s.name}
+          </button>
+        ))}
+        <span className="ml-auto flex gap-1">
+          <button
+            type="button"
+            disabled={i === 0}
+            onClick={() => setI(i - 1)}
+            aria-label="이전 수익원"
+            className="cursor-pointer rounded border border-line bg-transparent px-2 py-1 text-xs text-faint hover:text-ink disabled:opacity-30"
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            disabled={i === STREAMS.length - 1}
+            onClick={() => setI(i + 1)}
+            aria-label="다음 수익원"
+            className="cursor-pointer rounded border border-line bg-transparent px-2 py-1 text-xs text-faint hover:text-ink disabled:opacity-30"
+          >
+            ›
+          </button>
+        </span>
+      </div>
+
+      {/* 넘길 때 옆으로 미끄러진다. 순서가 있는 것끼리는 방향이 보여야 한다. */}
+      <div className="overflow-hidden">
+        <div
+          className="flex transition-transform duration-300 ease-out"
+          style={{ transform: `translateX(-${i * 100}%)` }}
+        >
+          {STREAMS.map((s) => (
+            <div key={s.no} className="w-full shrink-0 pr-1">
+              <div className="grid gap-x-10 gap-y-5 sm:grid-cols-[minmax(0,1fr)_180px]">
+                <div>
+                  <p className="text-xs text-faint">
+                    {s.who} 에게 {s.how}
+                  </p>
+                  <dl className="mt-4 grid gap-x-8 gap-y-3 sm:grid-cols-3">
+                    {s.assume.map(([k, v]) => (
+                      <div key={k}>
+                        <dt className="text-xs text-faint">{k}</dt>
+                        <dd className="num m-0 text-base text-ink">{v}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                  <p className="num mt-4 border-t border-line pt-3 text-xs text-muted">{s.calc}</p>
+                  <p className="mt-2 text-xs text-faint">{s.note}</p>
+                </div>
+
+                <div className="sm:border-l sm:border-line sm:pl-6">
+                  <p className="text-xs text-faint">월 기여</p>
+                  <p className="num mt-1 text-4xl leading-none text-ink">
+                    {s.mrr.toLocaleString("ko-KR")}
+                    <span className="ml-1 text-base text-muted">만원</span>
+                  </p>
+                  <span className="mt-3 block h-1.5 overflow-hidden rounded-full bg-surface-2">
+                    <b
+                      className="block h-full bg-accent"
+                      style={{ width: `${(s.mrr / STREAM_TOTAL.mrr) * 100}%` }}
+                    />
+                  </span>
+                  <p className="mt-1.5 text-xs text-faint">
+                    전체의 {Math.round((s.mrr / STREAM_TOTAL.mrr) * 100)}%
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <dl className="mt-6 flex flex-wrap items-baseline gap-x-8 gap-y-2 border-t border-line pt-4">
+        <div className="flex items-baseline gap-2">
+          <dt className="text-xs text-faint">합계 MRR</dt>
+          <dd className="num m-0 text-2xl text-accent">{STREAM_TOTAL.mrr.toLocaleString("ko-KR")}만원</dd>
+        </div>
+        <div className="flex items-baseline gap-2">
+          <dt className="text-xs text-faint">연 환산</dt>
+          <dd className="num m-0 text-base text-ink">{STREAM_TOTAL.arr}</dd>
+        </div>
+      </dl>
+    </div>
   );
 }
 
@@ -244,15 +387,6 @@ function RevenueFunnel() {
             <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
               <span className="text-xs font-semibold text-ink">{s.label}</span>
               {s.rate && <span className="text-[10px] text-accent">{s.rate}</span>}
-              <span className="text-[10px] text-faint">{s.note}</span>
-              <span
-                className={[
-                  "rounded px-1.5 text-[10px]",
-                  s.kind === "인용" ? "bg-surface-2 text-muted" : "border border-line text-faint",
-                ].join(" ")}
-              >
-                {s.kind}
-              </span>
               <b className="num ml-auto text-base text-ink">{s.show}</b>
             </div>
             <span
