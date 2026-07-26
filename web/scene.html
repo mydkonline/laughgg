@@ -1,0 +1,622 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>IndyGG — 화풍 시연</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root {
+    --bg: #121216; --panel: #191920; --panel2: #20202a; --line: #2e2e3a;
+    --ink: #EBEBEF; --muted: #9AA4AF; --faint: #6E6E7C;
+    --accent: #5383E8; --navy: #28344E; --pass: #3FBF8F; --warn: #F0B457;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font-family: Roboto, system-ui, -apple-system, "Apple SD Gothic Neo", Pretendard, sans-serif;
+    font-size: 13px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  .m { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  select, input { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  header { background: var(--navy); height: 50px; display: flex; align-items: center; gap: 14px; padding: 0 18px; }
+  header .lg { display: flex; align-items: center; gap: 7px; color: #fff; font-weight: 900; font-size: 15px; letter-spacing: -.03em; }
+  header .lg i { width: 14px; height: 14px; border: 3px solid #fff; border-radius: 50%; display: block; }
+  header .ttl { color: #C3CBD1; font-size: 12.5px; }
+  header .sp { margin-left: auto; }
+  header a { color: #C3CBD1; text-decoration: none; font-size: 12px; padding: 5px 11px; border: 1px solid rgba(255,255,255,.22); border-radius: 4px; }
+  header a:hover { color: #fff; border-color: #fff; }
+
+  .wrap { display: grid; grid-template-columns: 232px minmax(0,1fr) 176px; gap: 12px; padding: 12px; }
+  @media (max-width: 1000px) { .wrap { grid-template-columns: 1fr; } }
+
+  .pane { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 13px;
+    display: flex; flex-direction: column; gap: 14px; align-self: start; }
+  .grp { display: flex; flex-direction: column; gap: 6px; }
+  .grp > .m { color: var(--faint); }
+  .hint { color: var(--faint); font-size: 11px; line-height: 1.5; margin: 0; }
+
+  .styles { display: flex; flex-direction: column; gap: 4px; }
+  .sb { display: flex; align-items: center; gap: 9px; padding: 7px 9px; border-radius: 5px;
+    border: 1px solid var(--line); color: var(--muted); text-align: left; font-size: 12px; }
+  .sb:hover { border-color: var(--accent); color: var(--ink); }
+  .sb[aria-pressed="true"] { border-color: var(--accent); background: rgba(83,131,232,.14); color: var(--accent); font-weight: 700; }
+  .dimlab { color: var(--accent); padding: 8px 2px 3px; border-bottom: 1px solid var(--line); margin-bottom: 3px; }
+  .dimlab:first-child { padding-top: 0; }
+  .sb i { width: 11px; height: 11px; border-radius: 2px; background: var(--sw); flex: none; }
+  .sb small { display: block; color: var(--faint); font-weight: 400; font-size: 10px; }
+
+  .field { width: 100%; padding: 7px 10px; border-radius: 4px; background: var(--bg); border: 1px solid var(--line); }
+  input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: 3px; background: var(--panel2); }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; background: var(--accent); border: 2px solid var(--panel); cursor: grab; }
+  .row { display: flex; justify-content: space-between; align-items: baseline; }
+  .row output { font-weight: 700; font-variant-numeric: tabular-nums; font-size: 12px; }
+
+  .stage { position: relative; background: #08080c; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  #cv { display: block; width: 100%; height: auto; cursor: grab; }
+  #cv.drag { cursor: grabbing; }
+  .bar2 { display: flex; align-items: center; gap: 11px; padding: 9px 12px; border-top: 1px solid var(--line); flex-wrap: wrap; }
+  .bar2 .sp { margin-left: auto; }
+  .btn { padding: 7px 14px; border-radius: 4px; border: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.p { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 650; }
+
+  .tray { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+  .tb { aspect-ratio: 1; border-radius: 5px; border: 1px solid var(--line); background: var(--panel2);
+    display: grid; place-items: center; padding: 5px; position: relative; }
+  .tb:hover { border-color: var(--accent); }
+  .tb[aria-pressed="true"] { border-color: var(--accent); background: rgba(83,131,232,.16); }
+  .tb img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+  .placed { display: flex; flex-direction: column; gap: 4px; max-height: 190px; overflow-y: auto; }
+  .pl { display: flex; align-items: center; gap: 7px; padding: 5px 7px; border-radius: 4px; border: 1px solid var(--line); font-size: 11.5px; }
+  .pl[aria-pressed="true"] { border-color: var(--accent); background: rgba(83,131,232,.12); }
+  .pl img { width: 20px; height: 20px; object-fit: contain; }
+  .pl b { flex: 1; font-weight: 500; }
+  .pl button { color: var(--faint); font-size: 13px; line-height: 1; }
+  .pl button:hover { color: var(--fail, #e8556a); }
+</style>
+
+<style id="igg-nav-css">
+  :root { --igg-navy:#28344E; --igg-dark:#1C1C1F; --igg-blue:#5383E8; --igg-dim:#9AA4AF; }
+  .igg-nav, .igg-nav * { box-sizing: border-box; }
+  .igg-nav { position: sticky; top: 0; z-index: 9000;
+    font-family: Roboto, system-ui, -apple-system, "Apple SD Gothic Neo", Pretendard, sans-serif; }
+  .igg-r1 { background: var(--igg-dark); border-bottom: 1px solid #2E2E35; }
+  .igg-r1in { max-width: 1240px; margin: 0 auto; padding: 0 20px; height: 44px;
+    display: flex; align-items: center; gap: 16px; }
+  .igg-logo { display: flex; align-items: center; gap: 7px; color: #fff; font-weight: 900;
+    font-size: 16px; letter-spacing: -.03em; text-decoration: none; flex: none; }
+  .igg-logo i { width: 15px; height: 15px; border: 3px solid #fff; border-radius: 50%; display: block; }
+  .igg-logo b { font-weight: 900; }
+  .igg-logo span { font-size: 9px; letter-spacing: .16em; color: #7B8494; font-weight: 700; }
+  .igg-r1 .igg-sp { margin-left: auto; }
+  .igg-ghost { padding: 5px 12px; border-radius: 4px; background: #424254; color: #C3CBD1;
+    font-size: 11.5px; text-decoration: none; border: 0; cursor: pointer; }
+  .igg-ghost:hover { background: #4E4E60; color: #fff; }
+  .igg-cta { padding: 5px 12px; border-radius: 4px; background: var(--igg-blue); color: #fff;
+    font-size: 11.5px; font-weight: 700; text-decoration: none; }
+
+  .igg-r2 { background: var(--igg-navy); }
+  .igg-r2in { max-width: 1240px; margin: 0 auto; padding: 0 20px; height: 46px;
+    display: flex; align-items: center; gap: 14px; }
+  .igg-tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+  .igg-tabs::-webkit-scrollbar { display: none; }
+  .igg-tabs a { padding: 6px 12px; border-radius: 4px; color: #C3CBD1; font-size: 12.5px;
+    text-decoration: none; white-space: nowrap; display: flex; align-items: center; gap: 4px; }
+  .igg-tabs a:hover { background: rgba(255,255,255,.09); color: #fff; }
+  .igg-tabs a[aria-current="page"] { background: var(--igg-blue); color: #fff; font-weight: 700; }
+  .igg-tabs sup { font-size: 8px; color: #FF6B7A; font-weight: 800; }
+  .igg-tabs a[aria-current="page"] sup { color: #FFD9DE; }
+  .igg-search { margin-left: auto; display: flex; align-items: center; gap: 6px;
+    background: #31313C; padding: 6px 10px; min-width: 190px; }
+  .igg-search input { background: none; border: 0; outline: none; color: #fff;
+    font-size: 12px; width: 100%; font-family: inherit; }
+  .igg-search input::placeholder { color: #7B8494; }
+  @media (max-width: 760px) { .igg-search { display: none; } }
+</style>
+
+<nav class="igg-nav">
+  <div class="igg-r1"><div class="igg-r1in">
+    <a class="igg-logo" href="index.html"><i></i><b>IndyGG</b><span>BY OP.GG</span></a>
+    <span class="igg-sp"></span>
+    <button class="igg-ghost" type="button">로그인</button>
+    <a class="igg-cta" href="creators.html">에셋 올리기</a>
+  </div></div>
+  <div class="igg-r2"><div class="igg-r2in">
+    <div class="igg-tabs"><a href="index.html">마켓</a><a href="community.html">커뮤니티</a><a href="creators.html">창작자</a><a href="scene.html" aria-current="page">화풍 시연<sup>N</sup></a><a href="viewer3d.html">3D 뷰어</a></div>
+    <span class="igg-search">🔍<input placeholder="에셋 · 창작자 · 게임 검색" autocomplete="off"></span>
+  </div></div>
+</nav>
+
+
+
+
+<div class="wrap">
+  <aside class="pane">
+    <div class="grp">
+      <span class="m">게임 화풍</span>
+      <p class="hint">실제 게임의 색·조명 특성을 배경 위에 그대로 입힙니다.</p>
+      <div class="styles" id="styles"></div>
+    </div>
+    <div class="grp">
+      <span class="m">배경</span>
+      <select class="field" id="bgsel"></select>
+      <p class="hint" id="setsrc"></p>
+      <p class="hint" id="shotnote" style="display:none;color:var(--warn)">※ 실제 게임 공식 스크린샷 · 시연 레퍼런스 용도</p>
+    </div>
+    <div class="grp">
+      <div class="row"><span class="m">조명 세기</span><output id="o-lit">100%</output></div>
+      <input type="range" id="r-lit" min="0" max="220" value="100">
+    </div>
+    <div class="grp">
+      <div class="row"><span class="m">안개</span><output id="o-fog">40%</output></div>
+      <input type="range" id="r-fog" min="0" max="100" value="40">
+    </div>
+    <div class="grp">
+      <div class="row"><span class="m">해상도</span><output id="o-res">100%</output></div>
+      <input type="range" id="r-res" min="10" max="100" value="100">
+      <p class="hint">낮추면 도트 게임처럼 픽셀이 드러납니다.</p>
+    </div>
+  </aside>
+
+  <div>
+    <div class="stage">
+      <canvas id="cv" width="1100" height="620"></canvas>
+      <div class="bar2">
+        <span class="m" id="stat"></span>
+        <span class="sp"></span>
+        <button class="btn" id="reset">배치 초기화</button>
+        <button class="btn p" id="save">이 화면 저장</button>
+      </div>
+    </div>
+    <p class="hint" id="gamenote" style="margin-top:9px;color:var(--muted)"></p>
+    <p class="hint" style="margin-top:6px">배경을 클릭하면 선택한 에셋이 놓입니다. 놓인 에셋은 드래그로 옮기고, 아래 슬라이더로 크기·회전을 조절합니다.</p>
+  </div>
+
+  <aside class="pane">
+    <div class="grp">
+      <span class="m">내 에셋</span>
+      <button class="btn" id="mapmode" aria-pressed="false" style="width:100%;margin-bottom:5px">◧ 맵 타일 조합</button>
+      <div class="tray" id="tray"></div>
+    </div>
+    <div class="grp">
+      <div class="row"><span class="m">크기</span><output id="o-sz">100%</output></div>
+      <input type="range" id="r-sz" min="20" max="260" value="100">
+    </div>
+    <div class="grp">
+      <div class="row"><span class="m">회전</span><output id="o-rot">0°</output></div>
+      <input type="range" id="r-rot" min="-180" max="180" value="0">
+    </div>
+    <div class="grp">
+      <span class="m">배치된 에셋</span>
+      <div class="placed" id="placed"></div>
+    </div>
+  </aside>
+</div>
+
+<script>
+(() => {
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const A = "./assets/scene/";
+
+/* ── 실제 게임 화풍 ── */
+const STYLES = [
+  /* ═══ 2D 화풍 ═══ */
+  { set: "pixel", id: "darkeden", dim: "2D", n: "다크에덴", d: "2D 도트 쿼터뷰 · 차가운 달빛", sw: "#7a5ac0",
+    bg: "dk2", grade: { br: .92, ct: 1.06, sat: .74, hue: 26, sep: 0 },
+    light: [{ x: .62, y: .18, r: .82, c: [150, 165, 255], i: .50 }, { x: .26, y: .52, r: .40, c: [178, 120, 255], i: .30 }],
+    fogC: [26, 20, 48], vig: .58, px: .34, grain: .03,
+    note: "조명이 평평하고 해상도가 낮아 도트 질감이 드러납니다." },
+
+  { set: "pixel", id: "diablo2", dim: "2D", n: "디아블로 2", d: "2D 아이소메트릭 · 어둡고 탁한 톤", sw: "#7a4020",
+    bg: "dk1", grade: { br: .70, ct: 1.28, sat: .60, hue: -10, sep: .18 },
+    light: [{ x: .34, y: .48, r: .52, c: [255, 160, 80], i: .52 }],
+    fogC: [24, 16, 12], vig: .78, px: .46, grain: .07,
+    note: "저해상도 2D 스프라이트 특유의 거친 질감과 좁은 광원." },
+
+  { set: "scifi", id: "starcraft", dim: "2D", n: "스타크래프트", d: "2D 아이소메트릭 SF · RTS 부감", sw: "#3f7fa8",
+    bg: "sc1", grade: { br: .94, ct: 1.16, sat: .88, hue: 6, sep: 0 },
+    light: [{ x: .5, y: .28, r: .95, c: [190, 220, 255], i: .30 }],
+    fogC: [18, 28, 40], vig: .40, px: .40, grain: .02,
+    note: "전장을 위에서 내려다보는 부감. 유닛이 작게 읽혀야 합니다." },
+
+  { set: "iso", id: "gothic", dim: "2D", n: "고딕 호러", d: "2D · 청록 안개 · 실루엣 위주", sw: "#2f7f8f",
+    bg: "dk1", grade: { br: .68, ct: 1.42, sat: .46, hue: 132, sep: .08 },
+    light: [{ x: .48, y: .30, r: .70, c: [90, 220, 235], i: .48 }],
+    fogC: [10, 26, 32], vig: .88, px: .58, grain: .06,
+    note: "형태를 실루엣으로만 읽게 만듭니다." },
+
+  { set: "pixel", id: "retro", dim: "2D", n: "도트 레트로", d: "2D · 저해상도 픽셀", sw: "#c0c0c0",
+    bg: "bg1", grade: { br: 1.0, ct: 1.14, sat: 1.0, hue: 0, sep: 0 },
+    light: [{ x: .5, y: .4, r: .9, c: [255, 224, 160], i: .26 }],
+    fogC: [16, 16, 26], vig: .46, px: .16, grain: 0,
+    note: "픽셀이 그대로 드러나는 해상도입니다." },
+
+  /* ═══ 3D 화풍 ═══ */
+  { set: "iso", id: "diablo4", dim: "3D", n: "Diablo IV", d: "3D 사실적 다크 판타지 · 강한 대비", sw: "#8a3018",
+    bg: "dk1", grade: { br: .74, ct: 1.34, sat: .68, hue: -6, sep: .12 },
+    light: [{ x: .30, y: .46, r: .60, c: [255, 148, 60], i: .62 }, { x: .74, y: .60, r: .48, c: [255, 120, 40], i: .44 }],
+    fogC: [26, 14, 8], vig: .82, px: 1, grain: .05,
+    note: "광원 밖은 거의 보이지 않을 만큼 대비가 큽니다." },
+
+  { set: "real", id: "tlou", dim: "3D", n: "라스트 오브 어스", d: "3D 사실적 · 폐허 · 시네마틱 색보정", sw: "#6a7a5a",
+    bg: "rl-abandoned_workshop_02", grade: { br: .88, ct: 1.22, sat: .62, hue: -4, sep: .10 },
+    light: [{ x: .68, y: .30, r: .78, c: [214, 226, 214], i: .42 }, { x: .22, y: .58, r: .34, c: [255, 196, 130], i: .20 }],
+    fogC: [46, 52, 44], vig: .74, grain: .06, px: 1, teal: .18,
+    note: "탈색된 녹회색 톤. 창으로 들어오는 자연광 하나가 주광원입니다." },
+
+  { set: "real", id: "tlou2", dim: "3D", n: "폐공장 · 사실적", d: "3D 사실적 · 차가운 형광 조명", sw: "#5f7a86",
+    bg: "rl-abandoned_factory_canteen_01", grade: { br: .94, ct: 1.18, sat: .58, hue: 8, sep: .06 },
+    light: [{ x: .5, y: .22, r: .90, c: [200, 224, 238], i: .40 }],
+    fogC: [44, 54, 60], vig: .66, grain: .05, px: 1, teal: .22,
+    note: "낮은 채도와 차가운 형광 조명. 실내 폐허의 표준적인 룩입니다." },
+
+  { set: "real", id: "ruin3d", dim: "3D", n: "폐허 실내 · 자연광", d: "3D 사실적 · 창광 · 먼지", sw: "#8a7a62",
+    bg: "rl-abandoned_tiled_room", grade: { br: 1.0, ct: 1.12, sat: .74, hue: -2, sep: .08 },
+    light: [{ x: .32, y: .26, r: .72, c: [255, 232, 196], i: .48 }],
+    fogC: [64, 58, 50], vig: .58, grain: .04, px: 1,
+    note: "창에서 들어오는 빛과 떠다니는 먼지가 공간감을 만듭니다." },
+
+  { set: "render3d", id: "valheim", dim: "3D", n: "Valheim", d: "3D 로우폴리 · 짙은 안개", sw: "#6d8a5a",
+    bg: "bg1", grade: { br: 1.02, ct: .94, sat: .84, hue: -6, sep: .06 },
+    light: [{ x: .40, y: .34, r: .90, c: [255, 226, 176], i: .34 }],
+    fogC: [154, 168, 160], vig: .40, px: .82, grain: .02,
+    note: "안개가 거리감을 만들고 명암이 부드럽습니다." },
+
+  { set: "render3d", id: "genshin", dim: "3D", n: "원신", d: "3D 셀 · 밝고 채도 높음", sw: "#7fc4e8",
+    bg: "bg2", grade: { br: 1.30, ct: 1.02, sat: 1.34, hue: 4, sep: 0 },
+    light: [{ x: .52, y: .24, r: .95, c: [255, 244, 214], i: .40 }],
+    fogC: [196, 228, 242], vig: .22, px: 1, grain: 0,
+    note: "그림자를 얕게 두어 색이 선명하게 남습니다." },
+];
+
+const BGS = [
+  ["dk1", "어두운 폐허 · 아이소메트릭 (CC0 Cethiel)"],
+  ["dk2", "어두운 폐허 · 변형"],
+  ["sc1", "SF 전장 · 부감 (CC0 Kenney)"],
+  ["sc2", "SF 전장 · 변형"],
+  ["bg1", "던전 실내 (CC0 Kenney)"],
+  ["bg2", "던전 · 변형"],
+  ["rl-abandoned_workshop_02", "폐작업장 · 사실적 (CC0 Poly Haven)"],
+  ["rl-abandoned_factory_canteen_01", "폐공장 식당 · 사실적"],
+  ["rl-abandoned_tiled_room", "폐허 타일방 · 사실적"],
+  ["rl-industrial_pipe_and_valve_01", "산업 설비 · 사실적"],
+  ["rl-lythwood_room", "실내 · 자연광"],
+];
+
+/* 에셋 풀 — 화풍 계열별 스프라이트 묶음 */
+const POOLS = {
+  pixel: { n: "픽셀 도트", src: "Project Utumno · CC0",
+    sprites: [["px-char1","전사"],["px-char2","기사"],["px-char3","마법사"],["px-mon1","몬스터"],["px-mon3","괴수"],
+              ["px-item1","무기 A"],["px-item2","무기 B"],["px-item3","방어구"],["px-item4","물약"],["px-item5","보물"],["px-item6","유물"]] },
+  iso:   { n: "판타지 3D", src: "Kenney Mini Dungeon · CC0",
+    sprites: [["s-character-human","캐릭터"],["s-character-orc","오크"],["s-weapon-sword","대검"],["s-weapon-spear","창"],
+              ["s-shield-round","방패"],["s-chest","상자"],["s-barrel","나무통"],["s-banner","깃발"],["s-coin","동전"],["s-column","기둥"]] },
+  scifi: { n: "SF", src: "Kenney Sci-fi RTS · CC0",
+    sprites: [["sf-unit01","유닛 A"],["sf-unit03","유닛 B"],["sf-unit05","유닛 C"],["sf-unit08","유닛 D"],
+              ["sf-struct01","구조물 A"],["sf-struct03","구조물 B"],["sf-struct05","구조물 C"],["sf-struct08","구조물 D"],
+              ["sf-env01","지형물 A"],["sf-env04","지형물 B"]] },
+  real:  { n: "사실적 소품", src: "Poly Haven · CC0",
+    sprites: [["rp-wooden_crate_02","나무 상자"],["rp-steel_frame_shelves_01","철제 선반"],["rp-concrete_cat_statue","석상"]] },
+};
+/* 맵 타일 — 바닥·구조물 조합용 */
+const MAPTILES = [["mt-tile00","바닥 A"],["mt-tile01","바닥 B"],["mt-tile02","바닥 C"],["mt-tile03","바닥 D"],
+                  ["mt-tile04","벽 A"],["mt-tile05","벽 B"],["mt-tile06","장식 A"],["mt-tile07","장식 B"],
+                  ["L01","폐허 레이어 1"],["L05","폐허 레이어 2"],["L09","폐허 레이어 3"],
+                  ["L13","폐허 레이어 4"],["L17","폐허 레이어 5"],["L19","폐허 레이어 6"],["L21","폐허 레이어 7"]];
+
+/* 게임별 — 실제 공식 스크린샷 + 어울리는 에셋 풀 + 기본 배치 */
+const G = (id,n,dim,pool,shots,grade,light,fogC,vig,px,grain,preset,note,sw,teal) =>
+  ({id,n,dim,pool,shots,grade,light,fogC,vig,px,grain,preset,note,sw,teal});
+const P = (k,x,y,s,r) => ({key:k,x,y,s,r});
+
+const GAMES = [
+  /* ── 3D ── */
+  G("diablo4","Diablo IV","3D","iso",[],
+    {br:.86,ct:1.22,sat:.74,hue:-6,sep:.10},[{x:.30,y:.46,r:.58,c:[255,148,60],i:.50},{x:.74,y:.60,r:.44,c:[255,120,40],i:.34}],
+    [26,14,8],.72,1,.04,[P("s-character-human",.40,.72,1.05,0),P("s-weapon-sword",.53,.66,.9,-24),P("s-barrel",.76,.78,.8,0)],
+    "횃불 하나가 지배하는 강한 명암. 에셋도 그 광원 방향을 따라야 합니다.","#8a3018"),
+
+  G("eldenring","엘든 링","3D","iso",[],
+    {br:.94,ct:1.14,sat:.72,hue:4,sep:.08},[{x:.56,y:.28,r:.86,c:[236,220,180],i:.36}],
+    [58,54,44],.62,1,.03,[P("s-character-human",.34,.74,1.1,0),P("s-weapon-spear",.47,.66,1.0,-18),P("s-column",.80,.66,1.0,0)],
+    "탈색된 자연광. 넓은 공간에 실루엣이 크게 놓입니다.","#8a7a4a"),
+
+  G("ds3","다크 소울 3","3D","iso",[],
+    {br:.80,ct:1.28,sat:.62,hue:-2,sep:.14},[{x:.44,y:.34,r:.66,c:[255,190,120],i:.40}],
+    [34,30,26],.80,1,.05,[P("s-character-human",.36,.76,1.0,0),P("s-weapon-sword",.49,.68,.92,-28),P("s-shield-round",.26,.70,.72,10)],
+    "재와 먼지가 낀 회갈색. 채도를 낮춰야 어울립니다.","#6a5a48"),
+
+  G("bg3","발더스 게이트 3","3D","iso",[],
+    {br:1.02,ct:1.08,sat:.92,hue:2,sep:.04},[{x:.50,y:.26,r:.90,c:[255,232,200],i:.40}],
+    [64,60,54],.48,1,.02,[P("s-character-human",.38,.72,1.0,0),P("s-character-orc",.62,.70,.95,0),P("s-chest",.78,.78,.8,0)],
+    "쿼터뷰 RPG의 균형 잡힌 조명. 여러 캐릭터가 함께 읽혀야 합니다.","#7a6a9a"),
+
+  G("tlou","라스트 오브 어스","3D","real",[],
+    {br:.94,ct:1.16,sat:.66,hue:-4,sep:.08},[{x:.68,y:.30,r:.74,c:[214,226,214],i:.34},{x:.22,y:.58,r:.32,c:[255,196,130],i:.16}],
+    [46,52,44],.66,1,.05,[P("rp-wooden_crate_02",.34,.76,1.0,0),P("rp-steel_frame_shelves_01",.68,.66,1.1,0)],
+    "탈색된 녹회색. 창광 하나가 주광원이라 소품도 그쪽을 향해야 합니다.","#6a7a5a",.16),
+
+  G("pubg","배틀그라운드","3D","real",[],
+    {br:1.0,ct:1.10,sat:.86,hue:0,sep:.02},[{x:.50,y:.22,r:.92,c:[255,246,230],i:.34}],
+    [80,84,86],.44,1,.02,[P("rp-wooden_crate_02",.30,.78,1.0,0),P("rp-steel_frame_shelves_01",.72,.70,1.0,0)],
+    "색 보정이 거의 없는 사실적 노출.","#8a8a7a"),
+
+  G("cyberpunk","사이버펑크 2077","3D","scifi",[],
+    {br:.96,ct:1.20,sat:1.24,hue:8,sep:0},[{x:.30,y:.40,r:.60,c:[255,80,200],i:.44},{x:.72,y:.46,r:.56,c:[80,220,255],i:.40}],
+    [30,20,44],.60,1,.04,[P("sf-unit01",.36,.74,1.0,0),P("sf-struct01",.70,.66,1.1,0)],
+    "네온 두 색이 서로를 밀어냅니다. 에셋에도 두 색이 얹혀야 합니다.","#d040c0"),
+
+  G("valheim","발헤임","3D","iso",[],
+    {br:1.04,ct:.96,sat:.84,hue:-6,sep:.05},[{x:.40,y:.30,r:.88,c:[255,226,176],i:.30}],
+    [154,168,160],.36,1,.02,[P("s-character-human",.38,.74,1.0,0),P("s-banner",.70,.66,1.0,0),P("s-barrel",.60,.80,.8,0)],
+    "짙은 안개가 거리감을 만듭니다. 멀리 놓을수록 흐려져야 자연스럽습니다.","#6d8a5a"),
+
+  /* ── 2D ── */
+  G("darkeden","다크에덴","2D","pixel",[["dk1","어두운 폐허 (CC0 대체)"],["dk2","변형"]],
+    {br:.92,ct:1.08,sat:.72,hue:24,sep:0},[{x:.60,y:.18,r:.80,c:[150,165,255],i:.46},{x:.26,y:.52,r:.38,c:[178,120,255],i:.28}],
+    [26,20,48],.56,.34,.03,[P("px-char1",.40,.70,1.0,0),P("px-mon1",.66,.66,1.0,0),P("px-item1",.52,.78,.8,0)],
+    "Steam 미출시라 공식 스크린샷을 쓸 수 없어, 같은 계열의 CC0 아이소메트릭 폐허로 대체했습니다.","#7a5ac0"),
+
+  G("hollow","할로우 나이트","2D","pixel",[],
+    {br:.86,ct:1.24,sat:.70,hue:120,sep:.04},[{x:.48,y:.32,r:.66,c:[90,220,235],i:.36}],
+    [10,26,32],.70,1,.03,[P("px-char2",.38,.72,1.0,0),P("px-mon3",.68,.68,1.0,0)],
+    "청록 발광과 깊은 어둠. 실루엣이 또렷해야 살아남습니다.","#2f7f8f"),
+
+  G("hades","하데스","2D","pixel",[],
+    {br:1.02,ct:1.14,sat:1.16,hue:-6,sep:0},[{x:.46,y:.38,r:.70,c:[255,150,90],i:.40}],
+    [40,20,30],.56,1,.02,[P("px-char3",.38,.72,1.0,0),P("px-mon1",.66,.68,1.0,0),P("px-item5",.54,.80,.8,0)],
+    "붉은 조명에 채도가 높습니다. 아이소메트릭 부감이라 발밑이 보여야 합니다.","#c85a3a"),
+
+  G("deadcells","데드 셀","2D","pixel",[],
+    {br:.96,ct:1.18,sat:1.02,hue:10,sep:0},[{x:.42,y:.36,r:.68,c:[120,220,255],i:.34}],
+    [22,28,40],.60,.62,.02,[P("px-char1",.36,.74,1.0,0),P("px-item2",.50,.68,.9,-20)],
+    "고해상도 도트. 픽셀이 살아 있으면서도 조명은 부드럽습니다.","#4a9ad0"),
+
+  G("stardew","스타듀 밸리","2D","pixel",[],
+    {br:1.10,ct:1.02,sat:1.10,hue:0,sep:0},[{x:.50,y:.24,r:.92,c:[255,244,200],i:.30}],
+    [180,200,170],.24,.44,0,[P("px-char2",.40,.72,1.0,0),P("px-item4",.58,.76,.8,0)],
+    "밝고 따뜻한 저해상도 도트. 어두운 에셋은 겉돕니다.","#8ac06a"),
+
+  G("terraria","테라리아","2D","pixel",[],
+    {br:1.0,ct:1.10,sat:1.06,hue:0,sep:0},[{x:.46,y:.34,r:.74,c:[255,220,160],i:.32}],
+    [40,36,50],.50,.30,0,[P("px-char1",.38,.72,1.0,0),P("px-item1",.52,.68,.9,-16)],
+    "작은 도트. 에셋 해상도를 맞추지 않으면 바로 티가 납니다.","#7aa0c0"),
+
+  G("cuphead","컵헤드","2D","pixel",[],
+    {br:1.14,ct:1.06,sat:1.06,hue:6,sep:.16},[{x:.50,y:.30,r:.90,c:[255,240,210],i:.28}],
+    [220,200,160],.30,1,.06,[P("px-char3",.38,.72,1.0,0),P("px-mon3",.66,.68,1.0,0)],
+    "1930년대 셀 애니. 종이 질감과 세피아가 특징입니다.","#c8a050"),
+
+  G("ori","오리","2D","pixel",[],
+    {br:1.06,ct:1.10,sat:1.20,hue:-8,sep:0},[{x:.44,y:.32,r:.80,c:[150,230,255],i:.42}],
+    [30,60,80],.52,1,.02,[P("px-char3",.38,.72,1.0,0),P("px-item6",.58,.66,.8,0)],
+    "회화적인 배경에 발광하는 주인공. 대비가 큽니다.","#5ac0d8"),
+
+  G("sts","슬레이 더 스파이어","2D","pixel",[],
+    {br:1.0,ct:1.10,sat:.96,hue:0,sep:.04},[{x:.50,y:.30,r:.86,c:[255,220,180],i:.30}],
+    [40,32,44],.48,1,.02,[P("px-char2",.30,.70,1.0,0),P("px-mon1",.70,.68,1.1,0)],
+    "카드 UI가 화면 하단을 차지합니다. 캐릭터는 좌우로 갈립니다.","#a06a4a"),
+];
+
+/* ── 상태 ── */
+let cur = GAMES[0], bgKey = cur.shots[0][0], pick = POOLS[cur.pool].sprites[0][0];
+let userLit = 1, userFog = .4, userRes = 1, mapMode = false;
+const items = [];
+let sel = -1, dragging = false, dragOff = [0, 0];
+
+const BGKEYS = new Set(GAMES.flatMap(g => g.shots.map(x => x[0])));
+const SPRKEYS = new Set([...Object.values(POOLS).flatMap(P => P.sprites.map(x => x[0])), ...MAPTILES.map(x => x[0])]);
+const NAMES = Object.fromEntries([...Object.values(POOLS).flatMap(P => P.sprites), ...MAPTILES]);
+const ext = k => BGKEYS.has(k) ? ".jpg" : ".png";
+const IMGS = {};
+const need = [...BGKEYS, ...SPRKEYS];
+let loaded = 0;
+need.forEach(k => {
+  const im = new Image();
+  im.onload = im.onerror = () => { if (++loaded === need.length) { applyGame(cur); } };
+  im.src = A + k + ext(k);
+  IMGS[k] = im;
+});
+
+/* ── UI ── */
+$("#styles").innerHTML = ["3D", "2D"].map(dim =>
+  `<div class="dimlab m">${dim} 게임</div>` + GAMES.filter(g => g.dim === dim).map(g =>
+    `<button class="sb" data-id="${g.id}" style="--sw:${g.sw}"><i></i><span>${g.n}<small>${g.shots.length}장 · ${POOLS[g.pool].n}</small></span></button>`).join("")
+).join("");
+
+$("#styles").addEventListener("click", ev => {
+  const b = ev.target.closest(".sb");
+  if (!b || !b.dataset.id) return;
+  const g = GAMES.find(x => x.id === b.dataset.id);
+  if (g) applyGame(g);
+});
+
+function applyGame(g) {
+  cur = g; bgKey = g.shots[0][0];
+  $$("#styles .sb").forEach(o => o.setAttribute("aria-pressed", String(o.dataset.id === g.id)));
+  $("#bgsel").innerHTML = g.shots.map(([k, n]) => `<option value="${k}">${n}</option>`).join("");
+  $("#bgsel").value = bgKey;
+  items.length = 0;
+  g.preset.forEach(pp => items.push({ ...pp }));
+  sel = items.length - 1;
+  buildTray(); renderPlaced(); syncSel(); refreshNote(); draw();
+}
+
+function buildTray() {
+  const list = mapMode ? MAPTILES : POOLS[cur.pool].sprites;
+  $("#tray").innerHTML = list.map(([k, n]) =>
+    `<button class="tb" data-k="${k}" title="${n}"><img src="${A}${k}${ext(k)}" alt="${n}"></button>`).join("");
+  if (!list.some(([k]) => k === pick)) pick = list[0][0];
+  $$("#tray .tb").forEach(b => {
+    b.setAttribute("aria-pressed", String(b.dataset.k === pick));
+    b.onclick = () => { pick = b.dataset.k; $$("#tray .tb").forEach(o => o.setAttribute("aria-pressed", String(o === b))); };
+  });
+}
+
+function refreshNote() {
+  const isShot = !bgKey.startsWith("dk");
+  $("#setsrc").textContent = POOLS[cur.pool].n + " · " + POOLS[cur.pool].src;
+  $("#shotnote").style.display = isShot ? "block" : "none";
+  $("#gamenote").textContent = cur.note || "";
+}
+
+$("#bgsel").onchange = e => { bgKey = e.target.value; refreshNote(); draw(); };
+$("#mapmode").onclick = () => {
+  mapMode = !mapMode;
+  $("#mapmode").setAttribute("aria-pressed", String(mapMode));
+  $("#mapmode").textContent = mapMode ? "◧ 맵 타일 (켜짐)" : "◧ 맵 타일 조합";
+  buildTray();
+};
+
+const bind = (id, out, fmt, set) => $(id).oninput = e => { set(+e.target.value); $(out).value = fmt(+e.target.value); draw(); };
+bind("#r-lit", "#o-lit", v => v + "%", v => userLit = v / 100);
+bind("#r-fog", "#o-fog", v => v + "%", v => userFog = v / 100);
+bind("#r-res", "#o-res", v => v + "%", v => userRes = v / 100);
+$("#r-sz").oninput = e => { if (items[sel]) { items[sel].s = +e.target.value / 100; $("#o-sz").value = e.target.value + "%"; draw(); } };
+$("#r-rot").oninput = e => { if (items[sel]) { items[sel].r = +e.target.value; $("#o-rot").value = e.target.value + "°"; draw(); } };
+$("#reset").onclick = () => applyGame(cur);
+$("#save").onclick = () => {
+  const a2 = document.createElement("a");
+  a2.download = `indygg-${cur.id}.png`; a2.href = $("#cv").toDataURL("image/png"); a2.click();
+};
+
+/* ── 배치 ── */
+const cv = $("#cv");
+const rel = ev => { const r = cv.getBoundingClientRect(); return [(ev.clientX - r.left) / r.width, (ev.clientY - r.top) / r.height]; };
+const hit = (px2, py2) => {
+  for (let i = items.length - 1; i >= 0; i--) {
+    const it = items[i], im = IMGS[it.key]; if (!im || !im.width) continue;
+    const w = (im.width * it.s * .34) / cv.width, h = (im.height * it.s * .34) / cv.height;
+    if (Math.abs(px2 - it.x) < w / 2 && Math.abs(py2 - it.y) < h / 2) return i;
+  }
+  return -1;
+};
+cv.addEventListener("pointerdown", ev => {
+  const [px2, py2] = rel(ev); const i = hit(px2, py2);
+  if (i >= 0) { sel = i; dragging = true; dragOff = [px2 - items[i].x, py2 - items[i].y]; cv.classList.add("drag"); cv.setPointerCapture(ev.pointerId); }
+  else { items.push({ key: pick, x: px2, y: py2, s: 1, r: 0 }); sel = items.length - 1; }
+  renderPlaced(); syncSel(); draw();
+});
+cv.addEventListener("pointermove", ev => {
+  if (!dragging || !items[sel]) return;
+  const [px2, py2] = rel(ev); items[sel].x = px2 - dragOff[0]; items[sel].y = py2 - dragOff[1]; draw();
+});
+cv.addEventListener("pointerup", () => { dragging = false; cv.classList.remove("drag"); });
+
+function syncSel() {
+  const it = items[sel]; if (!it) return;
+  $("#r-sz").value = it.s * 100; $("#o-sz").value = Math.round(it.s * 100) + "%";
+  $("#r-rot").value = it.r; $("#o-rot").value = it.r + "°";
+}
+function renderPlaced() {
+  $("#placed").innerHTML = items.map((it, i) =>
+    `<div class="pl" data-i="${i}" ${i === sel ? 'aria-pressed="true"' : ""}>
+      <img src="${A}${it.key}${ext(it.key)}" alt=""><b>${NAMES[it.key] || it.key}</b><button data-del="${i}">✕</button></div>`
+  ).join("") || `<span class="hint">아직 없습니다</span>`;
+  $$("#placed .pl").forEach(el2 => {
+    el2.onclick = ev => { if (ev.target.dataset.del) return; sel = +el2.dataset.i; renderPlaced(); syncSel(); draw(); };
+  });
+  $$("#placed [data-del]").forEach(b => b.onclick = ev => {
+    ev.stopPropagation(); items.splice(+b.dataset.del, 1); sel = Math.min(sel, items.length - 1); renderPlaced(); syncSel(); draw();
+  });
+}
+
+/* ── 렌더 ── */
+const off = document.createElement("canvas");
+const tintCache = {};
+function bgTint(key) {                        // 배경 평균색 → 에셋에 얹을 조명색
+  if (tintCache[key]) return tintCache[key];
+  const im = IMGS[key]; if (!im || !im.width) return [255, 255, 255];
+  const t = document.createElement("canvas"); t.width = 24; t.height = 14;
+  const tx = t.getContext("2d"); tx.drawImage(im, 0, 0, 24, 14);
+  const d = tx.getImageData(0, 0, 24, 14).data;
+  let r = 0, g = 0, b2 = 0;
+  for (let i = 0; i < d.length; i += 4) { r += d[i]; g += d[i + 1]; b2 += d[i + 2]; }
+  const n = d.length / 4;
+  return tintCache[key] = [r / n, g / n, b2 / n];
+}
+
+function draw() {
+  const W = cv.width, H = cv.height;
+  const isShot = !bgKey.startsWith("dk");
+  const k = isShot ? .30 : 1;
+  const g0 = cur.grade;
+  const g = { br: 1 + (g0.br - 1) * k, ct: 1 + (g0.ct - 1) * k, sat: 1 + (g0.sat - 1) * k,
+              hue: g0.hue * k, sep: g0.sep * k };
+  const pxs = isShot ? Math.max(.06, userRes) : Math.max(.06, cur.px * userRes);
+  const rw = Math.max(64, Math.round(W * pxs)), rh = Math.max(36, Math.round(H * pxs));
+  off.width = rw; off.height = rh;
+  const x = off.getContext("2d");
+  x.save(); x.scale(rw / W, rh / H);
+
+  const bg = IMGS[bgKey];
+  x.filter = `brightness(${g.br}) contrast(${g.ct}) saturate(${g.sat}) hue-rotate(${g.hue}deg) sepia(${g.sep})`;
+  if (bg && bg.width) {
+    const sc = Math.max(W / bg.width, H / bg.height);
+    x.drawImage(bg, (W - bg.width * sc) / 2, (H - bg.height * sc) / 2, bg.width * sc, bg.height * sc);
+  } else { x.fillStyle = "#101018"; x.fillRect(0, 0, W, H); }
+  x.filter = "none";
+
+  if (cur.teal) {
+    x.save(); x.globalCompositeOperation = "multiply"; x.globalAlpha = cur.teal * (isShot ? .5 : 1);
+    const tg = x.createLinearGradient(0, 0, 0, H);
+    tg.addColorStop(0, "rgba(160,200,215,1)"); tg.addColorStop(1, "rgba(225,200,170,1)");
+    x.fillStyle = tg; x.fillRect(0, 0, W, H); x.restore();
+  }
+  const F = cur.fogC, fa = userFog * .55 * (isShot ? .34 : 1);
+  x.fillStyle = `rgba(${F[0]},${F[1]},${F[2]},${fa})`; x.fillRect(0, 0, W, H);
+
+  /* 에셋 — 배경 평균색으로 물들여 붙게 만듭니다 */
+  const T = bgTint(bgKey);
+  items.forEach((it, i) => {
+    const im = IMGS[it.key]; if (!im || !im.width) return;
+    const w = im.width * it.s * .34, h = im.height * it.s * .34;
+    x.save();
+    x.translate(it.x * W, it.y * H); x.rotate(it.r * Math.PI / 180);
+    x.save(); x.globalAlpha = .40; x.filter = "blur(6px)";
+    x.fillStyle = "#000"; x.beginPath(); x.ellipse(0, h * .40, w * .30, h * .075, 0, 0, 7); x.fill(); x.restore();
+    x.filter = `brightness(${(g.br * .5 + .5) * (.85 + userLit * .25)}) contrast(${g.ct}) saturate(${g.sat * 1.04}) hue-rotate(${g.hue * .7}deg)`;
+    x.drawImage(im, -w / 2, -h / 2, w, h);
+    x.filter = "none";
+    // 배경색 물들이기
+    x.save(); x.globalCompositeOperation = "source-atop"; x.globalAlpha = .26;
+    x.fillStyle = `rgb(${T[0] | 0},${T[1] | 0},${T[2] | 0})`;
+    x.fillRect(-w / 2, -h / 2, w, h); x.restore();
+    if (i === sel) {
+      x.strokeStyle = "rgba(83,131,232,.9)"; x.lineWidth = 2; x.setLineDash([6, 4]);
+      x.strokeRect(-w / 2, -h / 2, w, h); x.setLineDash([]);
+    }
+    x.restore();
+  });
+
+  x.save(); x.globalCompositeOperation = "lighter";
+  cur.light.forEach(L => {
+    const rg = x.createRadialGradient(L.x * W, L.y * H, 4, L.x * W, L.y * H, L.r * Math.max(W, H) * .6);
+    const ii = L.i * userLit * (isShot ? .55 : 1);
+    rg.addColorStop(0, `rgba(${L.c[0]},${L.c[1]},${L.c[2]},${ii})`);
+    rg.addColorStop(.42, `rgba(${L.c[0]},${L.c[1]},${L.c[2]},${ii * .28})`);
+    rg.addColorStop(1, `rgba(${L.c[0]},${L.c[1]},${L.c[2]},0)`);
+    x.fillStyle = rg; x.fillRect(0, 0, W, H);
+  });
+  x.restore();
+
+  const vg = x.createRadialGradient(W / 2, H * .52, H * .22, W / 2, H * .52, H * 1.05);
+  vg.addColorStop(0, "rgba(0,0,0,0)"); vg.addColorStop(1, `rgba(0,0,0,${cur.vig * (isShot ? .55 : 1)})`);
+  x.fillStyle = vg; x.fillRect(0, 0, W, H);
+
+  if (cur.grain > 0) for (let i = 0; i < 700; i++)
+    { x.fillStyle = `rgba(255,255,255,${Math.random() * cur.grain})`; x.fillRect(Math.random() * W, Math.random() * H, 1.4, 1.4); }
+  x.restore();
+
+  const c = cv.getContext("2d");
+  c.imageSmoothingEnabled = pxs > .5;
+  c.clearRect(0, 0, W, H);
+  c.drawImage(off, 0, 0, rw, rh, 0, 0, W, H);
+
+  $("#stat").textContent = `${cur.n} · ${POOLS[cur.pool].n} · 배치 ${items.length}개${isShot ? " · 공식 스크린샷" : " · CC0 대체"}`;
+}
+
+})();
+</script>

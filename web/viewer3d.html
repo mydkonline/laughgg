@@ -1,0 +1,447 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>IndyGG — 3D 뷰어</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root {
+    --bg: #121216; --panel: #191920; --panel2: #20202a; --line: #2e2e3a;
+    --ink: #EBEBEF; --muted: #9AA4AF; --faint: #6E6E7C;
+    --accent: #5383E8; --navy: #28344E; --warn: #F0B457; --pass: #3FBF8F;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font-family: Roboto, system-ui, -apple-system, "Apple SD Gothic Neo", Pretendard, sans-serif;
+    font-size: 13px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  .m { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  select, input { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  header { background: var(--navy); height: 50px; display: flex; align-items: center; gap: 14px; padding: 0 18px; }
+  header .lg { display: flex; align-items: center; gap: 7px; color: #fff; font-weight: 900; font-size: 15px; letter-spacing: -.03em; }
+  header .lg i { width: 14px; height: 14px; border: 3px solid #fff; border-radius: 50%; display: block; }
+  header .ttl { color: #C3CBD1; font-size: 12.5px; }
+  header .sp { margin-left: auto; }
+  header a { color: #C3CBD1; text-decoration: none; font-size: 12px; padding: 5px 11px; border: 1px solid rgba(255,255,255,.22); border-radius: 4px; }
+  header a:hover { color: #fff; border-color: #fff; }
+
+  .wrap { display: grid; grid-template-columns: 246px minmax(0,1fr); gap: 14px; padding: 14px; height: calc(100vh - 50px); }
+  @media (max-width: 900px) { .wrap { grid-template-columns: 1fr; height: auto; } }
+
+  .side { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 14px;
+    display: flex; flex-direction: column; gap: 15px; overflow-y: auto; }
+  .grp { display: flex; flex-direction: column; gap: 7px; }
+  .grp > .m { color: var(--faint); }
+  .hint { color: var(--faint); font-size: 11px; line-height: 1.5; }
+
+  .gsel { display: flex; flex-direction: column; gap: 4px; }
+  .gbtn2 { display: flex; align-items: center; gap: 9px; padding: 7px 9px; border-radius: 5px;
+    border: 1px solid var(--line); color: var(--muted); text-align: left; font-size: 12px; }
+  .gbtn2:hover { border-color: var(--accent); color: var(--ink); }
+  .gbtn2[aria-pressed="true"] { border-color: var(--accent); background: rgba(83,131,232,.14); color: var(--accent); font-weight: 700; }
+  .gbtn2 i { width: 10px; height: 10px; border-radius: 2px; background: var(--sw); flex: none; }
+  .gbtn2 small { display: block; color: var(--faint); font-weight: 400; font-size: 10px; }
+
+  .field { width: 100%; padding: 7px 10px; border-radius: 4px; background: var(--bg); border: 1px solid var(--line); }
+  input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: 3px; background: var(--panel2); }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; background: var(--accent); border: 2px solid var(--panel); cursor: grab; }
+  .row { display: flex; justify-content: space-between; align-items: baseline; }
+  .row output { font-weight: 700; font-variant-numeric: tabular-nums; font-size: 12px; }
+
+  .stage { position: relative; background: #000; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  #gl { display: block; width: 100%; height: 100%; }
+  .load { position: absolute; inset: 0; display: grid; place-items: center; background: #0b0b10; color: var(--muted); gap: 10px; }
+  .load b { display: block; font-size: 15px; color: var(--ink); }
+  .bar { width: 190px; height: 3px; background: var(--panel2); border-radius: 2px; overflow: hidden; margin-top: 9px; }
+  .bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s; }
+  .hud { position: absolute; left: 12px; bottom: 12px; display: flex; gap: 14px; flex-wrap: wrap;
+    padding: 9px 13px; background: rgba(8,8,12,.72); backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,.10); border-radius: 5px; }
+  .hud div b { display: block; font-size: 13px; font-variant-numeric: tabular-nums; }
+  .hud div span { color: var(--faint); font-size: 10px; }
+  .tip { position: absolute; right: 12px; top: 12px; padding: 6px 11px; background: rgba(8,8,12,.72);
+    border: 1px solid rgba(255,255,255,.10); border-radius: 5px; color: var(--muted); font-size: 11px; }
+</style>
+
+<style id="igg-nav-css">
+  :root { --igg-navy:#28344E; --igg-dark:#1C1C1F; --igg-blue:#5383E8; --igg-dim:#9AA4AF; }
+  .igg-nav, .igg-nav * { box-sizing: border-box; }
+  .igg-nav { position: sticky; top: 0; z-index: 9000;
+    font-family: Roboto, system-ui, -apple-system, "Apple SD Gothic Neo", Pretendard, sans-serif; }
+  .igg-r1 { background: var(--igg-dark); border-bottom: 1px solid #2E2E35; }
+  .igg-r1in { max-width: 1240px; margin: 0 auto; padding: 0 20px; height: 44px;
+    display: flex; align-items: center; gap: 16px; }
+  .igg-logo { display: flex; align-items: center; gap: 7px; color: #fff; font-weight: 900;
+    font-size: 16px; letter-spacing: -.03em; text-decoration: none; flex: none; }
+  .igg-logo i { width: 15px; height: 15px; border: 3px solid #fff; border-radius: 50%; display: block; }
+  .igg-logo b { font-weight: 900; }
+  .igg-logo span { font-size: 9px; letter-spacing: .16em; color: #7B8494; font-weight: 700; }
+  .igg-r1 .igg-sp { margin-left: auto; }
+  .igg-ghost { padding: 5px 12px; border-radius: 4px; background: #424254; color: #C3CBD1;
+    font-size: 11.5px; text-decoration: none; border: 0; cursor: pointer; }
+  .igg-ghost:hover { background: #4E4E60; color: #fff; }
+  .igg-cta { padding: 5px 12px; border-radius: 4px; background: var(--igg-blue); color: #fff;
+    font-size: 11.5px; font-weight: 700; text-decoration: none; }
+
+  .igg-r2 { background: var(--igg-navy); }
+  .igg-r2in { max-width: 1240px; margin: 0 auto; padding: 0 20px; height: 46px;
+    display: flex; align-items: center; gap: 14px; }
+  .igg-tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+  .igg-tabs::-webkit-scrollbar { display: none; }
+  .igg-tabs a { padding: 6px 12px; border-radius: 4px; color: #C3CBD1; font-size: 12.5px;
+    text-decoration: none; white-space: nowrap; display: flex; align-items: center; gap: 4px; }
+  .igg-tabs a:hover { background: rgba(255,255,255,.09); color: #fff; }
+  .igg-tabs a[aria-current="page"] { background: var(--igg-blue); color: #fff; font-weight: 700; }
+  .igg-tabs sup { font-size: 8px; color: #FF6B7A; font-weight: 800; }
+  .igg-tabs a[aria-current="page"] sup { color: #FFD9DE; }
+  .igg-search { margin-left: auto; display: flex; align-items: center; gap: 6px;
+    background: #31313C; padding: 6px 10px; min-width: 190px; }
+  .igg-search input { background: none; border: 0; outline: none; color: #fff;
+    font-size: 12px; width: 100%; font-family: inherit; }
+  .igg-search input::placeholder { color: #7B8494; }
+  @media (max-width: 760px) { .igg-search { display: none; } }
+</style>
+
+<nav class="igg-nav">
+  <div class="igg-r1"><div class="igg-r1in">
+    <a class="igg-logo" href="index.html"><i></i><b>IndyGG</b><span>BY OP.GG</span></a>
+    <span class="igg-sp"></span>
+    <button class="igg-ghost" type="button">로그인</button>
+    <a class="igg-cta" href="creators.html">에셋 올리기</a>
+  </div></div>
+  <div class="igg-r2"><div class="igg-r2in">
+    <div class="igg-tabs"><a href="index.html">마켓</a><a href="community.html">커뮤니티</a><a href="creators.html">창작자</a><a href="scene.html">화풍 시연<sup>N</sup></a><a href="viewer3d.html" aria-current="page">3D 뷰어</a></div>
+    <span class="igg-search">🔍<input placeholder="에셋 · 창작자 · 게임 검색" autocomplete="off"></span>
+  </div></div>
+</nav>
+
+
+
+
+<div class="wrap">
+  <aside class="side">
+    <div class="grp">
+      <span class="m">게임 화풍 고르기</span>
+      <p class="hint">게임 스택에 등록된 실제 게임의 화풍을 불러옵니다. 조명·안개·색보정·해상도가 한 번에 바뀝니다.</p>
+      <div class="gsel" id="games"></div>
+    </div>
+
+    <div class="grp">
+      <span class="m">내 에셋</span>
+      <select class="field" id="wep"></select>
+      <p class="hint">Kenney CC0 3D 모델을 내 작업물 자리에 놓았습니다.</p>
+    </div>
+
+    <div class="grp">
+      <div class="row"><span class="m">노출</span><output id="o-exp">1.0</output></div>
+      <input type="range" id="r-exp" min="20" max="260" value="100" aria-label="노출">
+    </div>
+    <div class="grp">
+      <div class="row"><span class="m">안개 밀도</span><output id="o-fog">0.09</output></div>
+      <input type="range" id="r-fog" min="0" max="240" value="90" aria-label="안개">
+    </div>
+    <div class="grp">
+      <div class="row"><span class="m">횃불 세기</span><output id="o-lit">1.0</output></div>
+      <input type="range" id="r-lit" min="0" max="300" value="100" aria-label="조명">
+    </div>
+    <div class="grp">
+      <div class="row"><span class="m">블룸</span><output id="o-blm">0.6</output></div>
+      <input type="range" id="r-blm" min="0" max="200" value="60" aria-label="블룸">
+    </div>
+    <div class="grp">
+      <div class="row"><span class="m">렌더 해상도</span><output id="o-res">100%</output></div>
+      <input type="range" id="r-res" min="12" max="100" value="100" aria-label="해상도">
+      <p class="hint">낮추면 실제 도트 게임처럼 픽셀이 드러납니다.</p>
+    </div>
+    <div class="grp">
+      <button class="gbtn2" id="rot" aria-pressed="true"><i style="--sw:var(--accent)"></i>카메라 자동 회전</button>
+    </div>
+  </aside>
+
+  <div class="stage">
+    <canvas id="gl"></canvas>
+    <div class="load" id="load"><div style="text-align:center">
+      <b>3D 씬 불러오는 중</b>
+      <span class="m" id="loadmsg">모델 준비</span>
+      <div class="bar"><i id="loadbar"></i></div>
+    </div></div>
+    <div class="tip">드래그로 회전 · 휠로 확대</div>
+    <div class="hud" id="hud"></div>
+  </div>
+</div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "./vendor/three/build/three.module.min.js",
+  "three/addons/": "./vendor/three/jsm/"
+} }
+</script>
+
+<script type="module">
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+
+const $ = s => document.querySelector(s);
+
+/* ── 게임별 화풍 프리셋 ──
+   게임 스택에 등록된 실제 게임의 시각적 특징을 렌더 파라미터로 옮긴 값입니다. */
+const STYLES = [
+  // 디아블로4 — 3D 사실적 PBR · 고해상도 · 따뜻한 횃불 대비 · 짙은 핏빛 갈색
+  { id: "diablo", n: "Diablo IV", d: "3D 사실적 · 따뜻한 횃불 · 고대비", sw: "#8a3018",
+    exp: .70, fog: .17, fogCol: 0x1a0d07, key: 0xff8130, keyI: 3.4, amb: 0x1c1108, ambI: .09,
+    moon: 0x3e4660, moonI: .11, bloom: .88, res: 1, cam: [7.0, 8.6, 7.0], tone: "aces",
+    note: "강한 명암 대비. 광원 밖은 거의 보이지 않습니다." },
+
+  // 다크에덴 — 2D 도트 쿼터뷰 · 저해상도 · 차가운 보랏빛 달빛 · 평면 조명
+  { id: "darkeden", n: "다크에덴", d: "2D 도트 쿼터뷰 · 차가운 달빛 · 평면 조명", sw: "#7a5ac0",
+    exp: .95, fog: .11, fogCol: 0x171029, key: 0x9c6ae0, keyI: 1.1, amb: 0x241a40, ambI: .40,
+    moon: 0xa8b4ff, moonI: .82, bloom: .38, res: .26, cam: [6.4, 7.4, 6.4], tone: "linear",
+    note: "도트 시절 온라인게임 특유의 평평한 조명과 저해상도." },
+
+  { id: "valheim", n: "Valheim", d: "노스 로우폴리 · 짙은 안개 · 부드러운 빛", sw: "#6d8a5a",
+    exp: 1.0, fog: .24, fogCol: 0x9aa8a0, key: 0xffd9a0, keyI: 1.3, amb: 0x7d8c94, ambI: .60,
+    moon: 0xa8c0d0, moonI: .5, bloom: .28, res: .72, cam: [8.2, 7.0, 8.2], tone: "aces",
+    note: "안개가 거리감을 만들고 조명은 부드럽습니다." },
+
+  { id: "hollow", n: "Hollow Knight", d: "2D 실루엣 · 청록 발광 · 극단적 명암", sw: "#2f7f8f",
+    exp: .44, fog: .22, fogCol: 0x081216, key: 0x46e2ff, keyI: 2.2, amb: 0x081820, ambI: .10,
+    moon: 0x2a86a6, moonI: .18, bloom: 1.25, res: 1, cam: [0.4, 4.8, 11.8], tone: "aces",
+    note: "형태를 실루엣으로만 읽게 만드는 조명입니다." },
+
+  { id: "genshin", n: "원신", d: "애니 셀 · 밝고 채도 높음", sw: "#7fc4e8",
+    exp: 1.42, fog: .04, fogCol: 0xc4e4f2, key: 0xfff4d8, keyI: 2.0, amb: 0xa8cef0, ambI: .95,
+    moon: 0xffe8c0, moonI: .55, bloom: .42, res: 1, cam: [7.4, 6.2, 7.4], tone: "linear",
+    note: "그림자를 얕게 두어 캐릭터 색이 선명하게 남습니다." },
+
+  { id: "cult", n: "Cult of the Lamb", d: "스타일라이즈드 · 평평한 조명 · 진한 색", sw: "#c86a9a",
+    exp: 1.20, fog: .06, fogCol: 0x2c1834, key: 0xffa8cc, keyI: 1.8, amb: 0x58306a, ambI: .85,
+    moon: 0xdf9cff, moonI: .30, bloom: .68, res: 1, cam: [6.6, 7.8, 6.6], tone: "linear",
+    note: "명암보다 색으로 형태를 구분하는 방식입니다." },
+
+  { id: "pubg", n: "PUBG", d: "사실적 · 중성 톤 · 자연광", sw: "#8a8a7a",
+    exp: 1.0, fog: .05, fogCol: 0x8d9294, key: 0xfff6e6, keyI: 1.9, amb: 0x8d9698, ambI: .72,
+    moon: 0xc6ced2, moonI: .60, bloom: .14, res: 1, cam: [8.6, 6.4, 8.6], tone: "aces",
+    note: "색 보정을 최소화한 사실적 노출입니다." },
+
+  { id: "retro", n: "Undertale · 도트", d: "저해상도 픽셀 · 단순 조명", sw: "#c0c0c0",
+    exp: 1.0, fog: .06, fogCol: 0x0e0e16, key: 0xffe0a0, keyI: 1.8, amb: 0x38384c, ambI: .58,
+    moon: 0x9090c0, moonI: .30, bloom: .18, res: .14, cam: [6.8, 7.4, 6.8], tone: "linear",
+    note: "픽셀이 드러날 만큼 해상도를 낮췄습니다." },
+];
+
+const WEPS = [
+  { f: "weapon-sword.glb", n: "대검 — 내가 만든 무기" },
+  { f: "weapon-spear.glb", n: "창 — 내가 만든 무기" },
+  { f: "shield-round.glb", n: "원형 방패" },
+  { f: "shield-rectangle.glb", n: "사각 방패" },
+  { f: "chest.glb", n: "상자" },
+  { f: "banner.glb", n: "깃발" },
+];
+
+const A = "./assets/dungeon/";
+const canvas = $("#gl");
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true, powerPreference: "high-performance" });
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(38, 16 / 9, .1, 220);
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true; controls.dampingFactor = .06;
+controls.minDistance = 4; controls.maxDistance = 26;
+controls.maxPolarAngle = Math.PI * .49; controls.target.set(0, .9, 0);
+
+const amb = new THREE.AmbientLight(0xffffff, .3); scene.add(amb);
+const moon = new THREE.DirectionalLight(0xffffff, .4);
+moon.position.set(-9, 15, -7); moon.castShadow = true;
+moon.shadow.mapSize.set(2048, 2048);
+moon.shadow.camera.left = -14; moon.shadow.camera.right = 14;
+moon.shadow.camera.top = 14; moon.shadow.camera.bottom = -14;
+moon.shadow.camera.far = 46; moon.shadow.bias = -0.0012;
+scene.add(moon);
+
+const torches = [];
+[[-4.2, 1.9, -3.4], [4.4, 1.9, 2.6], [-3.0, 1.8, 4.2]].forEach(p => {
+  const L = new THREE.PointLight(0xff9a4a, 12, 22, 1.9);
+  L.position.set(...p); L.castShadow = true;
+  L.shadow.mapSize.set(1024, 1024); L.shadow.bias = -0.004;
+  scene.add(L); torches.push(L);
+  const glow = new THREE.Mesh(new THREE.SphereGeometry(.13, 12, 12),
+    new THREE.MeshBasicMaterial({ color: 0xffc070 }));
+  glow.position.copy(L.position); scene.add(glow); L.userData.glow = glow;
+});
+
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const bloom = new UnrealBloomPass(new THREE.Vector2(1024, 576), .7, .55, .82);
+composer.addPass(bloom);
+composer.addPass(new OutputPass());
+
+const loader = new GLTFLoader();
+const cache = new Map();
+const load = f => cache.has(f) ? Promise.resolve(cache.get(f).clone(true))
+  : new Promise((res, rej) => loader.load(A + f, g => {
+      const o = g.scene;
+      o.traverse(m => { if (m.isMesh) { m.castShadow = true; m.receiveShadow = true; } });
+      cache.set(f, o); res(o.clone(true));
+    }, undefined, rej));
+
+const world = new THREE.Group(); scene.add(world);
+let heroGrp = null, wepGrp = null;
+
+async function buildWorld() {
+  const steps = [
+    ["바닥 타일", async () => {
+      for (let x = -4; x <= 4; x++) for (let z = -4; z <= 4; z++) {
+        const edge = Math.abs(x) === 4 || Math.abs(z) === 4;
+        const t = await load(edge && Math.random() > .6 ? "dirt.glb" : (Math.random() > .78 ? "floor-detail.glb" : "floor.glb"));
+        t.position.set(x, 0, z); world.add(t);
+      }
+    }],
+    ["벽과 기둥", async () => {
+      for (let i = -4; i <= 4; i++) {
+        for (const [x, z, ry] of [[i, -4.5, 0], [i, 4.5, Math.PI], [-4.5, i, Math.PI / 2], [4.5, i, -Math.PI / 2]]) {
+          const pick = Math.random() > .82 ? "wall-opening.glb" : (Math.random() > .9 ? "wall-half.glb" : "wall.glb");
+          const w = await load(pick); w.position.set(x, 0, z); w.rotation.y = ry; world.add(w);
+        }
+      }
+      for (const [x, z] of [[-3, -3], [3, -3], [-3, 3], [3, 3]]) {
+        const c = await load("column.glb"); c.position.set(x, 0, z); world.add(c);
+      }
+    }],
+    ["소품", async () => {
+      const props = [["barrel.glb", -2.2, -3.1], ["barrel.glb", -1.4, -3.3], ["chest.glb", 3.1, -1.2],
+        ["stones.glb", 1.8, 3.2], ["rocks.glb", -3.3, 1.4], ["coin.glb", .9, 1.6],
+        ["banner.glb", 0, -4.3], ["wood-structure.glb", -3.6, -1.1], ["stairs.glb", 3.4, 3.4],
+        ["shield-round.glb", -4.3, .2], ["trap.glb", 1.2, -2.0]];
+      for (const [f, x, z] of props) {
+        const o = await load(f); o.position.set(x, 0, z); o.rotation.y = Math.random() * 6.28; world.add(o);
+      }
+    }],
+    ["캐릭터", async () => {
+      heroGrp = await load("character-human.glb");
+      heroGrp.position.set(0, 0, 0); heroGrp.rotation.y = -0.5; world.add(heroGrp);
+      const orc = await load("character-orc.glb");
+      orc.position.set(2.4, 0, -1.8); orc.rotation.y = 2.2; world.add(orc);
+      const orc2 = await load("character-orc.glb");
+      orc2.position.set(-2.6, 0, 1.9); orc2.rotation.y = -1.1; world.add(orc2);
+    }],
+    ["내 에셋", async () => { await setWeapon(WEPS[0].f); }],
+  ];
+  for (let i = 0; i < steps.length; i++) {
+    $("#loadmsg").textContent = steps[i][0];
+    $("#loadbar").style.width = ((i + 1) / steps.length * 100) + "%";
+    await steps[i][1]();
+    await new Promise(r => setTimeout(r, 10));
+  }
+  $("#load").style.display = "none";
+}
+
+async function setWeapon(f) {
+  if (wepGrp) { world.remove(wepGrp); wepGrp = null; }
+  wepGrp = await load(f);
+  wepGrp.scale.setScalar(1.25);
+  wepGrp.position.set(.34, .62, .16);
+  wepGrp.rotation.set(0, -0.5, -0.35);
+  world.add(wepGrp);
+}
+
+/* ── 화풍 적용 ── */
+let cur = STYLES[0], userExp = 1, userFog = 1, userLit = 1, userBlm = 1, userRes = 1;
+
+function applyStyle(s) {
+  cur = s;
+  renderer.toneMapping = s.tone === "aces" ? THREE.ACESFilmicToneMapping : THREE.LinearToneMapping;
+  scene.fog = new THREE.FogExp2(s.fogCol, s.fog * userFog);
+  scene.background = new THREE.Color(s.fogCol);
+  amb.color.setHex(s.amb); moon.color.setHex(s.moon);
+  torches.forEach(L => { L.color.setHex(s.key); L.userData.glow.material.color.setHex(s.key); });
+  camera.position.set(...s.cam);
+  syncNums();
+  document.querySelectorAll("#games .gbtn2").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.id === s.id)));
+  hud();
+}
+
+function syncNums() {
+  renderer.toneMappingExposure = cur.exp * userExp;
+  amb.intensity = cur.ambI; moon.intensity = cur.moonI;
+  torches.forEach(L => L.intensity = 12 * cur.keyI * userLit / 2);
+  if (scene.fog) scene.fog.density = cur.fog * userFog;
+  bloom.strength = cur.bloom * userBlm;
+  resize();
+}
+
+function hud() {
+  $("#hud").innerHTML = [
+    ["화풍", cur.n], ["톤매핑", cur.tone === "aces" ? "ACES Filmic" : "Linear"],
+    ["광원", torches.length + "개 + 달빛"], ["그림자", "PCF Soft 2K"],
+    ["렌더", Math.round(cur.res * userRes * 100) + "%"],
+  ].map(([k, v]) => `<div><b>${v}</b><span>${k}</span></div>`).join("")
+    + `<div style="max-width:22em"><b style="font-size:11.5px;font-weight:400;color:var(--muted)">${cur.note || ""}</b><span>이 화풍의 특징</span></div>`;
+}
+
+/* ── UI ── */
+$("#games").innerHTML = STYLES.map(s =>
+  `<button class="gbtn2" data-id="${s.id}" style="--sw:${s.sw}"><i></i><span>${s.n}<small>${s.d}</small></span></button>`).join("");
+document.querySelectorAll("#games .gbtn2").forEach(b =>
+  b.onclick = () => applyStyle(STYLES.find(s => s.id === b.dataset.id)));
+
+$("#wep").innerHTML = WEPS.map(w => `<option value="${w.f}">${w.n}</option>`).join("");
+$("#wep").onchange = e => setWeapon(e.target.value);
+
+const bind = (id, out, fmt, set) => {
+  $(id).oninput = e => { set(+e.target.value); $(out).value = fmt(+e.target.value); syncNums(); hud(); };
+};
+bind("#r-exp", "#o-exp", v => (v / 100).toFixed(2), v => userExp = v / 100);
+bind("#r-fog", "#o-fog", v => (v / 100).toFixed(2), v => userFog = v / 100);
+bind("#r-lit", "#o-lit", v => (v / 100).toFixed(2), v => userLit = v / 100);
+bind("#r-blm", "#o-blm", v => (v / 100).toFixed(2), v => userBlm = v / 100);
+bind("#r-res", "#o-res", v => v + "%", v => userRes = v / 100);
+
+let autoRot = true;
+$("#rot").onclick = () => { autoRot = !autoRot; $("#rot").setAttribute("aria-pressed", String(autoRot)); };
+
+function resize() {
+  const st = canvas.parentElement.getBoundingClientRect();
+  const w = Math.max(320, st.width), h = Math.max(240, st.height);
+  const scale = Math.max(.08, cur.res * userRes);
+  camera.aspect = w / h; camera.updateProjectionMatrix();
+  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio) * scale);
+  renderer.setSize(w, h, false);
+  composer.setSize(w, h);
+  canvas.style.imageRendering = scale < .5 ? "pixelated" : "auto";
+}
+window.addEventListener("resize", resize);
+
+const clock = new THREE.Clock();
+function loop() {
+  requestAnimationFrame(loop);
+  const t = clock.getElapsedTime();
+  torches.forEach((L, i) => {
+    const f = .78 + Math.sin(t * 7.1 + i * 2.1) * .12 + Math.sin(t * 13.7 + i) * .07;
+    L.intensity = 12 * cur.keyI * userLit / 2 * f;
+    L.userData.glow.scale.setScalar(.9 + f * .3);
+  });
+  if (wepGrp) wepGrp.rotation.z = -0.35 + Math.sin(t * 1.6) * .12;
+  if (autoRot) { controls.autoRotate = true; controls.autoRotateSpeed = .55; }
+  else controls.autoRotate = false;
+  controls.update();
+  composer.render();
+}
+
+(async () => {
+  applyStyle(STYLES[0]);
+  resize();
+  loop();
+  try { await buildWorld(); }
+  catch (e) { $("#loadmsg").textContent = "모델을 불러오지 못했습니다: " + e.message; }
+  const p = new URLSearchParams(location.search).get("style");
+  if (p) { const s = STYLES.find(x => x.id === p); if (s) applyStyle(s); }
+})();
+</script>

@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<title>IndyGG 커뮤니티 — 장르 킷 · 시뮬레이터</title>
+<title>IndyGG — 커뮤니티</title>
 
 <style>
   :root {
@@ -269,22 +269,60 @@
   .note { margin-top: 30px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--faint); max-width: 66ch; }
 </style>
 
-<header class="top">
-  <div class="topin">
-    <div class="logo"><div class="mk">IG</div><div class="wm">IndyGG<small>커뮤니티</small></div></div>
-    <nav class="tabs">
-      <button data-p="xray" aria-current="true">게임 스택</button>
-      <button data-p="genre">베스트 킷</button>
-      <button data-p="duel">인터랙션 비교</button>
-      <button data-p="prompt">AI 프롬프트</button>
-      <button data-p="data">씬 조합</button>
-      <button data-p="up">올리기</button>
-    </nav>
-    <span class="spacer"></span>
-    <button class="gbtn solid" id="loginb">로그인</button>
-    <button class="gbtn m" id="theme">테마</button>
-  </div>
-</header>
+<style id="igg-nav-css">
+  :root { --igg-navy:#28344E; --igg-dark:#1C1C1F; --igg-blue:#5383E8; --igg-dim:#9AA4AF; }
+  .igg-nav, .igg-nav * { box-sizing: border-box; }
+  .igg-nav { position: sticky; top: 0; z-index: 9000;
+    font-family: Roboto, system-ui, -apple-system, "Apple SD Gothic Neo", Pretendard, sans-serif; }
+  .igg-r1 { background: var(--igg-dark); border-bottom: 1px solid #2E2E35; }
+  .igg-r1in { max-width: 1240px; margin: 0 auto; padding: 0 20px; height: 44px;
+    display: flex; align-items: center; gap: 16px; }
+  .igg-logo { display: flex; align-items: center; gap: 7px; color: #fff; font-weight: 900;
+    font-size: 16px; letter-spacing: -.03em; text-decoration: none; flex: none; }
+  .igg-logo i { width: 15px; height: 15px; border: 3px solid #fff; border-radius: 50%; display: block; }
+  .igg-logo b { font-weight: 900; }
+  .igg-logo span { font-size: 9px; letter-spacing: .16em; color: #7B8494; font-weight: 700; }
+  .igg-r1 .igg-sp { margin-left: auto; }
+  .igg-ghost { padding: 5px 12px; border-radius: 4px; background: #424254; color: #C3CBD1;
+    font-size: 11.5px; text-decoration: none; border: 0; cursor: pointer; }
+  .igg-ghost:hover { background: #4E4E60; color: #fff; }
+  .igg-cta { padding: 5px 12px; border-radius: 4px; background: var(--igg-blue); color: #fff;
+    font-size: 11.5px; font-weight: 700; text-decoration: none; }
+
+  .igg-r2 { background: var(--igg-navy); }
+  .igg-r2in { max-width: 1240px; margin: 0 auto; padding: 0 20px; height: 46px;
+    display: flex; align-items: center; gap: 14px; }
+  .igg-tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+  .igg-tabs::-webkit-scrollbar { display: none; }
+  .igg-tabs a { padding: 6px 12px; border-radius: 4px; color: #C3CBD1; font-size: 12.5px;
+    text-decoration: none; white-space: nowrap; display: flex; align-items: center; gap: 4px; }
+  .igg-tabs a:hover { background: rgba(255,255,255,.09); color: #fff; }
+  .igg-tabs a[aria-current="page"] { background: var(--igg-blue); color: #fff; font-weight: 700; }
+  .igg-tabs sup { font-size: 8px; color: #FF6B7A; font-weight: 800; }
+  .igg-tabs a[aria-current="page"] sup { color: #FFD9DE; }
+  .igg-search { margin-left: auto; display: flex; align-items: center; gap: 6px;
+    background: #31313C; padding: 6px 10px; min-width: 190px; }
+  .igg-search input { background: none; border: 0; outline: none; color: #fff;
+    font-size: 12px; width: 100%; font-family: inherit; }
+  .igg-search input::placeholder { color: #7B8494; }
+  @media (max-width: 760px) { .igg-search { display: none; } }
+</style>
+
+<nav class="igg-nav">
+  <div class="igg-r1"><div class="igg-r1in">
+    <a class="igg-logo" href="index.html"><i></i><b>IndyGG</b><span>BY OP.GG</span></a>
+    <span class="igg-sp"></span>
+    <button class="igg-ghost" type="button">로그인</button>
+    <a class="igg-cta" href="creators.html">에셋 올리기</a>
+  </div></div>
+  <div class="igg-r2"><div class="igg-r2in">
+    <div class="igg-tabs"><a href="index.html">마켓</a><a href="community.html" aria-current="page">커뮤니티</a><a href="creators.html">창작자</a><a href="scene.html">화풍 시연<sup>N</sup></a><a href="viewer3d.html">3D 뷰어</a></div>
+    <span class="igg-search">🔍<input placeholder="에셋 · 창작자 · 게임 검색" autocomplete="off"></span>
+  </div></div>
+</nav>
+
+
+
 
 <div class="shell">
 
