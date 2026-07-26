@@ -1,0 +1,129 @@
+@import "tailwindcss";
+
+/* ── 팔레트 ────────────────────────────────────────────────────────────
+   op.gg 의 실제 CSS 번들에서 뽑은 토큰만 쓴다. 색은 셋 + 흰색이다.
+     크롬   darkpurple  900 #1C1C1F · 850 #282830 · 800 #31313C
+     액센트 purple      400 #A072FF · 500 #7D59EA · 600 #6B42DC
+     글자   gray/darkpurple 계열 한 줄
+   네 번째 색인 금색은 배지 엠블럼에만 쓴다 — 등급이 유일하게 색을 갖는다. */
+@theme {
+  --color-chrome-900: #1c1c1f;
+  --color-chrome-850: #282830;
+  --color-chrome-800: #31313c;
+  --color-chrome-700: #424254;
+  --color-chrome-600: #515163;
+  --color-chrome-300: #9e9eb1;
+  --color-chrome-200: #b7b7c9;
+  --color-chrome-100: #cfcfe1;
+
+  --color-accent-300: #c0a5ff;
+  --color-accent-400: #a072ff;
+  --color-accent-500: #7d59ea;
+  --color-accent-600: #6b42dc;
+  --color-accent-700: #5836b2;
+
+  --color-gray-050: #f7f7f9;
+  --color-gray-150: #edeef1;
+  --color-gray-250: #dbe0e4;
+  --color-gray-350: #c3cbd1;
+  --color-gray-450: #9aa4af;
+  --color-gray-550: #758592;
+  --color-gray-650: #57646f;
+  --color-gray-850: #202d37;
+
+  --color-badge-gold: #f2c066;
+
+  /* 2배수 타입 스케일 — 12 / 16 / 24 / 32 / 48 만 쓴다. */
+  --text-xs: 12px;
+  --text-base: 16px;
+  --text-2xl: 24px;
+  --text-4xl: 32px;
+  --text-6xl: 48px;
+  /* 네비만 예외다 — 상단 10pt, 서브 12pt */
+  --text-nav: 10pt;
+  --text-navsub: 12pt;
+
+  --font-sans: Roboto, system-ui, -apple-system, "Apple SD Gothic Neo", Pretendard, sans-serif;
+  --font-mono: ui-monospace, Menlo, monospace;
+}
+
+/* ── 시맨틱 토큰 ──────────────────────────────────────────────────────
+   컴포넌트는 언제나 이 변수를 통해 색을 읽는다. 테마는 여기서만 갈린다. */
+@layer base {
+  :root {
+    --ground: var(--color-chrome-900);
+    --surface: var(--color-chrome-850);
+    --surface-2: var(--color-chrome-800);
+    --line: var(--color-chrome-800);
+    --line-soft: #26262e;
+    --ink: #ffffff;
+    --muted: var(--color-chrome-200);
+    --faint: var(--color-chrome-300);
+    --accent: var(--color-accent-400);
+    --accent-strong: var(--color-accent-500);
+    --accent-soft: rgb(160 114 255 / 0.14);
+  }
+
+  :root[data-theme="light"] {
+    --ground: #ffffff;
+    --surface: var(--color-gray-050);
+    --surface-2: var(--color-gray-150);
+    --line: var(--color-gray-250);
+    --line-soft: var(--color-gray-150);
+    --ink: var(--color-chrome-900);
+    --muted: var(--color-gray-650);
+    --faint: var(--color-gray-550);
+    --accent: var(--color-accent-500);
+    --accent-strong: var(--color-accent-600);
+    --accent-soft: rgb(125 89 234 / 0.1);
+  }
+
+  html {
+    background: var(--ground);
+    color: var(--ink);
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :where(a, button, input, select, textarea):focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* 눌리는 느낌 — transform 이 아니라 scale 프로퍼티라 기존 변환과 안 싸운다 */
+  @media (prefers-reduced-motion: no-preference) {
+    button,
+    [role="button"] {
+      transition:
+        scale 0.16s cubic-bezier(0.22, 1, 0.36, 1),
+        background-color 0.16s ease,
+        color 0.16s ease,
+        border-color 0.16s ease;
+    }
+    button:active,
+    [role="button"]:active {
+      scale: 0.97;
+    }
+  }
+}
+
+/* 시맨틱 토큰을 Tailwind 유틸리티에서도 쓸 수 있게 등록한다 */
+@theme inline {
+  --color-ground: var(--ground);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+}
