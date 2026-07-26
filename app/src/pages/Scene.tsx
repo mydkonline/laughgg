@@ -220,12 +220,10 @@ export function Scene() {
 
       <FitPanel game={game} piece={piece} />
 
-      <div className="mt-5 mb-2 flex flex-wrap items-center gap-2">
+      <div className="mt-6 mb-3 flex flex-wrap items-center gap-x-3 gap-y-2">
         <span className="text-xs font-bold text-ink">{game.n}</span>
-        <span className="text-xs text-faint">
-          {game.cat}, {game.sub}
-        </span>
-        <span className="ml-auto text-xs text-faint">에셋 상태</span>
+        <span className="text-xs text-faint">{game.sub}</span>
+        <span className="ml-auto text-xs text-faint">에셋</span>
         {[
           [false, "원본 그대로"],
           [true, "이 게임에 맞춤"],
@@ -249,62 +247,65 @@ export function Scene() {
 
       <Stage game={game} fit={fit} />
 
-      <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_300px]">
-        <div>
-          <p className="text-xs leading-relaxed text-muted">{game.note}</p>
-          <p className="mt-2 text-xs text-faint">
-            {fit
-              ? "에셋에도 이 게임의 색을 입혔습니다. 스튜디오 에디터가 하는 일이 이겁니다."
-              : "에셋을 산 그대로 놓았습니다. 재질색이 남아 배경과 따로 놉니다."}
-          </p>
-        </div>
-        <dl className="grid grid-cols-2 gap-x-6 gap-y-3 rounded-xl border border-line bg-surface p-4 sm:grid-cols-4 lg:grid-cols-2">
-          <Meta k="밝기" v={game.grade.br.toFixed(2)} />
-          <Meta k="대비" v={game.grade.ct.toFixed(2)} />
-          <Meta k="채도" v={game.grade.sat.toFixed(2)} />
-          <Meta k="색조" v={`${game.grade.hue > 0 ? "+" : ""}${game.grade.hue}°`} />
-        </dl>
-      </div>
+      <p className="mt-3 text-xs leading-relaxed text-muted">
+        {game.note}{" "}
+        <span className="text-faint">
+          {fit ? "에셋에도 이 게임의 색을 입혔습니다." : "산 그대로 놓아 재질색이 남아 있습니다."}
+        </span>
+      </p>
     </main>
   );
 }
 
-/* 검토 결과. 숫자를 먼저 내고 무대는 그 근거로 아래에 둔다. */
+/* 검토 결과. 숫자를 먼저 내고 무대는 그 근거로 아래에 둔다.
+
+   조치 문장을 축마다 붙이면 길이가 제각각이라 줄이 어긋난다.
+   표는 이름·게이지·목표값 세 열로 고정하고, 고쳐야 할 축은 아래 한 줄로 모은다. */
 function FitPanel({ game, piece }: { game: SceneGame; piece: Piece }) {
   const report = fitReport(game);
   const verdict = fitVerdict(report.score);
   const tone =
     verdict.tone === "ok" ? "text-accent" : verdict.tone === "warn" ? "text-ink" : "text-[#FF6B7A]";
+  const off = report.axes.filter((a) => a.gap > 0.2);
 
   return (
-    <div className="grid gap-x-10 gap-y-5 border-b border-line pb-6 lg:grid-cols-[200px_minmax(0,1fr)]">
+    <div className="grid gap-x-12 gap-y-6 border-b border-line pb-8 lg:grid-cols-[180px_minmax(0,1fr)]">
       <div>
         <p className="text-xs text-faint">
-          {piece.t} 를 {game.n} 에
+          {piece.t} → {game.n}
         </p>
-        <p className="num mt-1 text-6xl leading-none text-ink">{report.score}</p>
+        <p className="num mt-2 text-6xl leading-none text-ink">{report.score}</p>
         <p className={`mt-2 text-xs font-bold ${tone}`}>{verdict.label}</p>
       </div>
 
-      <dl className="grid gap-x-8 gap-y-2.5 sm:grid-cols-2">
-        {report.axes.map((a) => (
-          <div key={a.label} className="flex items-center gap-3">
-            <dt className="w-11 shrink-0 text-xs text-ink">{a.label}</dt>
-            <dd className="m-0 flex min-w-0 flex-1 items-center gap-2.5">
-              <span className="block h-1.5 flex-1 overflow-hidden rounded-full bg-surface-2">
-                <b
-                  className={`block h-full ${a.gap > 0.5 ? "bg-[#FF6B7A]" : a.gap > 0.2 ? "bg-accent" : "bg-chrome-600"}`}
-                  style={{ width: `${a.gap * 100}%` }}
-                />
-              </span>
-              <span className="w-24 shrink-0 truncate text-[10px] text-faint">
-                {a.gap > 0.2 ? a.fix : "맞습니다"}
-              </span>
-              <span className="num w-9 shrink-0 text-right text-xs text-muted">{a.want}</span>
-            </dd>
-          </div>
-        ))}
-      </dl>
+      <div>
+        <dl className="grid gap-x-12 gap-y-2 sm:grid-cols-2">
+          {report.axes.map((a) => (
+            <div key={a.label} className="grid grid-cols-[44px_minmax(0,1fr)_44px] items-center gap-3">
+              <dt className={`text-xs ${a.gap > 0.2 ? "text-ink" : "text-faint"}`}>{a.label}</dt>
+              <dd className="m-0">
+                <span className="block h-1.5 overflow-hidden rounded-full bg-surface-2">
+                  <b
+                    className={`block h-full ${a.gap > 0.5 ? "bg-[#FF6B7A]" : a.gap > 0.2 ? "bg-accent" : "bg-chrome-600"}`}
+                    style={{ width: `${Math.max(3, a.gap * 100)}%` }}
+                  />
+                </span>
+              </dd>
+              <dd className="num m-0 text-right text-xs text-muted">{a.want}</dd>
+            </div>
+          ))}
+        </dl>
+
+        <p className="mt-4 text-xs text-faint">
+          {off.length ? (
+            <>
+              조정 필요 <b className="text-ink">{off.map((a) => a.label).join(", ")}</b>
+            </>
+          ) : (
+            "모든 축이 기준 안에 있습니다."
+          )}
+        </p>
+      </div>
     </div>
   );
 }
@@ -425,11 +426,3 @@ function Placed({
   );
 }
 
-function Meta({ k, v }: { k: string; v: string }) {
-  return (
-    <div>
-      <dt className="text-xs text-faint">{k}</dt>
-      <dd className="num m-0 text-base text-ink">{v}</dd>
-    </div>
-  );
-}

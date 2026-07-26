@@ -144,94 +144,85 @@ export function Workshop() {
         <p className="text-xs tracking-wide text-accent">스튜디오</p>
         <h1 className="mt-1 text-2xl font-bold text-ink">에셋 컨셉 변환</h1>
         <p className="mt-2 text-xs text-muted">3D 는 조명과 재질, 2D 는 팔레트와 도트를 바꿉니다.</p>
-        <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-t border-line pt-4">
-          <Spec k="입력" v="3D 모델, 2D 스프라이트" />
-          <Spec k="컨셉" v={`${CONCEPTS.length}종, 팔레트 ${PALETTES.length - 1}종`} />
-          <Spec k="출력" v="에셋, 정적 분석 리포트, 프리셋" />
-        </dl>
       </header>
 
-      {/* 1 — 프롬프트를 조립한다. 빈 입력창은 무엇을 쓸 수 있는지 알려 주지 않는다. */}
-      <section>
-        <div className="mb-3 flex flex-wrap items-center gap-3">
-          <h2 className="text-xs font-bold text-ink">프롬프트</h2>
-          <button
-            type="button"
-            onClick={() => setTyping((v) => !v)}
-            className="cursor-pointer border-0 bg-transparent text-xs text-faint hover:text-ink"
-          >
-            {typing ? "블록으로 조립" : "직접 입력"}
-          </button>
-          {/* 무료 횟수를 넘긴 요청만 과금하는 게 수익 구조라 화면에서도 그렇게 보여야 한다. */}
-          <span className="ml-auto flex items-center gap-2 text-xs">
-            <span className="text-faint">
-              크레딧 <b className="num text-ink">{remaining}</b> / {free}
-            </span>
-            <button
-              type="button"
-              onClick={applyPrompt}
-              disabled={remaining < 1 || !prompt.trim()}
-              className="cursor-pointer rounded-lg border-0 bg-accent px-5 py-2 text-xs font-bold text-white hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              적용 <span className="opacity-70">1 크레딧</span>
-            </button>
+      {/* 1 — 무엇을 만질지 고른다 */}
+      <section
+        className={[
+          "mt-6 rounded-xl border border-dashed p-3 transition-colors",
+          dropping ? "border-accent bg-accent-soft" : "border-line",
+        ].join(" ")}
+        onDragOver={(e) => {
+          e.preventDefault();
+          setDropping(true);
+        }}
+        onDragLeave={() => setDropping(false)}
+        onDrop={(e) => {
+          e.preventDefault();
+          setDropping(false);
+          const added = addFiles(e.dataTransfer.files);
+          if (added[0]) setPieceId(added[0].id);
+        }}
+      >
+        <div className="mb-2.5 flex flex-wrap items-center gap-3">
+          <span className="text-xs font-bold text-ink">재료</span>
+          <span className="text-xs text-faint">
+            {mine.length ? `내 파일 ${mine.length}개` : cartIds.length ? "장바구니에 담은 에셋" : "마켓 상위"}
           </span>
+          <label className="ml-auto cursor-pointer rounded-lg border border-line px-3 py-1.5 text-xs text-muted hover:border-accent hover:text-ink">
+            내 파일 올리기
+            <input
+              type="file"
+              multiple
+              accept=".glb,.gltf,image/*"
+              className="hidden"
+              onChange={(e) => {
+                const added = addFiles(e.target.files ?? []);
+                if (added[0]) setPieceId(added[0].id);
+                e.target.value = "";
+              }}
+            />
+          </label>
         </div>
 
-        {typing ? (
-          <input
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && applyPrompt()}
-            placeholder="어둡고 축축한 던전, 게임보이 초록 4색, 굵은 도트"
-            aria-label="변형 프롬프트"
-            className="w-full rounded-lg border border-line bg-surface px-4 py-3 text-xs text-ink placeholder:text-faint"
-          />
-        ) : (
-          <PromptBuilder
-            picked={blocks}
-            onChange={(next) => {
-              setBlocks(next);
-              setPrompt(toPrompt(next));
-            }}
-          />
-        )}
-
-        {prompt && (
-          <p className="mt-2.5 rounded-lg bg-surface px-3 py-2 font-mono text-xs text-muted">{prompt}</p>
-        )}
-        {remaining < 1 && (
-          <p className="mt-2 text-xs text-[#FF6B7A]">무료 크레딧을 다 썼습니다. 컨셉 프리셋과 직접 조정은 계속 무료입니다.</p>
-        )}
-      </section>
-
-      {/* 2 — 골라도 된다 */}
-      <section className="mt-6">
-        <div className="mb-2.5 flex flex-wrap items-baseline gap-3">
-          <h2 className="text-xs font-bold text-ink">게임 컨셉</h2>
-          <p className="text-xs text-faint">{CONCEPTS.find((c) => c.id === conceptId)?.note ?? "파라미터를 직접 조정한 상태입니다."}</p>
-        </div>
-        <div className="flex flex-wrap gap-1.5">
-          {CONCEPTS.map((c) => (
-            <button
-              key={c.id}
-              type="button"
-              onClick={() => applyConcept(c.id)}
-              aria-pressed={conceptId === c.id}
-              className={[
-                "cursor-pointer rounded-full border px-3.5 py-1.5 text-xs",
-                conceptId === c.id
-                  ? "border-transparent bg-ink font-bold text-ground"
-                  : "border-line text-muted hover:border-accent hover:text-ink",
-              ].join(" ")}
-            >
-              {c.name}
-            </button>
+        <div className="flex gap-2 overflow-x-auto pb-2">
+          {pool.map((p) => (
+            <div key={p.id} className="relative w-24 flex-none">
+              <button
+                type="button"
+                onClick={() => setPieceId(p.id)}
+                aria-pressed={p.id === piece.id}
+                className={[
+                  "w-full cursor-pointer overflow-hidden rounded-lg border bg-surface p-1.5",
+                  p.id === piece.id ? "border-accent" : "border-line hover:border-chrome-600",
+                ].join(" ")}
+              >
+                <span className="relative block aspect-square">
+                  <Thumb piece={p} pad="8%" />
+                </span>
+                <span className="block truncate pt-1 text-[10px] text-faint">{p.t}</span>
+              </button>
+              {p.url && (
+                <button
+                  type="button"
+                  aria-label={`${p.t} 빼기`}
+                  onClick={() => {
+                    dropFile(p.id);
+                    if (p.id === piece.id) setPieceId(PIECES[0]!.id);
+                  }}
+                  className="absolute -top-1.5 -right-1.5 h-5 w-5 cursor-pointer rounded-full border border-line bg-ground text-[10px] text-faint hover:text-ink"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
           ))}
         </div>
-      </section>
 
-      {/* 3 — 결과. 원본과 나란히 두지 않으면 무엇이 달라졌는지 안 보인다. */}
+        <p className="text-xs text-faint">glb, gltf, png, jpg. 파일은 브라우저에만 남습니다.</p>
+      </section>
+      {/* 2 — 결과. 조작을 그림 위에 두면 보면서 못 만진다. 그림이 먼저고,
+          원본과 나란히 두지 않으면 무엇이 달라졌는지 안 보인다. */}
       <section className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_300px]">
         <div className="grid gap-3 sm:grid-cols-2">
           <Frame label="원본">
@@ -302,7 +293,87 @@ export function Workshop() {
         </aside>
       </section>
 
-      {/* 4 — 형식과 2D 설정. 가로로 편다. */}
+      {/* 3 — 프롬프트를 조립한다. 빈 입력창은 무엇을 쓸 수 있는지 알려 주지 않는다. */}
+      <section>
+        <div className="mb-3 flex flex-wrap items-center gap-3">
+          <h2 className="text-xs font-bold text-ink">프롬프트</h2>
+          <button
+            type="button"
+            onClick={() => setTyping((v) => !v)}
+            className="cursor-pointer border-0 bg-transparent text-xs text-faint hover:text-ink"
+          >
+            {typing ? "블록으로 조립" : "직접 입력"}
+          </button>
+          {/* 무료 횟수를 넘긴 요청만 과금하는 게 수익 구조라 화면에서도 그렇게 보여야 한다. */}
+          <span className="ml-auto flex items-center gap-2 text-xs">
+            <span className="text-faint">
+              크레딧 <b className="num text-ink">{remaining}</b> / {free}
+            </span>
+            <button
+              type="button"
+              onClick={applyPrompt}
+              disabled={remaining < 1 || !prompt.trim()}
+              className="cursor-pointer rounded-lg border-0 bg-accent px-5 py-2 text-xs font-bold text-white hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              적용 <span className="opacity-70">1 크레딧</span>
+            </button>
+          </span>
+        </div>
+
+        {typing ? (
+          <input
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && applyPrompt()}
+            placeholder="어둡고 축축한 던전, 게임보이 초록 4색, 굵은 도트"
+            aria-label="변형 프롬프트"
+            className="w-full rounded-lg border border-line bg-surface px-4 py-3 text-xs text-ink placeholder:text-faint"
+          />
+        ) : (
+          <PromptBuilder
+            picked={blocks}
+            onChange={(next) => {
+              setBlocks(next);
+              setPrompt(toPrompt(next));
+            }}
+          />
+        )}
+
+        {prompt && (
+          <p className="mt-2.5 rounded-lg bg-surface px-3 py-2 font-mono text-xs text-muted">{prompt}</p>
+        )}
+        {remaining < 1 && (
+          <p className="mt-2 text-xs text-[#FF6B7A]">무료 크레딧을 다 썼습니다. 컨셉 프리셋과 직접 조정은 계속 무료입니다.</p>
+        )}
+      </section>
+
+      {/* 4 — 골라도 된다 */}
+      <section className="mt-6">
+        <div className="mb-2.5 flex flex-wrap items-baseline gap-3">
+          <h2 className="text-xs font-bold text-ink">게임 컨셉</h2>
+          <p className="text-xs text-faint">{CONCEPTS.find((c) => c.id === conceptId)?.note ?? "파라미터를 직접 조정한 상태입니다."}</p>
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {CONCEPTS.map((c) => (
+            <button
+              key={c.id}
+              type="button"
+              onClick={() => applyConcept(c.id)}
+              aria-pressed={conceptId === c.id}
+              className={[
+                "cursor-pointer rounded-full border px-3.5 py-1.5 text-xs",
+                conceptId === c.id
+                  ? "border-transparent bg-ink font-bold text-ground"
+                  : "border-line text-muted hover:border-accent hover:text-ink",
+              ].join(" ")}
+            >
+              {c.name}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* 5 — 형식과 2D 설정. 가로로 편다. */}
       <section className="mt-4 flex flex-wrap items-center gap-x-8 gap-y-4 rounded-xl border border-line bg-surface px-4 py-3.5">
         <Field label="출력 형식">
           <div className="flex gap-1.5">
@@ -400,7 +471,7 @@ export function Workshop() {
         </button>
       </section>
 
-      {/* 5 — 손조작. 접어 둔다. 대부분은 안 연다. */}
+      {/* 6 — 손조작. 접어 둔다. 대부분은 안 연다. */}
       {tuning && (
         <section className="mt-4 grid gap-x-8 gap-y-3 rounded-xl border border-line bg-surface p-4 sm:grid-cols-2 lg:grid-cols-3">
           {(Object.keys(KNOB_LABEL) as (keyof Knobs)[]).map((k) => (
@@ -427,91 +498,7 @@ export function Workshop() {
         </section>
       )}
 
-      {/* 6 — 재료 */}
-      <section
-        className={[
-          "mt-6 rounded-xl border border-dashed p-3 transition-colors",
-          dropping ? "border-accent bg-accent-soft" : "border-line",
-        ].join(" ")}
-        onDragOver={(e) => {
-          e.preventDefault();
-          setDropping(true);
-        }}
-        onDragLeave={() => setDropping(false)}
-        onDrop={(e) => {
-          e.preventDefault();
-          setDropping(false);
-          const added = addFiles(e.dataTransfer.files);
-          if (added[0]) setPieceId(added[0].id);
-        }}
-      >
-        <div className="mb-2.5 flex flex-wrap items-center gap-3">
-          <span className="text-xs font-bold text-ink">재료</span>
-          <span className="text-xs text-faint">
-            {mine.length ? `내 파일 ${mine.length}개` : cartIds.length ? "장바구니에 담은 에셋" : "마켓 상위"}
-          </span>
-          <label className="ml-auto cursor-pointer rounded-lg border border-line px-3 py-1.5 text-xs text-muted hover:border-accent hover:text-ink">
-            내 파일 올리기
-            <input
-              type="file"
-              multiple
-              accept=".glb,.gltf,image/*"
-              className="hidden"
-              onChange={(e) => {
-                const added = addFiles(e.target.files ?? []);
-                if (added[0]) setPieceId(added[0].id);
-                e.target.value = "";
-              }}
-            />
-          </label>
-        </div>
-
-        <div className="flex gap-2 overflow-x-auto pb-2">
-          {pool.map((p) => (
-            <div key={p.id} className="relative w-24 flex-none">
-              <button
-                type="button"
-                onClick={() => setPieceId(p.id)}
-                aria-pressed={p.id === piece.id}
-                className={[
-                  "w-full cursor-pointer overflow-hidden rounded-lg border bg-surface p-1.5",
-                  p.id === piece.id ? "border-accent" : "border-line hover:border-chrome-600",
-                ].join(" ")}
-              >
-                <span className="relative block aspect-square">
-                  <Thumb piece={p} pad="8%" />
-                </span>
-                <span className="block truncate pt-1 text-[10px] text-faint">{p.t}</span>
-              </button>
-              {p.url && (
-                <button
-                  type="button"
-                  aria-label={`${p.t} 빼기`}
-                  onClick={() => {
-                    dropFile(p.id);
-                    if (p.id === piece.id) setPieceId(PIECES[0]!.id);
-                  }}
-                  className="absolute -top-1.5 -right-1.5 h-5 w-5 cursor-pointer rounded-full border border-line bg-ground text-[10px] text-faint hover:text-ink"
-                >
-                  ✕
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
-
-        <p className="text-xs text-faint">glb, gltf, png, jpg. 파일은 브라우저에만 남습니다.</p>
-      </section>
-    </main>
-  );
-}
-
-function Spec({ k, v }: { k: string; v: string }) {
-  return (
-    <div>
-      <dt className="text-xs text-faint">{k}</dt>
-      <dd className="m-0 text-xs font-semibold text-ink">{v}</dd>
-    </div>
+          </main>
   );
 }
 

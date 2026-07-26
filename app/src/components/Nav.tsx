@@ -1,4 +1,4 @@
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useLocation } from "react-router-dom";
 import { useCart } from "../lib/cart";
 import { useTheme } from "../lib/theme";
 
@@ -41,6 +41,7 @@ const tabClass = ({ isActive }: { isActive: boolean }) =>
   ].join(" ");
 
 export function Nav() {
+  const { pathname } = useLocation();
   const { count } = useCart();
   const { toggle } = useTheme();
 
@@ -82,7 +83,17 @@ export function Nav() {
                 /* 좁은 화면에서는 드롭다운을 안 쓴다. 숨겨진 메뉴도 폭을 차지해서
                    오른쪽에 붙은 그룹이면 화면 밖으로 밀려 가로 스크롤이 생긴다.
                    대신 하위 항목을 그대로 펼쳐 보여준다 — 어차피 탭 줄이 접힌다. */
-                <span key={g.to} className="group contents md:relative md:flex">
+                <span
+                  key={g.to}
+                  className={[
+                    "group contents md:relative md:flex",
+                    /* 지금 보고 있는 대분류가 아니면 좁은 화면에서 하위를 숨긴다.
+                       전부 펼치면 열두 개가 세 줄이 되어 본문보다 크롬이 커진다. */
+                    g.subs.some((x) => x.to === pathname) || g.to === pathname
+                      ? ""
+                      : "[&>span:last-child>a]:hidden md:[&>span:last-child>a]:flex",
+                  ].join(" ")}
+                >
                   <NavLink to={g.to} className={tabClass} end={g.to === "/"}>
                     {g.label}
                     {g.badge && <sup className="text-[6pt] font-extrabold text-[#FF6B7A]">{g.badge}</sup>}
