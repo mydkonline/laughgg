@@ -102,6 +102,20 @@
     font-size: 12px; width: 100%; font-family: inherit; }
   .igg-search input::placeholder { color: #7B8494; }
   @media (max-width: 760px) { .igg-search { display: none; } }
+
+  /* 눌리는 느낌 — 전 페이지 공통. transform 이 아니라 scale 프로퍼티라 기존 transform 과 안 싸운다 */
+  @media (prefers-reduced-motion: no-preference) {
+    button, .btn, .igg-ghost, .igg-cta, .igg-tabs a, [role="button"] {
+      transition: scale .16s cubic-bezier(.22,1,.36,1),
+                  background-color .16s ease, color .16s ease, border-color .16s ease;
+    }
+    button:active, .btn:active, .igg-ghost:active, .igg-cta:active,
+    .igg-tabs a:active, [role="button"]:active { scale: .97; }
+    .igg-cta:hover { scale: 1.03; }
+  }
+  :where(a, button, input, select, textarea):focus-visible {
+    outline: 2px solid var(--igg-blue); outline-offset: 2px;
+  }
 </style>
 
 <nav class="igg-nav">
@@ -118,6 +132,23 @@
     <span class="igg-search">🔍<input placeholder="에셋 · 창작자 · 게임 검색" autocomplete="off"></span>
   </div></div>
 </nav>
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
 <script>
 (function () {
   var b = document.getElementById("theme");
@@ -196,8 +227,8 @@
 <div class="wrap">
   <aside class="side">
     <div class="grp">
-      <span class="m">게임 화풍 고르기</span>
-      <p class="hint">게임 스택에 등록된 실제 게임의 화풍을 불러옵니다. 조명·안개·색보정·해상도가 한 번에 바뀝니다.</p>
+      <span class="m">적용해볼 게임 고르기</span>
+      <p class="hint">고른 게임의 실제 환경을 그대로 불러와 내 에셋을 그 안에 올려 봅니다. 조명·안개·색보정·해상도가 한 번에 바뀝니다.</p>
       <div class="gsel" id="games"></div>
     </div>
 
@@ -453,11 +484,11 @@ function syncNums() {
 
 function hud() {
   $("#hud").innerHTML = [
-    ["화풍", cur.n], ["톤매핑", cur.tone === "aces" ? "ACES Filmic" : "Linear"],
+    ["적용 게임", cur.n], ["톤매핑", cur.tone === "aces" ? "ACES Filmic" : "Linear"],
     ["광원", torches.length + "개 + 달빛"], ["그림자", "PCF Soft 2K"],
     ["렌더", Math.round(cur.res * userRes * 100) + "%"],
   ].map(([k, v]) => `<div><b>${v}</b><span>${k}</span></div>`).join("")
-    + `<div style="max-width:22em"><b style="font-size:11.5px;font-weight:400;color:var(--muted)">${cur.note || ""}</b><span>이 화풍의 특징</span></div>`;
+    + `<div style="max-width:22em"><b style="font-size:11.5px;font-weight:400;color:var(--muted)">${cur.note || ""}</b><span>이 게임 환경의 특징</span></div>`;
 }
 
 /* ── UI ── */

@@ -227,6 +227,20 @@
     font-size: 12px; width: 100%; font-family: inherit; }
   .igg-search input::placeholder { color: #7B8494; }
   @media (max-width: 760px) { .igg-search { display: none; } }
+
+  /* 눌리는 느낌 — 전 페이지 공통. transform 이 아니라 scale 프로퍼티라 기존 transform 과 안 싸운다 */
+  @media (prefers-reduced-motion: no-preference) {
+    button, .btn, .igg-ghost, .igg-cta, .igg-tabs a, [role="button"] {
+      transition: scale .16s cubic-bezier(.22,1,.36,1),
+                  background-color .16s ease, color .16s ease, border-color .16s ease;
+    }
+    button:active, .btn:active, .igg-ghost:active, .igg-cta:active,
+    .igg-tabs a:active, [role="button"]:active { scale: .97; }
+    .igg-cta:hover { scale: 1.03; }
+  }
+  :where(a, button, input, select, textarea):focus-visible {
+    outline: 2px solid var(--igg-blue); outline-offset: 2px;
+  }
 </style>
 
 <nav class="igg-nav">
@@ -243,6 +257,23 @@
     <span class="igg-search">🔍<input placeholder="에셋 · 창작자 · 게임 검색" autocomplete="off"></span>
   </div></div>
 </nav>
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
 <script>
 (function () {
   var b = document.getElementById("theme");

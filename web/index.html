@@ -166,6 +166,20 @@
     font-size: 12px; width: 100%; font-family: inherit; }
   .igg-search input::placeholder { color: #7B8494; }
   @media (max-width: 760px) { .igg-search { display: none; } }
+
+  /* 눌리는 느낌 — 전 페이지 공통. transform 이 아니라 scale 프로퍼티라 기존 transform 과 안 싸운다 */
+  @media (prefers-reduced-motion: no-preference) {
+    button, .btn, .igg-ghost, .igg-cta, .igg-tabs a, [role="button"] {
+      transition: scale .16s cubic-bezier(.22,1,.36,1),
+                  background-color .16s ease, color .16s ease, border-color .16s ease;
+    }
+    button:active, .btn:active, .igg-ghost:active, .igg-cta:active,
+    .igg-tabs a:active, [role="button"]:active { scale: .97; }
+    .igg-cta:hover { scale: 1.03; }
+  }
+  :where(a, button, input, select, textarea):focus-visible {
+    outline: 2px solid var(--igg-blue); outline-offset: 2px;
+  }
 </style>
 
 <nav class="igg-nav">
@@ -233,145 +247,290 @@
 
 
 
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
 
 
 <div class="hero"><div class="in">
-  <span class="eyebrow">게임 에셋 마켓 · <b>검수 통과분만</b></span>
-  <h1>쓸 만한 에셋인지<br><em>사기 전에</em> 알 수 있습니다.</h1>
-  <p class="sub">창작자가 올리면 일곱 가지를 기계가 채점해 등급을 매깁니다.
-    게임 스튜디오는 열어보지 않고도 품질을 압니다.</p>
+  <span class="eyebrow">게임 에셋 마켓 · <b>창작자 · 게임 스튜디오</b></span>
+  <h1>게임 에셋을 올리고,<br>등급을 받아 <em>판매합니다.</em></h1>
+  <p class="sub">창작자는 만든 에셋을 등록하고, 게임 스튜디오는 검수를 거친 카탈로그에서 구매합니다.<br>등록·검수·개선·시연·정산을 한 곳에서 처리합니다.</p>
   <div class="ctas">
-    <a class="btn p" href="community.html">에셋 올리기<small>창작자 · 정산 92%</small></a>
-    <a class="btn s" href="market.html">카탈로그 둘러보기<small>스튜디오 · 등급별 검색</small></a>
+    <a class="btn p" href="community.html">에셋 등록하기<small>창작자</small></a>
+    <a class="btn s" href="market.html">카탈로그 보기<small>구매자</small></a>
   </div>
   <div class="stats">
-    <div><b class="tab">92%</b><span>창작자 정산 비율</span></div>
-    <div><b class="tab">61.2%</b><span>검수 탈락률</span></div>
-    <div><b class="tab">7</b><span>자동 검사 항목</span></div>
-    <div><b class="tab">3일</b><span>업로드 → 결과</span></div>
+    <div><b class="tab">7</b><span>자동 검수 항목</span></div>
+    <div><b class="tab">4</b><span>등급 단계</span></div>
+    <div><b class="tab">3일</b><span>등록 → 검수 완료</span></div>
+    <div><b class="tab">92%</b><span>판매 시 창작자 정산</span></div>
   </div>
 </div></div>
 
 <section class="alt"><div class="in">
   <div class="shead">
-    <p class="kick">작동 방식</p>
-    <h2>올리고, 채점하고, 고치고, 팝니다</h2>
-    <p>사람이 하나하나 열어보지 않습니다. 올라온 순간부터 기계가 처리합니다.</p>
-  </div>
-  <div class="steps">
-    <div class="step"><div class="n"><i>1</i><u></u></div><h3>올립니다</h3>
-      <p>비용도 횟수 제한도 없습니다. 다른 마켓에 이미 올린 것도 그대로 올릴 수 있습니다.</p></div>
-    <div class="step"><div class="n"><i>2</i><u></u></div><h3>채점합니다</h3>
-      <p>면·텍스처·LOD·성능·출처·코드·통합 난이도. 3일 안에 점수와 등급이 나옵니다.</p></div>
-    <div class="step"><div class="n"><i>3</i><u></u></div><h3>고칩니다</h3>
-      <p>떨어져도 끝이 아닙니다. 어디가 부족한지 짚고 고치는 코드까지 만들어 드립니다.</p></div>
-    <div class="step"><div class="n"><i>4</i></div><h3>팔립니다</h3>
-      <p>구매자는 게임 스튜디오입니다. 판매액의 92%가 창작자에게 갑니다.</p></div>
-  </div>
-</div></section>
-
-<section><div class="in">
-  <div class="shead">
-    <p class="kick">누구를 위한 것인가</p>
-    <h2>양쪽 모두의 문제를 하나로 풉니다</h2>
-    <p>만드는 쪽은 팔 곳이 없고, 사는 쪽은 믿을 곳이 없었습니다.</p>
+    <p class="kick">제공 기능</p>
+    <h2>여기서 할 수 있는 일</h2>
+    <p>계정 하나로 등록부터 판매까지 이어집니다. 별도 도구를 설치하지 않습니다.</p>
   </div>
   <div class="cards">
     <div class="card">
-      <span class="who">창작자</span><h3>만든 만큼 가져갑니다</h3>
-      <p>실력은 되는데 팔 통로가 없던 분들을 위한 자리입니다.</p>
-      <ul><li>수수료 <b>8%</b> — 업계에서 가장 낮습니다</li>
-        <li>왜 안 팔리는지 <b>점수로</b> 알려 드립니다</li>
-        <li>AI가 <b>고칠 코드</b>를 만들어 드립니다</li>
-        <li>독점 계약 없음 · 저작권은 창작자 보유</li></ul>
-      <a class="go" href="community.html">에셋 올리기 →</a>
+      <span class="who">등록 · 검수</span><h3>에셋을 등록하고 점수를 받습니다</h3>
+      <p>파일을 올리면 자동으로 검사가 시작됩니다. 3일 안에 항목별 점수와 등급이 나옵니다.</p>
+      <ul><li>지원 엔진 — Unity, Unreal, Godot</li>
+        <li>등록 비용 없음 · 재등록 횟수 제한 없음</li>
+        <li>다른 마켓과 중복 등록 가능</li></ul>
+      <a class="go" href="community.html">등록 화면 열기 →</a>
     </div>
     <div class="card">
-      <span class="who">게임 스튜디오</span><h3>열어보기 전에 압니다</h3>
-      <p>외주는 비싸고 느리며, 에셋 마켓은 품질을 믿기 어려웠습니다.</p>
-      <ul><li>등급과 <b>검수 리포트</b>가 함께 옵니다</li>
-        <li>어디서 온 재료인지 <b>출처 목록</b>을 발급합니다</li>
-        <li>팀 라이선스 <b>일괄 관리</b></li>
-        <li>월 <b>49만원</b> 구독</li></ul>
-      <a class="go" href="about.html">서비스 자세히 보기 →</a>
+      <span class="who">개선</span><h3>부족한 부분을 고칠 코드를 받습니다</h3>
+      <p>어느 항목이 몇 점인지 확인하고, 무엇을 어떻게 고칠지 코드로 받아 적용합니다.</p>
+      <ul><li>셰이더 보강 · LOD 생성 · 실루엣 보정</li>
+        <li>텍스처 아틀라스 병합</li>
+        <li>적용 후 재검수 요청</li></ul>
+      <a class="go" href="community.html">개선 요청하기 →</a>
     </div>
     <div class="card">
-      <span class="who">모두</span><h3>내 게임에 놓아 봅니다</h3>
-      <p>사기 전에, 올리기 전에, 어울리는지 눈으로 확인합니다.</p>
-      <ul><li>실제 게임 화면에 <b>에셋을 배치</b></li>
-        <li>2D 도트부터 사실적 3D까지 <b>화풍별 비교</b></li>
-        <li>플랫폼·장르·화질 <b>조합 시연</b></li>
-        <li>실시간 3D 뷰어 제공</li></ul>
-      <a class="go" href="scene.html">에셋 시연 열기 →</a>
+      <span class="who">시연</span><h3>내 에셋을 게임에 적용해 봅니다</h3>
+      <p>등록 전이나 구매 전에, 실제 게임 화면 위에 그 에셋을 그대로 올려 어울리는지 확인합니다.</p>
+      <ul><li>2D 도트 · 로우폴리 · 사실적 3D</li>
+        <li>플랫폼 · 장르 · 화질 조합</li>
+        <li>실시간 3D 뷰어</li></ul>
+      <a class="go" href="scene.html">시연 화면 열기 →</a>
+    </div>
+    <div class="card">
+      <span class="who">탐색</span><h3>등급으로 걸러 찾습니다</h3>
+      <p>분류·엔진·최소 점수로 좁혀 검색합니다. 등급이 높은 순으로 먼저 보입니다.</p>
+      <ul><li>분류 — 무기 · 캐릭터 · 환경 · UI · 사운드</li>
+        <li>최소 검수 점수 지정</li>
+        <li>항목별 점수 리포트 열람</li></ul>
+      <a class="go" href="market.html">카탈로그 열기 →</a>
+    </div>
+    <div class="card">
+      <span class="who">참고</span><h3>다른 게임의 구성을 봅니다</h3>
+      <p>이미 나온 게임이 어떤 엔진과 도구로 만들어졌는지 확인하고, 그 게임 화면에 내 에셋을 그대로 올려 봅니다.</p>
+      <ul><li>게임 33종 스택 등록</li>
+        <li>플랫폼 · 규모별 필터</li>
+        <li>그 게임 화면에 내 에셋 올려보기</li></ul>
+      <a class="go" href="community.html">게임 스택 보기 →</a>
+    </div>
+    <div class="card">
+      <span class="who">정산</span><h3>판매액을 정산받습니다</h3>
+      <p>판매가 발생하면 수수료를 제외한 금액이 창작자에게 정산됩니다.</p>
+      <ul><li>수수료 <b>8%</b> · 창작자 <b>92%</b></li>
+        <li>등급과 무관하게 동일 요율</li>
+        <li>저작권은 창작자가 계속 보유</li></ul>
+      <a class="go" href="about.html">이용 조건 보기 →</a>
     </div>
   </div>
-</div></section>
-
-<section class="alt"><div class="in">
-  <div class="shead">
-    <p class="kick">검수</p>
-    <h2>일곱 가지를 봅니다</h2>
-    <p>가중치가 가장 큰 항목은 출처입니다. 남의 재료가 섞이면 산 사람의 게임 전체가 문제가 되기 때문입니다.</p>
-  </div>
-  <div class="checks">
-    <div><b>22%</b><span>어디서 온<br>재료인지</span></div>
-    <div><b>18%</b><span>게임이 느려지지<br>않는지</span></div>
-    <div><b>15%</b><span>면이 깔끔하게<br>짜였는지</span></div>
-    <div><b>13%</b><span>텍스처가 잘<br>입혀지는지</span></div>
-    <div><b>12%</b><span>멀리서 가벼워<br>지는지</span></div>
-    <div><b>12%</b><span>붙이는 데<br>걸리는 시간</span></div>
-    <div><b>8%</b><span>코드 품질</span></div>
-  </div>
-  <p class="note">출처 점수가 60점 미만이면 나머지가 모두 만점이어도 탈락합니다.</p>
 </div></section>
 
 <section><div class="in">
   <div class="shead">
-    <p class="kick">등급</p>
-    <h2>등급이 낮아도 손해는 없습니다</h2>
-    <p>수수료는 등급과 상관없이 누구나 8%입니다. 등급이 바꾸는 건 검색에서 얼마나 위에 보이는가 하나뿐입니다.</p>
+    <p class="kick">진행 순서</p>
+    <h2>등록부터 판매까지</h2>
+    <p>사람이 파일을 하나씩 열어보지 않습니다. 등록된 순간부터 자동으로 처리됩니다.</p>
   </div>
-  <div class="tiers">
-    <div class="tier" style="--tc:var(--chal)"><span class="lb">챌린저</span><b class="sc tab">90+</b>
-      <span class="ds">고치지 않고<br>바로 쓸 수 있습니다</span></div>
-    <div class="tier" style="--tc:var(--dia)"><span class="lb">다이아</span><b class="sc tab">80+</b>
-      <span class="ds">붙여 봤습니다.<br>값만 조금 만지면 됩니다</span></div>
-    <div class="tier" style="--tc:var(--plat)"><span class="lb">플래티넘</span><b class="sc tab">70+</b>
-      <span class="ds">기본은 통과했습니다.<br>손볼 곳이 있습니다</span></div>
-    <div class="tier" style="--tc:var(--silv)"><span class="lb">실버</span><b class="sc tab">70−</b>
-      <span class="ds">참고용입니다.<br>바로 쓰긴 어렵습니다</span></div>
+  <div class="steps">
+    <div class="step"><div class="n"><i>1</i><u></u></div><h3>등록</h3>
+      <p>에셋 파일과 기본 정보를 입력합니다. 분류·엔진·스타일·가격을 지정합니다.</p></div>
+    <div class="step"><div class="n"><i>2</i><u></u></div><h3>검수</h3>
+      <p>일곱 가지 항목을 자동 채점합니다. 3일 안에 점수와 등급이 통보됩니다.</p></div>
+    <div class="step"><div class="n"><i>3</i><u></u></div><h3>개선 (선택)</h3>
+      <p>점수가 낮은 항목의 개선 코드를 받아 적용한 뒤 재검수를 요청합니다.</p></div>
+    <div class="step"><div class="n"><i>4</i></div><h3>판매</h3>
+      <p>카탈로그에 등급과 함께 노출됩니다. 판매가 발생하면 92%가 정산됩니다.</p></div>
   </div>
 </div></section>
 
 <section class="alt"><div class="in">
-  <div class="shead"><p class="kick">비교</p><h2>다른 곳과 무엇이 다른가</h2></div>
+  <div class="shead">
+    <p class="kick">검수 항목</p>
+    <h2>무엇을 검사하나요</h2>
+    <p>일곱 항목을 가중 평균해 종합 점수를 냅니다. 각 항목 위의 숫자가 가중치입니다.</p>
+  </div>
+  <div class="checks">
+    <div><b>22%</b><span>재료 출처<br>확인</span></div>
+    <div><b>18%</b><span>실행 성능<br>영향</span></div>
+    <div><b>15%</b><span>면 구성<br>상태</span></div>
+    <div><b>13%</b><span>텍스처<br>적용</span></div>
+    <div><b>12%</b><span>거리별<br>단계 처리</span></div>
+    <div><b>12%</b><span>프로젝트<br>통합 난이도</span></div>
+    <div><b>8%</b><span>코드<br>품질</span></div>
+  </div>
+  <p class="note">재료 출처 점수가 60점 미만이면 나머지 항목과 무관하게 실버로 분류됩니다.
+    출처가 확인되지 않은 재료는 구매자의 프로젝트 전체에 영향을 주기 때문입니다.</p>
+</div></section>
+
+<section><div class="in">
+  <div class="shead">
+    <p class="kick">등급 기준</p>
+    <h2>등급은 무엇을 뜻하나요</h2>
+    <p>등급은 검색 노출 순서를 정합니다. 수수료는 등급과 무관하게 모두 8%입니다.</p>
+  </div>
+  <div class="tiers">
+    <div class="tier" style="--tc:var(--chal)"><span class="lb">챌린저</span><b class="sc tab">90+</b>
+      <span class="ds">수정 없이<br>바로 사용 가능</span></div>
+    <div class="tier" style="--tc:var(--dia)"><span class="lb">다이아</span><b class="sc tab">80+</b>
+      <span class="ds">통합 확인 완료<br>값 조정 필요</span></div>
+    <div class="tier" style="--tc:var(--plat)"><span class="lb">플래티넘</span><b class="sc tab">70+</b>
+      <span class="ds">기본 검수 통과<br>일부 수정 필요</span></div>
+    <div class="tier" style="--tc:var(--silv)"><span class="lb">실버</span><b class="sc tab">70−</b>
+      <span class="ds">참고용<br>바로 사용 어려움</span></div>
+  </div>
+</div></section>
+
+<section class="alt"><div class="in">
+  <div class="shead"><p class="kick">이용 조건</p><h2>요약</h2></div>
   <div class="scroll"><table>
-    <thead><tr><th>구분</th><th class="num">창작자 몫</th><th>왜 안 팔리는지</th><th>품질 보증</th><th>주 구매자</th></tr></thead>
     <tbody>
-      <tr><td>외주 스튜디오</td><td class="num bad">해당 없음</td><td>해당 없음</td><td class="good">계약으로 보증</td><td>게임 회사</td></tr>
-      <tr><td>Unity 에셋스토어</td><td class="num">70%</td><td class="bad">알 수 없음</td><td class="bad">사실상 없음</td><td>혼재</td></tr>
-      <tr><td>Epic Fab</td><td class="num">88%</td><td class="bad">알 수 없음</td><td class="bad">사실상 없음</td><td>혼재</td></tr>
-      <tr class="mk"><td>IndyGG</td><td class="num hi">92%</td><td class="good"><b>점수 + 개선 코드</b></td><td class="good"><b>등급 · 검수 리포트</b></td><td><b>게임 스튜디오</b></td></tr>
+      <tr><td>등록 비용</td><td>없음</td></tr>
+      <tr><td>재등록</td><td>횟수 제한 없음</td></tr>
+      <tr><td>검수 소요</td><td>등록 후 3일 이내</td></tr>
+      <tr><td>판매 수수료</td><td class="hi">8% — 등급과 무관하게 동일</td></tr>
+      <tr><td>창작자 정산</td><td class="hi">판매액의 92%</td></tr>
+      <tr><td>저작권</td><td>창작자가 계속 보유</td></tr>
+      <tr><td>독점 계약</td><td>없음 — 다른 마켓과 중복 등록 가능</td></tr>
+      <tr><td>구매자 구독</td><td>게임 스튜디오 월 490,000원</td></tr>
     </tbody>
   </table></div>
-  <p class="note">Unity 에셋스토어 30%, Epic Fab 12% 수수료는 공개 확인값입니다.</p>
 </div></section>
 
 <div class="final"><div class="in">
-  <h2>안 팔릴 걸 만드는 시간이<br>가장 아깝습니다</h2>
-  <p>올리기 전에 어울리는지 보고, 떨어지면 고칠 방법을 받습니다.
-    돈은 들지 않고, 안 팔려도 잃는 게 없습니다.</p>
+  <h2>어느 쪽으로 시작하시겠습니까</h2>
+  <p>창작자는 에셋 등록으로, 구매자는 카탈로그 열람으로 시작합니다.<br>등록 전에 시연 화면에서 먼저 확인하셔도 됩니다.</p>
   <div class="ctas">
-    <a class="btn p" href="community.html">첫 에셋 올리기</a>
-    <a class="btn s" href="scene.html">먼저 시연해 보기</a>
+    <a class="btn p" href="community.html">에셋 등록하기</a>
+    <a class="btn s" href="market.html">카탈로그 보기</a>
+    <a class="btn s" href="scene.html">시연해 보기</a>
   </div>
-  <p class="note">업로드 비용 0원 · 재제출 무제한 · 독점 계약 없음 · 저작권은 창작자 보유</p>
 </div></div>
 
 <footer><div class="in">
   <p>IndyGG · OP.GG</p>
-  <p style="margin-top:8px">Unity 에셋스토어 30%, Epic Fab 12%는 공개 확인값입니다.
+  <p style="margin-top:8px">Unity 에셋스토어 30%, Epic Fab 12% 수수료는 공개 확인값입니다.
     화면의 에셋 이미지는 Kenney · Cethiel · Project Utumno · Poly Haven이 CC0로 공개한 것이며 상업적 이용에 제한이 없습니다.
-    검수 점수와 등급, 탈락률 61.2%, 판매 건수와 정산액은 프로토타입 데모의 가정치이며 실측이 아닙니다.
+    검수 점수와 등급, 판매 건수와 정산액은 프로토타입 데모의 가정치이며 실측이 아닙니다.
     에셋 시연의 배경은 전부 CC0 에셋으로 구성했습니다.</p>
 </div></footer>
+
+<style id="igg-motion">
+@media (prefers-reduced-motion: no-preference) {
+  .rv { opacity:0; transform:translateY(14px);
+        transition:opacity .52s cubic-bezier(.22,1,.36,1) var(--d,0s),
+                   transform .52s cubic-bezier(.22,1,.36,1) var(--d,0s); }
+  .rv.on { opacity:1; transform:none; }
+  tr.rv { transform:translateY(6px); }
+  .card, .tier, .checks div { transition:transform .22s cubic-bezier(.22,1,.36,1),
+                                          border-color .22s ease, box-shadow .22s ease; }
+  .card:hover { transform:translateY(-3px); border-color:var(--accent);
+                box-shadow:0 10px 30px -14px rgba(83,131,232,.45); }
+  .tier:hover { transform:translateY(-3px); border-color:var(--tc); }
+  .checks div:hover { transform:translateY(-2px); }
+  .step .n u { transform:scaleX(0); transform-origin:left center;
+               transition:transform .6s cubic-bezier(.22,1,.36,1) var(--d,0s); }
+  .steps.on .step .n u { transform:scaleX(1); }
+  .step .n i { transition:transform .4s cubic-bezier(.34,1.56,.64,1) var(--d,0s); }
+  .rv.on .n i { animation:iggpop .42s cubic-bezier(.34,1.56,.64,1) both; }
+  @keyframes iggpop { from{transform:scale(.6)} to{transform:scale(1)} }
+}
+.stats b { font-variant-numeric:tabular-nums; }
+</style>
+<script>
+(function () {
+  var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* 스크롤 등장 — 그룹 단위로 묶고 자식은 순차로 */
+  var GROUPS = [".hero .in", ".shead", ".cards", ".steps", ".checks",
+                ".tiers", ".scroll tbody", ".final .in"];
+  var groups = [];
+  GROUPS.forEach(function (sel) {
+    [].forEach.call(document.querySelectorAll(sel), function (g) { groups.push(g); });
+  });
+
+  groups.forEach(function (g) {
+    var kids = [].slice.call(g.children);
+    if (!kids.length) return;
+    if (!reduce) kids.forEach(function (k, i) {
+      k.classList.add("rv");
+      k.style.setProperty("--d", Math.min(i * 0.065, 0.5) + "s");
+    });
+    g.__kids = kids;
+  });
+
+  function show(g) {
+    g.classList.add("on");
+    (g.__kids || []).forEach(function (k) { k.classList.add("on"); });
+    countup(g);
+  }
+
+  if (reduce || !("IntersectionObserver" in window)) {
+    groups.forEach(show);
+  } else {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        show(e.target);
+        io.unobserve(e.target);
+      });
+    }, { rootMargin: "0px 0px -12% 0px", threshold: 0.15 });
+    groups.forEach(function (g) { io.observe(g); });
+    /* 안전망 — 관찰이 어떤 이유로든 안 걸려도 3초 뒤엔 전부 보이게 한다 */
+    setTimeout(function () { groups.forEach(show); }, 3000);
+  }
+
+  /* 숫자 카운트업 — 접두/접미 문자는 그대로 두고 숫자만 센다 */
+  function countup(g) {
+    [].forEach.call(g.querySelectorAll(".stats b, .tier .sc"), function (el) {
+      if (el.__done) return;
+      el.__done = true;
+      var m = /^(\D*)(\d+)(.*)$/.exec(el.textContent.trim());
+      if (!m) return;
+      var pre = m[1], end = +m[2], post = m[3];
+      if (reduce || end > 999) return;
+      var t0 = null, dur = 900;
+      function tick(t) {
+        if (t0 === null) t0 = t;
+        var p = Math.min((t - t0) / dur, 1);
+        var e = 1 - Math.pow(1 - p, 4);            // easeOutQuart
+        el.textContent = pre + Math.round(end * e) + post;
+        if (p < 1) requestAnimationFrame(tick);
+      }
+      el.textContent = pre + "0" + post;
+      requestAnimationFrame(tick);
+    });
+  }
+})();
+</script>
