@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { PIECES, modelSrc, type Piece } from "../data/pieces";
 import { Thumb } from "./Thumb";
-import { Preview } from "../three/Preview";
-import { CONCEPTS } from "../data/concepts";
+import { Sprite } from "../three/Sprite";
+import { CONCEPTS, NEUTRAL_RASTER } from "../data/concepts";
 
 /* 화면에서 제일 먼저 보이는 건 글이 아니라 그림이어야 한다.
    여기 있는 것들이 각 섹션의 본문이고, 글은 그 밑에 붙는 설명이다. */
@@ -55,9 +55,13 @@ export function Donut({ percent, label, sub }: { percent: number; label: string;
   useEffect(() => {
     const el = box.current;
     if (!el) return;
-    const io = new IntersectionObserver(([e]) => e?.isIntersecting && setOn(true), { threshold: 0.4 });
+    const fallback = setTimeout(() => setOn(true), 1000);
+    const io = new IntersectionObserver(([e]) => e?.isIntersecting && setOn(true), { threshold: 0 });
     io.observe(el);
-    return () => io.disconnect();
+    return () => {
+      clearTimeout(fallback);
+      io.disconnect();
+    };
   }, []);
 
   return (
@@ -101,9 +105,13 @@ export function CheckWeights({ items }: { items: [string, number, string][] }) {
   useEffect(() => {
     const el = box.current;
     if (!el) return;
-    const io = new IntersectionObserver(([e]) => e?.isIntersecting && setOn(true), { threshold: 0.3 });
+    const fallback = setTimeout(() => setOn(true), 1000);
+    const io = new IntersectionObserver(([e]) => e?.isIntersecting && setOn(true), { threshold: 0 });
     io.observe(el);
-    return () => io.disconnect();
+    return () => {
+      clearTimeout(fallback);
+      io.disconnect();
+    };
   }, []);
 
   /* 라이선스만 액센트로 둔다. 유일하게 단독 탈락 사유라 다른 항목과 성격이 다르다. */
@@ -119,7 +127,7 @@ export function CheckWeights({ items }: { items: [string, number, string][] }) {
             className="grid place-items-center transition-[flex-grow] duration-700"
             style={{ flexGrow: on ? w : 0, background: shade(i) }}
           >
-            <b className="num text-xs text-ground/90 mix-blend-luminosity">{w}</b>
+            {w >= 12 && <b className="num text-xs text-ground/90 mix-blend-luminosity">{w}</b>}
           </span>
         ))}
       </div>
@@ -167,8 +175,7 @@ export function AssetRail() {
 /** 같은 에셋을 컨셉만 바꿔 나란히. 글로 쓰면 안 읽히는 것을 그림으로 말한다. */
 export function ConceptGrid({ piece, ids }: { piece?: Piece; ids: string[] }) {
   const target = piece ?? PIECES.find((p) => p.m === "kite_shield") ?? PIECES[0]!;
-  const src = modelSrc(target);
-  if (!src) return null;
+  if (!modelSrc(target)) return null;
 
   return (
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -178,7 +185,7 @@ export function ConceptGrid({ piece, ids }: { piece?: Piece; ids: string[] }) {
         return (
           <figure key={id} className="m-0">
             <div className="aspect-[4/5] overflow-hidden rounded-2xl border border-line bg-gradient-to-b from-surface-2 to-surface">
-              <Preview model={src} knobs={c.knobs} spin={false} className="h-full w-full" />
+              <Sprite piece={target} knobs={c.knobs} raster={NEUTRAL_RASTER} />
             </div>
             <figcaption className="pt-2 text-xs text-faint">{c.name}</figcaption>
           </figure>
