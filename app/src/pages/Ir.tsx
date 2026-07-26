@@ -30,23 +30,13 @@ export function Ir() {
         <h1 className="text-4xl leading-[1.2] font-bold text-ink">
           게임 에셋 검증 및 컨셉 정합 플랫폼
         </h1>
-        <ol className="mt-6 grid list-none gap-x-12 gap-y-6 p-0 sm:grid-cols-3">
-          {[
-            ["창작자", "에셋 등록"],
-            ["플랫폼", "정적 분석 7항목, 배지 부여"],
-            ["게임사", "구독 접근, 에디터로 컨셉 변환"],
-          ].map(([who, what], i) => (
-            <li key={who}>
-              <span className="num text-xs text-faint">{String(i + 1).padStart(2, "0")}</span>
-              <p className="mt-1 text-xs font-bold text-ink">{who}</p>
-              <p className="mt-0.5 text-xs text-faint">{what}</p>
-            </li>
-          ))}
-        </ol>
         {/* 요약. IR 은 결론부터 읽는 사람이 많아 머리말 바로 아래 둔다.
             값은 전부 본문에서 가져오므로 따로 관리하지 않는다. */}
-        <p className="mt-8 border-t border-line pt-6 text-xs font-bold text-ink">요약</p>
-        <dl className="mt-4 grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
+        </div>
+
+        {/* 요약. IR 레일 바로 아래 붙어야 문서의 첫 단락으로 읽힌다. */}
+        <h2 className="mt-6 text-2xl leading-snug font-bold text-ink">요약</h2>
+        <dl className="mt-6 grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
           {[
             ["퀄리티 검증률", "38.8%", "7항목 모두 통과"],
             ["합계 MRR", `${STREAM_TOTAL.mrr.toLocaleString("ko-KR")}만원`, "구독 95%"],
@@ -60,7 +50,21 @@ export function Ir() {
             </div>
           ))}
         </dl>
-        </div>
+
+        <span aria-hidden="true" />
+        <ol className="mt-10 grid list-none border-t border-line pt-8 lg:mt-12 gap-x-12 gap-y-6 p-0 sm:grid-cols-3">
+          {[
+            ["창작자", "에셋 등록"],
+            ["플랫폼", "정적 분석 7항목, 배지 부여"],
+            ["게임사", "구독 접근, 에디터로 컨셉 변환"],
+          ].map(([who, what], i) => (
+            <li key={who}>
+              <span className="num text-xs text-faint">{String(i + 1).padStart(2, "0")}</span>
+              <p className="mt-1 text-xs font-bold text-ink">{who}</p>
+              <p className="mt-0.5 text-xs text-faint">{what}</p>
+            </li>
+          ))}
+        </ol>
       </header>
 
       <div className="pb-12">

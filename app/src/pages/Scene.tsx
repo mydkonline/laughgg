@@ -102,7 +102,7 @@ export function Scene() {
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="우리 게임 찾기"
+            placeholder="게임 찾기"
             aria-label="게임 검색"
             className="mb-4 w-full rounded-full border border-line bg-surface px-4 py-2.5 text-xs text-ink placeholder:text-faint focus:border-accent"
           />
