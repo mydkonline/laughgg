@@ -184,6 +184,101 @@ export function Donut({ percent, label, sub }: { percent: number; label: string;
   );
 }
 
+/* 구성 비율.
+
+   합계가 어디서 왔는지를 한 줄로 낸다. 세로 막대로 쌓아 올리는 워터폴을
+   먼저 써 봤는데, 여기 데이터는 하나가 95% 라 나머지 둘이 2% 짜리 실선이
+   되어 읽을 수가 없었다. 이 블록이 할 말은 "셋이 쌓인다" 가 아니라
+   "하나가 거의 전부다" 이므로 비율로 눕히는 쪽이 맞다.
+
+   작은 조각은 막대 안에 글자가 안 들어간다. 그래서 아래 범례에 값과 비율을
+   따로 적는다 — 길이만으로 읽게 두면 2% 짜리는 없는 것이 된다. */
+export function Share({ items, unit = "" }: { items: [string, number][]; unit?: string }) {
+  const [ref, seen] = useSeen<HTMLDivElement>();
+  const total = items.reduce((a, [, v]) => a + v, 0);
+  const shade = (i: number) =>
+    i === 0 ? "var(--accent)" : `color-mix(in srgb, var(--accent) ${44 - i * 14}%, var(--surface-2))`;
+
+  return (
+    <div ref={ref}>
+      <div className="flex h-10 w-full overflow-hidden rounded-lg border border-line">
+        {items.map(([name, v], i) => (
+          <span
+            key={name}
+            title={`${name} ${Math.round((v / total) * 100)}%`}
+            className="grid place-items-center transition-[flex-grow] duration-700 ease-out motion-reduce:transition-none"
+            style={{ flexGrow: seen ? v : 0, background: shade(i) }}
+          >
+            {v / total >= 0.12 && (
+              <b className="num text-xs text-ground/90 mix-blend-luminosity">
+                {Math.round((v / total) * 100)}%
+              </b>
+            )}
+          </span>
+        ))}
+      </div>
+
+      <dl className="mt-4 grid gap-x-10 gap-y-2 sm:grid-cols-3">
+        {items.map(([name, v], i) => (
+          <div key={name} className="flex items-baseline gap-2.5 border-b border-line-soft pb-2">
+            <span className="h-2.5 w-2.5 shrink-0 rounded-sm" style={{ background: shade(i) }} />
+            <dt className="min-w-0 flex-1 truncate text-xs text-ink">{name}</dt>
+            <dd className="num m-0 shrink-0 text-xs text-ink">
+              {v.toLocaleString("ko-KR")}
+              <span className="ml-0.5 text-[10px] font-normal text-faint">{unit}</span>
+            </dd>
+            <dd className="num m-0 w-9 shrink-0 text-right text-[10px] text-faint">
+              {((v / total) * 100).toFixed(1)}%
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  );
+}
+
+/* 불릿 차트.
+
+   숫자만 크게 띄우면 19,606 이 큰 건지 작은 건지 알 수 없다. 막대 하나에
+   두 가지를 얹는다 — 채운 길이는 전체 중 차지하는 비율이고, 세로 눈금은
+   전년 값이 어디였는지다. 게이지보다 자리를 덜 먹어서 셋을 나란히 놓을 수 있다.
+
+   값은 언제나 글자로도 나와 있다. 색이나 길이만으로 읽게 만들면 못 읽는
+   사람이 생긴다 — 여기서 막대는 숫자를 돕는 것이지 대신하는 게 아니다. */
+export function Bullet({
+  fill,
+  mark,
+  markLabel,
+}: {
+  fill: number;
+  mark?: number;
+  markLabel?: string;
+}) {
+  const [ref, seen] = useSeen<HTMLDivElement>();
+  return (
+    <div ref={ref} className="mt-3">
+      <div className="relative h-1.5 rounded-full bg-surface-2">
+        <span
+          className="block h-full rounded-full bg-accent transition-[width] duration-700 ease-out motion-reduce:transition-none"
+          style={{ width: seen ? `${fill}%` : "0%" }}
+        />
+        {typeof mark === "number" && (
+          <span
+            className="absolute top-1/2 h-3 w-0.5 -translate-y-1/2 bg-ink"
+            style={{ left: `${mark}%` }}
+            title={markLabel}
+          />
+        )}
+      </div>
+      {markLabel && typeof mark === "number" && (
+        <p className="mt-1.5 text-[10px] text-faint" style={{ marginLeft: `${Math.min(mark, 88)}%` }}>
+          {markLabel}
+        </p>
+      )}
+    </div>
+  );
+}
+
 /** 일곱 항목의 가중치를 막대 높이로. 제일 무거운 하나만 액센트다. */
 function WeightSpark({ on }: { on: boolean }) {
   const max = Math.max(...CHECK_WEIGHTS.map(([, w]) => w));

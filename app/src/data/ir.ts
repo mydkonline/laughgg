@@ -8,13 +8,22 @@ export type Figure = {
   note: string;
   /** 출처가 있으면 인용, 없으면 우리 계산이다 */
   source?: string;
+  /** 막대를 채우는 비율 0~100. 없으면 막대를 안 그린다. */
+  fill?: number;
+  /** 비교 눈금 위치 0~100 */
+  mark?: number;
+  markLabel?: string;
 };
 
-/** 시장이 실제로 얼마나 큰가. 전부 인용값이다. */
+/* 시장이 실제로 얼마나 큰가. 전부 인용값이다.
+
+   fill 과 mark 는 숫자 옆에 붙는 막대다. fill 은 전체 중 차지하는 비율이고,
+   mark 는 전년 값이 어디였는지 찍는 눈금이다. 둘 다 note 에 적힌 인용값을
+   그대로 옮긴 것이며, 없는 항목은 비운다 — 채우려고 지어내면 자료가 아니다. */
 export const MARKET: Figure[] = [
-  { label: "2025년 스팀 신작", value: "19,606", unit: "종", note: "전년 대비 +14.3%" },
-  { label: "Unity 생태계 개발자", value: "500", unit: "만 명", note: "엔진 점유 51%" },
-  { label: "게임 아트 외주 시장", value: "58", unit: "억 달러", note: "개발사 68%가 외주" },
+  { label: "2025년 스팀 신작", value: "19,606", unit: "종", note: "전년 대비 +14.3%", fill: 100, mark: 87.5, markLabel: "전년" },
+  { label: "Unity 생태계 개발자", value: "500", unit: "만 명", note: "엔진 점유 51%", fill: 51 },
+  { label: "게임 아트 외주 시장", value: "58", unit: "억 달러", note: "개발사 68%가 외주", fill: 68 },
 ];
 
 /** 출처는 카드마다 붙이면 숫자를 가린다. 섹션 아래 한 줄로 모은다. */
@@ -152,9 +161,9 @@ export const REVIEWS: Review[] = [
 
 /* AI 시대 개발자 규모. 전부 인용값이고 출처는 화면에 같이 낸다. */
 export const AI_DEV: Figure[] = [
-  { label: "AI 를 쓰는 게임 개발자", value: "90", unit: "%", note: "5개국 615명 조사" },
-  { label: "AI 사용을 명시한 스팀 게임", value: "7,300", unit: "종", note: "2024년의 2배" },
-  { label: "1인 개발자 비중", value: "21", unit: "%", note: "전년 18%" },
+  { label: "AI 를 쓰는 게임 개발자", value: "90", unit: "%", note: "5개국 615명 조사", fill: 90 },
+  { label: "AI 사용을 명시한 스팀 게임", value: "7,300", unit: "종", note: "2024년의 2배", fill: 100, mark: 50, markLabel: "전년" },
+  { label: "1인 개발자 비중", value: "21", unit: "%", note: "전년 18%", fill: 21, mark: 18, markLabel: "전년" },
 ];
 
 export const AI_DEV_SOURCE = "Google Cloud 게임 개발자 조사 2025, Steam AI 공시 집계 2026";

@@ -3,7 +3,7 @@ import { MARKET, MARKET_SOURCE, MODEL, CHECK_WEIGHTS, REVIEWS, AI_DEV, AI_DEV_SO
 import { PIECES } from "../data/pieces";
 import { Sprite } from "../three/Sprite";
 import { CONCEPTS } from "../data/concepts";
-import { Donut, CheckWeights, AssetRail, ConceptGrid, CompareBars, useCountUp, useSeen, Key } from "../components/Infographic";
+import { Donut, CheckWeights, AssetRail, ConceptGrid, CompareBars, useCountUp, useSeen, Key, Bullet, Share } from "../components/Infographic";
 import { Globe } from "../components/Globe";
 
 /* IR — 얼마나 큰 시장이고, 누가 쓰고, 어떻게 버는가.
@@ -107,6 +107,9 @@ export function Ir() {
                 <span className="ml-1 text-base text-muted">{f.unit}</span>
               </p>
               <p className="mt-3 text-xs text-muted">{f.note}</p>
+              {typeof f.fill === "number" && (
+                <Bullet fill={f.fill} mark={f.mark} markLabel={f.markLabel} />
+              )}
             </div>
           ))}
         </div>
@@ -159,7 +162,16 @@ export function Ir() {
             숫자는 시장이 있다는 말이고, 리뷰는 그 시장이 이걸 쓴다는 말이다. */}
         <div className="mb-6 grid gap-x-12 gap-y-8 sm:grid-cols-3">
           {AI_DEV.map((f) => (
-            <CountStat key={f.label} label={f.label} value={f.value} unit={f.unit ?? ""} note={f.note} />
+            <CountStat
+              key={f.label}
+              label={f.label}
+              value={f.value}
+              unit={f.unit ?? ""}
+              note={f.note}
+              fill={f.fill}
+              mark={f.mark}
+              markLabel={f.markLabel}
+            />
           ))}
         </div>
         <div className="mb-5" />
@@ -632,7 +644,14 @@ function Streams() {
         </div>
       </div>
 
-      {/* 셋을 넘겨 본 다음 마지막에 합계가 온다. 이 블록의 결론이라 강조한다. */}
+      {/* 셋이 합쳐 얼마가 되는지는 누적 막대 하나로 낸다. 워터폴을 써 봤는데
+          구독이 95% 라 나머지 둘이 2% 짜리 실선이 되어 아무것도 안 보였다.
+          여기서 할 말은 "셋이 쌓인다" 가 아니라 "하나가 거의 전부다" 이므로
+          한 줄에 비율로 눕히는 쪽이 맞다. */}
+      <div className="mt-8 border-t border-line pt-6">
+        <Share items={STREAMS.map((x) => [x.name, x.mrr] as [string, number])} unit="만원" />
+      </div>
+
       <dl className="mt-6 flex flex-wrap items-baseline gap-x-8 gap-y-2 border-t border-line pt-4">
         <div className="-mx-2 flex items-baseline gap-2 rounded-lg bg-key-soft px-2 py-1">
           <dt className="text-xs font-bold text-key">합계 MRR</dt>
@@ -701,7 +720,23 @@ function RevenueFunnel() {
 }
 
 /* 화면에 들어올 때 올라가는 지표. 소수점이 있으면 자릿수를 유지한다. */
-function CountStat({ label, value, unit, note }: { label: string; value: string; unit: string; note: string }) {
+function CountStat({
+  label,
+  value,
+  unit,
+  note,
+  fill,
+  mark,
+  markLabel,
+}: {
+  label: string;
+  value: string;
+  unit: string;
+  note: string;
+  fill?: number;
+  mark?: number;
+  markLabel?: string;
+}) {
   const digits = value.replace(/,/g, "");
   const decimals = digits.includes(".") ? digits.split(".")[1]!.length : 0;
   const [ref, shown] = useCountUp(Number(digits), decimals);
@@ -718,6 +753,7 @@ function CountStat({ label, value, unit, note }: { label: string; value: string;
         <span className="ml-1 text-base text-muted">{unit}</span>
       </p>
       <p className="mt-2 text-xs text-muted">{note}</p>
+      {typeof fill === "number" && <Bullet fill={fill} mark={mark} markLabel={markLabel} />}
     </div>
   );
 }
