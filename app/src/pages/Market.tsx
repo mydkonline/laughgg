@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { PIECES, CATS, ENGINES, ENGINE_NAME, type CatKey, type EngineKey } from "../data/pieces";
 import { RankIcon, badgeOf } from "../components/Rank";
+import { BUNDLES, bundleItems, bundlePrice, bundleScore } from "../data/bundles";
 import { Thumb } from "../components/Thumb";
 import { won } from "../lib/format";
 
@@ -15,6 +16,9 @@ const SORTS: [Sort, string][] = [
 ];
 
 export function Market() {
+  /* 패키지와 단품을 한 칸에 섞지 않는다. 개수도 가격도 기준이 달라
+     같이 놓으면 비교가 깨진다. */
+  const [kind, setKind] = useState<"단품" | "패키지">("단품");
   const [cat, setCat] = useState<CatKey>("all");
   const [engine, setEngine] = useState<EngineKey | "any">("any");
   const [minScore, setMinScore] = useState(0);
@@ -63,15 +67,23 @@ export function Market() {
         />
       </div>
 
-      <Row label="분류">
+      <Row label="형태">
+        {(["단품", "패키지"] as const).map((k) => (
+          <Chip key={k} on={kind === k} onClick={() => setKind(k)} count={k === "단품" ? PIECES.length : BUNDLES.length}>
+            {k}
+          </Chip>
+        ))}
+      </Row>
+
+      {kind === "패키지" ? null : <Row label="분류">
         {CATS.map(([k, name]) => (
           <Chip key={k} on={cat === k} onClick={() => setCat(k)} count={catCount(k)}>
             {name}
           </Chip>
         ))}
-      </Row>
+      </Row>}
 
-      <Row label="엔진">
+      {kind === "패키지" ? null : <Row label="엔진">
         <Chip on={engine === "any"} onClick={() => setEngine("any")} count={engCount("any")}>
           전체
         </Chip>
@@ -80,9 +92,9 @@ export function Market() {
             {ENGINE_NAME[k]}
           </Chip>
         ))}
-      </Row>
+      </Row>}
 
-      <Row label="점수">
+      {kind === "패키지" ? null : <Row label="점수">
         <input
           type="range"
           min={0}
@@ -94,9 +106,9 @@ export function Market() {
         <span className="text-xs text-faint">
           <b className="tabular-nums text-ink">{minScore}</b> 이상
         </span>
-      </Row>
+      </Row>}
 
-      <Row label="정렬">
+      {kind === "패키지" ? null : <Row label="정렬">
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value as Sort)}
@@ -115,9 +127,53 @@ export function Market() {
         >
           필터 초기화
         </button>
-      </Row>
+      </Row>}
 
-      {list.length === 0 ? (
+      {kind === "패키지" ? (
+        <div className="mt-6 flex flex-col gap-4">
+          {BUNDLES.map((b) => {
+            const items = bundleItems(b);
+            const price = bundlePrice(b);
+            return (
+              <Link
+                key={b.id}
+                to={`/market/${items[0]?.id ?? 1}`}
+                className="grid gap-x-8 gap-y-4 border-b border-line pb-5 no-underline sm:grid-cols-[minmax(0,1fr)_180px]"
+              >
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-baseline gap-2">
+                    <span className="text-base font-bold text-ink">{b.name}</span>
+                    <span className="text-xs text-faint">{items.length}종</span>
+                    <span className="flex items-center gap-1">
+                      <RankIcon badge={badgeOf(bundleScore(b))} size={13} />
+                    </span>
+                  </div>
+                  <p className="mt-1 text-xs text-faint">{b.note}</p>
+
+                  {/* 안에 무엇이 들었는지 낱개로 다 보인다. 안 보이면 못 산다. */}
+                  <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+                    {items.map((p) => (
+                      <span key={p.id} className="w-16 flex-none">
+                        <span className="relative block aspect-square rounded-md bg-surface">
+                          <Thumb piece={p} pad="12%" />
+                        </span>
+                        <span className="block truncate pt-1 text-[10px] text-faint">{p.t}</span>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 낱개 합계와 나란히 낸다. 얼마를 아끼는지가 사는 이유다. */}
+                <div className="sm:border-l sm:border-line sm:pl-6">
+                  <p className="text-xs text-faint line-through">{won(price.single)}</p>
+                  <p className="num mt-0.5 text-4xl leading-none text-ink">{won(price.bundled)}</p>
+                  <p className="mt-1.5 text-xs text-accent">{won(price.saved)} 절약</p>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      ) : list.length === 0 ? (
         <p className="rounded-2xl border border-line py-20 text-center text-base text-faint">
           조건에 맞는 에셋이 없습니다. 점수 기준을 낮추거나 분류를 넓혀 보세요.
         </p>

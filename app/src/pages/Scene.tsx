@@ -2,12 +2,12 @@ import { useEffect, useMemo, useState } from "react";
 import {
   SCENE_GAMES,
   PLACE_MODEL,
-  ART_CATS,
   fitReport,
   fitVerdict,
   type SceneGame,
 } from "../data/scenes";
 import { useCart } from "../lib/cart";
+import { Pager } from "../components/Pager";
 import { PIECES, modelSrc, type Piece } from "../data/pieces";
 import { bakeView } from "../three/baker";
 
@@ -17,11 +17,18 @@ import { bakeView } from "../three/baker";
    떨어져 있는지를 축마다 재서 먼저 알려 주고, 그다음 눈으로 확인시킨다.
    숫자만 있으면 못 믿고, 그림만 있으면 어디를 고쳐야 하는지 모른다. */
 
+const PAGE = 10;
+
+const SCENE_AXES: [string, string][] = [
+  ["cat", "시각 방향"],
+  ["sub", "분위기"],
+  ["dim", "차원"],
+];
+
 const rgb = (c: [number, number, number], a = 1) => `rgb(${c[0]} ${c[1]} ${c[2]} / ${a})`;
 
 export function Scene() {
   const [id, setId] = useState(SCENE_GAMES[0]!.id);
-  const [dim, setDim] = useState<"전체" | "3D" | "2D">("전체");
   /* 맞추기 전과 후를 나란히 볼 수 있어야 이 제품이 무엇을 파는지 보인다. */
   const [fit, setFit] = useState(true);
   const { ids: cartIds } = useCart();
@@ -33,10 +40,56 @@ export function Scene() {
   const [pieceId, setPieceId] = useState(() => owned[0]?.id ?? 1);
   const piece = owned.find((p) => p.id === pieceId) ?? owned[0]!;
 
-  const list = useMemo(
-    () => (dim === "전체" ? SCENE_GAMES : SCENE_GAMES.filter((g) => g.dim === dim)),
-    [dim],
+  const [q, setQ] = useState("");
+  const [picked, setPicked] = useState<Record<string, Set<string>>>({});
+  const [page, setPage] = useState(1);
+
+  const toggle = (axis: string, value: string) =>
+    setPicked((prev) => {
+      const next = { ...prev };
+      const set = new Set(next[axis] ?? []);
+      if (set.has(value)) set.delete(value);
+      else set.add(value);
+      if (set.size) next[axis] = set;
+      else delete next[axis];
+      return next;
+    });
+
+  const axesOf = (g: SceneGame): Record<string, string> => ({ cat: g.cat, sub: g.sub, dim: g.dim });
+  const hits = (needle: string, g: SceneGame) =>
+    !needle || [g.n, g.sub, g.cat].some((v) => v.toLowerCase().includes(needle));
+
+  const list = useMemo(() => {
+    const needle = q.trim().toLowerCase();
+    return SCENE_GAMES.filter((g) => {
+      if (!hits(needle, g)) return false;
+      const a = axesOf(g);
+      return Object.entries(picked).every(([axis, set]) => set.has(a[axis] ?? ""));
+    });
+  }, [q, picked]);
+
+  /* 패싯 개수는 그 축을 뺀 나머지 조건으로 센다. 안 그러면 하나 고르는 순간
+     같은 축의 다른 선택지가 전부 0 이 된다. */
+  const facets = useMemo(
+    () =>
+      SCENE_AXES.map(([key, label]) => {
+        const others = Object.entries(picked).filter(([k]) => k !== key);
+        const needle = q.trim().toLowerCase();
+        const count = new Map<string, number>();
+        for (const g of SCENE_GAMES) {
+          if (!hits(needle, g)) continue;
+          const a = axesOf(g);
+          if (!others.every(([axis, set]) => set.has(a[axis] ?? ""))) continue;
+          const v = a[key] ?? "";
+          if (v) count.set(v, (count.get(v) ?? 0) + 1);
+        }
+        return { key, label, values: [...count].sort((x, y) => y[1] - x[1]) };
+      }),
+    [q, picked],
   );
+
+  const active = Object.values(picked).flatMap((set) => [...set]);
+  useEffect(() => setPage(1), [q, picked]);
   const game = SCENE_GAMES.find((g) => g.id === id) ?? SCENE_GAMES[0]!;
 
   return (
@@ -45,72 +98,103 @@ export function Scene() {
         <p className="text-xs tracking-wide text-accent">AI 에셋</p>
         <h1 className="mt-1 text-2xl font-bold text-ink">에셋 컨셉트 매핑</h1>
         <p className="mt-2 text-xs text-muted">산 에셋이 우리 게임 컨셉에 맞는지 확인합니다.</p>
-        <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-t border-line pt-4">
-          <Spec k="대조 게임" v={`${SCENE_GAMES.length}종, ${ART_CATS.length}개 분류`} />
-          <Spec k="검토 축" v="밝기, 대비, 채도, 색조, 세피아" />
-          <Spec k="판정" v="80 이상 그대로 사용" />
-        </dl>
       </header>
 
-      <div className="mb-3 flex flex-wrap items-center gap-1.5">
-        {(["전체", "3D", "2D"] as const).map((d) => (
-          <button
-            key={d}
-            type="button"
-            onClick={() => setDim(d)}
-            aria-pressed={dim === d}
-            className={[
-              "cursor-pointer rounded-full border px-3.5 py-1.5 text-xs",
-              dim === d
-                ? "border-transparent bg-ink font-bold text-ground"
-                : "border-line text-muted hover:border-accent hover:text-ink",
-            ].join(" ")}
-          >
-            {d}
-            <span className={dim === d ? "ml-1.5 opacity-60" : "ml-1.5 text-faint"}>
-              {d === "전체" ? SCENE_GAMES.length : SCENE_GAMES.filter((g) => g.dim === d).length}
-            </span>
-          </button>
-        ))}
-      </div>
+      {/* 검색이 이 화면의 입구다. 무엇부터 해야 하는지가 한눈에 보여야 한다. */}
+      <input
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        placeholder="우리 게임 찾기"
+        aria-label="게임 검색"
+        className="mb-6 w-full rounded-full border border-line bg-surface px-5 py-3.5 text-base text-ink placeholder:text-faint focus:border-accent"
+      />
 
-      {/* 대분류로 묶어 한 화면에 다 보인다. 칩 한 줄로 17개를 늘어놓으면
-          가로 스크롤에 묻혀서 무엇이 있는지 알 수가 없다. */}
-      <div className="mb-5 grid gap-x-8 gap-y-6 sm:grid-cols-3">
-        {ART_CATS.map((cat) => {
-          const group = list.filter((g) => g.cat === cat);
-          if (!group.length) return null;
-          return (
-            <section key={cat}>
-              <p className="border-b border-line pb-2 text-xs font-bold text-ink">
-                {cat}
-                <span className="num ml-2 font-normal text-faint">{group.length}</span>
-              </p>
-              <ul className="m-0 flex list-none flex-col p-0">
-                {group.map((g) => (
-                  <li key={g.id}>
-                    <button
-                      type="button"
-                      onClick={() => setId(g.id)}
-                      aria-pressed={g.id === game.id}
-                      className={[
-                        "flex w-full cursor-pointer items-center gap-2.5 border-0 bg-transparent py-2 text-left",
-                        g.id === game.id ? "text-ink" : "text-muted hover:text-ink",
-                      ].join(" ")}
-                    >
-                      <span
-                        className={`h-2.5 w-2.5 shrink-0 rounded-full ${g.id === game.id ? "ring-2 ring-accent ring-offset-2 ring-offset-ground" : ""}`}
-                        style={{ background: g.sw }}
-                      />
-                      <span className={`truncate text-xs ${g.id === game.id ? "font-bold" : ""}`}>{g.n}</span>
-                      <span className="ml-auto shrink-0 text-[10px] text-faint">{g.sub}</span>
-                    </button>
-                  </li>
-                ))}
+      <div className="mb-6 grid gap-x-12 gap-y-6 lg:grid-cols-[200px_minmax(0,1fr)]">
+        {/* 왼쪽은 고르는 자리다. 200종이 되면 다 늘어놓을 수 없으니
+            엔진 목록과 같은 구조로 간다 — 검색, 드롭다운 패싯, 쪽 번호. */}
+        <div>
+          {facets.map((f) => (
+            <details key={f.key} className="group mb-3 border-b border-line pb-3" open={f.key === "cat"}>
+              <summary className="flex cursor-pointer list-none items-center gap-2 text-xs font-bold text-ink">
+                {f.label}
+                {picked[f.key] && (
+                  <span className="num rounded-full bg-accent px-1.5 text-[10px] text-white">
+                    {picked[f.key]!.size}
+                  </span>
+                )}
+                <span className="ml-auto text-[10px] text-faint group-open:hidden">+</span>
+                <span className="ml-auto hidden text-[10px] text-faint group-open:inline">−</span>
+              </summary>
+              <ul className="m-0 mt-2 flex list-none flex-col gap-1 p-0">
+                {f.values.map(([v, n]) => {
+                  const on = picked[f.key]?.has(v) ?? false;
+                  return (
+                    <li key={v}>
+                      <button
+                        type="button"
+                        onClick={() => toggle(f.key, v)}
+                        aria-pressed={on}
+                        className={[
+                          "flex w-full cursor-pointer items-center gap-2 border-0 bg-transparent py-0.5 text-left text-xs",
+                          on ? "font-bold text-accent" : "text-muted hover:text-ink",
+                        ].join(" ")}
+                      >
+                        <span className="truncate">{v}</span>
+                        <span className="num ml-auto shrink-0 text-faint">{n}</span>
+                      </button>
+                    </li>
+                  );
+                })}
               </ul>
-            </section>
-          );
-        })}
+            </details>
+          ))}
+        </div>
+
+        <div className="min-w-0">
+          <div className="mb-3 flex flex-wrap items-center gap-2 border-b border-line pb-3">
+            <span className="text-xs text-faint">
+              <b className="num text-ink">{list.length}</b>
+              {list.length !== SCENE_GAMES.length && <span> / {SCENE_GAMES.length}</span>}
+            </span>
+            {active.length > 0 && (
+              <button
+                type="button"
+                onClick={() => setPicked({})}
+                aria-label="필터 전체 해제"
+                className="flex cursor-pointer items-center gap-1.5 rounded-full border-0 bg-accent px-2.5 py-1 text-xs text-white"
+              >
+                {active.join(", ")}
+                <span className="opacity-70">✕</span>
+              </button>
+            )}
+          </div>
+
+          <ul className="m-0 flex list-none flex-col p-0">
+            {list.slice((page - 1) * PAGE, page * PAGE).map((g) => (
+              <li key={g.id}>
+                <button
+                  type="button"
+                  onClick={() => setId(g.id)}
+                  aria-pressed={g.id === game.id}
+                  className={[
+                    "flex w-full cursor-pointer items-center gap-3 border-0 border-b border-line bg-transparent py-2.5 text-left",
+                    g.id === game.id ? "text-ink" : "text-muted hover:text-ink",
+                  ].join(" ")}
+                >
+                  <span
+                    className={`h-2.5 w-2.5 shrink-0 rounded-full ${g.id === game.id ? "ring-2 ring-accent ring-offset-2 ring-offset-ground" : ""}`}
+                    style={{ background: g.sw }}
+                  />
+                  <span className={`truncate text-xs ${g.id === game.id ? "font-bold" : ""}`}>{g.n}</span>
+                  <span className="ml-auto shrink-0 text-[10px] text-faint">{g.cat}</span>
+                  <span className="w-24 shrink-0 truncate text-right text-[10px] text-faint">{g.sub}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+
+          <Pager total={list.length} page={page} perPage={PAGE} onGo={setPage} />
+        </div>
       </div>
 
       {/* 검토 대상. 어느 에셋을 보고 있는지가 먼저다. */}
@@ -338,15 +422,6 @@ function Placed({
         filter: tint,
       }}
     />
-  );
-}
-
-function Spec({ k, v }: { k: string; v: string }) {
-  return (
-    <div>
-      <dt className="text-xs text-faint">{k}</dt>
-      <dd className="m-0 text-xs font-semibold text-ink">{v}</dd>
-    </div>
   );
 }
 
