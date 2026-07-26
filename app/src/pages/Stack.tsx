@@ -9,7 +9,7 @@ import { GAMES, GAME_CATS, SCALES, engineMark, type Game } from "../data/games";
 
    행은 끊어 늘린다. 수백 줄을 한꺼번에 그리면 첫 화면이 늦다. */
 
-const PAGE = 40;
+const PAGE = 10;
 
 const CAT_LABEL = Object.fromEntries(GAME_CATS) as Record<string, string>;
 
@@ -46,7 +46,7 @@ type Picked = Record<string, Set<string>>;
 export function Stack() {
   const [q, setQ] = useState("");
   const [picked, setPicked] = useState<Picked>({});
-  const [shown, setShown] = useState(PAGE);
+  const [page, setPage] = useState(1);
 
   const toggle = (axis: string, value: string) =>
     setPicked((prev) => {
@@ -93,7 +93,7 @@ export function Stack() {
 
   const active = Object.entries(picked).flatMap(([axis, set]) => [...set].map((v) => [axis, v] as const));
 
-  useEffect(() => setShown(PAGE), [q, picked]);
+  useEffect(() => setPage(1), [q, picked]);
 
   return (
     <main className="mx-auto max-w-[1240px] px-5 pb-20">
@@ -113,9 +113,18 @@ export function Stack() {
       <div className="grid gap-x-12 gap-y-8 lg:grid-cols-[184px_minmax(0,1fr)]">
         <div className="lg:sticky lg:top-[100px] lg:self-start">
           {facets.map((f) => (
-            <section key={f.key} className="mb-6">
-              <p className="mb-2 text-xs font-bold text-ink">{f.label}</p>
-              <ul className="m-0 flex list-none flex-wrap gap-x-3 gap-y-1 p-0 lg:flex-col lg:gap-1">
+            <details key={f.key} className="group mb-3 border-b border-line pb-3" open={f.key === "engine"}>
+              <summary className="flex cursor-pointer list-none items-center gap-2 text-xs font-bold text-ink">
+                {f.label}
+                {picked[f.key] && (
+                  <span className="num rounded-full bg-accent px-1.5 text-[10px] text-white">
+                    {picked[f.key]!.size}
+                  </span>
+                )}
+                <span className="ml-auto text-[10px] text-faint group-open:hidden">+</span>
+                <span className="ml-auto hidden text-[10px] text-faint group-open:inline">−</span>
+              </summary>
+              <ul className="m-0 mt-2 flex list-none flex-wrap gap-x-3 gap-y-1 p-0 lg:flex-col lg:gap-1">
                 {f.values.map(([v, n]) => {
                   const on = picked[f.key]?.has(v) ?? false;
                   return (
@@ -136,7 +145,7 @@ export function Stack() {
                   );
                 })}
               </ul>
-            </section>
+            </details>
           ))}
         </div>
 
@@ -147,25 +156,15 @@ export function Stack() {
               <b className="num text-ink">{list.length}</b>
               {list.length !== GAMES.length && <span> / {GAMES.length}</span>}
             </span>
-            {active.map(([axis, v]) => (
-              <button
-                key={axis + v}
-                type="button"
-                onClick={() => toggle(axis, v)}
-                aria-label={`${v} 필터 빼기`}
-                className="flex cursor-pointer items-center gap-1.5 rounded-full border-0 bg-accent px-2.5 py-1 text-xs text-white"
-              >
-                {v}
-                <span className="opacity-70">✕</span>
-              </button>
-            ))}
             {active.length > 0 && (
               <button
                 type="button"
                 onClick={() => setPicked({})}
-                className="cursor-pointer border-0 bg-transparent text-xs text-faint hover:text-ink"
+                aria-label="필터 전체 해제"
+                className="flex cursor-pointer items-center gap-1.5 rounded-full border-0 bg-accent px-2.5 py-1 text-xs text-white"
               >
-                전체 해제
+                {active.map(([, v]) => v).join(", ")}
+                <span className="opacity-70">✕</span>
               </button>
             )}
           </div>
@@ -174,23 +173,65 @@ export function Stack() {
             <p className="py-20 text-center text-xs text-faint">조건에 맞는 게임이 없습니다.</p>
           ) : (
             <>
-              {list.slice(0, shown).map((g) => (
+              {list.slice((page - 1) * PAGE, page * PAGE).map((g) => (
                 <Row key={g.n} game={g} />
               ))}
-              {shown < list.length && (
-                <button
-                  type="button"
-                  onClick={() => setShown((n) => n + PAGE)}
-                  className="mt-5 w-full cursor-pointer rounded-lg border border-line bg-transparent py-3 text-xs text-muted hover:border-accent hover:text-ink"
-                >
-                  {Math.min(PAGE, list.length - shown)}개 더 보기
-                </button>
-              )}
+              <Pager total={list.length} page={page} onGo={setPage} />
             </>
           )}
         </div>
       </div>
     </main>
+  );
+}
+
+/* 페이지 번호. 한 화면에 열 줄이라 넘길 일이 잦고, 몇 쪽인지가 보여야
+   어디쯤 왔는지 안다. 쪽수가 많아지면 앞뒤 두 칸만 남기고 줄인다. */
+function Pager({ total, page, onGo }: { total: number; page: number; onGo: (p: number) => void }) {
+  const last = Math.ceil(total / PAGE);
+  if (last <= 1) return null;
+
+  const nums = Array.from({ length: last }, (_, i) => i + 1).filter(
+    (p) => p === 1 || p === last || Math.abs(p - page) <= 2,
+  );
+
+  return (
+    <nav className="mt-6 flex flex-wrap items-center justify-center gap-1" aria-label="쪽 넘기기">
+      <button
+        type="button"
+        disabled={page === 1}
+        onClick={() => onGo(page - 1)}
+        className="cursor-pointer rounded border-0 bg-transparent px-2 py-1 text-xs text-faint hover:text-ink disabled:cursor-not-allowed disabled:opacity-30"
+      >
+        이전
+      </button>
+
+      {nums.map((p, i) => (
+        <span key={p} className="flex items-center gap-1">
+          {i > 0 && p - nums[i - 1]! > 1 && <span className="px-1 text-xs text-faint">…</span>}
+          <button
+            type="button"
+            onClick={() => onGo(p)}
+            aria-current={p === page ? "page" : undefined}
+            className={[
+              "num min-w-7 cursor-pointer rounded border-0 px-2 py-1 text-xs",
+              p === page ? "bg-accent text-white" : "bg-transparent text-muted hover:text-ink",
+            ].join(" ")}
+          >
+            {p}
+          </button>
+        </span>
+      ))}
+
+      <button
+        type="button"
+        disabled={page === last}
+        onClick={() => onGo(page + 1)}
+        className="cursor-pointer rounded border-0 bg-transparent px-2 py-1 text-xs text-faint hover:text-ink disabled:cursor-not-allowed disabled:opacity-30"
+      >
+        다음
+      </button>
+    </nav>
   );
 }
 
@@ -206,9 +247,12 @@ function Row({ game }: { game: Game }) {
         aria-expanded={open}
         className="flex w-full cursor-pointer flex-col gap-1.5 bg-transparent py-3 text-left hover:bg-surface sm:grid sm:grid-cols-[minmax(0,1fr)_136px_72px_52px] sm:items-center sm:gap-4"
       >
-        <span className="min-w-0">
-          <b className="block truncate text-xs font-bold text-ink">{game.n}</b>
-          <span className="block truncate text-xs text-faint">{game.dev}</span>
+        <span className="flex min-w-0 items-center gap-3">
+          <GameTile game={game} />
+          <span className="min-w-0">
+            <b className="block truncate text-xs font-bold text-ink">{game.n}</b>
+            <span className="block truncate text-xs text-faint">{game.dev}</span>
+          </span>
         </span>
         <span className="flex min-w-0 items-center gap-2 text-xs text-faint sm:contents">
           <span className="flex min-w-0 items-center gap-2">
@@ -238,6 +282,37 @@ function Row({ game }: { game: Game }) {
         </dl>
       )}
     </div>
+  );
+}
+
+/* 게임 식별 타일.
+
+   실제 게임 아이콘은 퍼블리셔 상표이고 저장소에 상용 아트를 안 넣기로 했다.
+   대신 이름에서 만든 색과 머리글자를 쓴다 — 같은 게임은 늘 같은 타일이 나오므로
+   목록에서 눈으로 찾을 수 있다. 라이선스를 받으면 icon 필드를 열어 끼우면 된다. */
+function GameTile({ game }: { game: Game }) {
+  let h = 0;
+  for (const c of game.n) h = (h * 31 + c.charCodeAt(0)) % 360;
+  const initials = game.n
+    .replace(/[^A-Za-z가-힣0-9 ]/g, "")
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase();
+
+  return (
+    <span
+      aria-hidden="true"
+      className="grid h-8 w-8 shrink-0 place-items-center rounded-md text-[10px] font-bold"
+      style={{
+        background: `linear-gradient(140deg, hsl(${h} 42% 34%), hsl(${(h + 40) % 360} 40% 20%))`,
+        color: `hsl(${h} 60% 88%)`,
+      }}
+    >
+      {initials || game.n.slice(0, 2)}
+    </span>
   );
 }
 
