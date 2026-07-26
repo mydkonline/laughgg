@@ -38,7 +38,7 @@ export function HomeStage() {
     <section className="border-t border-line bg-surface">
       <div className="mx-auto max-w-[1240px] px-5 py-16">
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <h2 className="text-2xl font-bold text-ink">게임 컨셉 정합</h2>
+          <h2 className="text-2xl font-bold text-ink">정합</h2>
           <p className="text-xs text-muted">같은 에셋이 게임마다 다르게 맞춰집니다.</p>
         </div>
 

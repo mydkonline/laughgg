@@ -114,7 +114,8 @@ export function Home() {
       {/* 진행 순서 */}
       <section className="border-t border-line bg-surface">
         <div className="mx-auto max-w-[1240px] px-5 py-16">
-          <h2 className="text-2xl font-bold text-ink">작동 방식</h2>
+          <h2 className="text-2xl font-bold text-ink">방식</h2>
+          <p className="mt-2 text-xs text-muted">올린 파일이 배지를 받기까지 네 단계.</p>
           <ol className="mt-8 grid list-none gap-px overflow-hidden rounded-xl border border-line bg-line p-0 sm:grid-cols-2 lg:grid-cols-4">
             {STEPS.map(([icon, t, d], i) => (
               <li key={t} className="flex flex-col items-start gap-4 bg-surface p-6">
@@ -144,7 +145,7 @@ export function Home() {
       {/* 배지 */}
       <section className="mx-auto max-w-[1240px] px-5 py-16">
         <h2 className="text-2xl font-bold text-ink">배지</h2>
-        <p className="mt-2 text-xs text-muted">점수에 따라 부여되며 노출 순위를 정합니다. 수수료와는 무관합니다.</p>
+        <p className="mt-2 text-xs text-muted">수수료가 아니라 노출 순위를 정합니다.</p>
         <div className="mt-8 grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
           {TIERS.map((t) => (
             <div key={t.badge} className="flex flex-col items-start gap-4 bg-surface p-7">
@@ -213,10 +214,8 @@ export function Home() {
       </section>
 
       <section className="mx-auto max-w-[1240px] px-5 py-20 text-center">
-        <h2 className="text-2xl font-bold text-ink">AI 스튜디오</h2>
-        <p className="mx-auto mt-2 max-w-[46ch] text-xs text-muted">
-          파일을 올리면 점수가 나오고, 게임 컨셉에 맞춰 변환해 내려받습니다. 3D 와 2D 둘 다 됩니다.
-        </p>
+        <h2 className="text-2xl font-bold text-ink">스튜디오</h2>
+        <p className="mt-2 text-xs text-muted">3D 와 2D 를 게임 컨셉에 맞춰 변환합니다.</p>
         <Link
           to="/workshop"
           className="mt-6 inline-block rounded-xl bg-accent px-8 py-4 text-base font-bold text-white no-underline hover:bg-accent-strong"
