@@ -960,6 +960,65 @@
 
 
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rkg-chal" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFEFC4"/><stop offset=".42" stop-color="#F0B457"/><stop offset="1" stop-color="#8E5F17"/></linearGradient>
+  <linearGradient id="rkg-dia" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EBD9FF"/><stop offset=".42" stop-color="#A55EEA"/><stop offset="1" stop-color="#54277D"/></linearGradient>
+  <linearGradient id="rkg-plat" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#CFF3EA"/><stop offset=".42" stop-color="#4E9D8D"/><stop offset="1" stop-color="#1F5148"/></linearGradient>
+  <linearGradient id="rkg-silv" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EDF1F5"/><stop offset=".42" stop-color="#8E9BA5"/><stop offset="1" stop-color="#464F58"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 48 48">
+    <path d="M9.5 15.5 1 10.6l3.4 8.8-2.2 1.2 7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M38.5 15.5 47 10.6l-3.4 8.8 2.2 1.2-7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-chal)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m16.6 27.4-2.3-9.3 5.8 4.4L24 15l3.9 7.5 5.8-4.4-2.3 9.3z" fill="url(#rkg-chal)"/>
+    <path d="M16.6 29.6h14.8v2.4H16.6z" fill="url(#rkg-chal)"/>
+  </symbol>
+  <symbol id="rk-dia" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-dia)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.4 7.4 6.6L24 32.4 16.6 21z" fill="url(#rkg-dia)"/>
+    <path d="M16.6 21h14.8L24 24.2z" fill="#0A0A10" opacity=".28"/>
+    <path d="m24 14.4 3 6.6-3 3.2-3-3.2z" fill="#fff" opacity=".34"/>
+  </symbol>
+  <symbol id="rk-plat" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-plat)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.6 6.6 3.8v7.6L24 29.8l-6.6-3.8v-7.6z" fill="url(#rkg-plat)"/>
+    <path d="M17.4 18.4 24 22.2l6.6-3.8L24 14.6z" fill="#fff" opacity=".26"/>
+  </symbol>
+  <symbol id="rk-silv" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-silv)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="M17.6 20.4h12.8v3.6H17.6z" fill="url(#rkg-silv)"/>
+    <path d="M17.6 20.4h12.8v1.6H17.6z" fill="#fff" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
 <script>
 (function () {
   var b = document.getElementById("theme");
@@ -1063,38 +1122,29 @@
   </div>
 
   <figure class="hproof" aria-label="검수 결과 예시">
-    <div class="hpshot"><canvas id="hp3d"></canvas><span class="hpload">렌더 중…</span></div>
+    <div class="hpshot">
+      <canvas id="hp3d"></canvas>
+      <svg class="hpan" id="hpan" viewBox="0 0 100 62" preserveAspectRatio="none" aria-hidden="true"></svg>
+      <div class="hplab" id="hplab" aria-hidden="true"></div>
+      <span class="hpload">읽는 중…</span>
+    </div>
     <figcaption>
-      <div class="hprow">
-        <span class="hpname">Frostbrand Greatsword</span>
-        <span class="hpgrade"><svg class="rk"><use href="#rk-chal"/></svg>챌린저</span>
-      </div>
-      <div class="hpbars" id="hpbars"></div>
-      <div class="hpfoot">
-        <span>종합 <b class="tab">94</b>점</span>
-        <span class="hpsett">$48 판매 → 창작자 <b class="tab">$44.16</b></span>
-      </div>
+      <span class="hpname">Frostbrand Greatsword</span>
+      <span class="hptot">종합 <b class="tab">94</b></span>
+      <span class="hpgrade"><svg class="rk"><use href="#rk-chal"/></svg>챌린저</span>
     </figcaption>
   </figure>
 </div></div>
 
 <section><div class="in">
   <div class="shead"><h2>올리면, 채점하고, 팝니다</h2></div>
-  <div class="flow" id="flow">
-    <div class="fbar"><b id="fbar"></b></div>
-    <div class="fwin"><div class="ftrack" id="ftrack"></div></div>
-    <div class="fnav">
-      <div class="fdots" id="fdots"></div>
-      <button class="fb" id="fprev" type="button" aria-label="이전">←</button>
-      <button class="fb" id="fnext" type="button" aria-label="다음">→</button>
-    </div>
-  </div>
-</div></section>
+  <div class="unfold" id="unfold"></div>
+  </div></section>
 
 <section class="alt"><div class="in">
   <div class="shead"><h2>배지 하나로 판단합니다</h2></div>
   <div class="tiers">
-    <div class="tier" style="--tc:var(--chal)">
+    <div class="tier hi" style="--tc:var(--chal)"><span class="flag">가장 많이 팔립니다</span>
       <span class="lb"><svg class="rk" style="width:2.1em;height:2.1em"><use href="#rk-chal"/></svg>챌린저</span>
       <b class="sc tab">90+</b><span class="ds">그대로 넣으면 끝</span></div>
     <div class="tier" style="--tc:var(--dia)">
@@ -1111,10 +1161,15 @@
 
 <section class="alt"><div class="in">
   <div class="shead"><h2>조건은 이게 전부입니다</h2></div>
+  <div class="hero2">
+    <div class="big"><b class="tab">92<i>%</i></b><span>창작자 정산</span>
+      <em>$100에 팔면 $92. Unity라면 $70입니다.</em></div>
+    <div class="big"><b class="tab">8<i>%</i></b><span>판매 수수료</span>
+      <em>배지가 올라도 그대로. Unity 30%, Epic Fab 12%.</em></div>
+  </div>
 </div>
-  <div class="tick" id="tick" aria-label="이용 조건">
+  <div class="tick" id="tick" aria-label="그 밖의 조건">
     <div class="trow" data-dir="1"></div>
-    <div class="trow" data-dir="-1"></div>
   </div>
 </section>
 
@@ -1227,10 +1282,10 @@
 
 <style id="igg-hero">
   .hero { text-align: left; }
-  .hgrid { display: grid; grid-template-columns: minmax(0,1.02fr) minmax(0,.98fr);
+  .hgrid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.12fr);
     gap: clamp(28px,4vw,58px); align-items: center; }
   @media (max-width: 900px) { .hgrid { grid-template-columns: 1fr; } }
-  .hcopy h1 { margin: 0; }
+  .hcopy h1 { margin: 0; font-size: clamp(30px,3.6vw,46px); }
   .hcopy .sub { margin: 18px 0 0; max-width: 34ch; }
   .hcopy .ctas { margin-top: 30px; justify-content: flex-start; align-items: center; gap: 22px; }
   .btn.wide { width: 100%; max-width: 34ch; justify-content: center; gap: 10px;
@@ -1247,10 +1302,7 @@
     color: var(--faint); font-size: 16px; }
   .trust b { color: var(--ink); font-weight: 800; font-size: 16px; margin-right: 2px; }
 
-  .hproof { margin: 0; border: 1px solid var(--line); border-radius: 18px; overflow: hidden;
-    background: var(--surface);
-    transition: transform .3s cubic-bezier(.22,1,.36,1), border-color .3s ease; }
-  .hproof:hover { transform: translateY(-3px); border-color: var(--accent); }
+  .hproof { margin: 0; border: 0; background: none; }
   .hpshot { position: relative; aspect-ratio: 16/10; display: grid; place-items: center;
     background: var(--surface-2); }
   .hpshot canvas { width: 100%; height: 100%; display: block; }
@@ -1287,23 +1339,6 @@
 <script type="module">
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-
-/* 히어로는 말로 설명하지 않고 결과물을 보여준다 — 실제 검수 리포트 한 장. */
-const BARS = [
-  ["재료 출처", 98], ["실행 성능", 91], ["면 구성", 96],
-  ["텍스처", 93], ["거리별 단계", 92], ["통합 난이도", 88], ["코드 품질", 82],
-];
-const box = document.getElementById("hpbars");
-if (box) {
-  box.innerHTML = BARS.map(([k, v], i) =>
-    `<span class="hpb"><span>${k}</span><i><b data-w="${v}" style="--d:${(i * 0.07).toFixed(2)}s"></b></i><u>${v}</u></span>`).join("");
-  const io = new IntersectionObserver(es => es.forEach(e => {
-    if (!e.isIntersecting) return;
-    io.disconnect();
-    box.querySelectorAll("b[data-w]").forEach(b => { b.style.width = b.dataset.w + "%"; });
-  }), { threshold: .3 });
-  io.observe(box);
-}
 
 const cv = document.getElementById("hp3d");
 if (cv) {
@@ -1357,93 +1392,6 @@ if (cv) {
 }
 </script>
 
-<style id="igg-flow">
-  .flow { border: 1px solid var(--line); border-radius: 18px; background: var(--surface);
-    overflow: hidden; }
-  .fbar { height: 3px; background: var(--line-soft, var(--line)); }
-  .fbar b { display: block; height: 100%; width: 25%; background: var(--accent);
-    transition: width .42s cubic-bezier(.22,1,.36,1); }
-  .fwin { overflow: hidden; }
-  .ftrack { display: flex; transition: translate .46s cubic-bezier(.22,1,.36,1); }
-  .fstep { flex: 0 0 100%; padding: clamp(30px,5vw,54px) clamp(24px,4vw,48px);
-    display: grid; grid-template-columns: 84px 1fr; gap: clamp(18px,3vw,34px); align-items: center; }
-  @media (max-width: 620px) { .fstep { grid-template-columns: 1fr; gap: 16px; } }
-  .fnum { width: 84px; height: 84px; border-radius: 50%; display: grid; place-items: center;
-    background: var(--accent-soft); color: var(--accent); font-size: 28pt; font-weight: 800;
-    letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
-  .fstep h3 { margin: 0; font-size: 20pt; font-weight: 750; letter-spacing: -.035em; }
-  .fstep p { margin: 8px 0 0; color: var(--muted); font-size: 12pt; line-height: 1.6; max-width: 40ch; }
-  .fnav { display: flex; align-items: center; gap: 8px; padding: 14px 18px;
-    border-top: 1px solid var(--line); }
-  .fdots { display: flex; gap: 6px; margin-right: auto; }
-  .fdots button { width: 8px; height: 8px; border-radius: 50%; border: 0; padding: 0;
-    background: var(--line); cursor: pointer;
-    transition: background-color .2s ease, width .28s cubic-bezier(.22,1,.36,1); }
-  .fdots button[aria-current="true"] { background: var(--accent); width: 22px; border-radius: 99px; }
-  .fb { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line);
-    background: none; color: var(--muted); cursor: pointer;
-    transition: border-color .16s ease, color .16s ease, scale .16s cubic-bezier(.22,1,.36,1); }
-  .fb:hover { border-color: var(--accent); color: var(--accent); }
-  .fb:active { scale: .92; }
-  .fb[disabled] { opacity: .32; pointer-events: none; }
-  @media (prefers-reduced-motion: reduce) { .ftrack, .fbar b, .fdots button { transition: none; } }
-</style>
-<script>
-(function () {
-  /* 네 단계를 늘어놓는 대신 한 장에서 넘긴다. 화면에 남는 블록이 하나로 줄어든다. */
-  var STEPS = [
-    ["등록", "파일과 가격만 넣습니다. 분류·엔진은 목록에서 고릅니다."],
-    ["검수", "일곱 항목을 자동으로 채점합니다. 3일 안에 점수와 배지가 나옵니다."],
-    ["개선", "모자란 항목은 고칠 코드를 만들어 드립니다. 적용하면 다시 채점합니다."],
-    ["판매", "카탈로그에 배지와 함께 오릅니다. 팔리면 92%를 정산합니다."],
-  ];
-  var track = document.getElementById("ftrack"), dots = document.getElementById("fdots");
-  var bar = document.getElementById("fbar"), prev = document.getElementById("fprev"),
-      next = document.getElementById("fnext"), flow = document.getElementById("flow");
-  if (!track) return;
-
-  track.innerHTML = STEPS.map(function (st, i) {
-    return '<div class="fstep"><span class="fnum">' + (i + 1) + '</span>' +
-           '<div><h3>' + st[0] + '</h3><p>' + st[1] + '</p></div></div>';
-  }).join("");
-  dots.innerHTML = STEPS.map(function (_, i) {
-    return '<button type="button" data-i="' + i + '" aria-label="' + (i + 1) + '단계"></button>';
-  }).join("");
-
-  var cur = 0;
-  function go(i) {
-    cur = Math.max(0, Math.min(STEPS.length - 1, i));
-    track.style.translate = (-cur * 100) + "% 0";
-    bar.style.width = ((cur + 1) / STEPS.length * 100) + "%";
-    dots.querySelectorAll("button").forEach(function (b, k) {
-      b.setAttribute("aria-current", String(k === cur));
-    });
-    prev.disabled = cur === 0;
-    next.disabled = cur === STEPS.length - 1;
-  }
-  prev.onclick = function () { go(cur - 1); };
-  next.onclick = function () { go(cur + 1); };
-  dots.onclick = function (e) {
-    var b = e.target.closest("button[data-i]");
-    if (b) go(+b.dataset.i);
-  };
-  flow.tabIndex = 0;
-  flow.addEventListener("keydown", function (e) {
-    if (e.key === "ArrowLeft") { go(cur - 1); e.preventDefault(); }
-    if (e.key === "ArrowRight") { go(cur + 1); e.preventDefault(); }
-  });
-  /* 손가락으로도 넘긴다 */
-  var x0 = null;
-  flow.addEventListener("pointerdown", function (e) { x0 = e.clientX; });
-  flow.addEventListener("pointerup", function (e) {
-    if (x0 === null) return;
-    var dx = e.clientX - x0; x0 = null;
-    if (Math.abs(dx) > 42) go(cur + (dx < 0 ? 1 : -1));
-  });
-  go(0);
-})();
-</script>
-
 <style id="igg-tick">
   .shead h2 { margin: 0; }
   .shead { margin-bottom: clamp(30px,4vw,44px); }
@@ -1474,8 +1422,6 @@ if (cv) {
     ["등록 비용", "<em class='ok'>없음</em>"],
     ["재등록", "횟수 제한 없음"],
     ["검수 소요", "<em>3일</em> 이내"],
-    ["판매 수수료", "<em>8%</em> 단일"],
-    ["창작자 정산", "판매액의 <em class='ok'>92%</em>"],
     ["저작권", "창작자가 계속 보유"],
     ["독점 계약", "<em class='ok'>없음</em>"],
     ["스튜디오 구독", "월 <em>490,000</em>원"],
@@ -1491,6 +1437,173 @@ if (cv) {
     row.innerHTML = html + html;
     row.style.setProperty("--dur", (r === 0 ? 46 : 58) + "s");
   });
+})();
+</script>
+
+<style id="igg-emph">
+  /* 핵심 숫자는 흐르는 띠가 아니라 박아 둔다 */
+  .hero2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px;
+    margin-bottom: 26px; }
+  @media (max-width: 640px) { .hero2 { grid-template-columns: 1fr; } }
+  .hero2 .big { padding: clamp(24px,3vw,34px); border-radius: 16px;
+    border: 1px solid var(--line); background: var(--surface); }
+  .hero2 .big b { display: block; font-size: clamp(46px,7vw,74px); font-weight: 800;
+    letter-spacing: -.05em; line-height: 1; color: var(--accent); }
+  .hero2 .big b i { font-style: normal; font-size: .46em; margin-left: 2px; }
+  .hero2 .big:first-child b { color: var(--pass); }
+  .hero2 .big span { display: block; margin-top: 10px; font-size: 12pt; font-weight: 700; }
+  .hero2 .big em { display: block; margin-top: 6px; font-style: normal;
+    color: var(--faint); font-size: 10.5pt; line-height: 1.55; }
+
+  /* 최상위 배지만 확실히 띄운다 */
+  .tier.hi { position: relative; border-color: var(--chal); background: var(--surface);
+    box-shadow: 0 18px 40px -24px color-mix(in srgb, var(--chal) 80%, transparent);
+    transform: translateY(-8px); }
+  .tier.hi .flag { position: absolute; top: -11px; left: 50%; translate: -50% 0;
+    padding: 4px 12px; border-radius: 99px; white-space: nowrap;
+    background: var(--chal); color: #1A1305; font-size: 9pt; font-weight: 800; }
+  .tiers .tier:not(.hi) { opacity: .82; }
+  .tiers .tier:not(.hi):hover { opacity: 1; }
+  @media (max-width: 620px) { .tier.hi { transform: none; } }
+</style>
+
+<style id="igg-anno">
+  .hpshot { position: relative; aspect-ratio: 4/3; display: grid; place-items: center;
+    background: none; overflow: visible; margin: -2% 0; }
+  @media (max-width: 900px) { .hpshot { margin: 0; aspect-ratio: 16/10; } }
+  .hpshot canvas { width: 100%; height: 100%; display: block; }
+  .hpan { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .hpan line, .hpan circle { stroke: var(--accent); fill: none; }
+  .hpan line { stroke-width: .4; stroke-dasharray: var(--len, 40); stroke-dashoffset: var(--len, 40);
+    transition: stroke-dashoffset .55s cubic-bezier(.22,1,.36,1) var(--d, 0s); }
+  .hpan circle { fill: var(--accent); stroke: none; r: .9; opacity: 0;
+    transition: opacity .3s ease var(--d, 0s); }
+  .hpshot.on .hpan line { stroke-dashoffset: 0; }
+  .hpshot.on .hpan circle { opacity: 1; }
+  .hplab { position: absolute; inset: 0; pointer-events: none; }
+  .hpi { position: absolute; display: flex; align-items: baseline; gap: 6px; white-space: nowrap;
+    padding: 4px 9px; border-radius: 7px; translate: 0 0;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    border: 1px solid var(--line); backdrop-filter: blur(6px);
+    opacity: 0; transition: opacity .34s ease var(--d,0s), translate .34s cubic-bezier(.22,1,.36,1) var(--d,0s); }
+  .hpshot.on .hpi { opacity: 1; }
+  .hpi.l { transform: translate(-100%, -50%); translate: -8px 0; }
+  .hpi.r { transform: translate(0, -50%); translate: 8px 0; }
+  .hpshot.on .hpi.l, .hpshot.on .hpi.r { translate: 0 0; }
+  .hpi b { font-size: 9.5pt; font-weight: 600; color: var(--faint); }
+  .hpi u { text-decoration: none; font-size: 11pt; font-weight: 800; color: var(--accent);
+    font-variant-numeric: tabular-nums; }
+  .hproof figcaption { padding: 0 0 0 4px; display: flex; align-items: center; gap: 10px;
+    border-top: 0; }
+  .hpname { font-size: 11pt; font-weight: 700; color: var(--muted); }
+  .hptot { margin-left: auto; font-size: 10.5pt; color: var(--faint); }
+  .hptot b { color: var(--ink); font-size: 13pt; font-weight: 800; }
+  .hpgrade { display: inline-flex; align-items: center; gap: 5px; padding: 4px 11px;
+    border-radius: 99px; font-size: 9.5pt; font-weight: 800;
+    color: var(--chal); background: color-mix(in srgb, var(--chal) 16%, transparent); }
+  .hpgrade .rk { width: 15px; height: 15px; }
+  @media (max-width: 900px) { .hpi { font-size: 9pt; } }
+  @media (prefers-reduced-motion: reduce) {
+    .hpan line { stroke-dashoffset: 0; } .hpi, .hpan circle { opacity: 1; transition: none; }
+  }
+</style>
+<script>
+(function () {
+  /* 모델 하나를 놓고 지시선을 뻗어 항목 점수를 찍는다. 계측 도면처럼 읽히게. */
+  var ITEMS = [
+    { k: "재료 출처", v: 98, ax: 46, ay: 16, lx: 24, ly: 10, side: "l" },
+    { k: "면 구성",   v: 96, ax: 52, ay: 30, lx: 74, ly: 24, side: "r" },
+    { k: "텍스처",    v: 93, ax: 49, ay: 42, lx: 22, ly: 42, side: "l" },
+    { k: "실행 성능", v: 91, ax: 55, ay: 50, lx: 74, ly: 52, side: "r" },
+  ];
+  var svg = document.getElementById("hpan"), lab = document.getElementById("hplab"),
+      shot = document.querySelector(".hpshot");
+  if (!svg || !lab || !shot) return;
+
+  var sp = "", lp = "";
+  ITEMS.forEach(function (it, i) {
+    var d = (0.5 + i * 0.28).toFixed(2) + "s";
+    /* 꺾인 지시선 — 앵커에서 대각으로 빠진 뒤 수평으로 라벨까지 */
+    var mx = it.side === "l" ? it.lx + 6 : it.lx - 6;
+    var len = (Math.hypot(mx - it.ax, it.ly - it.ay) + Math.abs(it.lx - mx)).toFixed(1);
+    sp += '<circle cx="' + it.ax + '" cy="' + it.ay + '" style="--d:' + d + '"/>' +
+          '<line x1="' + it.ax + '" y1="' + it.ay + '" x2="' + mx + '" y2="' + it.ly +
+            '" style="--len:' + len + ';--d:' + d + '"/>' +
+          '<line x1="' + mx + '" y1="' + it.ly + '" x2="' + it.lx + '" y2="' + it.ly +
+            '" style="--len:' + len + ';--d:' + d + '"/>';
+    lp += '<span class="hpi ' + it.side + '" style="left:' + it.lx + '%;top:' + it.ly / 62 * 100 +
+          '%;--d:' + ((0.5 + i * 0.28) + 0.18).toFixed(2) + 's"><b>' + it.k + '</b><u>' + it.v + '</u></span>';
+  });
+  svg.innerHTML = sp;
+  lab.innerHTML = lp;
+
+  function reveal() { shot.classList.add("on"); }
+  var io = new IntersectionObserver(function (es) {
+    if (!es[0].isIntersecting) return;
+    io.disconnect();
+    reveal();
+  }, { threshold: 0.01 });
+  io.observe(shot);
+  /* 처음부터 화면 안에 있으면 관찰을 기다릴 이유가 없다 */
+  if (shot.getBoundingClientRect().top < innerHeight) setTimeout(reveal, 240);
+})();
+</script>
+
+<style id="igg-unfold">
+  .unfold { border: 1px solid var(--line); border-radius: 18px; background: var(--surface);
+    overflow: hidden; }
+  .uf { display: grid; grid-template-columns: 60px 1fr; gap: 18px;
+    padding: 22px clamp(20px,3vw,32px); border-bottom: 1px solid var(--line-soft, var(--line)); }
+  .uf:last-child { border-bottom: 0; }
+  .ufn { width: 60px; height: 60px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--surface-2); color: var(--faint); font-size: 18pt; font-weight: 800;
+    font-variant-numeric: tabular-nums; align-self: start;
+    transition: background-color .45s ease, color .45s ease, scale .45s cubic-bezier(.34,1.56,.64,1); }
+  .uf.on .ufn { background: var(--accent); color: #fff; scale: 1.06; }
+  .ufh { margin: 0; padding-top: 14px; font-size: 16pt; font-weight: 750; letter-spacing: -.03em;
+    color: var(--faint); transition: color .4s ease; }
+  .uf.on .ufh { color: var(--ink); }
+  /* 스크롤로 들어오면 설명이 아래로 펼쳐진다 */
+  .ufd { display: grid; grid-template-rows: 0fr; opacity: 0;
+    transition: grid-template-rows .5s cubic-bezier(.22,1,.36,1), opacity .4s ease .1s; }
+  .uf.on .ufd { grid-template-rows: 1fr; opacity: 1; }
+  .ufd > div { overflow: hidden; }
+  .ufd p { margin: 8px 0 0; color: var(--muted); font-size: 12pt; line-height: 1.62; max-width: 46ch; }
+  @media (max-width: 560px) { .uf { grid-template-columns: 44px 1fr; gap: 14px; }
+    .ufn { width: 44px; height: 44px; font-size: 14pt; } .ufh { padding-top: 8px; font-size: 14pt; } }
+  @media (prefers-reduced-motion: reduce) {
+    .ufd { grid-template-rows: 1fr; opacity: 1; } .ufn, .ufh, .ufd { transition: none; }
+  }
+</style>
+<script>
+(function () {
+  /* 네 단계를 접어 두고, 스크롤이 지나갈 때 하나씩 아래로 펼친다. */
+  var STEPS = [
+    ["등록", "파일과 가격만 넣습니다. 분류·엔진은 목록에서 고릅니다."],
+    ["검수", "일곱 항목을 자동으로 채점합니다. 3일 안에 점수와 배지가 나옵니다."],
+    ["개선", "모자란 항목은 고칠 코드를 만들어 드립니다. 적용하면 다시 채점합니다."],
+    ["판매", "카탈로그에 배지와 함께 오릅니다. 팔리면 92%를 정산합니다."],
+  ];
+  var box = document.getElementById("unfold");
+  if (!box) return;
+  box.innerHTML = STEPS.map(function (st, i) {
+    return '<div class="uf"><span class="ufn">' + (i + 1) + '</span>' +
+      '<div><h3 class="ufh">' + st[0] + '</h3>' +
+      '<div class="ufd"><div><p>' + st[1] + '</p></div></div></div></div>';
+  }).join("");
+
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    box.querySelectorAll(".uf").forEach(function (r) { r.classList.add("on"); });
+    return;
+  }
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      e.target.classList.add("on");
+      io.unobserve(e.target);
+    });
+  }, { rootMargin: "0px 0px -22% 0px", threshold: .5 });
+  box.querySelectorAll(".uf").forEach(function (r) { io.observe(r); });
 })();
 </script>
 

@@ -906,6 +906,65 @@
 
 
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rkg-chal" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFEFC4"/><stop offset=".42" stop-color="#F0B457"/><stop offset="1" stop-color="#8E5F17"/></linearGradient>
+  <linearGradient id="rkg-dia" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EBD9FF"/><stop offset=".42" stop-color="#A55EEA"/><stop offset="1" stop-color="#54277D"/></linearGradient>
+  <linearGradient id="rkg-plat" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#CFF3EA"/><stop offset=".42" stop-color="#4E9D8D"/><stop offset="1" stop-color="#1F5148"/></linearGradient>
+  <linearGradient id="rkg-silv" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EDF1F5"/><stop offset=".42" stop-color="#8E9BA5"/><stop offset="1" stop-color="#464F58"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 48 48">
+    <path d="M9.5 15.5 1 10.6l3.4 8.8-2.2 1.2 7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M38.5 15.5 47 10.6l-3.4 8.8 2.2 1.2-7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-chal)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m16.6 27.4-2.3-9.3 5.8 4.4L24 15l3.9 7.5 5.8-4.4-2.3 9.3z" fill="url(#rkg-chal)"/>
+    <path d="M16.6 29.6h14.8v2.4H16.6z" fill="url(#rkg-chal)"/>
+  </symbol>
+  <symbol id="rk-dia" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-dia)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.4 7.4 6.6L24 32.4 16.6 21z" fill="url(#rkg-dia)"/>
+    <path d="M16.6 21h14.8L24 24.2z" fill="#0A0A10" opacity=".28"/>
+    <path d="m24 14.4 3 6.6-3 3.2-3-3.2z" fill="#fff" opacity=".34"/>
+  </symbol>
+  <symbol id="rk-plat" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-plat)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.6 6.6 3.8v7.6L24 29.8l-6.6-3.8v-7.6z" fill="url(#rkg-plat)"/>
+    <path d="M17.4 18.4 24 22.2l6.6-3.8L24 14.6z" fill="#fff" opacity=".26"/>
+  </symbol>
+  <symbol id="rk-silv" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-silv)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="M17.6 20.4h12.8v3.6H17.6z" fill="url(#rkg-silv)"/>
+    <path d="M17.6 20.4h12.8v1.6H17.6z" fill="#fff" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
 <script>
 (function () {
   var b = document.getElementById("theme");
@@ -1267,13 +1326,23 @@ const GAMES = [
     "카드 UI가 화면 하단을 차지합니다. 캐릭터는 좌우로 갈립니다.","#a06a4a"),
 ];
 
+/* 공개 배포에는 게임 스크린샷을 넣지 않는다. shots 가 비면 CC0 배경으로 대체한다. */
+const FALLBACK_SHOTS = {
+  iso:    [["dk1", "고딕 폐허 · 사실적"], ["dk2", "고딕 폐허 · 변형"]],
+  pixel:  [["bg1", "던전 · 도트"], ["bg2", "던전 · 도트 변형"]],
+  lowpoly:[["rl-abandoned_workshop_02", "폐작업장 · 사실적"], ["rl-lythwood_room", "실내 · 자연광"]],
+};
+const shotsOf = g => (g.shots && g.shots.length)
+  ? g.shots
+  : (FALLBACK_SHOTS[g.pool] || FALLBACK_SHOTS.iso);
+
 /* ── 상태 ── */
-let cur = GAMES[0], bgKey = cur.shots[0][0], pick = POOLS[cur.pool].sprites[0][0];
+let cur = GAMES[0], bgKey = shotsOf(cur)[0][0], pick = POOLS[cur.pool].sprites[0][0];
 let userLit = 1, userFog = .4, userRes = 1, mapMode = false;
 const items = [];
 let sel = -1, dragging = false, dragOff = [0, 0];
 
-const BGKEYS = new Set(GAMES.flatMap(g => g.shots.map(x => x[0])));
+const BGKEYS = new Set(GAMES.flatMap(g => shotsOf(g).map(x => x[0])));
 const SPRKEYS = new Set([...Object.values(POOLS).flatMap(P => P.sprites.map(x => x[0])), ...MAPTILES.map(x => x[0])]);
 const NAMES = Object.fromEntries([...Object.values(POOLS).flatMap(P => P.sprites), ...MAPTILES]);
 const ext = k => BGKEYS.has(k) ? ".jpg" : ".png";
@@ -1290,7 +1359,7 @@ need.forEach(k => {
 /* ── UI ── */
 $("#styles").innerHTML = ["3D", "2D"].map(dim =>
   `<div class="dimlab m">${dim} 게임</div>` + GAMES.filter(g => g.dim === dim).map(g =>
-    `<button class="sb" data-id="${g.id}" style="--sw:${g.sw}"><i></i><span>${g.n}<small>${g.shots.length}장 · ${POOLS[g.pool].n}</small></span></button>`).join("")
+    `<button class="sb" data-id="${g.id}" style="--sw:${g.sw}"><i></i><span>${g.n}<small>${shotsOf(g).length}장 · ${POOLS[g.pool].n}</small></span></button>`).join("")
 ).join("");
 
 $("#styles").addEventListener("click", ev => {
@@ -1301,9 +1370,9 @@ $("#styles").addEventListener("click", ev => {
 });
 
 function applyGame(g) {
-  cur = g; bgKey = g.shots[0][0];
+  cur = g; bgKey = shotsOf(g)[0][0];
   $$("#styles .sb").forEach(o => o.setAttribute("aria-pressed", String(o.dataset.id === g.id)));
-  $("#bgsel").innerHTML = g.shots.map(([k, n]) => `<option value="${k}">${n}</option>`).join("");
+  $("#bgsel").innerHTML = shotsOf(g).map(([k, n]) => `<option value="${k}">${n}</option>`).join("");
   $("#bgsel").value = bgKey;
   items.length = 0;
   g.preset.forEach(pp => items.push({ ...pp }));
