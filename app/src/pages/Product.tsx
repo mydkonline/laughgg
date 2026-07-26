@@ -212,7 +212,7 @@ function Detail({ p }: { p: Piece }) {
 
       {also.length > 0 && (
         <section className="mt-12">
-          <h2 className="mb-4 text-2xl font-bold text-ink">같은 분류에서 점수가 높은 것</h2>
+          <h2 className="mb-4 text-2xl font-bold text-ink">같은 분류 상위</h2>
           <div className="grid grid-cols-[repeat(auto-fill,minmax(168px,1fr))] gap-3">
             {also.map((o) => (
               <Link

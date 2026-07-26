@@ -39,7 +39,7 @@ export function Ir() {
         <Donut
           percent={38.8}
           label="퀄리티 검증률"
-          sub="올라온 에셋 중 7항목을 모두 통과한 비율입니다. 나머지는 마켓에 오르지 않습니다."
+          sub="7항목을 모두 통과한 비율. 나머지는 마켓에 오르지 않습니다."
         />
       </Section>
 
@@ -59,11 +59,11 @@ export function Ir() {
         <p className="mt-3 text-xs text-faint">출처 {MARKET_SOURCE}</p>
       </Section>
 
-      <Section n="03" title="정적 분석" lead="라이선스 출처가 60 미만이면 무조건 탈락">
+      <Section n="03" title="정적 분석" lead="라이선스 출처 60 미만은 무조건 탈락">
         <CheckWeights items={CHECK_WEIGHTS} />
       </Section>
 
-      <Section n="04" title="에디터" lead="같은 에셋, 다른 게임 컨셉">
+      <Section n="04" title="에디터" lead="같은 에셋을 컨셉별로 변환한 결과">
         <ConceptGrid ids={["real", "dark", "high", "toon"]} />
         <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {["gb", "pico", "one", "sepia"].map((id) => {
@@ -129,7 +129,7 @@ export function Ir() {
         </p>
       </Section>
 
-      <Section n="06" title="수익 모델" lead="가정을 먼저">
+      <Section n="06" title="수익 모델" lead="">
         <div className="grid gap-4 lg:grid-cols-2">
           <div className="rounded-xl border border-line bg-surface p-5">
             <p className="mb-4 text-base font-bold text-ink">가정</p>
@@ -161,7 +161,7 @@ export function Ir() {
         </div>
       </Section>
 
-      <Section n="07" title="수수료" lead="배지에 연동하지 않습니다">
+      <Section n="07" title="수수료" lead="배지와 무관한 단일 요율">
         <div className="rounded-2xl border border-line bg-surface p-6">
           <CompareBars
             rows={[

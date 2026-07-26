@@ -31,7 +31,7 @@ export function Feed() {
     <main className="mx-auto max-w-[840px] px-5 pb-20">
       <header className="py-8">
         <p className="text-xs tracking-wide text-accent">작업물</p>
-        <h1 className="mt-1 text-base font-bold text-ink">남이 만든 프리셋 쓰기</h1>
+        <h1 className="mt-1 text-2xl font-bold text-ink">공개된 프리셋 목록</h1>
         <p className="mt-2 text-xs text-muted">적용하면 내 에셋에 같은 설정이 걸립니다.</p>
         <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-t border-line pt-4">
           <FeedSpec k="공개" v="프롬프트, 파라미터 9개, 점수 변화" />

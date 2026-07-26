@@ -126,8 +126,8 @@ export function Workshop() {
     <main className="mx-auto max-w-[1240px] px-5 pb-20">
       <header className="py-8">
         <p className="text-xs tracking-wide text-accent">스튜디오</p>
-        <h1 className="mt-1 text-4xl leading-tight font-bold text-ink">에셋을 게임 컨셉에 맞춥니다</h1>
-        <p className="mt-2 text-xs text-muted">3D 는 조명과 재질을, 2D 는 팔레트와 도트를 바꿉니다.</p>
+        <h1 className="mt-1 text-2xl font-bold text-ink">에셋 컨셉 변환</h1>
+        <p className="mt-2 text-xs text-muted">3D 는 조명과 재질, 2D 는 팔레트와 도트를 바꿉니다.</p>
         <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-t border-line pt-4">
           <Spec k="입력" v="3D 모델, 2D 스프라이트" />
           <Spec k="컨셉" v={`${CONCEPTS.length}종, 팔레트 ${PALETTES.length - 1}종`} />

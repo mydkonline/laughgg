@@ -34,13 +34,10 @@ export function Home() {
       <section className="mx-auto grid max-w-[1240px] items-center gap-10 px-5 py-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
         <div>
           <p className="text-xs tracking-wide text-accent">게임 에셋 마켓</p>
-          <h1 className="mt-2 text-4xl leading-[1.2] font-bold text-ink">
-            쓸 만한지
-            <br />
-            사기 전에 압니다
-          </h1>
+          <h1 className="mt-2 text-4xl leading-[1.2] font-bold text-ink">검증된 게임 에셋 마켓</h1>
           <p className="mt-3 max-w-[52ch] text-xs text-muted">
-            AI 정적 분석 7항목으로 배지를 매깁니다. 사는 쪽은 점수로 고르고 컨셉에 맞춰 내려받습니다.
+            올라온 에셋을 AI 정적 분석 7항목으로 채점해 배지를 매깁니다. 구매한 에셋은 에디터에서
+            게임 컨셉에 맞춰 변환해 내려받습니다.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Link
@@ -85,8 +82,8 @@ export function Home() {
 
       {/* 배지 */}
       <section className="mx-auto max-w-[1240px] px-5 py-16">
-        <h2 className="text-2xl font-bold text-ink">배지가 노출 순위를 정합니다</h2>
-        <p className="mt-2 text-xs text-muted">수수료는 8% 단일. 배지는 자리를 정합니다.</p>
+        <h2 className="text-2xl font-bold text-ink">배지</h2>
+        <p className="mt-2 text-xs text-muted">점수에 따라 부여되며 노출 순위를 정합니다. 수수료와는 무관합니다.</p>
         <div className="mt-8 grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
           {TIERS.map((t) => (
             <div key={t.badge} className="flex flex-col items-start gap-3 bg-surface p-6">
@@ -104,17 +101,17 @@ export function Home() {
         <div className="mx-auto grid max-w-[1240px] gap-10 px-5 py-16 sm:grid-cols-2">
           <div>
             <p className="num text-6xl text-ink">92%</p>
-            <p className="mt-2 text-xs text-muted">창작자 정산</p>
+            <p className="mt-2 text-xs text-muted">창작자 정산 비율</p>
           </div>
           <div>
             <p className="num text-6xl text-ink">8%</p>
-            <p className="mt-2 text-xs text-muted">단일 수수료. Epic Fab 12%, Unity 30%</p>
+            <p className="mt-2 text-xs text-muted">거래 수수료. Epic Fab 12%, Unity 30%</p>
           </div>
         </div>
       </section>
 
       <section className="mx-auto max-w-[1240px] px-5 py-20 text-center">
-        <h2 className="text-2xl font-bold text-ink">가진 에셋이 몇 점인지 보기</h2>
+        <h2 className="text-2xl font-bold text-ink">내 에셋 점수 확인</h2>
         <Link
           to="/workshop"
           className="mt-6 inline-block rounded-xl bg-accent px-8 py-4 text-base font-bold text-white no-underline hover:bg-accent-strong"

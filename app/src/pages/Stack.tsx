@@ -39,10 +39,7 @@ export function Stack() {
     <main className="mx-auto max-w-[1240px] px-5 pb-20">
       <header className="py-8">
         <p className="text-xs tracking-wide text-accent">게임 스택</p>
-        <h1 className="mt-1 text-base font-bold text-ink">출시작이 무엇으로 만들어졌는지 봅니다</h1>
-        <p className="mt-2 text-xs text-muted">
-          엔진과 제작 도구를 게임별로 정리했습니다. 에셋을 고르기 전에 붙일 곳부터 확인하세요.
-        </p>
+        <h1 className="mt-1 text-2xl font-bold text-ink">게임별 엔진과 제작 도구</h1>
         <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-t border-line pt-4">
           <Stat k="정리한 게임" v={`${GAMES.length}종`} />
           <Stat k="개발사 공개 확인" v={`${confirmed}종`} />
@@ -93,7 +90,7 @@ export function Stack() {
 
       {engines.length > 0 && (
         <div className="mb-6 rounded-xl border border-line bg-surface p-4">
-          <p className="text-xs text-faint">이 조건에서 많이 쓰인 엔진</p>
+          <p className="text-xs text-faint">엔진 분포</p>
           <div className="mt-3 flex flex-col gap-2">
             {engines.map(([name, n]) => (
               <div key={name} className="grid grid-cols-[130px_minmax(0,1fr)_34px] items-center gap-3 text-xs">
@@ -123,9 +120,7 @@ export function Stack() {
         )}
       </div>
 
-      <p className="mt-6 text-xs leading-relaxed text-faint">
-        개발사가 공개한 자료로 확인된 항목만 확인으로 표시합니다. 나머지는 업계 추정입니다.
-      </p>
+      <p className="mt-6 text-xs text-faint">개발사 공개 자료로 확인된 것만 확인 표시. 나머지는 업계 추정.</p>
       <p className="mt-2 text-xs leading-relaxed text-faint">{LOGO_LICENSE}</p>
     </main>
   );

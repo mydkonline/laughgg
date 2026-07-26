@@ -39,10 +39,8 @@ export function Vlog() {
     <main className="mx-auto max-w-[1240px] px-5 pb-20">
       <header className="py-8">
         <p className="text-xs tracking-wide text-accent">개발 브이로그</p>
-        <h1 className="mt-1 text-base font-bold text-ink">에셋 하나가 완성되기까지</h1>
-        <p className="mt-2 text-xs text-muted">
-          블록아웃부터 분석 통과까지 단계마다 무엇을 왜 했는지 남깁니다. 사는 쪽이 판단할 근거가 됩니다.
-        </p>
+        <h1 className="mt-1 text-2xl font-bold text-ink">에셋 제작 기록</h1>
+        <p className="mt-2 text-xs text-muted">블록아웃부터 분석 통과까지, 단계별 작업 내용과 수치입니다.</p>
         <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-t border-line pt-4">
           <Stat k="기록한 단계" v={`${EPISODES.length}편`} />
           <Stat k="기간" v={`${EPISODES[0]?.date ?? ""} 부터`} />
