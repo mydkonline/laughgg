@@ -228,3 +228,130 @@ export const STREAM_TOTAL = {
   mrr: STREAMS.reduce((a, s) => a + s.mrr, 0),
   arr: `${((STREAMS.reduce((a, s) => a + s.mrr, 0) * 12) / 10000).toFixed(1)}억원`,
 };
+
+
+/* 밸류에이션.
+
+   future-value-valuation 스킬로 계산했다. sBG 잔존 모델로 코호트를 굴리고,
+   할인율 30% DCF 에 몬테카를로 3,000회를 얹었다.
+
+   투자자가 보는 건 넷이다 — 한 곳을 얼마에 데려와 얼마를 버는가(유닛),
+   얼마나 남는가(잔존), 회사가 얼마인가(기업가치), 틀리면 어떻게 되는가(시나리오).
+   계산 과정은 안 낸다. 결과만 낸다. */
+
+export const UNIT = [
+  ["게임사당 월매출", "51.4만원", "구독·수수료·크레딧 합산"],
+  ["월 계약마진", "31.1만원", "총이익률 78%"],
+  ["획득 비용 회수", "3.9개월", "CAC 120만원"],
+  ["LTV / CAC", "5.9배", "통상 기준 3배"],
+] as const;
+
+/** sBG 잔존 곡선. 초기 이탈이 높고 뒤로 갈수록 안정된다. */
+export const RETENTION: [string, number][] = [
+  ["6개월", 89],
+  ["12개월", 81],
+  ["24개월", 70],
+  ["36개월", 62],
+];
+
+/** 몬테카를로 3,000회. ARPU·총이익률·순증을 삼각분포로 흔들었다. */
+export const VALUATION = {
+  p10: "0.7억",
+  p50: "4.5억",
+  p90: "8.3억",
+  lossChance: "0%",
+  runs: "3,000회",
+  discount: "30%",
+};
+
+export const SCENARIOS: [string, string, string][] = [
+  ["비관", "-2.4억", "순증 2곳, 이익률 68%"],
+  ["기준", "4.0억", "순증 4곳, 이익률 78%"],
+  ["낙관", "13.5억", "순증 7곳, 이익률 85%"],
+];
+
+
+/* 진출 순서.
+
+   에셋 마켓은 양면 시장이다. 창작자가 없는데 게임사를 부르면 살 게 없는
+   마켓을 보여 주게 되고, 그 첫인상은 되돌리기 어렵다. 그래서 생산이 몰려
+   있는 지역을 먼저 열고, 지갑이 제일 큰 지역을 마지막에 연다.
+
+   지역 구분은 인용이다 — 게임 아트 외주 생산은 아시아태평양(베트남·필리핀·
+   인도·중국)에 몰려 있고, 구매는 북미와 서유럽에 몰려 있다. 순서와 시점은
+   우리 가정이다. 둘을 섞지 않는다. */
+
+export type Rollout = {
+  phase: number;
+  region: string;
+  /** 이 지역에서 무엇을 얻는가 */
+  role: "공급" | "수요" | "본거지";
+  /** 왜 이 순서인가. 한 줄. */
+  why: string;
+  /** 인용인가 가정인가 */
+  cited: boolean;
+};
+
+export const ROLLOUT: Rollout[] = [
+  { phase: 1, region: "한국", role: "본거지", why: "OP.GG 개발자 접점, 같은 시간대", cited: false },
+  { phase: 2, region: "일본", role: "수요", why: "Steam 퍼블리셔 상위 3위 국가", cited: true },
+  { phase: 3, region: "동남아, 인도", role: "공급", why: "게임 아트 외주 최대 생산 허브", cited: true },
+  { phase: 4, region: "동유럽", role: "공급", why: "인디 개발과 아트 외주 동시 강세", cited: true },
+  { phase: 5, region: "북미, 서유럽", role: "수요", why: "구매력 최대, 공급이 쌓인 뒤에", cited: true },
+];
+
+export const ROLLOUT_SOURCE =
+  "게임 아트 외주 생산은 아시아태평양(베트남, 필리핀, 인도, 중국) 집중, 구매는 북미와 서유럽 집중 — Game Art Design Service Market 2025. 일본 Steam 퍼블리셔 순위 — Game Developer, Steam publishers landscape. 단계 순서와 시점은 우리 가정입니다.";
+
+
+/* 기대효과.
+
+   여기 있는 값은 밸류에이션에 안 넣었다. 계약도 합의도 아직 없는 것을 현금흐름에
+   넣으면 그 순간 자료가 아니라 희망이 된다. 다만 이 넷은 성사되면 앞의 숫자들이
+   통째로 올라가는 항목이라, 반영하지 않았다는 표시를 달고 따로 낸다.
+
+   공통점은 하나다 — 넷 다 한 번 붙으면 다음 것이 싸게 붙는다. */
+
+export type Upside = {
+  no: number;
+  name: string;
+  /** 무엇이 열리는가 */
+  opens: string;
+  /** 무엇이 싸지거나 늘어나는가 */
+  effect: string;
+  /** 성사 시 바뀌는 지표 */
+  metric: string;
+};
+
+export const UPSIDE: Upside[] = [
+  {
+    no: 1,
+    name: "게임 네트워크 확장",
+    opens: "게임사가 늘수록 엔진과 컨셉 데이터가 쌓인다",
+    effect: "정합 정확도가 오르고 신규 게임사 획득 비용이 내려간다",
+    metric: "CAC 120만원",
+  },
+  {
+    no: 2,
+    name: "허브 확장",
+    opens: "지역 허브마다 현지 창작자 풀이 붙는다",
+    effect: "공급 단가와 납기가 함께 내려간다",
+    metric: "총이익률 78%",
+  },
+  {
+    no: 3,
+    name: "MOU 체결",
+    opens: "엔진사와 퍼블리셔 파이프라인에 배지가 들어간다",
+    effect: "유통 채널이 아니라 검증 표준이 된다",
+    metric: "순증 월 4곳",
+  },
+  {
+    no: 4,
+    name: "인력 활용",
+    opens: "외주 인력이 상시 창작자로 전환된다",
+    effect: "일회성 외주비가 반복 판매 수익으로 바뀐다",
+    metric: "게임사당 월매출 51.4만원",
+  },
+];
+
+export const UPSIDE_NOTE = "넷 모두 밸류에이션에 반영하지 않았습니다. 성사되면 위 지표가 함께 움직입니다.";

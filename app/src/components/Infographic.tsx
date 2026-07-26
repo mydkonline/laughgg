@@ -3,6 +3,7 @@ import { PIECES, modelSrc, type Piece } from "../data/pieces";
 import { Thumb } from "./Thumb";
 import { Sprite } from "../three/Sprite";
 import { CONCEPTS, NEUTRAL_RASTER } from "../data/concepts";
+import { CHECK_WEIGHTS } from "../data/ir";
 
 /* 화면에서 제일 먼저 보이는 건 글이 아니라 그림이어야 한다.
    여기 있는 것들이 각 섹션의 본문이고, 글은 그 밑에 붙는 설명이다. */
@@ -45,6 +46,60 @@ export function useCountUp(target: number, decimals = 0) {
   }, [target]);
 
   return [ref, n.toFixed(decimals)] as const;
+}
+
+/** 화면에 들어왔는가. 막대를 0 에서 늘리는 데 쓴다. 관찰이 안 걸려도 결국 켜진다. */
+export function useSeen<T extends HTMLElement>() {
+  const ref = useRef<T>(null);
+  const [seen, setSeen] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const on = () => setSeen(true);
+    const fallback = setTimeout(on, 900);
+    const io = new IntersectionObserver(([e]) => e?.isIntersecting && on());
+    io.observe(el);
+    return () => {
+      clearTimeout(fallback);
+      io.disconnect();
+    };
+  }, []);
+
+  return [ref, seen] as const;
+}
+
+/* 핵심 지표.
+
+   색을 새로 늘리지 않고 액센트를 한 단계 밝혀 옅은 바탕 위에 올린다. 여기 붙은
+   숫자는 그 블록에서 하나뿐인 결론이다. 블록마다 하나만 쓴다 — 둘이 되는
+   순간 어느 쪽도 핵심이 아니게 된다.
+
+   숫자는 화면에 들어올 때 올라간다. 정지한 숫자는 그냥 글자다. */
+export function Key({
+  value,
+  suffix = "",
+  decimals = 0,
+  size = "md",
+}: {
+  value: number;
+  suffix?: string;
+  decimals?: number;
+  size?: "md" | "lg";
+}) {
+  const [ref, shown] = useCountUp(value, decimals);
+  return (
+    <span
+      ref={ref}
+      className={[
+        "num inline-flex items-baseline text-key",
+        size === "lg" ? "text-6xl leading-none" : "text-2xl",
+      ].join(" ")}
+    >
+      {shown}
+      <span className={size === "lg" ? "text-2xl" : "text-xs font-normal"}>{suffix}</span>
+    </span>
+  );
 }
 
 /**
@@ -105,7 +160,9 @@ export function Donut({ percent, label, sub }: { percent: number; label: string;
       </div>
 
       <div>
-        <span className="mb-3 block h-14 w-14" aria-hidden="true" />
+        {/* 링과 같은 자리에 다른 그림을 둔다. 여기서 할 말은 비율이 아니라
+            "일곱 중 하나가 제일 무겁다" 라서 형태도 막대여야 맞다. */}
+        <WeightSpark on={on} />
         <p className="num text-4xl leading-none text-ink">
           22<span className="text-base text-muted">%</span>
         </p>
@@ -114,7 +171,9 @@ export function Donut({ percent, label, sub }: { percent: number; label: string;
       </div>
 
       <div>
-        <span className="mb-3 block h-14 w-14" aria-hidden="true" />
+        {/* 개수를 말하는 칸이라 낱개가 보이는 그림이 맞다. 색은 각 컨셉의
+            실제 노브 값에서 뽑는다 — 임의로 칠하면 그림이 자료가 아니게 된다. */}
+        <ConceptDots on={on} />
         <p className="num text-4xl leading-none text-ink">
           11<span className="text-base text-muted">종</span>
         </p>
@@ -122,6 +181,54 @@ export function Donut({ percent, label, sub }: { percent: number; label: string;
         <p className="mt-1 text-xs text-faint">통과 에셋에 적용 가능, 팔레트 9종 별도</p>
       </div>
     </div>
+  );
+}
+
+/** 일곱 항목의 가중치를 막대 높이로. 제일 무거운 하나만 액센트다. */
+function WeightSpark({ on }: { on: boolean }) {
+  const max = Math.max(...CHECK_WEIGHTS.map(([, w]) => w));
+  return (
+    <span
+      className="mb-3 flex h-14 w-14 items-end gap-[3px]"
+      role="img"
+      aria-label={`가중치 최고 ${CHECK_WEIGHTS[0]?.[0]} ${max}%`}
+    >
+      {CHECK_WEIGHTS.map(([name, w], i) => (
+        <span
+          key={name}
+          title={`${name} ${w}%`}
+          className={[
+            "min-w-0 flex-1 rounded-[1px] transition-[height] duration-700 ease-out motion-reduce:transition-none",
+            i === 0 ? "bg-accent" : "bg-surface-2",
+          ].join(" ")}
+          style={{ height: on ? `${(w / max) * 100}%` : "6%", transitionDelay: `${i * 60}ms` }}
+        />
+      ))}
+    </span>
+  );
+}
+
+/* 컨셉 열한 개를 낱개 타일로.
+
+   농도는 각 컨셉의 채도 노브에서 뽑는다. 색상까지 노브에서 뽑으면 열한 칸이
+   무지개가 되어 이 사이트가 쓰는 색 셋을 깨뜨린다. 한 색의 농도 차이만으로도
+   "열한 개가 서로 다르다" 는 말은 그대로 전달된다. */
+function ConceptDots({ on }: { on: boolean }) {
+  return (
+    <span className="mb-3 grid h-14 w-14 grid-cols-4 gap-[3px]" role="img" aria-label="변환 컨셉 11종">
+      {CONCEPTS.slice(0, 11).map((c, i) => (
+        <span
+          key={c.id}
+          title={c.name}
+          className="rounded-[2px] transition-opacity duration-500 motion-reduce:transition-none"
+          style={{
+            background: `color-mix(in srgb, var(--accent) ${Math.round(18 + c.knobs.sat * 0.8)}%, var(--surface-2))`,
+            opacity: on ? 1 : 0,
+            transitionDelay: `${i * 45}ms`,
+          }}
+        />
+      ))}
+    </span>
   );
 }
 

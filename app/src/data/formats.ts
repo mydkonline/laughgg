@@ -57,15 +57,19 @@ export type Target = {
   picks: string[];
 };
 
-/* 대상을 고르면 형식이 정해진다. 사는 사람이 아는 건 확장자가 아니라 자기 엔진이다. */
+/* 대상을 고르면 형식이 정해진다. 사는 사람이 아는 건 확장자가 아니라 자기 엔진이다.
+
+   이름은 버전까지 적는다. "Unreal" 과 "Unreal Engine 5" 는 다른 말이고,
+   임포트 경로가 갈리는 지점이 바로 그 버전이다. 줄여 놓으면 자기 프로젝트가
+   여기 해당하는지 확인하러 한 번 더 눌러 봐야 한다. */
 export const TARGETS: Target[] = [
-  { id: "unity", name: "Unity", who: "Unity 프로젝트", picks: ["fbx", "png", "unitypackage"] },
-  { id: "unreal", name: "Unreal", who: "Unreal Engine 5", picks: ["fbx", "png", "uasset"] },
-  { id: "godot", name: "Godot", who: "Godot 4", picks: ["glb", "png"] },
-  { id: "web", name: "웹, 뷰어", who: "three.js, Babylon", picks: ["glb", "ktx2"] },
-  { id: "ar", name: "AR", who: "iOS Quick Look", picks: ["usdz", "png"] },
-  { id: "2d", name: "2D 게임", who: "도트, 스프라이트", picks: ["sheet", "png"] },
-  { id: "dcc", name: "DCC 편집", who: "Blender, Maya", picks: ["fbx", "obj", "exr"] },
+  { id: "unity", name: "Unity 6", who: "Unity 프로젝트", picks: ["fbx", "png", "unitypackage"] },
+  { id: "unreal", name: "Unreal Engine 5", who: "UE5 임포트", picks: ["fbx", "png", "uasset"] },
+  { id: "godot", name: "Godot 4", who: "Godot 4", picks: ["glb", "png"] },
+  { id: "web", name: "three.js, Babylon", who: "웹 뷰어", picks: ["glb", "ktx2"] },
+  { id: "ar", name: "AR Quick Look", who: "iOS", picks: ["usdz", "png"] },
+  { id: "2d", name: "2D 스프라이트", who: "도트 게임", picks: ["sheet", "png"] },
+  { id: "dcc", name: "Blender, Maya", who: "DCC 편집", picks: ["fbx", "obj", "exr"] },
 ];
 
 export function formatOf(ext: string): Format | undefined {

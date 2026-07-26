@@ -199,21 +199,20 @@ function Row({ game }: { game: Game }) {
         aria-expanded={open}
         className="flex w-full cursor-pointer flex-col gap-2 bg-transparent py-3.5 text-left hover:bg-surface"
       >
-        {/* 엔진이 서두다. 이 표를 보는 이유가 "무엇으로 만들었나" 라서
-            게임 이름보다 먼저 온다. 나머지는 라벨을 붙여 층위를 드러낸다. */}
-        <span className="flex items-center gap-2.5">
-          <EngineLogo family={mark.family} />
-          <b className="text-xs font-bold text-ink">
-            {mark.family}
-            {mark.version && <span className="ml-1 font-normal text-muted">{mark.version}</span>}
-          </b>
-          <span className="num ml-auto shrink-0 text-[10px] text-faint">{game.yr}</span>
+        {/* 게임 이름이 서두다. 사람이 목록에서 찾는 건 이름이라 제일 크고,
+            엔진은 그 게임의 속성이므로 아래에서 라벨을 달고 온다. */}
+        <span className="flex items-baseline gap-2.5">
+          <b className="min-w-0 flex-1 truncate text-sm font-bold text-ink">{game.n}</b>
+          <span className="num shrink-0 text-[10px] text-faint">{game.yr}</span>
         </span>
 
-        <span className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-          <span className="text-xs text-muted">
-            <span className="text-faint">게임 </span>
-            {game.n}
+        <span className="flex flex-wrap items-center gap-x-4 gap-y-1">
+          <span className="flex items-center gap-2 text-xs">
+            <EngineLogo family={mark.family} />
+            <span className="font-semibold text-accent">
+              {mark.family}
+              {mark.version && <span className="ml-1 font-normal text-muted">{mark.version}</span>}
+            </span>
           </span>
           <span className="text-xs text-muted">
             <span className="text-faint">개발사 </span>

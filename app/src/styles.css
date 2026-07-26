@@ -6,7 +6,11 @@
      크롬   darkpurple  900 #1C1C1F · 850 #282830 · 800 #31313C
      액센트 purple      400 #A072FF · 500 #7D59EA · 600 #6B42DC
      글자   gray/darkpurple 계열 한 줄
-   네 번째 색인 금색은 배지 엠블럼에만 쓴다 — 등급이 유일하게 색을 갖는다. */
+   네 번째 색인 금색은 배지 엠블럼에만 쓴다 — 등급이 유일하게 색을 갖는다.
+
+   핵심 지표(--key)는 색을 늘리지 않고 액센트를 한 단계 밝혀 쓴다. 여기에
+   옅은 바탕을 깔아 구분하고, 블록마다 하나만 쓴다 — 둘이 되면 어느 쪽도
+   핵심이 아니게 된다. */
 @theme {
   --color-chrome-900: #1c1c1f;
   --color-chrome-850: #282830;
@@ -63,6 +67,8 @@
     --accent: var(--color-accent-400);
     --accent-strong: var(--color-accent-500);
     --accent-soft: rgb(160 114 255 / 0.14);
+    --key: var(--color-accent-300);
+    --key-soft: rgb(160 114 255 / 0.16);
   }
 
   :root[data-theme="light"] {
@@ -77,6 +83,8 @@
     --accent: var(--color-accent-500);
     --accent-strong: var(--color-accent-600);
     --accent-soft: rgb(125 89 234 / 0.1);
+    --key: var(--color-accent-600);
+    --key-soft: rgb(125 89 234 / 0.12);
   }
 
   html {
@@ -136,4 +144,6 @@
   --color-accent: var(--accent);
   --color-accent-strong: var(--accent-strong);
   --color-accent-soft: var(--accent-soft);
+  --color-key: var(--key);
+  --color-key-soft: var(--key-soft);
 }

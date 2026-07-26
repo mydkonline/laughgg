@@ -17,18 +17,22 @@ const LAND: [number, number][][] = [
   [[113, -22], [130, -12], [142, -10], [150, -22], [153, -30], [148, -38], [135, -38], [120, -34], [113, -22]],
 ];
 
-/** 창작자와 게임사가 있는 곳. maker 는 공급, studio 는 수요다. */
-export const CITIES: [string, number, number, "maker" | "studio"][] = [
-  ["서울", 37.57, 126.98, "maker"],
-  ["바르샤바", 52.23, 21.01, "maker"],
-  ["방갈로르", 12.97, 77.59, "maker"],
-  ["상파울루", -23.55, -46.63, "maker"],
-  ["마닐라", 14.6, 120.98, "maker"],
-  ["키이우", 50.45, 30.52, "maker"],
-  ["로스앤젤레스", 34.05, -118.24, "studio"],
-  ["도쿄", 35.68, 139.69, "studio"],
-  ["헬싱키", 60.17, 24.94, "studio"],
-  ["몬트리올", 45.5, -73.57, "studio"],
+/* 창작자와 게임사가 있는 곳. maker 는 공급, studio 는 수요다.
+
+   네 번째 값은 진출 단계다. 양면 시장이라 순서가 곧 전략이 된다 — 공급이
+   비어 있는 채로 수요를 열면 살 게 없는 마켓이 되고, 그 첫인상은 되돌리기
+   어렵다. 그래서 생산 허브가 앞에 오고 최대 구매처가 마지막에 온다. */
+export const CITIES: [string, number, number, "maker" | "studio", number][] = [
+  ["서울", 37.57, 126.98, "maker", 1],
+  ["도쿄", 35.68, 139.69, "studio", 2],
+  ["호치민", 10.82, 106.63, "maker", 3],
+  ["마닐라", 14.6, 120.98, "maker", 3],
+  ["방갈로르", 12.97, 77.59, "maker", 3],
+  ["바르샤바", 52.23, 21.01, "maker", 4],
+  ["키이우", 50.45, 30.52, "maker", 4],
+  ["로스앤젤레스", 34.05, -118.24, "studio", 5],
+  ["몬트리올", 45.5, -73.57, "studio", 5],
+  ["헬싱키", 60.17, 24.94, "studio", 5],
 ];
 
 const RAD = Math.PI / 180;
@@ -57,8 +61,12 @@ const LAND_DOTS: [number, number][] = (() => {
   return dots;
 })();
 
-export function Globe({ className }: { className?: string }) {
+export function Globe({ className, focus }: { className?: string; focus?: number }) {
   const ref = useRef<HTMLCanvasElement>(null);
+  /* 값은 ref 로 들고 있는다. 단계가 바뀔 때마다 캔버스를 다시 세우면
+     지구가 원점으로 튕겨 돌아간다 — 돌리던 각도가 사라진다. */
+  const focusRef = useRef(focus);
+  focusRef.current = focus;
 
   useEffect(() => {
     const canvas = ref.current;
@@ -154,25 +162,29 @@ export function Globe({ className }: { className?: string }) {
       }
       ctx.globalAlpha = 1;
 
-      /* 도시. 앞면에 있는 것만 이름을 붙인다. */
-      for (const [name, lat, lon, role] of CITIES) {
+      /* 도시. 앞면에 있는 것만 이름을 붙인다.
+         단계를 짚으면 그 단계만 남기고 나머지는 죽인다 — 지우지는 않는다.
+         사라지면 전체 계획이 몇 개짜리였는지가 같이 사라진다. */
+      const pick = focusRef.current;
+      for (const [name, lat, lon, role, phase] of CITIES) {
         const p = project(lat, lon, cx, cy, r);
         if (p.z < 0.05) continue;
+        const lit = !pick || phase === pick;
         const accent = role === "maker" ? color("--accent") : color("--ink");
-        ctx.globalAlpha = 0.4 + p.z * 0.6;
+        ctx.globalAlpha = (0.4 + p.z * 0.6) * (lit ? 1 : 0.18);
 
         ctx.fillStyle = accent;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, lit ? 3 : 2, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.globalAlpha = 0.18 + p.z * 0.22;
+        ctx.globalAlpha = (0.18 + p.z * 0.22) * (lit ? 1 : 0.15);
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 7, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, lit ? 7 : 5, 0, Math.PI * 2);
         ctx.fill();
 
         if (p.z > 0.55) {
-          ctx.globalAlpha = 0.35 + p.z * 0.4;
+          ctx.globalAlpha = (0.35 + p.z * 0.4) * (lit ? 1 : 0.2);
           ctx.fillStyle = color("--muted");
           ctx.font = "11px Roboto, system-ui, sans-serif";
           ctx.fillText(name, p.x + 9, p.y + 4);

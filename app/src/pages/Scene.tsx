@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   SCENE_GAMES,
   PLACE_MODEL,
@@ -206,9 +207,9 @@ export function Scene() {
             </span>
           </div>
 
-          <Stage game={game} fit={fit} />
+          <Stage game={game} fit={fit} hero={piece?.m} />
 
-          {/* 어떤 에셋을 올려 볼지 */}
+          {/* 어떤 에셋을 올려 볼지. 고른 것이 무대 앞자리에 선다. */}
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <span className="text-xs text-faint">{cartIds.length ? "산 에셋" : "마켓 상위"}</span>
             {owned.map((p) => (
@@ -227,6 +228,13 @@ export function Scene() {
                 {p.t}
               </button>
             ))}
+            {/* 확인 다음에 할 일. 없으면 이 화면이 막다른 길이 된다. */}
+            <Link
+              to={`/workshop?piece=${piece.id}`}
+              className="ml-auto text-xs font-semibold text-accent no-underline hover:underline"
+            >
+              에디터에서 맞추기
+            </Link>
           </div>
         </div>
       </div>
@@ -236,7 +244,7 @@ export function Scene() {
 
 /* 무대 한 판. 바탕 안개 → 광원 → 에셋 → 비네팅 순으로 쌓고,
    맨 위에 색 보정을 통째로 건다. 순서가 바뀌면 보정이 광원만 먹는다. */
-function Stage({ game, fit }: { game: SceneGame; fit: boolean }) {
+function Stage({ game, fit, hero }: { game: SceneGame; fit: boolean; hero?: string }) {
   const { grade } = game;
   const filter = [
     `brightness(${grade.br})`,
@@ -273,8 +281,19 @@ function Stage({ game, fit }: { game: SceneGame; fit: boolean }) {
         style={{ background: `linear-gradient(${rgb(game.fog, 0)}, ${rgb(game.fog, 0.85)})` }}
       />
 
+      {/* 첫 자리는 사용자가 고른 에셋이 선다. 여기가 바뀌지 않으면
+          아래 칩을 눌러도 화면이 그대로라 무엇을 보고 있는지 알 수 없다. */}
       {game.place.map((p, i) => (
-        <Placed key={p.key + i} keyName={p.key} x={p.x} y={p.y} s={p.s} r={p.r} fit={fit} game={game} />
+        <Placed
+          key={p.key + i}
+          model={(i === 0 && hero) || PLACE_MODEL[p.key]}
+          x={p.x}
+          y={p.y}
+          s={p.s}
+          r={p.r}
+          fit={fit}
+          game={game}
+        />
       ))}
 
       <span
@@ -287,7 +306,7 @@ function Stage({ game, fit }: { game: SceneGame; fit: boolean }) {
 
 /** 무대에 놓인 에셋 하나. 마켓 상품을 구워서 쓴다. */
 function Placed({
-  keyName,
+  model,
   x,
   y,
   s,
@@ -295,7 +314,7 @@ function Placed({
   fit,
   game,
 }: {
-  keyName: string;
+  model?: string;
   x: number;
   y: number;
   s: number;
@@ -306,7 +325,7 @@ function Placed({
   const [src, setSrc] = useState<string | null>(null);
 
   useEffect(() => {
-    const piece = PIECES.find((p) => p.m === PLACE_MODEL[keyName]);
+    const piece = PIECES.find((p) => p.m === model);
     const url = piece && modelSrc(piece);
     if (!url) return;
     let alive = true;
@@ -316,7 +335,7 @@ function Placed({
     return () => {
       alive = false;
     };
-  }, [keyName]);
+  }, [model]);
 
   if (!src) return null;
 

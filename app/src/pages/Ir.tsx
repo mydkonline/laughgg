@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { MARKET, MARKET_SOURCE, MODEL, CHECK_WEIGHTS, REVIEWS, AI_DEV, AI_DEV_SOURCE, REVENUE_FUNNEL, FUNNEL_RESULT, STREAMS, STREAM_TOTAL } from "../data/ir";
+import { MARKET, MARKET_SOURCE, MODEL, CHECK_WEIGHTS, REVIEWS, AI_DEV, AI_DEV_SOURCE, REVENUE_FUNNEL, FUNNEL_RESULT, STREAMS, STREAM_TOTAL, UNIT, RETENTION, VALUATION, SCENARIOS, ROLLOUT, ROLLOUT_SOURCE, UPSIDE, UPSIDE_NOTE } from "../data/ir";
 import { PIECES } from "../data/pieces";
 import { Sprite } from "../three/Sprite";
 import { CONCEPTS } from "../data/concepts";
-import { Donut, CheckWeights, AssetRail, ConceptGrid, CompareBars, useCountUp } from "../components/Infographic";
+import { Donut, CheckWeights, AssetRail, ConceptGrid, CompareBars, useCountUp, useSeen, Key } from "../components/Infographic";
 import { Globe } from "../components/Globe";
 
 /* IR — 얼마나 큰 시장이고, 누가 쓰고, 어떻게 버는가.
@@ -36,17 +36,34 @@ export function Ir() {
 
         {/* 요약. IR 레일 바로 아래 붙어야 문서의 첫 단락으로 읽힌다. */}
         <h2 className="mt-6 text-2xl leading-snug font-bold text-ink">요약</h2>
+        {/* 넷 중 합계 MRR 하나만 강조한다. 이 문서를 여는 사람이
+            제일 먼저 찾는 숫자라 나머지 셋은 그 옆에 서 있는 값이 된다. */}
         <dl className="mt-6 grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            ["퀄리티 검증률", "38.8%", "7항목 모두 통과"],
-            ["합계 MRR", `${STREAM_TOTAL.mrr.toLocaleString("ko-KR")}만원`, "구독 95%"],
-            ["누적 손익분기", "13개월", "고정비 월 1,700만원"],
-            ["거래 수수료", "8%", "Epic 12%, Unity 30%"],
-          ].map(([k, v, note]) => (
-            <div key={k}>
-              <dt className="text-xs text-faint">{k}</dt>
-              <dd className="num m-0 mt-1 text-4xl leading-none text-ink">{v}</dd>
-              <dd className="m-0 mt-1.5 text-xs text-faint">{note}</dd>
+            ["퀄리티 검증률", "38.8%", "7항목 모두 통과", false],
+            ["합계 MRR", `${STREAM_TOTAL.mrr.toLocaleString("ko-KR")}만원`, "구독 95%", true],
+            ["누적 손익분기", "13개월", "고정비 월 1,700만원", false],
+            ["거래 수수료", "8%", "Epic 12%, Unity 30%", false],
+          ].map(([k, v, note, key]) => (
+            <div
+              key={k as string}
+              className={[
+                "-mx-3 rounded-lg px-3 py-2 transition-colors",
+                key ? "bg-key-soft" : "hover:bg-surface",
+              ].join(" ")}
+            >
+              <dt className={`text-xs ${key ? "font-bold text-key" : "text-faint"}`}>{k as string}</dt>
+              <dd className="m-0 mt-1">
+                {key ? (
+                  <span className="num inline-flex items-baseline text-4xl leading-none text-key">
+                    <SummaryMrr />
+                    <span className="text-base font-normal">만원</span>
+                  </span>
+                ) : (
+                  <span className="num text-4xl leading-none text-ink">{v as string}</span>
+                )}
+              </dd>
+              <dd className="m-0 mt-1.5 text-xs text-faint">{note as string}</dd>
             </div>
           ))}
         </dl>
@@ -95,32 +112,47 @@ export function Ir() {
         </div>
       </Section>
 
-      <Section n="03" title="정적 분석" lead="학습 소스 역추적 채점">
-        <CheckWeights items={CHECK_WEIGHTS} />
-      </Section>
+      {/* 정적 분석과 에디터는 따로 팔지 않는다. 걸러 낸 에셋을 그 자리에서
+          컨셉에 맞추는 한 흐름이라, 섹션을 나누면 두 제품처럼 읽힌다.
+          안에서만 들어오는 것과 나가는 것으로 가른다. */}
+      <Section n="03" title="기술">
+        <div className="flex flex-col gap-12">
+          <div>
+            <p className="mb-5 flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-line pb-3">
+              <b className="text-base font-bold text-ink">정적 분석</b>
+              <span className="text-xs text-faint">학습 소스 역추적 채점, 7항목 가중 합산</span>
+            </p>
+            <CheckWeights items={CHECK_WEIGHTS} />
+          </div>
 
-      <Section n="04" title="에디터" lead="컨셉별 변환 결과">
-        <ConceptGrid ids={["real", "dark", "high", "toon"]} />
-        <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {["gb", "pico", "one", "sepia"].map((id) => {
-            const c = CONCEPTS.find((x) => x.id === id);
-            const piece = PIECES.find((p) => p.m === "kite_shield");
-            if (!c || !piece) return null;
-            return (
-              <figure key={id} className="m-0">
-                <div className="aspect-square overflow-hidden rounded-2xl border border-line bg-gradient-to-b from-surface-2 to-surface">
-                  <Sprite piece={piece} knobs={c.knobs} raster={c.raster} />
-                </div>
-                <figcaption className="pt-2 text-xs text-faint">
-                  {c.name} <span className="text-faint">2D</span>
-                </figcaption>
-              </figure>
-            );
-          })}
+          <div>
+            <p className="mb-5 flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-line pb-3">
+              <b className="text-base font-bold text-ink">에디터</b>
+              <span className="text-xs text-faint">통과한 에셋을 게임 컨셉으로 변환</span>
+            </p>
+            <ConceptGrid ids={["real", "dark", "high", "toon"]} />
+            <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {["gb", "pico", "one", "sepia"].map((id) => {
+                const c = CONCEPTS.find((x) => x.id === id);
+                const piece = PIECES.find((p) => p.m === "kite_shield");
+                if (!c || !piece) return null;
+                return (
+                  <figure key={id} className="m-0">
+                    <div className="aspect-square overflow-hidden rounded-2xl border border-line bg-gradient-to-b from-surface-2 to-surface">
+                      <Sprite piece={piece} knobs={c.knobs} raster={c.raster} />
+                    </div>
+                    <figcaption className="pt-2 text-xs text-faint">
+                      {c.name} <span className="text-faint">2D</span>
+                    </figcaption>
+                  </figure>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </Section>
 
-      <Section n="05" title="수요">
+      <Section n="04" title="수요">
         {/* 추정치는 한 줄로 접어 두고 실제로 쓴 사람의 말을 본문에 세운다.
             숫자는 시장이 있다는 말이고, 리뷰는 그 시장이 이걸 쓴다는 말이다. */}
         <div className="mb-6 grid gap-x-12 gap-y-8 sm:grid-cols-3">
@@ -179,7 +211,7 @@ export function Ir() {
         <style>{`@keyframes fade { from { opacity: 0; translate: 0 8px } to { opacity: 1; translate: 0 0 } }`}</style>
       </Section>
 
-      <Section n="06" title="수익 모델">
+      <Section n="05" title="수익 모델">
         <Streams />
         <RevenueFunnel />
 
@@ -209,8 +241,12 @@ export function Ir() {
         </div>
       </Section>
 
-      <Section n="07" title="공급 지역">
-        <Globe className="mx-auto aspect-square w-full max-w-[520px]" />
+      <Section n="06" title="기업가치" lead="sBG 잔존 + DCF, 몬테카를로 3,000회">
+        <Valuation />
+      </Section>
+
+      <Section n="07" title="공급 지역" lead="공급 먼저, 수요 나중">
+        <Rollout />
       </Section>
 
       <Section n="08" title="수수료" lead="배지와 무관">
@@ -223,6 +259,12 @@ export function Ir() {
             ]}
           />
         </div>
+      </Section>
+
+      {/* 반영하지 않은 값이라 맨 뒤에 온다. 앞에 두면 앞의 숫자들이
+          이것까지 포함한 값으로 읽힌다. */}
+      <Section n="09" title="기대효과" lead="밸류에이션 미반영">
+        <Upside />
       </Section>
 
       {/* 부록. 출처를 본문에 흩어 두면 숫자마다 각주가 붙어 읽기가 끊긴다.
@@ -238,6 +280,7 @@ export function Ir() {
             ["시장", MARKET_SOURCE],
             ["수요", AI_DEV_SOURCE],
             ["수익 모델", REVENUE_FUNNEL.map((f) => `${f.label} ${f.note}`).join(" · ")],
+            ["공급 지역", ROLLOUT_SOURCE],
           ].map(([k, v]) => (
             <div key={k} className="grid grid-cols-[72px_minmax(0,1fr)] gap-4 border-b border-line py-3">
               <dt className="text-xs font-semibold text-ink">{k}</dt>
@@ -260,6 +303,235 @@ export function Ir() {
         </dl>
       </section>
     </main>
+  );
+}
+
+/* 진출 순서.
+
+   지구 하나만 두면 "여기저기 있습니다" 밖에 안 된다. 순서를 옆에 붙여야
+   그게 계획이 된다. 단계를 짚으면 지구에서 그 지역만 남아, 어느 대륙에
+   무엇을 하러 가는지가 글이 아니라 위치로 보인다. */
+function Rollout() {
+  const [pick, setPick] = useState<number | undefined>(undefined);
+
+  return (
+    <div className="grid items-center gap-x-10 gap-y-8 lg:grid-cols-[minmax(0,380px)_minmax(0,1fr)]">
+      <Globe className="mx-auto aspect-square w-full max-w-[380px]" focus={pick} />
+
+      <ol className="m-0 flex list-none flex-col p-0">
+        {ROLLOUT.map((r) => {
+          const on = pick === r.phase;
+          return (
+            <li key={r.phase}>
+              <button
+                type="button"
+                onMouseEnter={() => setPick(r.phase)}
+                onFocus={() => setPick(r.phase)}
+                onMouseLeave={() => setPick(undefined)}
+                onBlur={() => setPick(undefined)}
+                onClick={() => setPick(on ? undefined : r.phase)}
+                aria-pressed={on}
+                className={[
+                  "flex w-full cursor-pointer items-baseline gap-3 border-0 border-b border-line bg-transparent py-3 text-left transition-colors",
+                  on ? "bg-key-soft" : "hover:bg-surface",
+                ].join(" ")}
+              >
+                <span className={`num shrink-0 text-xs ${on ? "text-key" : "text-faint"}`}>
+                  {String(r.phase).padStart(2, "0")}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
+                    <b className="text-xs font-bold text-ink">{r.region}</b>
+                    {/* 공급인지 수요인지가 이 표의 핵심이라 지역 바로 옆에 붙는다. */}
+                    <span
+                      className={[
+                        "rounded-full border px-1.5 py-px text-[10px]",
+                        r.role === "공급" ? "border-accent text-accent" : "border-line text-muted",
+                      ].join(" ")}
+                    >
+                      {r.role}
+                    </span>
+                    <span className="text-[10px] text-faint">{r.cited ? "인용" : "가정"}</span>
+                  </span>
+                  <span className="mt-0.5 block text-xs text-faint">{r.why}</span>
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  );
+}
+
+/* 기대효과.
+
+   넷을 나란히 놓으면 각각 별개의 호재로 읽힌다. 실제로는 하나가 붙으면
+   다음 것이 싸게 붙는 사슬이라, 번호를 매기고 마지막에 어느 지표가 움직이는지
+   붙여 둔다. 반영 안 했다는 표시가 각 칸에 있어야 합산해 읽지 않는다. */
+function Upside() {
+  return (
+    <div>
+      <ol className="m-0 grid list-none gap-x-10 gap-y-6 p-0 sm:grid-cols-2">
+        {UPSIDE.map((u) => (
+          <li
+            key={u.no}
+            className="rounded-lg border border-line p-4 transition-[border-color,translate] duration-200 hover:-translate-y-0.5 hover:border-accent motion-reduce:hover:translate-y-0"
+          >
+            <span className="flex items-baseline gap-2.5">
+              <span className="num text-xs text-faint">{String(u.no).padStart(2, "0")}</span>
+              <b className="text-base font-bold text-ink">{u.name}</b>
+            </span>
+            <p className="mt-3 text-xs text-muted">{u.opens}</p>
+            <p className="mt-1 text-xs text-muted">{u.effect}</p>
+            <p className="mt-3 flex items-baseline gap-2 border-t border-line pt-3 text-xs text-faint">
+              움직이는 지표
+              <b className="num text-xs text-accent">{u.metric}</b>
+            </p>
+          </li>
+        ))}
+      </ol>
+      <p className="mt-6 text-xs text-faint">{UPSIDE_NOTE}</p>
+    </div>
+  );
+}
+
+/** 요약의 MRR. 천 단위 구분이 붙어야 자릿수를 잘못 읽지 않는다. */
+function SummaryMrr() {
+  const [ref, shown] = useCountUp(STREAM_TOTAL.mrr);
+  return <span ref={ref}>{Number(shown).toLocaleString("ko-KR")}</span>;
+}
+
+/* 기업가치.
+
+   투자자가 이 회사에 대해 답을 원하는 건 넷이다 — 한 곳을 데려와 얼마를 버는가,
+   데려온 곳이 얼마나 남는가, 회사가 얼마인가, 틀리면 어디까지 밀리는가.
+   계산 과정은 안 낸다. 스킬로 돌린 결과만 낸다. 유도식을 펴 놓으면
+   숫자가 아니라 식을 검토하게 되고, 그건 이 페이지가 할 일이 아니다. */
+function Valuation() {
+  const [barRef, seen] = useSeen<HTMLDListElement>();
+  const [bandRef, bandSeen] = useSeen<HTMLDivElement>();
+
+  return (
+    <div className="flex flex-col gap-10">
+      {/* 유닛. 제일 먼저 온다 — 나머지 숫자가 전부 여기서 나온다.
+          네 칸 중 LTV/CAC 하나만 강조한다. 투자자가 이 줄에서 실제로 보는 값이다. */}
+      <dl className="grid grid-cols-2 gap-x-8 gap-y-7 border-b border-line pb-8 lg:grid-cols-4">
+        {UNIT.map(([k, v, why], i) => {
+          const key = i === UNIT.length - 1;
+          return (
+            <div
+              key={k}
+              className={[
+                "-mx-3 rounded-lg px-3 py-2 transition-colors",
+                key ? "bg-key-soft" : "hover:bg-surface",
+              ].join(" ")}
+            >
+              <dt className={`text-xs ${key ? "font-bold text-key" : "text-faint"}`}>{k}</dt>
+              <dd className="m-0 mt-1">
+                {key ? <Key value={5.9} suffix="배" decimals={1} /> : <span className="num text-2xl text-ink">{v}</span>}
+              </dd>
+              <dd className="m-0 mt-1 text-[10px] text-faint">{why}</dd>
+            </div>
+          );
+        })}
+      </dl>
+
+      <div className="grid gap-x-12 gap-y-10 lg:grid-cols-2">
+        {/* 잔존. 유닛이 성립해도 안 남으면 무의미하다.
+            막대는 화면에 들어올 때 0 에서 늘어난다. 뒤 구간일수록 늦게 출발해
+            곡선이 꺾이는 순서가 그대로 보인다. */}
+        <div>
+          <p className="mb-4 text-xs font-bold text-ink">
+            잔존율<span className="ml-2 font-normal text-faint">가입 시점 기준</span>
+          </p>
+          <dl ref={barRef} className="m-0">
+            {RETENTION.map(([k, v], i) => (
+              <div
+                key={k}
+                className="group -mx-3 flex items-center gap-3 rounded-lg border-b border-line px-3 py-2.5 transition-colors last:border-b-0 hover:bg-surface"
+              >
+                <dt className="num w-12 shrink-0 text-xs text-faint transition-colors group-hover:text-ink">{k}</dt>
+                <dd className="m-0 h-1.5 min-w-0 flex-1 overflow-hidden rounded-full bg-line">
+                  <span
+                    className="block h-full rounded-full bg-accent transition-[width] duration-700 ease-out motion-reduce:transition-none"
+                    style={{ width: seen ? `${v}%` : "0%", transitionDelay: `${i * 110}ms` }}
+                  />
+                </dd>
+                <dd className="num m-0 w-10 shrink-0 text-right text-xs font-bold text-ink">{v}%</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+
+        {/* 분포. 점추정 하나를 내면 그 숫자만 공격받는다. 폭을 그대로 낸다.
+            띠는 중앙값에서 양쪽으로 벌어진다 — 이 그림이 말하는 게 "가운데가
+            하나 있고 그 주변이 이만큼 넓다" 라서 방향이 그래야 맞다. */}
+        <div ref={bandRef}>
+          <p className="mb-4 text-xs font-bold text-ink">
+            기업가치
+            <span className="ml-2 font-normal text-faint">
+              {VALUATION.runs}, 할인율 {VALUATION.discount}
+            </span>
+          </p>
+          <p>
+            <Key value={4.5} suffix="억" decimals={1} size="lg" />
+          </p>
+          <p className="mt-2 text-xs text-faint">중앙값</p>
+
+          {/* 축은 0 에서 9억. 굵은 띠가 p10–p90, 세로선이 중앙값이다. */}
+          <div className="relative mt-8 h-1.5 rounded-full bg-line">
+            <span
+              className="absolute inset-y-0 rounded-full bg-key/35 transition-[left,right] duration-700 ease-out motion-reduce:transition-none"
+              style={{ left: bandSeen ? "7.8%" : "50%", right: bandSeen ? "7.8%" : "50%" }}
+            />
+            <span className="absolute top-1/2 left-1/2 h-3.5 w-0.5 -translate-y-1/2 bg-key" />
+          </div>
+          <dl className="mt-3 grid grid-cols-3 gap-2">
+            {[
+              ["하위 10%", VALUATION.p10],
+              ["중앙", VALUATION.p50],
+              ["상위 10%", VALUATION.p90],
+            ].map(([k, v], i) => (
+              <div key={k} className={i === 2 ? "text-right" : i === 1 ? "text-center" : ""}>
+                <dt className="text-[10px] text-faint">{k}</dt>
+                <dd className={`num m-0 text-xs font-bold ${i === 1 ? "text-key" : "text-ink"}`}>{v}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="mt-5 flex items-baseline gap-2 border-t border-line pt-4 text-xs text-faint">
+            손실 확률
+            <b className="num text-base text-ink">{VALUATION.lossChance}</b>
+          </p>
+        </div>
+      </div>
+
+      {/* 시나리오. 틀렸을 때 어디까지 밀리는지가 마지막 질문이다.
+          기준안만 강조한다. 셋 다 칠하면 어느 것이 우리 주장인지 안 보인다. */}
+      <div className="border-t border-line pt-8">
+        <p className="mb-5 text-xs font-bold text-ink">
+          시나리오<span className="ml-2 font-normal text-faint">60개월 현재가치</span>
+        </p>
+        <dl className="m-0 grid gap-x-8 gap-y-5 sm:grid-cols-3">
+          {SCENARIOS.map(([k, v, why], i) => {
+            const base = i === 1;
+            return (
+              <div
+                key={k}
+                className={[
+                  "rounded-r-lg border-l-2 py-1 pl-4 transition-[background-color,translate] duration-200 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0",
+                  base ? "border-key bg-key-soft" : "border-line hover:bg-surface",
+                ].join(" ")}
+              >
+                <dt className={`text-xs ${base ? "font-bold text-key" : "text-faint"}`}>{k}</dt>
+                <dd className={`num m-0 mt-1 text-2xl ${base ? "text-key" : "text-ink"}`}>{v}</dd>
+                <dd className="m-0 mt-1 text-[10px] text-faint">{why}</dd>
+              </div>
+            );
+          })}
+        </dl>
+      </div>
+    </div>
   );
 }
 
@@ -358,10 +630,11 @@ function Streams() {
         </div>
       </div>
 
+      {/* 셋을 넘겨 본 다음 마지막에 합계가 온다. 이 블록의 결론이라 강조한다. */}
       <dl className="mt-6 flex flex-wrap items-baseline gap-x-8 gap-y-2 border-t border-line pt-4">
-        <div className="flex items-baseline gap-2">
-          <dt className="text-xs text-faint">합계 MRR</dt>
-          <dd className="num m-0 text-2xl text-accent">{STREAM_TOTAL.mrr.toLocaleString("ko-KR")}만원</dd>
+        <div className="-mx-2 flex items-baseline gap-2 rounded-lg bg-key-soft px-2 py-1">
+          <dt className="text-xs font-bold text-key">합계 MRR</dt>
+          <dd className="num m-0 text-2xl text-key">{STREAM_TOTAL.mrr.toLocaleString("ko-KR")}만원</dd>
         </div>
         <div className="flex items-baseline gap-2">
           <dt className="text-xs text-faint">연 환산</dt>

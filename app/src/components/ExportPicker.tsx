@@ -43,10 +43,12 @@ export function ExportPicker({
     <div className="rounded-xl border border-line bg-surface p-4">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <h2 className="text-xs font-bold text-ink">내보내기</h2>
-        <span className="text-xs text-faint">쓸 엔진을 고르면 형식이 정해집니다</span>
+        <span className="text-xs text-faint">엔진을 고르면 형식이 정해집니다</span>
       </div>
 
-      <div className="mt-3 flex flex-wrap gap-1.5">
+      {/* 라벨이 먼저다. 칩만 늘어놓으면 이게 무엇을 고르는 줄인지 모른다. */}
+      <div className="mt-3 flex flex-wrap items-center gap-1.5">
+        <span className="mr-1 shrink-0 text-xs text-faint">엔진</span>
         {TARGETS.map((t) => (
           <button
             key={t.id}
