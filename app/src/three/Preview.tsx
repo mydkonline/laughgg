@@ -33,7 +33,7 @@ export function Preview({
     if (!canvas) return;
 
     let raf = 0;
-    let visible = false;
+    let visible = true;
     let disposed = false;
     let renderer: THREE.WebGLRenderer | null = null;
 

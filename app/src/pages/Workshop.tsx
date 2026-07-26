@@ -501,7 +501,7 @@ function Frame({ label, accent, children }: { label: string; accent?: boolean; c
     <figure className="m-0">
       <div
         className={[
-          "relative aspect-[4/3] overflow-hidden rounded-xl border bg-gradient-to-b from-surface-2 to-surface",
+          "relative aspect-square overflow-hidden rounded-xl border bg-gradient-to-b from-surface-2 to-surface",
           accent ? "border-accent" : "border-line",
         ].join(" ")}
       >

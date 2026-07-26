@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { GAMES, GAME_CATS, SCALES, type Game } from "../data/games";
+import { GAMES, GAME_CATS, SCALES, engineMark, LOGO_LICENSE, type Game } from "../data/games";
 
 /* 게임 스택 — 실제 출시작이 무엇으로 만들어졌는지.
    에셋을 사려는 사람이 제일 먼저 확인하는 건 "내 엔진에 붙나"다. */
@@ -26,8 +26,11 @@ export function Stack() {
   /* 엔진 점유는 목록에서 직접 센다. 따로 적어 두면 게임이 늘 때마다 어긋난다. */
   const engines = useMemo(() => {
     const m = new Map<string, number>();
-    for (const g of list) m.set(g.eng, (m.get(g.eng) ?? 0) + 1);
-    return [...m].sort((a, b) => b[1] - a[1]).slice(0, 5);
+    for (const g of list) {
+      const f = engineMark(g.eng).family;
+      m.set(f, (m.get(f) ?? 0) + 1);
+    }
+    return [...m].sort((a, b) => b[1] - a[1]).slice(0, 6);
   }, [list]);
 
   const confirmed = GAMES.filter((g) => g.ok === 1).length;
@@ -47,13 +50,13 @@ export function Stack() {
         </dl>
       </header>
 
-      <div className="mb-5 flex flex-wrap items-center gap-3">
+      <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2">
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="게임, 엔진, 개발사 검색"
           aria-label="게임 검색"
-          className="min-w-0 flex-1 rounded-full border border-line bg-surface px-5 py-3 text-base text-ink placeholder:text-faint"
+          className="w-full min-w-0 rounded-full border border-line bg-surface px-5 py-3 text-xs text-ink placeholder:text-faint sm:w-auto sm:flex-1"
         />
         <label className="flex cursor-pointer items-center gap-2 text-xs text-faint">
           <input
@@ -94,7 +97,10 @@ export function Stack() {
           <div className="mt-3 flex flex-col gap-2">
             {engines.map(([name, n]) => (
               <div key={name} className="grid grid-cols-[130px_minmax(0,1fr)_34px] items-center gap-3 text-xs">
-                <span className="truncate text-muted">{name}</span>
+                <span className="flex items-center gap-2 truncate text-muted">
+                  <EngineLogo family={name} />
+                  {name}
+                </span>
                 <span className="block h-1.5 overflow-hidden rounded-full bg-surface-2">
                   <b
                     className="block h-full bg-accent"
@@ -118,8 +124,9 @@ export function Stack() {
       </div>
 
       <p className="mt-6 text-xs leading-relaxed text-faint">
-        개발사가 공개한 자료로 확인된 항목만 확인으로 표시합니다. 나머지는 업계 추정이며 그렇게 적어 뒀습니다.
+        개발사가 공개한 자료로 확인된 항목만 확인으로 표시합니다. 나머지는 업계 추정입니다.
       </p>
+      <p className="mt-2 text-xs leading-relaxed text-faint">{LOGO_LICENSE}</p>
     </main>
   );
 }
@@ -131,26 +138,36 @@ function Row({ game, open, onToggle }: { game: Game; open: boolean; onToggle: ()
         type="button"
         onClick={onToggle}
         aria-expanded={open}
-        className="grid w-full cursor-pointer grid-cols-[minmax(0,1fr)_120px_88px_64px] items-center gap-4 bg-surface px-4 py-3.5 text-left hover:bg-surface-2"
+        className="flex w-full cursor-pointer flex-col gap-1.5 bg-surface px-4 py-3 text-left hover:bg-surface-2 sm:grid sm:grid-cols-[minmax(0,1fr)_132px_72px_52px] sm:items-center sm:gap-4 sm:py-3.5"
       >
         <span className="min-w-0">
-          <b className="block truncate text-base font-bold text-ink">{game.n}</b>
+          <b className="block truncate text-xs font-bold text-ink">{game.n}</b>
           <span className="block truncate text-xs text-faint">{game.dev}</span>
         </span>
-        <span className="truncate text-xs text-muted">{game.eng}</span>
-        <span className="text-xs text-faint">{SCALES[game.sc] ?? game.sc}</span>
-        <span className="text-right text-xs tabular-nums text-faint">{game.yr}</span>
+        {/* 좁은 화면에서는 메타를 한 줄로 눕힌다. 고정 열을 유지하면 이름 칸이 0 이 된다. */}
+        <span className="flex min-w-0 items-center gap-2 text-xs text-faint sm:contents">
+          <span className="flex min-w-0 items-center gap-2">
+            <EngineLogo family={engineMark(game.eng).family} />
+            <span className="truncate text-xs text-muted">
+              {engineMark(game.eng).family}
+              {engineMark(game.eng).version && (
+                <span className="ml-1 text-faint">{engineMark(game.eng).version}</span>
+              )}
+            </span>
+          </span>
+          <span className="text-xs text-faint">{SCALES[game.sc] ?? game.sc}</span>
+          <span className="text-xs tabular-nums text-faint sm:text-right">{game.yr}</span>
+        </span>
       </button>
 
       {open && (
-        <div className="bg-ground px-4 pt-1 pb-5">
-          <p className="max-w-[68ch] text-base leading-relaxed text-muted">{game.note}</p>
-          <dl className="mt-4 flex flex-col gap-1.5">
+        <div className="bg-ground px-4 pb-5">
+          <dl className="m-0 grid gap-x-8 gap-y-1.5 sm:grid-cols-2">
             {game.stack.map(([name, role, ok]) => (
-              <div key={name + role} className="flex items-center gap-3 text-xs">
-                <dt className="w-40 shrink-0 truncate text-ink">{name}</dt>
-                <dd className="m-0 flex-1 text-faint">{role}</dd>
-                <dd className="m-0 text-faint">{ok ? "확인" : "추정"}</dd>
+              <div key={name + role} className="grid grid-cols-[minmax(0,1fr)_92px_36px] items-center gap-3 border-b border-line-soft py-1.5 text-xs">
+                <dt className="truncate text-ink">{name}</dt>
+                <dd className="m-0 truncate text-faint">{role}</dd>
+                <dd className={`m-0 text-right ${ok ? "text-accent" : "text-faint"}`}>{ok ? "확인" : "추정"}</dd>
               </div>
             ))}
           </dl>
@@ -159,6 +176,33 @@ function Row({ game, open, onToggle }: { game: Game; open: boolean; onToggle: ()
     </div>
   );
 }
+
+/* 계열 로고. 없는 엔진은 첫 글자 타일로 대신한다 — 자리가 비면 줄이 흔들린다. */
+function EngineLogo({ family }: { family: string }) {
+  const logo = LOGOS[family];
+  if (logo) {
+    return (
+      <img
+        src={`${import.meta.env.BASE_URL}engines/${logo}`}
+        alt=""
+        className="h-4 w-8 shrink-0 object-contain opacity-90 [:root[data-theme=dark]_&]:brightness-0 [:root[data-theme=dark]_&]:invert"
+      />
+    );
+  }
+  return (
+    <span className="grid h-4 w-8 shrink-0 place-items-center rounded-sm border border-line text-[9px] text-faint">
+      {family.slice(0, 2).toUpperCase()}
+    </span>
+  );
+}
+
+const LOGOS: Record<string, string> = {
+  Unity: "unity.svg",
+  Unreal: "unreal.svg",
+  Godot: "godot.svg",
+  GameMaker: "gamemaker.png",
+  MonoGame: "monogame.svg",
+};
 
 function Stat({ k, v }: { k: string; v: string }) {
   return (

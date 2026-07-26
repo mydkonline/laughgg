@@ -11,8 +11,8 @@ import { modelSrc, imageSrc, type Piece } from "../data/pieces";
    스프라이트는 정지 그림이다. 돌릴 이유가 없으니 노브가 바뀔 때만 다시 굽는다. */
 
 const FRONT: Dir = [1.3, 0.85, 1.6];
-const W = 520;
-const H = 390;
+const W = 480;
+const H = 480;
 
 export function Sprite({
   piece,

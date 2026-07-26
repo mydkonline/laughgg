@@ -60,7 +60,7 @@ export function Market() {
             onChange={(e) => setQ(e.target.value)}
             placeholder="에셋 검색 — 보스전, 인벤토리, 히트스톱…"
             aria-label="에셋 검색"
-            className="min-w-0 flex-1 rounded-full border border-line bg-surface px-5 py-3 text-base text-ink placeholder:text-faint"
+            className="w-full min-w-0 rounded-full border border-line bg-surface px-5 py-3 text-xs text-ink placeholder:text-faint sm:w-auto sm:flex-1"
           />
           <label className="flex items-center gap-3 text-xs text-faint">
             분석 점수
@@ -125,21 +125,22 @@ export function Market() {
           조건에 맞는 에셋이 없습니다. 점수 기준을 낮추거나 분류를 넓혀 보세요.
         </p>
       ) : (
-        <div className="mt-6 grid grid-cols-[repeat(auto-fill,minmax(230px,1fr))] gap-5">
+        <div className="mt-6 grid grid-cols-[repeat(auto-fill,minmax(168px,1fr))] gap-3">
           {list.map((p) => (
             <Link
               key={p.id}
               to={`/market/${p.id}`}
               className="group flex flex-col overflow-hidden rounded-xl border border-line bg-surface no-underline transition-[border-color,translate] hover:-translate-y-0.5 hover:border-accent"
             >
-              <div className="relative aspect-[4/3] bg-gradient-to-b from-surface-2 to-surface p-4">
-                <span className="absolute top-2.5 left-2.5 z-10 flex items-center rounded bg-ground/70 p-1">
-                  <RankIcon badge={badgeOf(p.score)} size={18} />
+              {/* 그림 자리는 언제나 정사각이다. 피사체 모양이 달라도 칸이 안 흔들린다. */}
+              <div className="relative aspect-square bg-gradient-to-b from-surface-2 to-surface p-3">
+                <span className="absolute top-2 left-2 z-10 flex items-center rounded bg-ground/70 p-0.5">
+                  <RankIcon badge={badgeOf(p.score)} size={14} />
                 </span>
-                <Thumb piece={p} className="drop-shadow-[0_6px_14px_rgb(0_0_0/0.28)]" />
+                <Thumb piece={p} className="drop-shadow-[0_4px_10px_rgb(0_0_0/0.28)]" />
               </div>
-              <div className="flex flex-1 flex-col gap-2 p-3.5">
-                <span className="text-xs font-bold text-ink">{p.t}</span>
+              <div className="flex flex-1 flex-col gap-1 p-2.5">
+                <span className="truncate text-xs font-bold text-ink">{p.t}</span>
                 <div className="mt-auto flex items-baseline justify-between gap-2">
                   <span className="text-xs font-bold text-ink">{won(p.price)}</span>
                   <span className="truncate text-xs text-faint">

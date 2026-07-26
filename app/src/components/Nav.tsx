@@ -40,7 +40,7 @@ export function Nav() {
     <nav className="sticky top-0 z-[9000] font-sans">
       {/* 1행 — 브랜드와 계정 */}
       <div className="border-b border-chrome-800 bg-chrome-900">
-        <div className="mx-auto flex h-[46px] max-w-[1240px] items-center gap-4 px-5">
+        <div className="mx-auto flex min-h-[46px] max-w-[1240px] flex-wrap items-center gap-x-4 gap-y-2 px-5 py-1.5">
           <Link to="/" className="flex flex-none items-center gap-2 text-[13pt] font-black tracking-[-0.03em] text-white no-underline">
             <b className="font-black">LaughGG</b>
             <span className="self-end pb-0.5 text-[4pt] font-bold tracking-[0.14em] text-chrome-600 uppercase">
@@ -48,7 +48,7 @@ export function Nav() {
             </span>
           </Link>
 
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto flex flex-wrap items-center gap-1.5">
             <Link to="/cart" className="rounded bg-chrome-800 px-3 py-1 text-[length:var(--text-nav)] text-gray-350 no-underline hover:bg-chrome-700 hover:text-white">
               장바구니 <b className="ml-0.5 font-extrabold text-accent">{count}</b>
             </Link>
@@ -71,13 +71,16 @@ export function Nav() {
           <div className="flex flex-wrap gap-0.5">
             {GROUPS.map((g) =>
               g.subs ? (
-                <span key={g.to} className="group relative flex">
+                /* 좁은 화면에서는 드롭다운을 안 쓴다. 숨겨진 메뉴도 폭을 차지해서
+                   오른쪽에 붙은 그룹이면 화면 밖으로 밀려 가로 스크롤이 생긴다.
+                   대신 하위 항목을 그대로 펼쳐 보여준다 — 어차피 탭 줄이 접힌다. */
+                <span key={g.to} className="contents md:block md:relative md:flex md:group">
                   <NavLink to={g.to} className={tabClass} end={g.to === "/"}>
                     {g.label}
                     {g.badge && <sup className="text-[7pt] font-extrabold text-[#FF6B7A]">{g.badge}</sup>}
-                    <span className="ml-0.5 text-[7pt] opacity-55">▾</span>
+                    <span className="ml-0.5 hidden text-[7pt] opacity-55 md:inline">▾</span>
                   </NavLink>
-                  <span className="invisible absolute top-[calc(100%+4px)] left-0 z-[9600] flex min-w-[168px] -translate-y-1 flex-col gap-px rounded-md border border-chrome-800 bg-chrome-900 p-1 opacity-0 shadow-[0_12px_28px_rgb(0_0_0/0.34)] transition-[opacity,translate,visibility] duration-150 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+                  <span className="contents md:invisible md:absolute md:top-[calc(100%+4px)] md:left-0 md:z-[9600] md:flex md:min-w-[168px] md:-translate-y-1 md:flex-col md:gap-px md:rounded-md md:border md:border-chrome-800 md:bg-chrome-900 md:p-1 md:opacity-0 md:shadow-[0_12px_28px_rgb(0_0_0/0.34)] md:transition-[opacity,translate,visibility] md:duration-150 md:group-hover:visible md:group-hover:translate-y-0 md:group-hover:opacity-100 md:group-focus-within:visible md:group-focus-within:translate-y-0 md:group-focus-within:opacity-100">
                     {g.subs.map((s) => (
                       <NavLink key={s.to + s.label} to={s.to} className={tabClass}>
                         {s.label}

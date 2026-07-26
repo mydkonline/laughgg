@@ -12,7 +12,7 @@ export function Spin({ model, className }: { model: string; className?: string }
     if (!canvas) return;
 
     let raf = 0;
-    let live = false;
+    let live = true;
     let disposed = false;
     let renderer: THREE.WebGLRenderer | null = null;
 

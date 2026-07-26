@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { MARKET, MARKET_SOURCE, REACH, MODEL, CHECK_WEIGHTS, REVIEWS, AI_DEV, AI_DEV_SOURCE } from "../data/ir";
+import { MARKET, MARKET_SOURCE, MODEL, CHECK_WEIGHTS, REVIEWS, AI_DEV, AI_DEV_SOURCE } from "../data/ir";
 import { PIECES } from "../data/pieces";
 import { Sprite } from "../three/Sprite";
 import { CONCEPTS } from "../data/concepts";
@@ -72,7 +72,7 @@ export function Ir() {
             if (!c || !piece) return null;
             return (
               <figure key={id} className="m-0">
-                <div className="aspect-[4/5] overflow-hidden rounded-2xl border border-line bg-gradient-to-b from-surface-2 to-surface">
+                <div className="aspect-square overflow-hidden rounded-2xl border border-line bg-gradient-to-b from-surface-2 to-surface">
                   <Sprite piece={piece} knobs={c.knobs} raster={c.raster} />
                 </div>
                 <figcaption className="pt-2 text-xs text-faint">
@@ -101,15 +101,6 @@ export function Ir() {
         </div>
         <p className="mb-6 text-xs text-faint">출처 {AI_DEV_SOURCE}</p>
 
-        <details className="mb-6 text-xs text-faint">
-          <summary className="cursor-pointer">OP.GG 참조 개발자 추정 {REACH.headline.value}{REACH.headline.unit}</summary>
-          <div className="mt-3 grid gap-3 sm:grid-cols-2">
-            {REACH.ways.map((w) => (
-              <Funnel key={w.way} way={w} />
-            ))}
-          </div>
-          <p className="mt-3">{REACH.overlap}</p>
-        </details>
 
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {REVIEWS.map((r) => (
@@ -174,13 +165,12 @@ export function Ir() {
         <div className="rounded-2xl border border-line bg-surface p-6">
           <CompareBars
             rows={[
-              ["LaughGG", 8, "단일"],
-              ["Epic Fab", 12, "인용"],
-              ["Unity Asset Store", 30, "인용"],
+              ["LaughGG", 8],
+              ["Epic Fab", 12],
+              ["Unity Asset Store", 30],
             ]}
           />
         </div>
-        <p className="mt-3 text-xs text-muted">창작자가 92% 를 가져갑니다.</p>
       </Section>
 
       <div className="mt-16 flex flex-wrap gap-3 border-t border-line pt-8">
@@ -250,42 +240,6 @@ function Section({ n, title, lead, children }: { n: string; title: string; lead?
       </div>
       {children}
     </section>
-  );
-}
-
-/* 퍼널 — 단계마다 몇 명이 남는지를 막대 폭으로 보여준다.
-   숫자 세 줄을 글로 늘어놓으면 아무도 안 읽는다. */
-function Funnel({ way }: { way: (typeof REACH.ways)[number] }) {
-  const top = way.steps[0]?.value ?? 1;
-  /* 2,500만에서 16만으로 떨어지는 구간이라 선형으로 그리면 아래 두 칸이 안 보인다.
-     로그로 눕혀야 단계가 눈에 남는다. */
-  const w = (v: number) => `${Math.max(6, (Math.log10(v) / Math.log10(top)) * 100)}%`;
-
-  return (
-    <div className="rounded-xl border border-line bg-surface p-5">
-      <p className="text-xs text-faint">{way.way}</p>
-      <div className="mt-4 flex flex-col gap-3">
-        {way.steps.map((s, i) => (
-          <div key={s.label}>
-            <div className="flex items-baseline justify-between gap-2">
-              <span className="text-xs text-muted">
-                {s.label}
-                {s.rate && <span className="ml-1.5 text-faint">{s.rate}</span>}
-              </span>
-              <b className="num shrink-0 text-base text-ink">{s.show}</b>
-            </div>
-            <span
-              className={`mt-1 block h-2 rounded-sm ${i === way.steps.length - 1 ? "bg-accent" : "bg-chrome-700"}`}
-              style={{ width: w(s.value) }}
-            />
-          </div>
-        ))}
-      </div>
-      <p className="mt-4 border-t border-line pt-3 text-xs">
-        <span className="text-faint">결과 </span>
-        <b className="text-base tabular-nums text-accent">{way.result}</b>
-      </p>
-    </div>
   );
 }
 

@@ -59,7 +59,7 @@ function Detail({ p }: { p: Piece }) {
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px]">
         {/* 갤러리 */}
         <div>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-line bg-gradient-to-b from-surface-2 to-surface p-8">
+          <div className="relative aspect-square overflow-hidden rounded-2xl border border-line bg-gradient-to-b from-surface-2 to-surface p-8">
             {spinning && modelSrc(p) ? (
               <Spin model={modelSrc(p)!} className="h-full w-full" />
             ) : (
@@ -213,19 +213,19 @@ function Detail({ p }: { p: Piece }) {
       {also.length > 0 && (
         <section className="mt-12">
           <h2 className="mb-4 text-2xl font-bold text-ink">같은 분류에서 점수가 높은 것</h2>
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(230px,1fr))] gap-5">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(168px,1fr))] gap-3">
             {also.map((o) => (
               <Link
                 key={o.id}
                 to={`/market/${o.id}`}
                 className="flex flex-col overflow-hidden rounded-xl border border-line bg-surface no-underline hover:border-accent"
               >
-                <div className="aspect-[4/3] bg-gradient-to-b from-surface-2 to-surface p-4">
+                <div className="aspect-square bg-gradient-to-b from-surface-2 to-surface p-3">
                   <Thumb piece={o} />
                 </div>
-                <div className="flex items-baseline justify-between gap-2 p-3.5">
-                  <span className="text-xs font-bold text-ink">{o.t}</span>
-                  <span className="text-base text-muted">{won(o.price)}</span>
+                <div className="flex items-baseline justify-between gap-2 p-2.5">
+                  <span className="truncate text-xs font-bold text-ink">{o.t}</span>
+                  <span className="shrink-0 text-xs text-muted">{won(o.price)}</span>
                 </div>
               </Link>
             ))}

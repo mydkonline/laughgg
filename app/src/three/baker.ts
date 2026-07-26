@@ -7,8 +7,9 @@ import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment
    WebGL 컨텍스트는 브라우저당 몇 개 안 되므로 렌더러 하나를 돌려 쓰고,
    결과는 data URL 로 캐시한다. 같은 모델·같은 각도는 다시 굽지 않는다. */
 
-const W = 520;
-const H = 340;
+/* 정사각으로 굽는다. 카드도 정사각이라 contain 여백이 피사체마다 안 흔들린다. */
+const W = 480;
+const H = 480;
 
 export type Dir = readonly [number, number, number];
 export type Material = "pbr" | "wire";
@@ -66,7 +67,7 @@ async function rig(): Promise<Rig> {
     return {
       renderer,
       scene,
-      camera: new THREE.PerspectiveCamera(30, W / H, 0.01, 100),
+      camera: new THREE.PerspectiveCamera(30, 1, 0.01, 100),
       loader: new GLTFLoader(),
     };
   })();

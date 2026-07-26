@@ -184,7 +184,7 @@ export function ConceptGrid({ piece, ids }: { piece?: Piece; ids: string[] }) {
         if (!c) return null;
         return (
           <figure key={id} className="m-0">
-            <div className="aspect-[4/5] overflow-hidden rounded-2xl border border-line bg-gradient-to-b from-surface-2 to-surface">
+            <div className="aspect-square overflow-hidden rounded-2xl border border-line bg-gradient-to-b from-surface-2 to-surface">
               <Sprite piece={target} knobs={c.knobs} raster={NEUTRAL_RASTER} />
             </div>
             <figcaption className="pt-2 text-xs text-faint">{c.name}</figcaption>
@@ -196,19 +196,16 @@ export function ConceptGrid({ piece, ids }: { piece?: Piece; ids: string[] }) {
 }
 
 /** 비교 막대. 숫자 셋을 나란히 놓을 때 표보다 빠르다. */
-export function CompareBars({ rows }: { rows: [string, number, string][] }) {
+export function CompareBars({ rows }: { rows: [string, number][] }) {
   const max = Math.max(...rows.map((r) => r[1]));
 
   return (
     <div className="flex flex-col gap-5">
-      {rows.map(([name, v, tag], i) => (
+      {rows.map(([name, v], i) => (
         <div key={name}>
           <div className="flex items-baseline justify-between gap-3">
             <span className={`text-xs ${i === 0 ? "font-bold text-ink" : "text-muted"}`}>{name}</span>
-            <span className="flex items-baseline gap-2">
-              <b className={`num text-2xl ${i === 0 ? "text-accent" : "text-ink"}`}>{v}%</b>
-              <span className="text-xs text-faint">{tag}</span>
-            </span>
+            <b className={`num text-2xl ${i === 0 ? "text-accent" : "text-ink"}`}>{v}%</b>
           </div>
           <span className="mt-2 block h-3 overflow-hidden rounded-sm bg-surface-2">
             <b
