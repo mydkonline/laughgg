@@ -8,7 +8,7 @@
     --ink: #EBEBEF; --muted: #9AA4AF; --faint: #6E6E7C;
     --accent: #5383E8; --accent-soft: rgba(83,131,232,.15); --link: #B3CDFF;
     --navy: #28344E; --secondary: #424254;
-    --pass: #5383E8; --fail: #E84057; --warn: #F0B457;
+    --pass: #6E9C88; --fail: #B08088; --warn: #B49A6E;
     --moba: #C89B3C; --fps: #FF4655; --auto: #A55EEA; --br: #F2A900;
     --r: 4px;
   }
@@ -18,7 +18,7 @@
     --ink: #202D37; --muted: #57646F; --faint: #8894A0;
     --accent: #2B5FD9; --accent-soft: rgba(43,95,217,.1); --link: #2B5FD9;
     --navy: #28344E; --secondary: #C3CBD1;
-    --pass: #2B5FD9; --fail: #D0344B; --warn: #A9720C;
+    --pass: #3F7A63; --fail: #9E4A54; --warn: #8A6B2E;
     --moba: #96701F; --fps: #C9202F; --auto: #7038C0; --br: #B07B00;
   }
   @media (prefers-color-scheme: light) {
@@ -28,7 +28,7 @@
       --ink: #202D37; --muted: #57646F; --faint: #8894A0;
       --accent: #2B5FD9; --accent-soft: rgba(43,95,217,.1); --link: #2B5FD9;
       --navy: #28344E; --secondary: #C3CBD1;
-      --pass: #2B5FD9; --fail: #D0344B; --warn: #A9720C;
+      --pass: #3F7A63; --fail: #9E4A54; --warn: #8A6B2E;
       --moba: #96701F; --fps: #C9202F; --auto: #7038C0; --br: #B07B00;
     }
   }
@@ -382,9 +382,68 @@
     <a class="igg-cta" href="community.html">에셋 올리기</a>
   </div></div>
   <div class="igg-r2"><div class="igg-r2in">
-    <div class="igg-tabs"><a href="index.html">홈</a><a href="about.html">서비스 소개</a><a href="market.html">마켓</a><a href="community.html" aria-current="page">게임 스택</a><a href="ai.html">AI 파이프라인<sup>N</sup></a><a href="scene.html">에셋 시연</a><a href="viewer3d.html">3D 뷰어</a><a href="vlog.html">개발 브이로그<sup>N</sup></a></div>
+    <div class="igg-tabs"><a href="index.html">홈</a><a href="about.html">IR</a><a href="market.html">마켓</a><a href="community.html" aria-current="page">게임 스택</a><a href="ai.html">AI 파이프라인<sup>N</sup></a><a href="scene.html">에셋 시연</a><a href="viewer3d.html">3D 뷰어</a><a href="vlog.html">개발 브이로그<sup>N</sup></a></div>
   </div></div>
 </nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rkg-chal" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFEFC4"/><stop offset=".42" stop-color="#F0B457"/><stop offset="1" stop-color="#8E5F17"/></linearGradient>
+  <linearGradient id="rkg-dia" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#E8ECF2"/><stop offset=".42" stop-color="#8A93A3"/><stop offset="1" stop-color="#3D4450"/></linearGradient>
+  <linearGradient id="rkg-plat" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#DDE3EA"/><stop offset=".42" stop-color="#6E7784"/><stop offset="1" stop-color="#333944"/></linearGradient>
+  <linearGradient id="rkg-silv" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#D0D6DE"/><stop offset=".42" stop-color="#59616D"/><stop offset="1" stop-color="#2B3038"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 48 48">
+    <path d="M9.5 15.5 1 10.6l3.4 8.8-2.2 1.2 7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M38.5 15.5 47 10.6l-3.4 8.8 2.2 1.2-7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-chal)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m16.6 27.4-2.3-9.3 5.8 4.4L24 15l3.9 7.5 5.8-4.4-2.3 9.3z" fill="url(#rkg-chal)"/>
+    <path d="M16.6 29.6h14.8v2.4H16.6z" fill="url(#rkg-chal)"/>
+  </symbol>
+  <symbol id="rk-dia" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-dia)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.4 7.4 6.6L24 32.4 16.6 21z" fill="url(#rkg-dia)"/>
+    <path d="M16.6 21h14.8L24 24.2z" fill="#0A0A10" opacity=".28"/>
+    <path d="m24 14.4 3 6.6-3 3.2-3-3.2z" fill="#fff" opacity=".34"/>
+  </symbol>
+  <symbol id="rk-plat" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-plat)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.6 6.6 3.8v7.6L24 29.8l-6.6-3.8v-7.6z" fill="url(#rkg-plat)"/>
+    <path d="M17.4 18.4 24 22.2l6.6-3.8L24 14.6z" fill="#fff" opacity=".26"/>
+  </symbol>
+  <symbol id="rk-silv" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-silv)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="M17.6 20.4h12.8v3.6H17.6z" fill="url(#rkg-silv)"/>
+    <path d="M17.6 20.4h12.8v1.6H17.6z" fill="#fff" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
   <linearGradient id="rkg-chal" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
     <stop offset="0" stop-color="#FFEFC4"/><stop offset=".42" stop-color="#F0B457"/><stop offset="1" stop-color="#8E5F17"/></linearGradient>
