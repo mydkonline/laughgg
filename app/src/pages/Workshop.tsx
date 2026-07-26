@@ -232,7 +232,8 @@ export function Workshop() {
       {/* 2 — 결과. 조작을 그림 위에 두면 보면서 못 만진다. 그림이 먼저고,
           원본과 나란히 두지 않으면 무엇이 달라졌는지 안 보인다. */}
       <section className="mt-6 grid gap-5 lg:grid-cols-[minmax(0,1fr)_380px]">
-        {/* 좁은 화면에서도 2단으로 둔다. 세로로 쌓으면 프롬프트가 화면 두 개 아래로 밀린다. */}
+        <div className="min-w-0">
+          {/* 좁은 화면에서도 2단으로 둔다. 세로로 쌓으면 프롬프트가 화면 두 개 아래로 밀린다. */}
           <div className="grid grid-cols-2 gap-2 sm:gap-3">
           <Frame label="원본">
             {sprite ? (
@@ -248,11 +249,47 @@ export function Workshop() {
               <Preview model={modelSrc(piece)!} knobs={knobs} className="h-full w-full" />
             )}
           </Frame>
+          </div>
+
+          {/* 컨셉을 하나씩 눌러 보면 열한 번 눌러야 안다. 한 번에 다 보여 주고
+              마음에 드는 걸 고르게 한다. 전부 정지 그림이라 굽는 렌더러 하나를
+              돌려 쓴다 — 라이브 렌더러를 열한 개 만들 수는 없다. */}
+          <div className="mt-5">
+            <p className="mb-2.5 text-xs text-faint">컨셉별로 미리 보기</p>
+            <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-5">
+              {CONCEPTS.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => applyConcept(c.id)}
+                  aria-pressed={conceptId === c.id}
+                  className="cursor-pointer border-0 bg-transparent p-0 text-left"
+                >
+                  <span
+                    className={[
+                      "relative block aspect-square overflow-hidden rounded-lg border bg-gradient-to-b from-surface-2 to-surface",
+                      conceptId === c.id ? "border-accent" : "border-line hover:border-chrome-600",
+                    ].join(" ")}
+                  >
+                    <Sprite piece={piece} knobs={c.knobs} raster={c.raster} />
+                  </span>
+                  <span
+                    className={[
+                      "mt-1.5 block truncate text-[10px]",
+                      conceptId === c.id ? "font-bold text-ink" : "text-faint",
+                    ].join(" ")}
+                  >
+                    {c.name}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* 조작 패널. 그림 옆에 둔다 — 프롬프트가 이 제품이 파는 것이라
             스크롤을 내려야 보이면 안 된다. */}
-        <aside className="flex flex-col gap-5">
+        <aside className="flex flex-col gap-5 lg:sticky lg:top-[100px] lg:self-start">
           {/* 컨셉이 먼저다. 대부분은 이것만 눌러 보고 끝낸다. */}
           <div>
             <div className="mb-2.5 flex flex-wrap items-baseline gap-3">
