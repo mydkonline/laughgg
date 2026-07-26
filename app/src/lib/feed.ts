@@ -1,5 +1,5 @@
 import { useCallback, useSyncExternalStore } from "react";
-import type { Knobs } from "../data/concepts";
+import type { Knobs, RasterSet } from "../data/concepts";
 
 /* 커뮤니티를 게시판으로 만들지 않는다. 빈 글쓰기 칸이 커뮤니티를 죽인다.
    공방에서 작업을 끝내면 그게 곧 게시물이 된다 — 아무도 "글을 쓰지" 않는데
@@ -31,6 +31,8 @@ export type Post = {
   concept: string;
   prompt: string;
   knobs: Knobs;
+  /** 2D 로 뽑은 레시피면 팔레트·도트 설정이 같이 붙는다. 없으면 3D 레시피다. */
+  raster?: RasterSet;
   /** 검수 점수가 어떻게 움직였는지. 자랑도 실패도 그대로 남긴다. */
   before: number;
   after: number;
@@ -109,6 +111,7 @@ const SEED: Post[] = [
     concept: "픽셀 레트로",
     prompt: "로우폴리, 색 끊기, 픽셀 아트 옆에 세울 것",
     knobs: { tone: 44, warm: 56, gloss: 18, facet: 96, sat: 86, line: 0 },
+    raster: { pixel: 5, palette: "pico8", dither: 52 },
     before: 92,
     after: 95,
     by: { name: "익명" },

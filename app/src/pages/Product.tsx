@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
-import { PIECES, CHECKS, CAT_NAME, ENGINE_NAME, type Piece } from "../data/pieces";
+import { PIECES, CHECKS, CAT_NAME, ENGINE_NAME, modelSrc, imageSrc, type Piece } from "../data/pieces";
 import { RankIcon, badgeOf, BADGE_LABEL } from "../components/Rank";
 import { Thumb } from "../components/Thumb";
 import { Spin } from "../three/Spin";
@@ -58,15 +58,15 @@ function Detail({ p }: { p: Piece }) {
         {/* 갤러리 */}
         <div>
           <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-line bg-gradient-to-b from-surface-2 to-surface p-8">
-            {spinning && p.m ? (
-              <Spin model={p.m} className="h-full w-full" />
+            {spinning && modelSrc(p) ? (
+              <Spin model={modelSrc(p)!} className="h-full w-full" />
             ) : (
               <GalleryShot piece={p} view={VIEWS[shot] ?? VIEWS[0]!} />
             )}
           </div>
 
           <div className="mt-3 flex flex-wrap gap-2">
-            {p.m &&
+            {modelSrc(p) &&
               VIEWS.map((v, i) => (
                 <button
                   key={v.label}
@@ -86,7 +86,7 @@ function Detail({ p }: { p: Piece }) {
                   {v.label}
                 </button>
               ))}
-            {p.m && (
+            {modelSrc(p) && (
               <button
                 type="button"
                 onClick={() => setSpinning((s) => !s)}
@@ -225,7 +225,8 @@ function Detail({ p }: { p: Piece }) {
 
 function GalleryShot({ piece, view }: { piece: Piece; view: (typeof VIEWS)[number] }) {
   const [src, setSrc] = useState<string | null>(null);
-  const model = piece.m;
+  const model = modelSrc(piece);
+  const flat = imageSrc(piece);
 
   useEffect(() => {
     if (!model) return;
@@ -239,10 +240,10 @@ function GalleryShot({ piece, view }: { piece: Piece; view: (typeof VIEWS)[numbe
     };
   }, [model, view]);
 
-  if (piece.img) {
+  if (flat) {
     return (
       <img
-        src={`${import.meta.env.BASE_URL}assets/${piece.img}.png`}
+        src={flat}
         alt={piece.t}
         className="h-full w-full object-contain [image-rendering:pixelated]"
       />

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { bakeView, type Dir, type Material } from "../three/baker";
-import type { Piece } from "../data/pieces";
+import { modelSrc, imageSrc, type Piece } from "../data/pieces";
 
 const THREE_QUARTER: Dir = [1.3, 0.85, 1.6];
 
@@ -17,7 +17,8 @@ export function Thumb({
   className?: string;
 }) {
   const [src, setSrc] = useState<string | null>(null);
-  const model = piece.m;
+  const model = modelSrc(piece);
+  const flat = imageSrc(piece);
 
   useEffect(() => {
     if (!model) return;
@@ -32,11 +33,11 @@ export function Thumb({
     };
   }, [model, dir, material]);
 
-  /* 도트 상품은 파일이 하나뿐이라 구울 것이 없다. 픽셀이 뭉개지지 않게 둔다. */
-  if (piece.img) {
+  /* 그림은 구울 것이 없다. 픽셀이 뭉개지지 않게 둔다. */
+  if (flat) {
     return (
       <img
-        src={`${import.meta.env.BASE_URL}assets/${piece.img}.png`}
+        src={flat}
         alt=""
         className={`h-full w-full object-contain [image-rendering:pixelated] ${className}`}
       />

@@ -24,10 +24,6 @@ let rigPromise: Promise<Rig> | null = null;
 const bakeCache = new Map<string, string>();
 const gltfCache = new Map<string, Promise<THREE.Group>>();
 
-function modelUrl(id: string) {
-  return `${import.meta.env.BASE_URL}assets/ph/${id}/${id}_1k.gltf`;
-}
-
 async function rig(): Promise<Rig> {
   rigPromise ??= (async () => {
     const renderer = new THREE.WebGLRenderer({
@@ -77,13 +73,13 @@ async function rig(): Promise<Rig> {
   return rigPromise;
 }
 
-/** 모델을 원점 중심·최대변 1 로 정규화해 돌려준다. 같은 모델은 한 번만 받는다. */
-export async function loadNormalized(id: string): Promise<THREE.Group> {
-  let p = gltfCache.get(id);
+/** 모델을 원점 중심·최대변 1 로 정규화해 돌려준다. 같은 주소는 한 번만 받는다. */
+export async function loadNormalized(url: string): Promise<THREE.Group> {
+  let p = gltfCache.get(url);
   if (!p) {
     p = (async () => {
       const { loader } = await rig();
-      const gltf = await loader.loadAsync(modelUrl(id));
+      const gltf = await loader.loadAsync(url);
       const o = gltf.scene;
       const box = new THREE.Box3().setFromObject(o);
       const size = box.getSize(new THREE.Vector3());
@@ -94,7 +90,7 @@ export async function loadNormalized(id: string): Promise<THREE.Group> {
       group.scale.setScalar(1 / Math.max(size.x, size.y, size.z, 1e-6));
       return group;
     })();
-    gltfCache.set(id, p);
+    gltfCache.set(url, p);
   }
   /* 여러 장면이 같은 노드를 동시에 붙이면 서로 부모를 뺏는다. 사본을 준다. */
   return (await p).clone(true);
@@ -114,13 +110,13 @@ export function frame(camera: THREE.PerspectiveCamera, node: THREE.Object3D, dir
 }
 
 /** 한 각도를 구워 data URL 로 준다. 갤러리와 목록 썸네일이 같이 쓴다. */
-export async function bakeView(id: string, dir: Dir, material: Material = "pbr"): Promise<string> {
-  const cacheKey = `${id}|${dir.join(",")}|${material}`;
+export async function bakeView(url: string, dir: Dir, material: Material = "pbr"): Promise<string> {
+  const cacheKey = `${url}|${dir.join(",")}|${material}`;
   const hit = bakeCache.get(cacheKey);
   if (hit) return hit;
 
   const { renderer, scene, camera } = await rig();
-  const node = await loadNormalized(id);
+  const node = await loadNormalized(url);
 
   node.traverse((x) => {
     if (!(x instanceof THREE.Mesh)) return;
@@ -134,9 +130,9 @@ export async function bakeView(id: string, dir: Dir, material: Material = "pbr")
   scene.add(node);
   frame(camera, node, dir);
   renderer.render(scene, camera);
-  const url = renderer.domElement.toDataURL("image/png");
+  const png = renderer.domElement.toDataURL("image/png");
   scene.remove(node);
 
-  bakeCache.set(cacheKey, url);
-  return url;
+  bakeCache.set(cacheKey, png);
+  return png;
 }

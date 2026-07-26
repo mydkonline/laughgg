@@ -6,6 +6,10 @@ export type Piece = {
   m?: string;
   /** 도트 스프라이트. 3D 상품에는 없다. */
   img?: string;
+  /** 올린 파일의 objectURL. 있으면 m/img 대신 이걸 쓴다. */
+  url?: string;
+  /** 올린 파일이 모델인지 그림인지. 마켓 상품에는 없다. */
+  kind?: "model" | "image";
   t: string;
   by: string;
   cat: CatKey;
@@ -51,6 +55,23 @@ export const CHECKS = [
   { k: "통합 난이도", d: "붙이는 데 걸리는 시간" },
   { k: "게임 필", d: "입력 반응 · 연출 타이밍" },
 ] as const;
+
+/** 3D 로 열 수 있는가. 올린 파일이면 확장자가, 마켓 상품이면 m 이 결정한다. */
+export function isModel(p: Piece): boolean {
+  return p.url ? p.kind === "model" : Boolean(p.m);
+}
+
+/** three 에 넘길 glTF 주소. 3D 가 아니면 null 이다. */
+export function modelSrc(p: Piece): string | null {
+  if (p.url) return p.kind === "model" ? p.url : null;
+  return p.m ? `${import.meta.env.BASE_URL}assets/ph/${p.m}/${p.m}_1k.gltf` : null;
+}
+
+/** 2D 로 쓸 그림 주소. 3D 상품은 구워야 하므로 null 이다. */
+export function imageSrc(p: Piece): string | null {
+  if (p.url) return p.kind === "image" ? p.url : null;
+  return p.img ? `${import.meta.env.BASE_URL}assets/${p.img}.png` : null;
+}
 
 export const PIECES: Piece[] = [
     { id:1,  m:"gothic_statue",         t:"Gothic Statue",        by:"stonewright", cat:"env",       eng:["unity","unreal"],        score:94, feel:91, price:38, dl:2140, days:2,  tri:"18.4k", tex:"1K", desc:"성당 정면에 놓는 석상. 노멀맵으로 조각 디테일을 담아 폴리곤을 아꼈고, 정면·측면 실루엣이 모두 살아 있습니다." },
