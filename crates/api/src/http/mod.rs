@@ -33,6 +33,7 @@ pub fn router(state: AppState) -> Router {
         // 가리켜서 재검수를 부르면 에셋이 하나 더 생겼다.
         .route("/assets/{id}/review", post(asset::review))
         .route("/games", get(game::list))
+        .route("/games/facets", get(game::facets))
         .route("/metrics", get(metrics::get))
         .with_state(state);
 

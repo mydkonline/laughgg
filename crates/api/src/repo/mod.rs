@@ -17,7 +17,7 @@ use sqlx::{PgPool, postgres::PgPoolOptions};
 
 pub use asset::{AssetQuery, NewAsset, create_asset, list_assets, review_asset};
 pub use error::{RepoError, RepoResult};
-pub use game::list_games;
+pub use game::{GameQuery, game_facets, list_games};
 pub use metrics::metrics;
 
 /// 커넥션 풀을 열고 마이그레이션을 적용한다.
