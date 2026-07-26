@@ -2221,4 +2221,544 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
   io.observe(el);
 })();
 </script>
+<script type="module">
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { HDRLoader } from "three/addons/loaders/HDRLoader.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 
+/* 실제로 마켓에 올라와 있는 형태를 그대로 보여준다.
+   모델은 전부 CC0 던전 킷 원본이고, 타일 아트워크는 런타임에 three.js 로 렌더한 결과다. */
+/* Poly Haven 이 CC0 로 공개한 PBR 모델. 1k 텍스처(베이스컬러·노멀·러프니스)가 딸려 있어
+   환경광만 제대로 주면 하드서피스 질감이 그대로 나온다. */
+  /* 품질을 섞지 않는다. 로우폴리와 PBR 을 나란히 놓으면 낮은 쪽이 전체를 끌어내린다.
+     전부 Poly Haven CC0 PBR — 1k 베이스컬러·러프니스/메탈/AO·노멀이 들어 있다. */
+  const ITEMS = [
+    ["gothic_statue",         "환경",   "Gothic Statue",       "챌린저", 94, "chal", ["Unity", "UE"]],
+    ["kite_shield",           "무기",   "Kite Shield",         "챌린저", 92, "chal", ["Unity", "UE", "Godot"]],
+    ["lantern_chandelier_01", "환경",   "Lantern Chandelier",  "챌린저", 91, "chal", ["Unity", "UE"]],
+    ["brass_candleholders",   "소품",   "Brass Candleholders", "챌린저", 90, "chal", ["Unity"]],
+    ["cross_pein_hammer",     "무기",   "Cross Pein Hammer",   "다이아", 88, "dia",  ["UE", "Godot"]],
+    ["Lantern_01",            "소품",   "Lantern 01",          "다이아", 87, "dia",  ["Unity", "UE"]],
+    ["horse_statue_01",       "환경",   "Horse Statue",        "다이아", 85, "dia",  ["Unity", "UE"]],
+    ["brass_goblets",         "소품",   "Brass Goblets",       "다이아", 84, "dia",  ["Unity"]],
+    ["bronze_whale_statue",   "환경",   "Bronze Statue",       "다이아", 82, "dia",  ["UE"]],
+    ["barrel_03",             "환경",   "Barrel 03",           "플래티넘", 78, "plat", ["Unity", "UE", "Godot"]],
+    ["metal_jug",             "소품",   "Metal Jug",           "플래티넘", 76, "plat", ["Godot"]],
+    ["ceramic_pot",           "소품",   "Ceramic Pot",         "플래티넘", 74, "plat", ["Unity"]],
+    ["jug_01",                "소품",   "Jug 01",              "플래티넘", 72, "plat", ["Godot"]],
+    ["brass_pot_01",          "소품",   "Brass Pot",           "실버",   66, "silv", ["Unity"]],
+  ];
+  const PH = m => `./assets/ph/${m}/${m}_1k.gltf`;
+
+const track = document.getElementById("rtrack");
+if (track) {
+  const tiles = ITEMS.map(function (it) {
+    const [model, cat, name, badge, score, tc, engines] = it;
+    const el = document.createElement("article");
+    el.className = "tile";
+    el.style.setProperty("--tc", "var(--" + tc + ")");
+    el.innerHTML =
+      '<div class="art"><img alt="">' +
+        '<span class="sc">' + score + '점</span>' +
+        '<span class="grade">' + badge + '</span>' +
+      '</div>' +
+      '<div class="meta"><span class="cat">' + cat + '</span>' +
+      '<h3 class="nm">' + name + '</h3>' +
+      '<div class="eng">' + engines.map(e => "<b>" + e + "</b>").join("") + '</div></div>';
+    track.appendChild(el);
+    return { el, model, img: el.querySelector("img") };
+  });
+
+  /* ── 타일 아트워크를 three.js 로 굽는다 ── */
+  (async function render() {
+  /* 다크 판타지 조명 하나로 고정한다. 횃불 하나가 형태를 만들고 뒤에서 차가운 림이 받친다. */
+  const loader = new GLTFLoader();
+  const W = 620, H = 620;
+  const rr = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+  rr.setSize(W, H);
+  rr.setPixelRatio(Math.min(devicePixelRatio, 2));
+  rr.outputColorSpace = THREE.SRGBColorSpace;
+  rr.toneMapping = THREE.ACESFilmicToneMapping;
+  rr.toneMappingExposure = 1.0;
+
+  const sc = new THREE.Scene();
+  const pmrem = new THREE.PMREMGenerator(rr);
+  await new Promise(done => {
+    new HDRLoader().load("./assets/ph/studio_1k.hdr", tex => {
+      tex.mapping = THREE.EquirectangularReflectionMapping;
+      sc.environment = pmrem.fromEquirectangular(tex).texture;
+      tex.dispose(); done();
+    }, undefined, () => { sc.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture; done(); });
+  });
+  
+  const keyL = new THREE.DirectionalLight(0xfff2e2, 1.5); keyL.position.set(0.9, 1.2, 0.7);
+  const rimL = new THREE.DirectionalLight(0xbdd0ff, 0.7); rimL.position.set(-0.9, 0.4, -0.8);
+  sc.add(keyL, rimL);
+
+  const cam = new THREE.PerspectiveCamera(30, 1, 0.01, 100);
+
+  /* 색보정은 2D 캔버스에서 한 번 더 — 채도를 낮추고 대비를 올린다 */
+  const grade = document.createElement("canvas");
+  grade.width = W; grade.height = H;
+  const gx = grade.getContext("2d");
+
+  for (const t of tiles) {
+    try {
+      const g = await new Promise((ok, no) => loader.load(PH(t.model), ok, undefined, no));
+      const o = g.scene, bb = new THREE.Box3().setFromObject(o);
+      const sz = new THREE.Vector3(), ct = new THREE.Vector3();
+      bb.getSize(sz); bb.getCenter(ct);
+      o.position.set(-ct.x, -ct.y, -ct.z);
+      o.traverse(x => { if (x.isMesh) x.material.envMapIntensity = 1.15; });
+      const n = new THREE.Group(); n.add(o);
+      n.scale.setScalar(1 / Math.max(sz.x, sz.y, sz.z, 1e-6));
+      n.rotation.y = -0.55;
+      sc.add(n);
+
+      /* 모델마다 비율이 달라 고정 거리로는 잘리거나 작게 나온다.
+         정규화 후 바운딩 스피어를 재서 화각에 딱 맞는 거리를 구한다. */
+      const sph = new THREE.Box3().setFromObject(n).getBoundingSphere(new THREE.Sphere());
+      const fov = cam.fov * Math.PI / 180;
+      const dist = (sph.radius / Math.sin(fov / 2)) * 1.16;
+      const dir = new THREE.Vector3(0.62, 0.42, 0.86).normalize();
+      cam.position.copy(sph.center).addScaledVector(dir, dist);
+      cam.near = Math.max(dist - sph.radius * 2, 0.01);
+      cam.far = dist + sph.radius * 4;
+      cam.updateProjectionMatrix();
+      cam.lookAt(sph.center);
+
+      rr.render(sc, cam);
+      gx.filter = "none";
+      gx.clearRect(0, 0, W, H);
+      gx.filter = "saturate(1.02) contrast(1.04)";
+      gx.drawImage(rr.domElement, 0, 0, W, H);
+      const img = t.el.querySelector("img");
+      img.src = grade.toDataURL("image/png");
+      img.classList.add("on");
+      sc.remove(n);
+    } catch (e) {
+      t.el.classList.add("noart");
+    }
+  }
+  pmrem.dispose();
+  })();
+
+  /* ── 좌우 이동 ── */
+  const prev = document.getElementById("rprev"), next = document.getElementById("rnext");
+  const step = () => (track.querySelector(".tile")?.offsetWidth || 264) + 16;
+  function edges() {
+    const max = track.scrollWidth - track.clientWidth - 2;
+    prev.disabled = track.scrollLeft <= 2;
+    next.disabled = track.scrollLeft >= max;
+  }
+  prev.onclick = () => track.scrollBy({ left: -step() * 2, behavior: "smooth" });
+  next.onclick = () => track.scrollBy({ left: step() * 2, behavior: "smooth" });
+  track.addEventListener("scroll", edges, { passive: true });
+  addEventListener("resize", edges);
+  edges();
+}
+</script>
+<script type="module">
+import * as THREE from "three";
+
+/* 라이엇 who-we-are 의 닷 글로브 구도를 가져오되, 찍는 건 오피스가 아니라
+   에셋이 만들어지는 곳과 팔리는 곳이다. 둘을 호(arc)로 이어 중개라는 걸 눈에 보이게 한다. */
+const CITIES = [
+  ["서울",        37.57,  126.98, "maker"],
+  ["바르샤바",     52.23,   21.01, "maker"],
+  ["방갈로르",     12.97,   77.59, "maker"],
+  ["상파울루",    -23.55,  -46.63, "maker"],
+  ["마닐라",      14.60,  120.98, "maker"],
+  ["키이우",      50.45,   30.52, "maker"],
+  ["로스앤젤레스", 34.05, -118.24, "studio"],
+  ["도쿄",        35.68,  139.69, "studio"],
+  ["헬싱키",      60.17,   24.94, "studio"],
+  ["몬트리올",    45.50,  -73.57, "studio"],
+];
+
+const cv = document.getElementById("gcv");
+if (cv) {
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const R = 1;
+  const toVec = (lat, lon, r = R) => {
+    const p = (90 - lat) * Math.PI / 180, t = (lon + 180) * Math.PI / 180;
+    return new THREE.Vector3(-r * Math.sin(p) * Math.cos(t), r * Math.cos(p), r * Math.sin(p) * Math.sin(t));
+  };
+
+  const r = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
+  r.setPixelRatio(Math.min(devicePixelRatio, 2));
+  const scene = new THREE.Scene();
+  const cam = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
+  cam.position.set(0, 0.35, 3.55);
+  cam.lookAt(0, 0, 0);
+
+  const world = new THREE.Group();
+  scene.add(world);
+
+  /* ── 대륙 윤곽 ──
+     지도 이미지를 받아올 수 없어 육지 경계를 좌표로 넣었다. 간략화한 외곽선이라
+     국경은 없고 대륙 모양만 남는다. 점은 이 안쪽에만 찍힌다. */
+  const LAND = [
+    /* 북아메리카 */
+    [[-168,65],[-140,70],[-120,72],[-95,74],[-80,73],[-62,60],[-55,50],[-66,45],[-70,42],
+     [-76,35],[-81,25],[-97,26],[-105,20],[-115,30],[-125,40],[-130,55],[-150,60],[-168,65]],
+    /* 남아메리카 */
+    [[-81,10],[-60,12],[-50,0],[-35,-5],[-38,-15],[-48,-25],[-58,-35],[-65,-45],[-72,-52],
+     [-75,-45],[-71,-30],[-70,-18],[-78,-5],[-81,10]],
+    /* 유라시아 */
+    [[-10,36],[0,44],[3,50],[-5,58],[5,62],[20,70],[30,70],[60,72],[90,75],[130,73],
+     [160,68],[180,65],[180,58],[140,48],[130,40],[122,30],[110,20],[100,10],[95,5],
+     [80,8],[72,20],[60,25],[48,30],[35,32],[28,36],[10,37],[-10,36]],
+    /* 아프리카 */
+    [[-17,15],[-10,28],[10,33],[25,32],[35,30],[43,12],[51,12],[48,0],[40,-15],[35,-25],
+     [25,-34],[18,-34],[12,-18],[8,4],[-8,5],[-17,15]],
+    /* 오세아니아 */
+    [[113,-22],[130,-12],[142,-11],[150,-22],[153,-28],[148,-38],[140,-38],[130,-32],[118,-35],[113,-22]],
+    /* 그린란드 */
+    [[-45,60],[-20,70],[-20,82],[-40,84],[-60,80],[-55,68],[-45,60]],
+    /* 일본 */
+    [[130,31],[141,41],[145,44],[141,35],[136,34],[130,31]],
+    /* 뉴질랜드 */
+    [[166,-46],[174,-41],[178,-37],[173,-34],[168,-44],[166,-46]],
+    /* 마다가스카르 */
+    [[43,-25],[50,-16],[49,-12],[44,-16],[43,-25]],
+    /* 영국 */
+    [[-6,50],[-2,53],[-3,58],[-6,58],[-8,54],[-6,50]],
+  ];
+  const inPoly = (lon, lat, poly) => {
+    let hit = false;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const [xi, yi] = poly[i], [xj, yj] = poly[j];
+      if ((yi > lat) !== (yj > lat) && lon < (xj - xi) * (lat - yi) / (yj - yi) + xi) hit = !hit;
+    }
+    return hit;
+  };
+  const isLand = (lon, lat) =>
+    lat < -63 || LAND.some(p => inPoly(lon, lat, p));   /* 남극은 위도 띠로 */
+
+  /* 배경이 밝은지 어두운지 읽어서 점과 안쪽 구의 색을 맞춘다 */
+  const bg = getComputedStyle(document.querySelector(".globe")).backgroundColor;
+  const rgbv = (bg.match(/\d+/g) || [11, 11, 16]).map(Number);
+  const lum = (rgbv[0] * .299 + rgbv[1] * .587 + rgbv[2] * .114) / 255;
+  const dark = lum < .5;
+
+  /* 피보나치 배치로 균일하게 뿌리고 육지에 걸린 점만 남긴다 */
+  const N = 9000, pts = [], gold = Math.PI * (3 - Math.sqrt(5));
+  for (let i = 0; i < N; i++) {
+    const y = 1 - (i / (N - 1)) * 2, rad = Math.sqrt(Math.max(0, 1 - y * y)), th = gold * i;
+    const x = Math.cos(th) * rad, z = Math.sin(th) * rad;
+    const lat = Math.asin(y) * 180 / Math.PI;
+    const lon = Math.atan2(z, -x) * 180 / Math.PI;
+    if (isLand(lon, lat)) pts.push(x, y, z);
+  }
+  const pos = new Float32Array(pts);
+  const dots = new THREE.BufferGeometry();
+  dots.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+  world.add(new THREE.Points(dots, new THREE.PointsMaterial({
+    size: 0.016, color: dark ? 0x8FA6D6 : 0x5383E8,
+    transparent: true, opacity: .92, sizeAttenuation: true })));
+
+  /* 바다는 면으로 둔다 — 점이 뒤쪽까지 비쳐 보이면 대륙이 안 읽힌다 */
+  world.add(new THREE.Mesh(
+    new THREE.SphereGeometry(R * 0.985, 48, 32),
+    new THREE.MeshBasicMaterial({ color: dark ? 0x14161D : 0xE9ECF1 })));
+
+  /* 도시 표식 */
+  const marks = CITIES.map(([name, lat, lon, role]) => {
+    const v = toVec(lat, lon, R * 1.012);
+    const m = new THREE.Mesh(
+      new THREE.SphereGeometry(0.028, 12, 10),
+      new THREE.MeshBasicMaterial({ color: role === "maker" ? 0x5383e8 : 0xf0b457 }));
+    m.position.copy(v);
+    world.add(m);
+    return { name, role, v, m };
+  });
+
+  /* 창작자 → 스튜디오 호 */
+  const makers = marks.filter(m => m.role === "maker"), studios = marks.filter(m => m.role === "studio");
+  makers.forEach((a, i) => {
+    const b = studios[i % studios.length];
+    const mid = a.v.clone().add(b.v).multiplyScalar(0.5).normalize()
+      .multiplyScalar(R * (1.18 + a.v.distanceTo(b.v) * 0.14));
+    const curve = new THREE.QuadraticBezierCurve3(a.v.clone(), mid, b.v.clone());
+    world.add(new THREE.Line(
+      new THREE.BufferGeometry().setFromPoints(curve.getPoints(48)),
+      new THREE.LineBasicMaterial({ color: 0x5383e8, transparent: true, opacity: .32 })));
+
+    /* 호를 따라 흐르는 점 — 거래가 일어나고 있다는 신호 */
+    const d = new THREE.Mesh(new THREE.SphereGeometry(0.019, 8, 8),
+      new THREE.MeshBasicMaterial({ color: 0x9ec1ff }));
+    world.add(d);
+    a.flow = { curve, dot: d, off: i / makers.length };
+  });
+
+  /* 라벨은 DOM 으로 얹는다 — 캔버스 안에 글자를 그리는 것보다 읽기 좋다 */
+  const pinBox = document.getElementById("gpins");
+  const pins = marks.map(m => {
+    const el = document.createElement("span");
+    el.className = "gpin " + m.role;
+    el.innerHTML = `<i></i>${m.name}`;
+    pinBox.appendChild(el);
+    return (m.pin = el);
+  });
+
+  function size() {
+    const w = cv.clientWidth || 1, h = cv.clientHeight || 1;
+    r.setSize(w, h, false);
+    cam.aspect = w / h; cam.updateProjectionMatrix();
+  }
+
+  let t = 0, live = true;
+  new IntersectionObserver(e => { live = e[0].isIntersecting; }, { threshold: 0 }).observe(cv);
+
+  /* 끌어서 돌리기 — 놓으면 관성으로 조금 더 돌다가 자동 회전으로 돌아간다 */
+  let drag = null, spin = 0, tilt = 0.35;
+  cv.style.cursor = "grab";
+  cv.style.touchAction = "pan-y";
+  cv.addEventListener("pointerdown", e => {
+    drag = { x: e.clientX, y: e.clientY };
+    spin = 0;
+    cv.setPointerCapture(e.pointerId);
+    cv.style.cursor = "grabbing";
+  });
+  cv.addEventListener("pointermove", e => {
+    if (!drag) return;
+    const dx = (e.clientX - drag.x) / 190, dy = (e.clientY - drag.y) / 260;
+    t += dx;
+    spin = dx;
+    tilt = Math.max(-0.85, Math.min(0.85, tilt + dy));
+    drag = { x: e.clientX, y: e.clientY };
+  });
+  const release = e => {
+    if (!drag) return;
+    drag = null;
+    cv.style.cursor = "grab";
+    try { cv.releasePointerCapture(e.pointerId); } catch (_) {}
+  };
+  cv.addEventListener("pointerup", release);
+  cv.addEventListener("pointercancel", release);
+
+  const v3 = new THREE.Vector3();
+  function frame() {
+    requestAnimationFrame(frame);
+    if (!live) return;
+    size();
+    if (drag) {
+      /* 끄는 동안엔 사용자가 준 각도만 쓴다 */
+    } else if (Math.abs(spin) > 0.0002) {
+      t += spin;
+      spin *= 0.94;                       /* 관성 감쇠 */
+    } else if (!reduce) {
+      t += 0.0022;                        /* 평소엔 알아서 돈다 */
+    }
+    world.rotation.y = t - 1.1;
+    world.rotation.x = tilt * 0.55;
+
+    marks.forEach(m => {
+      if (m.flow) {
+        const u = (t * 0.35 + m.flow.off) % 1;
+        m.flow.dot.position.copy(m.flow.curve.getPoint(u));
+      }
+      /* 지구 뒤로 돌아간 도시는 라벨을 숨긴다 */
+      v3.copy(m.v).applyMatrix4(world.matrixWorld);
+      /* 구 중심이 원점이라, 점 방향과 카메라 방향의 내적만 보면 앞뒤가 갈린다 */
+      const front = v3.clone().normalize().dot(cam.position.clone().normalize()) > 0.12;
+      v3.project(cam);
+      m.pin.style.left = (v3.x * 0.5 + 0.5) * 100 + "%";
+      m.pin.style.top = (-v3.y * 0.5 + 0.5) * 100 + "%";
+      m.pin.style.opacity = front ? "1" : "0";
+    });
+    r.render(scene, cam);
+  }
+  size();
+  frame();
+
+  /* 숫자는 화면에 들어올 때 올라간다 */
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    io.unobserve(e.target);
+    const end = +e.target.dataset.count;
+    if (reduce) { e.target.textContent = end; return; }
+    let t0 = null;
+    const step = ts => {
+      if (t0 === null) t0 = ts;
+      const p = Math.min((ts - t0) / 1100, 1);
+      e.target.textContent = Math.round(end * (1 - Math.pow(1 - p, 4)));
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }), { threshold: .4 });
+  document.querySelectorAll(".gstats b[data-count]").forEach(b => io.observe(b));
+}
+</script>
+<script type="module">
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+/* 검수 일곱 항목을 계단식으로 놓고, 각 항목이 실제로 보는 게 뭔지 3D 로 그린다.
+   가중치는 crates/api/src/domain.rs 의 값과 같다. */
+const CHECKS = [
+  ["재료 출처 확인",       22, "gothic_statue",         "tex",
+   "남의 재료가 섞이지 않았는지 확인하고 목록을 만듭니다.", "60점 미만이면 다른 점수와 무관하게 실버"],
+  ["실행 성능 영향",       18, "lantern_chandelier_01", "flat",
+   "실제로 돌려 보고 프레임에 얼마나 부담을 주는지 잽니다.", "드로우콜 · 셰이더 · 텍스처 메모리"],
+  ["면 구성 상태",         15, "kite_shield",           "retopo",
+   "면이 깔끔하게 짜였는지 봅니다. 여기가 무너지면 뒤가 다 무너집니다.", "사각면 비율 · 겹친 면 · 뒤집힌 면"],
+  ["텍스처 적용",          13, "brass_candleholders",   "tex",
+   "텍스처가 제대로 입혀지는지, 해상도가 과한지 봅니다.", "UV 겹침 · 아틀라스 · 해상도 낭비"],
+  ["거리별 단계 처리",     12, "barrel_03",             "lod",
+   "멀리 있을 때 가볍게 바뀌는지 봅니다.", "LOD 단계 수 · 실루엣 유지"],
+  ["프로젝트 통합 난이도", 12, "horse_statue_01",       "flat",
+   "내 게임에 붙이는 데 몇 분 걸리는지 잽니다.", "의존성 · 프리팹 구조 · 설정 값"],
+  ["코드 품질",             8, "cross_pein_hammer",     "wire",
+   "같이 들어오는 스크립트의 결합도와 테스트를 봅니다.", "결합도 · 네임스페이스 · 테스트"],
+];
+
+const box = document.getElementById("stairs");
+if (box) {
+  box.innerHTML = CHECKS.map(([name, w, model, stage, desc, tail], i) => `
+    <div class="step2" data-model="${model}" data-stage="${stage}">
+      <figure class="sfig"><span class="ph">렌더 중…</span><span class="w">${w}%</span></figure>
+      <div class="sbody">
+        <span class="no">${String(i + 1).padStart(2, "0")}<i></i></span>
+        <h3>${name}</h3>
+        <p>${desc}</p>
+        <span class="arrow"><b>${tail}</b></span>
+      </div>
+    </div>`).join("");
+
+  /* 스크롤로 들어오면 순서대로 켠다 */
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add("on");
+    io.unobserve(e.target);
+  }), { rootMargin: "0px 0px -18% 0px", threshold: .25 });
+  box.querySelectorAll(".step2").forEach(el => io.observe(el));
+
+  /* 커버 굽기 — 레일 썸네일과 같은 방식이되 단계별 표현을 입힌다 */
+  (async () => {
+    const PHP = m => `./assets/ph/${m}/${m}_1k.gltf`;
+    const loader = new GLTFLoader();
+    const W = 640, H = 480;
+    const r = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+    r.setSize(W, H);
+    r.setPixelRatio(Math.min(devicePixelRatio, 2));
+    r.outputColorSpace = THREE.SRGBColorSpace;
+    r.toneMapping = THREE.ACESFilmicToneMapping;
+    r.toneMappingExposure = 1.35;
+
+    const scene = new THREE.Scene();
+    scene.add(new THREE.HemisphereLight(0xcfe0ff, 0x1b1c22, 2.0));
+    const key = new THREE.DirectionalLight(0xfff2e0, 2.8); key.position.set(2.6, 4.2, 3.2);
+    const rim = new THREE.DirectionalLight(0x5383e8, 2.1); rim.position.set(-3.0, 1.2, -2.6);
+    scene.add(key, rim);
+    const cam = new THREE.PerspectiveCamera(27, W / H, 0.1, 60);
+    cam.position.set(1.8, 1.35, 2.35); cam.lookAt(0, 0, 0);
+
+    const dress = (g, stage) => {
+      const add = [];
+      g.traverse(m => {
+        if (!m.isMesh) return;
+        if (stage === "wire") m.material = new THREE.MeshBasicMaterial({ color: 0x5383e8, wireframe: true });
+        else if (stage === "flat") m.material = new THREE.MeshStandardMaterial({ color: 0xb9c0cc, roughness: .55, metalness: .1, flatShading: true });
+        else if (stage === "retopo") {
+          m.material = new THREE.MeshStandardMaterial({ color: 0x2b3140, roughness: .82 });
+          const w = new THREE.Mesh(m.geometry, new THREE.MeshBasicMaterial({ color: 0x59d3a8, wireframe: true }));
+          w.position.copy(m.position); w.rotation.copy(m.rotation);
+          w.scale.copy(m.scale).multiplyScalar(1.002);
+          add.push([m.parent, w]);
+        }
+      });
+      add.forEach(([p, w]) => p.add(w));
+    };
+
+    for (const el of box.querySelectorAll(".step2")) {
+      const fig = el.querySelector(".sfig");
+      try {
+        const gltf = await new Promise((ok, no) => loader.load(PHP(el.dataset.model), ok, undefined, no));
+        const obj = gltf.scene;
+        const bb = new THREE.Box3().setFromObject(obj);
+        const sz = new THREE.Vector3(), ct = new THREE.Vector3();
+        bb.getSize(sz); bb.getCenter(ct);
+        obj.position.set(-ct.x, -ct.y, -ct.z);
+
+        let node;
+        if (el.dataset.stage === "lod") {
+          node = new THREE.Group();
+          [[-.95, 1], [0, .72], [.92, .48]].forEach(([x, sc]) => {
+            const c = obj.clone(true);
+            const g = new THREE.Group(); g.add(c);
+            g.scale.setScalar((1.5 / Math.max(sz.x, sz.y, sz.z, 1e-6)) * sc);
+            g.position.set(x, -.12, 0); g.rotation.y = -.6;
+            node.add(g);
+          });
+          cam.position.set(0, .95, 3.4); cam.lookAt(0, -.1, 0);
+        } else {
+          dress(obj, el.dataset.stage);
+          node = new THREE.Group(); node.add(obj);
+          node.scale.setScalar(1.45 / Math.max(sz.x, sz.y, sz.z, 1e-6));
+          node.rotation.y = -.62;
+          cam.position.set(1.8, 1.35, 2.35); cam.lookAt(0, 0, 0);
+        }
+        scene.add(node);
+        r.render(scene, cam);
+        const img = new Image(); img.alt = "";
+        img.src = r.domElement.toDataURL("image/png");
+        fig.querySelector(".ph")?.remove();
+        fig.prepend(img);
+        scene.remove(node);
+      } catch (e) {
+        const ph = fig.querySelector(".ph");
+        if (ph) ph.textContent = "";
+      }
+    }
+    r.dispose();
+    r.forceContextLoss();
+  })();
+}
+</script>
+<script>
+(function () {
+  /* 둘레 2πr = 326.7. 통과 38.8% 만 채우고 나머지는 트랙으로 남긴다. */
+  var d = document.getElementById("donut");
+  if (!d) return;
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) { d.classList.add("on"); return; }
+  var io = new IntersectionObserver(function (es) {
+    if (!es[0].isIntersecting) return;
+    io.disconnect();
+    d.classList.add("on");
+  }, { threshold: .35 });
+  io.observe(d);
+})();
+</script>
+<script>
+(function () {
+  /* 카드가 포인터 쪽으로 기울고, 엠블럼은 그보다 더 앞으로 나온다.
+     --gx/--gy 는 -1~1 로 정규화한 포인터 위치다. */
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  document.querySelectorAll(".tcard").forEach(function (card) {
+    function to(x, y) {
+      var r = card.getBoundingClientRect();
+      var gx = (x - r.left) / r.width * 2 - 1;
+      var gy = (y - r.top) / r.height * 2 - 1;
+      card.style.setProperty("--gx", gx.toFixed(3));
+      card.style.setProperty("--gy", gy.toFixed(3));
+      card.style.transform =
+        "rotateY(" + (gx * 7).toFixed(2) + "deg) rotateX(" + (-gy * 7).toFixed(2) + "deg) translateY(-6px)";
+    }
+    card.addEventListener("pointermove", function (e) { to(e.clientX, e.clientY); });
+    card.addEventListener("focus", function () {
+      var r = card.getBoundingClientRect();
+      to(r.left + r.width / 2, r.top + r.height / 2);
+    });
+    function reset() {
+      card.style.setProperty("--gx", 0);
+      card.style.setProperty("--gy", 0);
+      card.style.transform = "";
+    }
+    card.addEventListener("pointerleave", reset);
+    card.addEventListener("blur", reset);
+  });
+})();
+</script>
