@@ -108,20 +108,16 @@ export function Donut({ percent, label, sub }: { percent: number; label: string;
         <p className="num text-4xl leading-none text-ink">
           22<span className="text-base text-muted">%</span>
         </p>
-        <p className="mt-2 text-xs font-bold text-ink">가장 무거운 항목</p>
-        <p className="mt-1 text-xs text-faint">
-          라이선스 출처. 다른 여섯은 고칠 수 있고 이것만 못 고칩니다.
-        </p>
+        <p className="mt-2 text-xs font-bold text-ink">최고 가중치 항목</p>
+        <p className="mt-1 text-xs text-faint">라이선스 출처, 60점 미만 단독 탈락</p>
       </div>
 
       <div>
         <p className="num text-4xl leading-none text-ink">
           11<span className="text-base text-muted">종</span>
         </p>
-        <p className="mt-2 text-xs font-bold text-ink">걸러진 뒤 할 일</p>
-        <p className="mt-1 text-xs text-faint">
-          통과한 에셋은 게임 컨셉에 맞춰 변환해 내려받습니다.
-        </p>
+        <p className="mt-2 text-xs font-bold text-ink">변환 컨셉</p>
+        <p className="mt-1 text-xs text-faint">통과 에셋에 적용 가능, 팔레트 9종 별도</p>
       </div>
     </div>
   );

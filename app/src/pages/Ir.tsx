@@ -71,7 +71,7 @@ export function Ir() {
         <Donut
           percent={38.8}
           label="퀄리티 검증률"
-          sub="7항목을 모두 통과한 비율. 나머지는 마켓에 오르지 않습니다."
+          sub="7항목 가중 합산 70점 이상"
         />
       </Section>
 
