@@ -149,9 +149,6 @@ export function CheckWeights({ items }: { items: [string, number, string][] }) {
         ))}
       </dl>
 
-      <p className="mt-5 rounded-lg border border-accent bg-accent-soft px-4 py-3 text-xs text-ink">
-        라이선스 출처 <b className="num text-base">60</b> 미만이면 다른 점수와 무관하게 탈락합니다.
-      </p>
     </div>
   );
 }

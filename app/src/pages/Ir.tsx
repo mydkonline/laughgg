@@ -5,7 +5,7 @@ import { PIECES } from "../data/pieces";
 import { Sprite } from "../three/Sprite";
 import { CONCEPTS } from "../data/concepts";
 import { Donut, CheckWeights, AssetRail, ConceptGrid, CompareBars, useCountUp } from "../components/Infographic";
-import { Globe, CITIES } from "../components/Globe";
+import { Globe } from "../components/Globe";
 
 /* IR — 얼마나 큰 시장이고, 누가 쓰고, 어떻게 버는가.
    인용값과 우리 가정을 절대 같은 줄에 놓지 않는다. 섞이면 자료가 아니다. */
@@ -24,24 +24,23 @@ export function Ir() {
 
   return (
     <main className="mx-auto max-w-[1240px] px-5 pb-24">
-      <header className="py-10">
-        <p className="text-xs tracking-wide text-accent">IR</p>
+      <header className="grid gap-x-10 gap-y-6 py-12 lg:grid-cols-[184px_minmax(0,1fr)]">
+        <p className="num text-xs text-faint lg:pt-1">IR</p>
+        <div>
         {/* IR 은 정적 문서다. 무엇을 하는 회사인지 사실만 적는다. */}
-        <h1 className="mt-1 text-4xl leading-[1.2] font-bold text-ink">
+        <h1 className="text-4xl leading-[1.2] font-bold text-ink">
           게임 에셋 검증 및 컨셉 정합 플랫폼
         </h1>
-        <ol className="mt-5 flex list-none flex-wrap items-center gap-x-3 gap-y-2 p-0 text-xs">
+        <ol className="mt-5 grid list-none gap-x-10 gap-y-4 p-0 sm:grid-cols-3">
           {[
             ["창작자", "에셋 등록"],
             ["플랫폼", "정적 분석 7항목, 배지 부여"],
             ["게임사", "구독 접근, 에디터로 컨셉 변환"],
           ].map(([who, what], i) => (
-            <li key={who} className="flex items-center gap-3">
-              {i > 0 && <span className="text-faint">→</span>}
-              <span className="rounded-lg border border-line bg-surface px-3 py-2">
-                <b className="text-ink">{who}</b>
-                <span className="ml-2 text-faint">{what}</span>
-              </span>
+            <li key={who}>
+              <span className="num text-xs text-faint">{String(i + 1).padStart(2, "0")}</span>
+              <p className="mt-1 text-xs font-bold text-ink">{who}</p>
+              <p className="mt-0.5 text-xs text-faint">{what}</p>
             </li>
           ))}
         </ol>
@@ -51,9 +50,10 @@ export function Ir() {
           <IrStat k="창작자 정산" v="92%" />
           <IrStat k="기준일" v="2026년 7월" />
         </dl>
+        </div>
       </header>
 
-      <div className="pb-10">
+      <div className="pb-12">
         <AssetRail />
       </div>
 
@@ -67,9 +67,9 @@ export function Ir() {
       </Section>
 
       <Section n="02" title="시장">
-        <div className="grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-3">
+        <div className="grid gap-x-10 gap-y-6 sm:grid-cols-3">
           {MARKET.map((f) => (
-            <div key={f.label} className="bg-surface p-6">
+            <div key={f.label}>
               <p className="text-xs text-faint">{f.label}</p>
               <p className="num mt-4 text-4xl leading-none text-ink">
                 {f.value}
@@ -82,11 +82,11 @@ export function Ir() {
         <p className="mt-3 text-xs text-faint">출처 {MARKET_SOURCE}</p>
       </Section>
 
-      <Section n="03" title="정적 분석" lead="라이선스 출처 60 미만은 무조건 탈락">
+      <Section n="03" title="정적 분석" lead="라이선스 60 미만 탈락">
         <CheckWeights items={CHECK_WEIGHTS} />
       </Section>
 
-      <Section n="04" title="에디터" lead="같은 에셋을 컨셉별로 변환한 결과">
+      <Section n="04" title="에디터" lead="컨셉별 변환 결과">
         <ConceptGrid ids={["real", "dark", "high", "toon"]} />
         <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {["gb", "pico", "one", "sepia"].map((id) => {
@@ -110,7 +110,7 @@ export function Ir() {
       <Section n="05" title="수요">
         {/* 추정치는 한 줄로 접어 두고 실제로 쓴 사람의 말을 본문에 세운다.
             숫자는 시장이 있다는 말이고, 리뷰는 그 시장이 이걸 쓴다는 말이다. */}
-        <div className="mb-4 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-3">
+        <div className="mb-4 grid gap-x-10 gap-y-6 sm:grid-cols-3">
           {AI_DEV.map((f) => (
             <CountStat key={f.label} label={f.label} value={f.value} unit={f.unit ?? ""} note={f.note} />
           ))}
@@ -145,12 +145,12 @@ export function Ir() {
             <figure
               key={r.initials + r.role}
               style={{ animationDelay: `${i * 45}ms` }}
-              className="m-0 flex animate-[fade_.4s_both] flex-col rounded-2xl border border-line bg-surface p-5 transition-colors hover:border-accent"
+              className="m-0 flex animate-[fade_.4s_both] flex-col border-t border-line pt-4"
             >
               <blockquote className="m-0 flex-1 text-xs leading-relaxed text-muted">{r.body}</blockquote>
-              <figcaption className="mt-4 flex items-center gap-3 border-t border-line pt-4">
+              <figcaption className="mt-3 flex items-center gap-3">
                 {/* 사진을 안 쓴다. 실명과 얼굴은 본인이 직접 줘야 하는 것이다. */}
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-accent-soft text-xs font-bold text-accent">
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-accent-soft text-xs font-bold text-accent">
                   {r.initials}
                 </span>
                 <span className="min-w-0">
@@ -160,7 +160,7 @@ export function Ir() {
                   </span>
                 </span>
               </figcaption>
-              <p className="mt-3 w-fit rounded border border-line px-2 py-1 text-xs text-faint">{r.used}</p>
+              <p className="mt-2 text-xs text-faint">{r.used}</p>
             </figure>
           ))}
         </div>
@@ -176,9 +176,9 @@ export function Ir() {
         <RevenueFunnel />
 
         {/* 가정을 가로 한 줄로 눕힌다. 두 칸으로 나누면 왼쪽이 반쯤 빈다. */}
-        <dl className="mb-3 grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-3 lg:grid-cols-5">
+        <dl className="mb-8 grid gap-x-8 gap-y-5 border-b border-line pb-6 sm:grid-cols-3 lg:grid-cols-5">
           {MODEL.assumptions.map(([k, v, unit]) => (
-            <div key={k} className="bg-surface px-4 py-3.5">
+            <div key={k}>
               <dt className="text-xs text-faint">{k}</dt>
               <dd className="num m-0 text-2xl text-ink">
                 {v}
@@ -188,7 +188,7 @@ export function Ir() {
           ))}
         </dl>
 
-        <div className="rounded-xl border border-line bg-surface p-5">
+        <div>
           <Curve />
           <dl className="mt-5 grid grid-cols-2 gap-4 border-t border-line pt-4 sm:grid-cols-4">
             {MODEL.milestones.map(([k, v]) => (
@@ -201,30 +201,12 @@ export function Ir() {
         </div>
       </Section>
 
-      <Section n="07" title="공급 지역" lead="어디서 올라오든 같은 기준으로 채점합니다">
-        <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)]">
-          <Globe className="aspect-square w-full" />
-          <dl className="grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-3">
-            <div className="bg-surface p-5">
-              <dt className="text-xs text-faint">창작자 국가</dt>
-              <dd className="num m-0 text-4xl text-ink">{CITIES.filter((c) => c[3] === "maker").length}</dd>
-            </div>
-            <div className="bg-surface p-5">
-              <dt className="text-xs text-faint">게임사 국가</dt>
-              <dd className="num m-0 text-4xl text-ink">{CITIES.filter((c) => c[3] === "studio").length}</dd>
-            </div>
-            <div className="bg-surface p-5">
-              <dt className="text-xs text-faint">적용 기준</dt>
-              <dd className="num m-0 text-4xl text-accent">1</dd>
-              <dd className="m-0 text-xs text-faint">국가와 무관하게 동일</dd>
-            </div>
-          </dl>
-        </div>
-        <p className="mt-3 text-xs text-faint">끌어서 돌려 보세요. 표시된 도시는 서비스 구상 단계의 목표 지역입니다.</p>
+      <Section n="07" title="공급 지역">
+        <Globe className="mx-auto aspect-square w-full max-w-[520px]" />
       </Section>
 
-      <Section n="08" title="수수료" lead="배지와 무관한 단일 요율">
-        <div className="rounded-2xl border border-line bg-surface p-6">
+      <Section n="08" title="수수료" lead="배지와 무관">
+        <div>
           <CompareBars
             rows={[
               ["LaughGG", 8],
@@ -276,7 +258,7 @@ function RevenueFunnel() {
   const w = (v: number) => Math.max(8, (Math.log10(v) / Math.log10(top)) * 100);
 
   return (
-    <div ref={box} className="mb-3 rounded-xl border border-line bg-surface p-5">
+    <div ref={box} className="mb-8">
       <div className="flex flex-col gap-3.5">
         {REVENUE_FUNNEL.map((s) => (
           <div key={s.label}>
@@ -375,16 +357,17 @@ function Section({ n, title, lead, children }: { n: string; title: string; lead?
     <section
       ref={ref}
       className={[
-        "border-t border-line pt-8 pb-14 transition-all duration-700",
+        "grid gap-x-10 gap-y-4 border-t border-line pt-8 pb-16 transition-all duration-700",
+        "lg:grid-cols-[184px_minmax(0,1fr)]",
         on ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0",
       ].join(" ")}
     >
-      <div className="mb-6 flex flex-wrap items-baseline gap-x-4 gap-y-1">
-        <span className="text-xs tabular-nums text-faint">{n}</span>
-        <h2 className="text-2xl font-bold text-ink">{title}</h2>
-        {lead && <p className="text-xs text-muted">{lead}</p>}
+      <div className="lg:sticky lg:top-[120px] lg:self-start">
+        <span className="num block text-xs text-faint">{n}</span>
+        <h2 className="mt-1 text-2xl leading-snug font-bold text-ink">{title}</h2>
+        {lead && <p className="mt-2 truncate text-xs text-muted" title={lead}>{lead}</p>}
       </div>
-      {children}
+      <div className="min-w-0">{children}</div>
     </section>
   );
 }

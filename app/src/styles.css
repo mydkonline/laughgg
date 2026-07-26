@@ -40,9 +40,9 @@
   --text-2xl: 24px;
   --text-4xl: 32px;
   --text-6xl: 48px;
-  /* 네비만 예외다 — 상단 10pt, 서브 12pt */
-  --text-nav: 10pt;
-  --text-navsub: 12pt;
+  /* 네비만 예외다. 크롬은 최대한 작게 두고 본문에 자리를 내준다. */
+  --text-nav: 8pt;
+  --text-navsub: 9pt;
 
   --font-sans: Roboto, system-ui, -apple-system, "Apple SD Gothic Neo", Pretendard, sans-serif;
   --font-mono: ui-monospace, Menlo, monospace;

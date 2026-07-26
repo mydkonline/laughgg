@@ -33,6 +33,30 @@ export const CITIES: [string, number, number, "maker" | "studio"][] = [
 
 const RAD = Math.PI / 180;
 
+/** 점이 다각형 안에 있는가. 격자를 육지에만 남기려고 쓴다. */
+function inPoly(lon: number, lat: number, poly: [number, number][]): boolean {
+  let hit = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const [xi, yi] = poly[i]!;
+    const [xj, yj] = poly[j]!;
+    if (yi > lat !== yj > lat && lon < ((xj - xi) * (lat - yi)) / (yj - yi) + xi) hit = !hit;
+  }
+  return hit;
+}
+
+/* 육지 점은 한 번만 만든다. 매 프레임 다각형 검사를 돌리면 프레임이 떨어진다. */
+const LAND_DOTS: [number, number][] = (() => {
+  const dots: [number, number][] = [];
+  for (let lat = -78; lat <= 84; lat += 3) {
+    /* 위도가 높을수록 경도 간격을 벌린다. 안 그러면 극지방에 점이 뭉친다. */
+    const step = 3 / Math.max(0.22, Math.cos(lat * RAD));
+    for (let lon = -180; lon <= 180; lon += step) {
+      if (LAND.some((poly) => inPoly(lon, lat, poly))) dots.push([lon, lat]);
+    }
+  }
+  return dots;
+})();
+
 export function Globe({ className }: { className?: string }) {
   const ref = useRef<HTMLCanvasElement>(null);
 
@@ -82,14 +106,21 @@ export function Globe({ className }: { className?: string }) {
       const cy = h / 2;
       const r = Math.min(w, h) / 2 - 8;
 
-      ctx.strokeStyle = color("--line");
-      ctx.lineWidth = 1;
+      /* 바다. 아주 옅게 깔아야 육지 점이 떠 보인다. */
+      const sea = ctx.createRadialGradient(cx - r * 0.3, cy - r * 0.3, r * 0.1, cx, cy, r);
+      sea.addColorStop(0, color("--surface-2"));
+      sea.addColorStop(1, color("--ground"));
+      ctx.fillStyle = sea;
       ctx.beginPath();
       ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = color("--line");
+      ctx.lineWidth = 1;
       ctx.stroke();
 
       /* 위도선. 구라는 걸 알려 주는 최소한의 단서다. */
-      ctx.globalAlpha = 0.35;
+      ctx.globalAlpha = 0.22;
       for (let lat = -60; lat <= 60; lat += 30) {
         ctx.beginPath();
         let started = false;
@@ -109,23 +140,17 @@ export function Globe({ className }: { className?: string }) {
       }
       ctx.globalAlpha = 1;
 
-      /* 대륙은 점으로 찍는다. 면으로 칠하면 지도가 되고, 점이면 신호가 된다. */
+      /* 육지는 점 격자로 찍는다. 면으로 칠하면 지도가 되고, 점이면 신호가 된다.
+         뒤쪽 점은 흐리게 남겨 구라는 게 드러나게 한다. */
       ctx.fillStyle = color("--faint");
-      for (const poly of LAND) {
-        for (let i = 0; i < poly.length - 1; i++) {
-          const [lon1, lat1] = poly[i]!;
-          const [lon2, lat2] = poly[i + 1]!;
-          const steps = 14;
-          for (let s = 0; s <= steps; s++) {
-            const u = s / steps;
-            const p = project(lat1 + (lat2 - lat1) * u, lon1 + (lon2 - lon1) * u, cx, cy, r);
-            if (p.z < 0) continue;
-            ctx.globalAlpha = 0.25 + p.z * 0.45;
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, 1.1, 0, Math.PI * 2);
-            ctx.fill();
-          }
-        }
+      const dot = Math.max(1, r / 150);
+      for (const [lon, lat] of LAND_DOTS) {
+        const p = project(lat, lon, cx, cy, r);
+        if (p.z < 0) continue;
+        ctx.globalAlpha = 0.14 + p.z * 0.5;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, dot, 0, Math.PI * 2);
+        ctx.fill();
       }
       ctx.globalAlpha = 1;
 
