@@ -8,6 +8,7 @@ import { Feed } from "./pages/Feed";
 import { Scene } from "./pages/Scene";
 import { News } from "./pages/News";
 import { Articles } from "./pages/Articles";
+import { Viewer } from "./pages/Viewer";
 import { Home } from "./pages/Home";
 import { Ir } from "./pages/Ir";
 import { Stack } from "./pages/Stack";
@@ -34,7 +35,7 @@ export default function App() {
         <Route path="/ir" element={<Ir />} />
         <Route path="/stack" element={<Stack />} />
         <Route path="/scene" element={<Scene />} />
-        <Route path="/viewer" element={<Soon title="AI 3D 뷰어" />} />
+        <Route path="/viewer" element={<Viewer />} />
         <Route path="/vlog" element={<Vlog />} />
         <Route path="/cart" element={<Soon title="장바구니" />} />
         <Route path="/upload" element={<Soon title="에셋 올리기" />} />
