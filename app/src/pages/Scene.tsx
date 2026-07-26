@@ -26,8 +26,8 @@ export function Scene() {
     <main className="mx-auto max-w-[1240px] px-5 pb-20">
       <header className="py-8">
         <p className="text-xs tracking-wide text-accent">AI 에셋</p>
-        <h1 className="mt-1 text-2xl font-bold text-ink">게임별 화풍 적용</h1>
-        <p className="mt-2 text-xs text-muted">같은 에셋을 각 게임의 조명과 색 보정 아래 놓아 봅니다.</p>
+        <h1 className="mt-1 text-2xl font-bold text-ink">에셋 매핑</h1>
+        <p className="mt-2 text-xs text-muted">같은 에셋을 게임별 조명과 색 보정에 대응시킵니다.</p>
         <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-t border-line pt-4">
           <Spec k="비교 게임" v={`${SCENE_GAMES.length}종`} />
           <Spec k="적용 항목" v="조명, 색 보정, 안개, 비네팅" />
