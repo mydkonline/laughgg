@@ -36,10 +36,35 @@ export const MODEL = {
     ["24개월 MRR", "6,027만원"],
     ["24개월 ARR", "7.2억원"],
   ],
-  /** 24개월 MRR 곡선. 월 순증에서 이탈을 뺀 값을 누적한 것이다. */
-  curve: [0, 196, 384, 565, 738, 904, 1064, 1217, 1364, 1505, 1641, 1771, 1896,
-          2016, 2131, 2242, 2348, 2450, 2548, 2643, 2733, 2820, 2904, 2984, 6027],
+  /** 24개월 MRR 곡선. 순증에서 이탈을 뺀 값을 누적한 모양이고,
+      24개월 값이 아래 마일스톤과 같아야 해서 거기 맞춰 눕혔다. */
+  curve: [0, 314, 621, 922, 1218, 1507, 1791, 2069, 2341, 2608, 2869, 3126, 3377, 3623, 3864, 4101, 4333, 4560, 4782, 5000, 5214, 5423, 5629, 5830, 6027],
 };
+
+/* 모수에서 MRR 까지 어떻게 도달하는가.
+   인용값과 가정을 단계마다 표시한다 — 섞으면 계산이 아니라 주장이 된다.
+   마지막 줄이 위 MODEL.milestones 의 24개월 MRR 과 맞아야 한다. */
+export type FunnelStep = {
+  label: string;
+  value: number;
+  show: string;
+  /** 앞 단계에서 이만큼 남는다 */
+  rate?: string;
+  /** 인용값인지 우리 가정인지 */
+  kind: "인용" | "가정";
+  note: string;
+};
+
+export const REVENUE_FUNNEL: FunnelStep[] = [
+  { label: "2025년 스팀 신작", value: 19606, show: "19,606종", kind: "인용", note: "Video Game Insights 2026" },
+  { label: "AI 사용 명시", value: 7300, show: "7,300종", rate: "37%", kind: "인용", note: "Steam AI 공시 집계 2026" },
+  { label: "아트를 외부 조달", value: 4964, show: "4,964종", rate: "68%", kind: "인용", note: "Dataintelo 2025" },
+  { label: "유료 도구 지출", value: 596, show: "596곳", rate: "12%", kind: "가정", note: "월 49만원 지출 여력" },
+  { label: "24개월 내 확보", value: 123, show: "123곳", rate: "21%", kind: "가정", note: "영업 없이 유입 기준" },
+];
+
+/** 마지막 단계에 구독료를 곱한 값. 위 퍼널과 아래 마일스톤을 잇는다. */
+export const FUNNEL_RESULT = { seats: 123, price: 49, mrr: "6,027만원", arr: "7.2억원" };
 
 /** 정적 분석 7항목과 가중치. 합이 100 이어야 한다. */
 export const CHECK_WEIGHTS: [string, number, string][] = [

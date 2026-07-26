@@ -20,8 +20,10 @@ export function useCountUp(target: number, decimals = 0) {
       return;
     }
     let raf = 0;
-    const io = new IntersectionObserver(([e]) => {
-      if (!e?.isIntersecting) return;
+    let started = false;
+    const run = () => {
+      if (started) return;
+      started = true;
       io.disconnect();
       const t0 = performance.now();
       const tick = (t: number) => {
@@ -30,9 +32,13 @@ export function useCountUp(target: number, decimals = 0) {
         if (u < 1) raf = requestAnimationFrame(tick);
       };
       raf = requestAnimationFrame(tick);
-    });
+    };
+    /* 관찰이 안 걸리는 경우가 있다. 그때 숫자가 0 으로 남으면 지표가 아니라 오류로 보인다. */
+    const fallback = setTimeout(run, 900);
+    const io = new IntersectionObserver(([e]) => e?.isIntersecting && run());
     io.observe(el);
     return () => {
+      clearTimeout(fallback);
       io.disconnect();
       cancelAnimationFrame(raf);
     };
@@ -137,7 +143,7 @@ export function CheckWeights({ items }: { items: [string, number, string][] }) {
           <div key={name} className="flex items-baseline gap-3 border-b border-line-soft pb-2">
             <span className="h-2.5 w-2.5 shrink-0 rounded-sm" style={{ background: shade(i) }} />
             <dt className="shrink-0 text-xs font-semibold text-ink">{name}</dt>
-            <dd className="m-0 min-w-0 flex-1 truncate text-xs text-faint">{why}</dd>
+            <dd className="m-0 min-w-0 flex-1 truncate text-[10px] text-faint">{why}</dd>
             <dd className="num m-0 shrink-0 text-base text-ink">{w}</dd>
           </div>
         ))}

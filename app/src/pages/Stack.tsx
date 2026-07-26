@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { GAMES, GAME_CATS, SCALES, engineMark, LOGO_LICENSE, type Game } from "../data/games";
 
-/* 게임 스택 — 실제 출시작이 무엇으로 만들어졌는지.
+/* 에셋 엔진 — 실제 출시작이 무엇으로 만들어졌는지.
    에셋을 사려는 사람이 제일 먼저 확인하는 건 "내 엔진에 붙나"다. */
 
 export function Stack() {
@@ -38,7 +38,7 @@ export function Stack() {
   return (
     <main className="mx-auto max-w-[1240px] px-5 pb-20">
       <header className="py-8">
-        <p className="text-xs tracking-wide text-accent">게임 스택</p>
+        <p className="text-xs tracking-wide text-accent">에셋 엔진</p>
         <h1 className="mt-1 text-2xl font-bold text-ink">게임별 엔진과 제작 도구</h1>
         <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-t border-line pt-4">
           <Stat k="정리한 게임" v={`${GAMES.length}종`} />

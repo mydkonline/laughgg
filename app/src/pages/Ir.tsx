@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { MARKET, MARKET_SOURCE, MODEL, CHECK_WEIGHTS, REVIEWS, AI_DEV, AI_DEV_SOURCE } from "../data/ir";
+import { MARKET, MARKET_SOURCE, MODEL, CHECK_WEIGHTS, REVIEWS, AI_DEV, AI_DEV_SOURCE, REVENUE_FUNNEL, FUNNEL_RESULT } from "../data/ir";
 import { PIECES } from "../data/pieces";
 import { Sprite } from "../three/Sprite";
 import { CONCEPTS } from "../data/concepts";
@@ -29,10 +29,21 @@ export function Ir() {
         <h1 className="mt-1 text-4xl leading-[1.2] font-bold text-ink">
           게임 에셋 검증 및 컨셉 정합 플랫폼
         </h1>
-        <p className="mt-3 max-w-[64ch] text-xs text-muted">
-          창작자가 올린 에셋을 7항목으로 정적 분석해 배지를 부여하고, 게임사가 구독으로 카탈로그에
-          접근합니다. 구매한 에셋은 에디터에서 게임 컨셉에 맞춰 변환해 내려받습니다.
-        </p>
+        <ol className="mt-5 flex list-none flex-wrap items-center gap-x-3 gap-y-2 p-0 text-xs">
+          {[
+            ["창작자", "에셋 등록"],
+            ["플랫폼", "정적 분석 7항목, 배지 부여"],
+            ["게임사", "구독 접근, 에디터로 컨셉 변환"],
+          ].map(([who, what], i) => (
+            <li key={who} className="flex items-center gap-3">
+              {i > 0 && <span className="text-faint">→</span>}
+              <span className="rounded-lg border border-line bg-surface px-3 py-2">
+                <b className="text-ink">{who}</b>
+                <span className="ml-2 text-faint">{what}</span>
+              </span>
+            </li>
+          ))}
+        </ol>
         <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-t border-line pt-4">
           <IrStat k="주 수익원" v="게임사 구독" />
           <IrStat k="거래 수수료" v="8% 단일" />
@@ -160,35 +171,32 @@ export function Ir() {
         </p>
       </Section>
 
-      <Section n="06" title="수익 모델" lead="">
-        <div className="grid gap-4 lg:grid-cols-2">
-          <div className="rounded-xl border border-line bg-surface p-5">
-            <p className="mb-4 text-base font-bold text-ink">가정</p>
-            <dl className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
-              {MODEL.assumptions.map(([k, v, unit]) => (
-                <div key={k}>
-                  <dt className="text-xs text-faint">{k}</dt>
-                  <dd className="num m-0 text-2xl text-ink">
-                    {v}
-                    <span className="ml-1 text-xs font-normal text-faint">{unit}</span>
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </div>
+      <Section n="06" title="수익 모델">
+        <RevenueFunnel />
 
-          <div className="rounded-xl border border-line bg-surface p-5">
-            <p className="mb-4 text-base font-bold text-ink">결과</p>
-            <Curve />
-            <dl className="mt-4 grid grid-cols-2 gap-4 border-t border-line pt-4">
-              {MODEL.milestones.map(([k, v]) => (
-                <div key={k}>
-                  <dt className="text-xs text-faint">{k}</dt>
-                  <dd className="num m-0 text-2xl text-ink">{v}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
+        {/* 가정을 가로 한 줄로 눕힌다. 두 칸으로 나누면 왼쪽이 반쯤 빈다. */}
+        <dl className="mb-3 grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-3 lg:grid-cols-5">
+          {MODEL.assumptions.map(([k, v, unit]) => (
+            <div key={k} className="bg-surface px-4 py-3.5">
+              <dt className="text-xs text-faint">{k}</dt>
+              <dd className="num m-0 text-2xl text-ink">
+                {v}
+                <span className="ml-1 text-xs font-normal text-faint">{unit}</span>
+              </dd>
+            </div>
+          ))}
+        </dl>
+
+        <div className="rounded-xl border border-line bg-surface p-5">
+          <Curve />
+          <dl className="mt-5 grid grid-cols-2 gap-4 border-t border-line pt-4 sm:grid-cols-4">
+            {MODEL.milestones.map(([k, v]) => (
+              <div key={k}>
+                <dt className="text-xs text-faint">{k}</dt>
+                <dd className="num m-0 text-2xl text-ink">{v}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </Section>
 
@@ -219,6 +227,68 @@ export function Ir() {
         </Link>
       </div>
     </main>
+  );
+}
+
+/* 모수에서 MRR 까지. 단계마다 몇이 남는지를 막대 폭으로 보여주고,
+   인용값과 가정을 구분해 표시한다 — 섞으면 계산이 아니라 주장이 된다. */
+function RevenueFunnel() {
+  const [on, setOn] = useState(false);
+  const box = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = box.current;
+    if (!el) return;
+    const fallback = setTimeout(() => setOn(true), 900);
+    const io = new IntersectionObserver(([e]) => e?.isIntersecting && setOn(true), { threshold: 0 });
+    io.observe(el);
+    return () => {
+      clearTimeout(fallback);
+      io.disconnect();
+    };
+  }, []);
+
+  const top = REVENUE_FUNNEL[0]?.value ?? 1;
+  /* 19,606 에서 123 으로 떨어지는 구간이라 선형이면 아래 두 칸이 안 보인다. */
+  const w = (v: number) => Math.max(8, (Math.log10(v) / Math.log10(top)) * 100);
+
+  return (
+    <div ref={box} className="mb-3 rounded-xl border border-line bg-surface p-5">
+      <div className="flex flex-col gap-3.5">
+        {REVENUE_FUNNEL.map((s) => (
+          <div key={s.label}>
+            <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+              <span className="text-xs font-semibold text-ink">{s.label}</span>
+              {s.rate && <span className="text-[10px] text-accent">{s.rate}</span>}
+              <span className="text-[10px] text-faint">{s.note}</span>
+              <span
+                className={[
+                  "rounded px-1.5 text-[10px]",
+                  s.kind === "인용" ? "bg-surface-2 text-muted" : "border border-line text-faint",
+                ].join(" ")}
+              >
+                {s.kind}
+              </span>
+              <b className="num ml-auto text-base text-ink">{s.show}</b>
+            </div>
+            <span
+              className="mt-1.5 block h-2.5 rounded-sm bg-chrome-700 transition-[width] duration-700"
+              style={{ width: on ? `${w(s.value)}%` : "0%" }}
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* 마지막 단계에 구독료를 곱하면 아래 마일스톤의 24개월 MRR 이 나온다. */}
+      <div className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1 border-t border-line pt-4">
+        <span className="num text-2xl text-ink">{FUNNEL_RESULT.seats}곳</span>
+        <span className="text-xs text-faint">×</span>
+        <span className="num text-2xl text-ink">{FUNNEL_RESULT.price}만원</span>
+        <span className="text-xs text-faint">=</span>
+        <span className="num text-4xl text-accent">{FUNNEL_RESULT.mrr}</span>
+        <span className="ml-auto text-xs text-faint">연 환산 {FUNNEL_RESULT.arr}</span>
+      </div>
+    </div>
   );
 }
 
@@ -304,10 +374,28 @@ function Curve() {
     .map((v, i) => `${(i / (pts.length - 1)) * 100},${40 - (v / max) * 36}`)
     .join(" ");
 
+  const last = pts.at(-1) ?? 0;
+
   return (
-    <svg viewBox="0 0 100 40" preserveAspectRatio="none" className="h-40 w-full" role="img" aria-label="24개월 MRR 추이">
-      <polyline points={`0,40 ${d} 100,40`} fill="var(--accent-soft)" stroke="none" />
-      <polyline points={d} fill="none" stroke="var(--accent)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
-    </svg>
+    <div className="relative">
+      <svg viewBox="0 0 100 40" preserveAspectRatio="none" className="h-40 w-full" role="img" aria-label="24개월 MRR 추이">
+        {[10, 20, 30].map((y) => (
+          <line key={y} x1="0" y1={y} x2="100" y2={y} stroke="var(--line)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+        ))}
+        <polyline points={`0,40 ${d} 100,40`} fill="var(--accent-soft)" stroke="none" />
+        <polyline points={d} fill="none" stroke="var(--accent)" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
+      </svg>
+      {/* 끝점에 값을 붙인다. 선만 있으면 어디까지 온 건지 안 보인다. */}
+      <span
+        className="pointer-events-none absolute right-0 -translate-y-1/2 rounded bg-accent px-2 py-0.5 text-xs font-bold text-white"
+        style={{ top: `${(1 - last / max) * 90 + 5}%` }}
+      >
+        {last.toLocaleString("ko-KR")}만원
+      </span>
+      <div className="mt-1 flex justify-between text-xs text-faint">
+        <span>0개월</span>
+        <span>24개월</span>
+      </div>
+    </div>
   );
 }

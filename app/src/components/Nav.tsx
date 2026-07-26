@@ -9,7 +9,7 @@ const GROUPS: Group[] = [
   { label: "홈", to: "/" },
   { label: "IR", to: "/ir" },
   { label: "마켓", to: "/market" },
-  { label: "게임 스택", to: "/stack" },
+  { label: "에셋 엔진", to: "/stack" },
   {
     label: "스튜디오",
     to: "/workshop",

@@ -171,9 +171,10 @@ function Detail({ p }: { p: Piece }) {
               const pass = v >= 70;
               return (
                 /* 열은 셋뿐이다 — 항목명 · 막대 · 점수 */
-                <div key={c.k} className="grid grid-cols-[minmax(0,1fr)_96px_34px] items-center gap-3 text-base">
-                  <span className="min-w-0 text-muted">
-                    {c.k} <span className="text-faint">{c.d}</span>
+                <div key={c.k} className="grid grid-cols-[minmax(0,1fr)_96px_30px] items-center gap-3">
+                  {/* 부제는 항목명보다 확실히 작아야 한다. 같은 크기면 둘 다 안 읽힌다. */}
+                  <span className="min-w-0 truncate text-xs text-muted">
+                    {c.k} <span className="ml-1 text-[10px] text-faint">{c.d}</span>
                   </span>
                   <span className="block h-1.5 overflow-hidden rounded-full bg-surface-2">
                     <b
@@ -181,7 +182,7 @@ function Detail({ p }: { p: Piece }) {
                       style={{ width: `${v}%` }}
                     />
                   </span>
-                  <span className="text-right font-semibold tabular-nums text-ink">{v}</span>
+                  <span className="num text-right text-base text-ink">{v}</span>
                 </div>
               );
             })}
