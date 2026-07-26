@@ -188,9 +188,186 @@
     <a class="igg-cta" href="community.html">에셋 올리기</a>
   </div></div>
   <div class="igg-r2"><div class="igg-r2in">
-    <div class="igg-tabs"><a href="index.html" aria-current="page">홈</a><a href="about.html">서비스 소개</a><a href="market.html">마켓</a><a href="community.html">게임 스택</a><a href="community.html#ai">AI 개선</a><a href="scene.html">에셋 시연</a><a href="viewer3d.html">3D 뷰어</a><a href="vlog.html">개발 브이로그<sup>N</sup></a></div>
+    <div class="igg-tabs"><a href="index.html" aria-current="page">홈</a><a href="about.html">서비스 소개</a><a href="market.html">마켓</a><a href="community.html">게임 스택</a><a href="ai.html">AI 파이프라인<sup>N</sup></a><a href="scene.html">에셋 시연</a><a href="viewer3d.html">3D 뷰어</a><a href="vlog.html">개발 브이로그<sup>N</sup></a></div>
   </div></div>
 </nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rkg-chal" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFEFC4"/><stop offset=".42" stop-color="#F0B457"/><stop offset="1" stop-color="#8E5F17"/></linearGradient>
+  <linearGradient id="rkg-dia" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EBD9FF"/><stop offset=".42" stop-color="#A55EEA"/><stop offset="1" stop-color="#54277D"/></linearGradient>
+  <linearGradient id="rkg-plat" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#CFF3EA"/><stop offset=".42" stop-color="#4E9D8D"/><stop offset="1" stop-color="#1F5148"/></linearGradient>
+  <linearGradient id="rkg-silv" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EDF1F5"/><stop offset=".42" stop-color="#8E9BA5"/><stop offset="1" stop-color="#464F58"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 48 48">
+    <path d="M9.5 15.5 1 10.6l3.4 8.8-2.2 1.2 7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M38.5 15.5 47 10.6l-3.4 8.8 2.2 1.2-7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-chal)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m16.6 27.4-2.3-9.3 5.8 4.4L24 15l3.9 7.5 5.8-4.4-2.3 9.3z" fill="url(#rkg-chal)"/>
+    <path d="M16.6 29.6h14.8v2.4H16.6z" fill="url(#rkg-chal)"/>
+  </symbol>
+  <symbol id="rk-dia" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-dia)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.4 7.4 6.6L24 32.4 16.6 21z" fill="url(#rkg-dia)"/>
+    <path d="M16.6 21h14.8L24 24.2z" fill="#0A0A10" opacity=".28"/>
+    <path d="m24 14.4 3 6.6-3 3.2-3-3.2z" fill="#fff" opacity=".34"/>
+  </symbol>
+  <symbol id="rk-plat" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-plat)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.6 6.6 3.8v7.6L24 29.8l-6.6-3.8v-7.6z" fill="url(#rkg-plat)"/>
+    <path d="M17.4 18.4 24 22.2l6.6-3.8L24 14.6z" fill="#fff" opacity=".26"/>
+  </symbol>
+  <symbol id="rk-silv" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-silv)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="M17.6 20.4h12.8v3.6H17.6z" fill="url(#rkg-silv)"/>
+    <path d="M17.6 20.4h12.8v1.6H17.6z" fill="#fff" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rkg-chal" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFEFC4"/><stop offset=".42" stop-color="#F0B457"/><stop offset="1" stop-color="#8E5F17"/></linearGradient>
+  <linearGradient id="rkg-dia" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EBD9FF"/><stop offset=".42" stop-color="#A55EEA"/><stop offset="1" stop-color="#54277D"/></linearGradient>
+  <linearGradient id="rkg-plat" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#CFF3EA"/><stop offset=".42" stop-color="#4E9D8D"/><stop offset="1" stop-color="#1F5148"/></linearGradient>
+  <linearGradient id="rkg-silv" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EDF1F5"/><stop offset=".42" stop-color="#8E9BA5"/><stop offset="1" stop-color="#464F58"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 48 48">
+    <path d="M9.5 15.5 1 10.6l3.4 8.8-2.2 1.2 7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M38.5 15.5 47 10.6l-3.4 8.8 2.2 1.2-7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-chal)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m16.6 27.4-2.3-9.3 5.8 4.4L24 15l3.9 7.5 5.8-4.4-2.3 9.3z" fill="url(#rkg-chal)"/>
+    <path d="M16.6 29.6h14.8v2.4H16.6z" fill="url(#rkg-chal)"/>
+  </symbol>
+  <symbol id="rk-dia" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-dia)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.4 7.4 6.6L24 32.4 16.6 21z" fill="url(#rkg-dia)"/>
+    <path d="M16.6 21h14.8L24 24.2z" fill="#0A0A10" opacity=".28"/>
+    <path d="m24 14.4 3 6.6-3 3.2-3-3.2z" fill="#fff" opacity=".34"/>
+  </symbol>
+  <symbol id="rk-plat" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-plat)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.6 6.6 3.8v7.6L24 29.8l-6.6-3.8v-7.6z" fill="url(#rkg-plat)"/>
+    <path d="M17.4 18.4 24 22.2l6.6-3.8L24 14.6z" fill="#fff" opacity=".26"/>
+  </symbol>
+  <symbol id="rk-silv" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-silv)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="M17.6 20.4h12.8v3.6H17.6z" fill="url(#rkg-silv)"/>
+    <path d="M17.6 20.4h12.8v1.6H17.6z" fill="#fff" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rkg-chal" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFEFC4"/><stop offset=".42" stop-color="#F0B457"/><stop offset="1" stop-color="#8E5F17"/></linearGradient>
+  <linearGradient id="rkg-dia" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EBD9FF"/><stop offset=".42" stop-color="#A55EEA"/><stop offset="1" stop-color="#54277D"/></linearGradient>
+  <linearGradient id="rkg-plat" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#CFF3EA"/><stop offset=".42" stop-color="#4E9D8D"/><stop offset="1" stop-color="#1F5148"/></linearGradient>
+  <linearGradient id="rkg-silv" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EDF1F5"/><stop offset=".42" stop-color="#8E9BA5"/><stop offset="1" stop-color="#464F58"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 48 48">
+    <path d="M9.5 15.5 1 10.6l3.4 8.8-2.2 1.2 7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M38.5 15.5 47 10.6l-3.4 8.8 2.2 1.2-7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-chal)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m16.6 27.4-2.3-9.3 5.8 4.4L24 15l3.9 7.5 5.8-4.4-2.3 9.3z" fill="url(#rkg-chal)"/>
+    <path d="M16.6 29.6h14.8v2.4H16.6z" fill="url(#rkg-chal)"/>
+  </symbol>
+  <symbol id="rk-dia" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-dia)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.4 7.4 6.6L24 32.4 16.6 21z" fill="url(#rkg-dia)"/>
+    <path d="M16.6 21h14.8L24 24.2z" fill="#0A0A10" opacity=".28"/>
+    <path d="m24 14.4 3 6.6-3 3.2-3-3.2z" fill="#fff" opacity=".34"/>
+  </symbol>
+  <symbol id="rk-plat" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-plat)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.6 6.6 3.8v7.6L24 29.8l-6.6-3.8v-7.6z" fill="url(#rkg-plat)"/>
+    <path d="M17.4 18.4 24 22.2l6.6-3.8L24 14.6z" fill="#fff" opacity=".26"/>
+  </symbol>
+  <symbol id="rk-silv" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-silv)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="M17.6 20.4h12.8v3.6H17.6z" fill="url(#rkg-silv)"/>
+    <path d="M17.6 20.4h12.8v1.6H17.6z" fill="#fff" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
   <linearGradient id="rkg-chal" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
     <stop offset="0" stop-color="#FFEFC4"/><stop offset=".42" stop-color="#F0B457"/><stop offset="1" stop-color="#8E5F17"/></linearGradient>
@@ -693,17 +870,15 @@
 
 <div class="hero"><div class="in hgrid">
   <div class="hcopy">
-    <span class="eyebrow">게임 에셋 마켓 · <b>창작자 · 게임 스튜디오</b></span>
-    <h1>게임 에셋을 올리고,<br>등급을 받아 <em>판매합니다.</em></h1>
-    <p class="sub">올리면 일곱 항목을 자동으로 채점해 등급을 붙입니다.
-      스튜디오는 그 등급을 보고 삽니다.</p>
+    <h1>게임 에셋을 올리고,<br>배지를 받아 <em>판매합니다.</em></h1>
+    <p class="sub">올리면 일곱 항목을 자동으로 채점해 배지를 붙입니다.
+      스튜디오는 그 배지를 보고 삽니다.</p>
     <div class="ctas">
-      <a class="btn p" href="community.html">에셋 등록하기</a>
-      <a class="btn s" href="market.html">카탈로그 보기</a>
+      <a class="btn p wide" href="market.html">마켓 둘러보기 <span aria-hidden="true">→</span></a>
     </div>
     <ul class="trust">
       <li><b class="tab">7</b>개 자동 검사</li>
-      <li><b class="tab">3</b>일 안에 등급</li>
+      <li><b class="tab">3</b>일 안에 배지</li>
       <li><b class="tab">92</b>% 창작자 정산</li>
     </ul>
   </div>
@@ -727,13 +902,13 @@
 <section class="alt"><div class="in">
   <div class="shead">
     <p class="kick">제공 기능</p>
-    <h2>여기서 할 수 있는 일</h2>
-    <p>계정 하나로 등록부터 판매까지 이어집니다. 별도 도구를 설치하지 않습니다.</p>
+    <h2>등록부터 정산까지, 여기서 끝납니다</h2>
+    <p>여섯 가지 기능이 한 계정에서 이어집니다. 설치할 도구도, 오갈 사이트도 없습니다.</p>
   </div>
   <div class="cards">
     <div class="card">
       <span class="who">등록 · 검수</span><h3>에셋을 등록하고 점수를 받습니다</h3>
-      <p>파일을 올리면 자동으로 검사가 시작됩니다. 3일 안에 항목별 점수와 등급이 나옵니다.</p>
+      <p>파일을 올리면 자동으로 검사가 시작됩니다. 3일 안에 항목별 점수와 배지가 나옵니다.</p>
       <ul><li>지원 엔진 — Unity, Unreal, Godot</li>
         <li>등록 비용 없음 · 재등록 횟수 제한 없음</li>
         <li>다른 마켓과 중복 등록 가능</li></ul>
@@ -756,8 +931,8 @@
       <a class="go" href="scene.html">시연 화면 열기 →</a>
     </div>
     <div class="card">
-      <span class="who">탐색</span><h3>등급으로 걸러 찾습니다</h3>
-      <p>분류·엔진·최소 점수로 좁혀 검색합니다. 등급이 높은 순으로 먼저 보입니다.</p>
+      <span class="who">탐색</span><h3>배지로 걸러 찾습니다</h3>
+      <p>분류·엔진·최소 점수로 좁혀 검색합니다. 배지가 높은 순으로 먼저 보입니다.</p>
       <ul><li>분류 — 무기 · 캐릭터 · 환경 · UI · 사운드</li>
         <li>최소 검수 점수 지정</li>
         <li>항목별 점수 리포트 열람</li></ul>
@@ -775,7 +950,7 @@
       <span class="who">정산</span><h3>판매액을 정산받습니다</h3>
       <p>판매가 발생하면 수수료를 제외한 금액이 창작자에게 정산됩니다.</p>
       <ul><li>수수료 <b>8%</b> · 창작자 <b>92%</b></li>
-        <li>등급과 무관하게 동일 요율</li>
+        <li>배지와 무관하게 동일 요율</li>
         <li>저작권은 창작자가 계속 보유</li></ul>
       <a class="go" href="about.html">이용 조건 보기 →</a>
     </div>
@@ -792,19 +967,19 @@
     <div class="step"><div class="n"><i>1</i><u></u></div><h3>등록</h3>
       <p>에셋 파일과 기본 정보를 입력합니다. 분류·엔진·스타일·가격을 지정합니다.</p></div>
     <div class="step"><div class="n"><i>2</i><u></u></div><h3>검수</h3>
-      <p>일곱 가지 항목을 자동 채점합니다. 3일 안에 점수와 등급이 통보됩니다.</p></div>
+      <p>일곱 가지 항목을 자동 채점합니다. 3일 안에 점수와 배지가 통보됩니다.</p></div>
     <div class="step"><div class="n"><i>3</i><u></u></div><h3>개선 (선택)</h3>
       <p>점수가 낮은 항목의 개선 코드를 받아 적용한 뒤 재검수를 요청합니다.</p></div>
     <div class="step"><div class="n"><i>4</i></div><h3>판매</h3>
-      <p>카탈로그에 등급과 함께 노출됩니다. 판매가 발생하면 92%가 정산됩니다.</p></div>
+      <p>카탈로그에 배지와 함께 노출됩니다. 판매가 발생하면 92%가 정산됩니다.</p></div>
   </div>
 </div></section>
 
 <section class="alt"><div class="in">
   <div class="shead">
-    <p class="kick">검수 항목</p>
-    <h2>무엇을 검사하나요</h2>
-    <p>일곱 항목을 가중 평균해 종합 점수를 냅니다. 각 항목 위의 숫자가 가중치입니다.</p>
+    <p class="kick">자동 검수</p>
+    <h2>검수 엔진이 직접 열어 봅니다</h2>
+    <p>LaughGG 검수 엔진이 업로드된 파일을 열어 메시·텍스처·셰이더·스크립트를 직접 분석하고, 테스트 씬에서 실제로 돌려 봅니다. 옆의 숫자는 종합 점수에서 각 항목이 차지하는 비중입니다.</p>
   </div>
   <div class="checks">
     <div><b>22%</b><span>재료 출처<br>확인</span></div>
@@ -821,9 +996,9 @@
 
 <section><div class="in">
   <div class="shead">
-    <p class="kick">등급 기준</p>
-    <h2>등급은 무엇을 뜻하나요</h2>
-    <p>등급은 검색 노출 순서를 정합니다. 수수료는 등급과 무관하게 모두 8%입니다.</p>
+    <p class="kick">배지 기준</p>
+    <h2>배지는 무엇을 뜻하나요</h2>
+    <p>배지는 검색 노출 순서를 정합니다. 수수료는 배지와 무관하게 모두 8%입니다.</p>
   </div>
   <div class="tiers">
     <div class="tier" style="--tc:var(--chal)"><span class="lb"><svg class="rk" style="width:2.1em;height:2.1em"><use href="#rk-chal"/></svg>챌린저</span><b class="sc tab">90+</b>
@@ -835,14 +1010,16 @@
     <div class="tier" style="--tc:var(--silv)"><span class="lb"><svg class="rk" style="width:2.1em;height:2.1em"><use href="#rk-silv"/></svg>실버</span><b class="sc tab">70−</b>
       <span class="ds">사지 말고<br>참고만</span></div>
   </div>
-</div></section>
+</section>
 
 <section class="alt"><div class="in">
   <div class="shead"><p class="kick">이용 조건</p><h2>요약</h2></div>
-  <div class="tbl" id="terms">
-    <div class="thead"><span>항목</span><span>내용</span><span class="sr">자세히</span></div>
+  <div class="tgrid" id="terms"></div>
   </div>
 </div></section>
+
+
+
 
 <div class="final"><div class="in">
   <h2>어느 쪽으로 시작하시겠습니까</h2>
@@ -858,7 +1035,7 @@
   <p>LaughGG · OP.GG</p>
   <p style="margin-top:8px">Unity 에셋스토어 30%, Epic Fab 12% 수수료는 공개 확인값입니다.
     화면의 에셋 이미지는 Kenney · Cethiel · Project Utumno · Poly Haven이 CC0로 공개한 것이며 상업적 이용에 제한이 없습니다.
-    검수 점수와 등급, 판매 건수와 정산액은 프로토타입 데모의 가정치이며 실측이 아닙니다.
+    검수 점수와 배지, 판매 건수와 정산액은 프로토타입 데모의 가정치이며 실측이 아닙니다.
     에셋 시연의 배경은 전부 CC0 에셋으로 구성했습니다.</p>
 </div></footer>
 
@@ -951,91 +1128,7 @@
 })();
 </script>
 
-<style id="igg-tbl">
-  .tbl{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface)}
-  .thead{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1.35fr) 44px;
-    gap:14px;padding:13px 20px;background:var(--surface-2);border-bottom:1px solid var(--line);
-    font-size:16px;font-weight:700;color:var(--faint);letter-spacing:.04em}
-  .thead .sr{text-align:right}
-  .trow{display:block;width:100%;text-align:left;border:0;background:none;cursor:pointer;
-    padding:0;border-bottom:1px solid var(--line-soft);position:relative;font:inherit;color:inherit}
-  .trow:last-child{border-bottom:0}
-  .trow::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
-    background:var(--accent);scale:1 0;transform-origin:center;
-    transition:scale .28s cubic-bezier(.22,1,.36,1)}
-  .trow:hover::before,.trow[aria-expanded="true"]::before{scale:1 1}
-  .trow:hover{background:var(--surface-2)}
-  .tmain{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1.35fr) 44px;
-    gap:14px;align-items:center;padding:16px 20px}
-  .tk{display:flex;align-items:center;gap:11px;font-size:16px;font-weight:650}
-  .tk .ico{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;flex:none;
-    background:var(--accent-soft);color:var(--accent);font-size:16px}
-  .tv{font-size:16px;color:var(--muted);font-variant-numeric:tabular-nums}
-  .tv b{font-weight:750}
-  .pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:16px;font-weight:700}
-  .pill.ok{background:color-mix(in srgb,var(--pass) 15%,transparent);color:var(--pass)}
-  .pill.hi{background:var(--accent-soft);color:var(--accent)}
-  .tx{justify-self:end;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
-    color:var(--faint);font-size:16px;border:1px solid var(--line);
-    transition:rotate .3s cubic-bezier(.22,1,.36,1),color .2s ease,border-color .2s ease}
-  .trow[aria-expanded="true"] .tx{rotate:45deg;color:var(--accent);border-color:var(--accent)}
-  .tdet{display:grid;grid-template-rows:0fr;transition:grid-template-rows .34s cubic-bezier(.22,1,.36,1)}
-  .trow[aria-expanded="true"] .tdet{grid-template-rows:1fr}
-  .tdet>div{overflow:hidden}
-  .tdet p{margin:0;padding:0 20px 18px 59px;color:var(--faint);font-size:16px;line-height:1.65;max-width:64ch}
-  @media (max-width:640px){
-    .thead{display:none}
-    .tmain{grid-template-columns:1fr 34px;row-gap:6px}
-    .tv{grid-column:1/2}
-    .tx{grid-row:1/3}
-    .tdet p{padding-left:20px}
-  }
-  @media (prefers-reduced-motion:reduce){.trow::before,.tx,.tdet{transition:none}}
-</style>
-<script>
-(function () {
-  /* 이용 조건은 값만 보면 오해가 생긴다. 눌러서 이유를 펼칠 수 있게 한다. */
-  var ROWS = [
-    ["\u{1F4E5}", "등록 비용", '<b class="pill ok">없음</b>',
-     "올리는 데 돈을 받지 않습니다. 창작자를 데려오는 게 먼저라서, 비용은 카탈로그를 쓰는 스튜디오가 냅니다."],
-    ["\u{1F501}", "재등록", "<b>횟수 제한 없음</b>",
-     "점수가 낮게 나오면 고쳐서 다시 내면 됩니다. 몇 번을 다시 내도 추가 비용이 없습니다."],
-    ["\u{23F1}", "검수 소요", "등록 후 <b>3일</b> 이내",
-     "사람이 파일을 열어보지 않습니다. 일곱 항목을 자동으로 채점하기 때문에 대기열이 길어져도 3일을 넘기지 않습니다."],
-    ["\u{1F4B3}", "판매 수수료", '<b class="pill hi">8%</b> — 등급과 무관하게 동일',
-     "Unity 에셋스토어 30%, Epic Fab 12%는 공개 확인값입니다. 등급을 올려도 수수료는 그대로고, 대신 검색 노출 순서가 올라갑니다."],
-    ["\u{1F4B0}", "창작자 정산", '판매액의 <b class="pill ok">92%</b>',
-     "$100에 팔면 $92가 창작자 몫입니다. 같은 값을 Unity에 올리면 $70입니다."],
-    ["\u{00A9}", "저작권", "<b>창작자가 계속 보유</b>",
-     "판매를 중개할 뿐 권리를 가져가지 않습니다. 언제든 내리고 다른 곳에 올릴 수 있습니다."],
-    ["\u{1F513}", "독점 계약", "없음 — 다른 마켓과 중복 등록 가능",
-     "여기에만 올려야 한다는 조건이 없습니다. 이미 다른 마켓에 있는 에셋도 그대로 등록됩니다."],
-    ["\u{1F3E2}", "구매자 구독", "게임 스튜디오 <b>월 490,000원</b>",
-     "카탈로그 전체 접근, 검수 리포트 열람, 에셋 시연 도구, 사용 재료 목록 발급이 포함됩니다."],
-  ];
-  var box = document.getElementById("terms");
-  if (!box) return;
-  ROWS.forEach(function (r) {
-    var b = document.createElement("button");
-    b.type = "button";
-    b.className = "trow";
-    b.setAttribute("aria-expanded", "false");
-    b.innerHTML =
-      '<span class="tmain">' +
-        '<span class="tk"><i class="ico">' + r[0] + '</i>' + r[1] + '</span>' +
-        '<span class="tv">' + r[2] + '</span>' +
-        '<span class="tx" aria-hidden="true">+</span>' +
-      '</span>' +
-      '<span class="tdet"><span><p>' + r[3] + '</p></span></span>';
-    b.addEventListener("click", function () {
-      var open = b.getAttribute("aria-expanded") === "true";
-      box.querySelectorAll(".trow").forEach(function (o) { o.setAttribute("aria-expanded", "false"); });
-      b.setAttribute("aria-expanded", String(!open));
-    });
-    box.appendChild(b);
-  });
-})();
-</script>
+
 
 <style id="igg-hero">
   .hero { text-align: left; }
@@ -1044,7 +1137,15 @@
   @media (max-width: 900px) { .hgrid { grid-template-columns: 1fr; } }
   .hcopy h1 { margin: 0; }
   .hcopy .sub { margin: 18px 0 0; max-width: 34ch; }
-  .hcopy .ctas { margin-top: 30px; justify-content: flex-start; }
+  .hcopy .ctas { margin-top: 30px; justify-content: flex-start; align-items: center; gap: 22px; }
+  .btn.wide { width: 100%; max-width: 34ch; justify-content: center; gap: 10px;
+    display: inline-flex; align-items: center; padding: 16px 28px; font-size: 13pt; }
+  .btn.wide span { transition: translate .2s cubic-bezier(.22,1,.36,1); }
+  .btn.wide:hover span { translate: 4px 0; }
+  .tlink { color: var(--accent); font-size: 16px; font-weight: 650; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px; }
+  .tlink span { transition: translate .2s cubic-bezier(.22,1,.36,1); }
+  .tlink:hover span { translate: 3px 0; }
   .hcopy .btn { padding: 13px 24px; }
   .trust { display: flex; gap: 22px; flex-wrap: wrap; list-style: none;
     margin: 26px 0 0; padding: 18px 0 0; border-top: 1px solid var(--line);
@@ -1160,4 +1261,99 @@ if (cv) {
   })();
 }
 </script>
+
+<style id="igg-terms">
+  .tgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+  @media(max-width:1000px){.tgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:560px){.tgrid{grid-template-columns:1fr}}
+  .tc{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface);
+    display:flex;flex-direction:column;
+    transition:transform .26s cubic-bezier(.22,1,.36,1),border-color .26s ease,box-shadow .26s ease}
+  .tc:hover{transform:translateY(-4px);border-color:var(--accent);
+    box-shadow:0 20px 44px -24px color-mix(in srgb,var(--accent) 62%,transparent)}
+  .tcimg{position:relative;aspect-ratio:16/10;display:grid;place-items:center;
+    background:linear-gradient(158deg,var(--accent-soft),var(--surface-2) 72%)}
+  .tcimg img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .5s ease}
+  .tcimg img.on{opacity:1}
+  .tcimg .ph{position:absolute;color:var(--faint);font-size:10pt}
+  .tcb{padding:15px 16px 17px;display:flex;flex-direction:column;gap:7px;flex:1}
+  .tck{font-size:10pt;font-weight:700;letter-spacing:.06em;color:var(--faint)}
+  .tcv{font-size:16px;font-weight:750;letter-spacing:-.02em;line-height:1.32}
+  .tcv b{color:var(--accent)}
+  .tcv b.ok{color:var(--pass)}
+  .tcd{margin:0;color:var(--muted);font-size:11pt;line-height:1.6}
+</style>
+<script type="module">
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+/* 이용 조건도 글자만 나열하면 안 읽힌다. 조건마다 실제 에셋을 한 장씩 붙인다. */
+const TERMS = [
+  ["chest",        "등록 비용", '<b class="ok">없음</b>',
+   "올리는 데 돈을 받지 않습니다. 비용은 카탈로그를 쓰는 스튜디오가 냅니다."],
+  ["barrel",       "재등록", "횟수 제한 <b>없음</b>",
+   "점수가 낮으면 고쳐서 다시 냅니다. 몇 번을 다시 내도 추가 비용이 없습니다."],
+  ["stairs",       "검수 소요", "등록 후 <b>3일</b> 이내",
+   "사람이 열어보지 않습니다. 자동 채점이라 대기열이 길어져도 3일을 넘기지 않습니다."],
+  ["gate",         "판매 수수료", '<b>8%</b> 단일',
+   "Unity 30%, Epic Fab 12%는 공개 확인값입니다. 배지가 올라도 수수료는 그대로입니다."],
+  ["coin",         "창작자 정산", '판매액의 <b class="ok">92%</b>',
+   "$100에 팔면 $92가 창작자 몫입니다. 같은 값을 Unity에 올리면 $70입니다."],
+  ["banner",       "저작권", "창작자가 <b>계속 보유</b>",
+   "중개할 뿐 권리를 가져가지 않습니다. 언제든 내리고 다른 곳에 올릴 수 있습니다."],
+  ["wall-opening", "독점 계약", "<b>없음</b>",
+   "여기에만 올려야 한다는 조건이 없습니다. 다른 마켓에 있는 에셋도 그대로 등록됩니다."],
+  ["column",       "구매자 구독", "월 <b>490,000원</b>",
+   "카탈로그 접근, 검수 리포트, 시연 도구, 사용 재료 목록 발급이 포함됩니다."],
+];
+
+const box = document.getElementById("terms");
+if (box) {
+  box.innerHTML = TERMS.map(([m, k, v, d]) => `
+    <article class="tc" data-model="${m}">
+      <div class="tcimg"><span class="ph">렌더 중…</span><img alt=""></div>
+      <div class="tcb"><span class="tck">${k}</span><span class="tcv">${v}</span><p class="tcd">${d}</p></div>
+    </article>`).join("");
+
+  (async () => {
+    const loader = new GLTFLoader(), W = 480, H = 300;
+    const r = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+    r.setSize(W, H); r.setPixelRatio(Math.min(devicePixelRatio, 2));
+    r.outputColorSpace = THREE.SRGBColorSpace;
+    r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = 1.3;
+    const sc = new THREE.Scene();
+    sc.add(new THREE.HemisphereLight(0xdfe9ff, 0x2a2d38, 2.1));
+    const k1 = new THREE.DirectionalLight(0xfff3e2, 2.7); k1.position.set(2.6, 4.2, 3.2);
+    const k2 = new THREE.DirectionalLight(0x5383e8, 1.9); k2.position.set(-3, 1.2, -2.6);
+    sc.add(k1, k2);
+    const cam = new THREE.PerspectiveCamera(27, W / H, .1, 60);
+    cam.position.set(1.75, 1.25, 2.4); cam.lookAt(0, 0, 0);
+
+    for (const el of box.querySelectorAll(".tc")) {
+      try {
+        const g = await new Promise((ok, no) => loader.load("./assets/dungeon/" + el.dataset.model + ".glb", ok, undefined, no));
+        const o = g.scene, bb = new THREE.Box3().setFromObject(o);
+        const sz = new THREE.Vector3(), ct = new THREE.Vector3();
+        bb.getSize(sz); bb.getCenter(ct);
+        o.position.set(-ct.x, -ct.y, -ct.z);
+        const n = new THREE.Group(); n.add(o);
+        n.scale.setScalar(1.45 / Math.max(sz.x, sz.y, sz.z, 1e-6));
+        n.rotation.y = -.62;
+        sc.add(n);
+        r.render(sc, cam);
+        const img = el.querySelector("img");
+        img.src = r.domElement.toDataURL("image/png");
+        img.classList.add("on");
+        el.querySelector(".ph")?.remove();
+        sc.remove(n);
+      } catch (e) {
+        el.querySelector(".ph").textContent = "";
+      }
+    }
+    r.dispose(); r.forceContextLoss();
+  })();
+}
+</script>
+
+
 

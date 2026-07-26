@@ -4,7 +4,7 @@ use anyhow::{Context as _, Result};
 use serde::{Deserialize, Serialize};
 use sqlx::{MySqlPool, mysql::MySqlPoolOptions};
 
-use crate::domain::{DEFAULT_FEE_RATE, Grade, ReviewScores, Settlement};
+use crate::domain::{Badge, DEFAULT_FEE_RATE, ReviewScores, Settlement};
 
 /// 커넥션 풀을 열고 마이그레이션을 적용한다.
 ///
@@ -33,7 +33,7 @@ pub struct AssetRow {
     pub art_style: String,
     pub price_usd: f64,
     pub total: Option<u8>,
-    pub grade: Option<String>,
+    pub badge: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -44,7 +44,7 @@ pub struct AssetQuery {
     pub limit: Option<i64>,
 }
 
-/// 에셋 목록. 등급 노출 가중치와 점수 순으로 정렬한다.
+/// 에셋 목록. 배지 노출 가중치와 점수 순으로 정렬한다.
 ///
 /// # Errors
 /// 조회 실패 시 오류를 반환한다.
@@ -67,7 +67,7 @@ pub async fn list_assets(pool: &MySqlPool, q: &AssetQuery) -> Result<Vec<AssetRo
     >(
         r"
         SELECT a.id, a.title, c.display_name, a.category, a.engine, a.art_style,
-               CAST(a.price_usd AS DOUBLE), r.total, r.grade
+               CAST(a.price_usd AS DOUBLE), r.total, r.badge
         FROM assets a
         JOIN creators c ON c.id = a.creator_id
         LEFT JOIN reviews r ON r.asset_id = a.id
@@ -91,7 +91,7 @@ pub async fn list_assets(pool: &MySqlPool, q: &AssetQuery) -> Result<Vec<AssetRo
     let mut out: Vec<AssetRow> = rows
         .into_iter()
         .map(
-            |(id, title, creator, category, engine, art_style, price_usd, total, grade)| AssetRow {
+            |(id, title, creator, category, engine, art_style, price_usd, total, badge)| AssetRow {
                 id,
                 title,
                 creator,
@@ -100,19 +100,19 @@ pub async fn list_assets(pool: &MySqlPool, q: &AssetQuery) -> Result<Vec<AssetRo
                 art_style,
                 price_usd,
                 total,
-                grade,
+                badge,
             },
         )
         .collect();
 
-    // 등급이 노출 순위를 정한다 — 같은 점수라도 상위 등급이 먼저 보인다.
+    // 배지가 노출 순위를 정한다 — 같은 점수라도 상위 배지가 먼저 보인다.
     out.sort_by(|a, b| {
         let key = |r: &AssetRow| {
             let w = r
-                .grade
+                .badge
                 .as_deref()
-                .and_then(Grade::from_label)
-                .map_or(0, Grade::exposure_weight);
+                .and_then(Badge::from_label)
+                .map_or(0, Badge::exposure_weight);
             (w, r.total.unwrap_or(0))
         };
         key(b).cmp(&key(a))
@@ -135,7 +135,7 @@ pub struct NewAsset {
 pub struct ReviewResult {
     pub asset_id: u64,
     pub total: u8,
-    pub grade: Grade,
+    pub badge: Badge,
     pub production_ready: bool,
     pub license_blocked: bool,
     pub settlement_preview: Settlement,
@@ -183,12 +183,12 @@ pub async fn create_asset(pool: &MySqlPool, input: &NewAsset) -> Result<ReviewRe
 
     let s = input.scores;
     let total = s.total();
-    let grade = s.grade();
+    let badge = s.badge();
 
     sqlx::query(
         r"INSERT INTO reviews
           (asset_id, mesh_integrity, texture_quality, lod_setup, runtime_cost,
-           license_clean, code_quality, integration, total, grade)
+           license_clean, code_quality, integration, total, badge)
           VALUES (?,?,?,?,?,?,?,?,?,?)",
     )
     .bind(asset_id)
@@ -200,7 +200,7 @@ pub async fn create_asset(pool: &MySqlPool, input: &NewAsset) -> Result<ReviewRe
     .bind(u32::from(s.code_quality))
     .bind(u32::from(s.integration))
     .bind(u32::from(total))
-    .bind(grade.as_str())
+    .bind(badge.as_str())
     .execute(&mut *tx)
     .await
     .context("inserting review")?;
@@ -210,8 +210,8 @@ pub async fn create_asset(pool: &MySqlPool, input: &NewAsset) -> Result<ReviewRe
     Ok(ReviewResult {
         asset_id,
         total,
-        grade,
-        production_ready: grade.production_ready(),
+        badge,
+        production_ready: badge.production_ready(),
         license_blocked: s.license_blocked(),
         settlement_preview: Settlement::new(input.price_usd, DEFAULT_FEE_RATE),
     })
@@ -310,7 +310,7 @@ pub async fn metrics(pool: &MySqlPool) -> Result<Metrics> {
         .fetch_one(pool)
         .await
         .context("counting reviews")?;
-    let rejected: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM reviews WHERE grade = 'silver'")
+    let rejected: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM reviews WHERE badge = 'silver'")
         .fetch_one(pool)
         .await
         .context("counting rejections")?;

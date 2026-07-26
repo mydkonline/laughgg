@@ -1,19 +1,19 @@
-//! 도메인 타입 — 검수 채점과 등급 판정.
+//! 도메인 타입 — 검수 채점과 배지 판정.
 
 use serde::{Deserialize, Serialize};
 
-/// 검수 등급. 수수료는 등급과 무관하게 8% 단일이며, 등급은 노출 순위를 정한다.
+/// 검수 배지. 수수료는 배지와 무관하게 8% 단일이며, 배지는 노출 순위를 정한다.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
-pub enum Grade {
+pub enum Badge {
     Challenger,
     Diamond,
     Platinum,
     Silver,
 }
 
-impl Grade {
-    /// 종합 점수로부터 등급을 판정한다.
+impl Badge {
+    /// 종합 점수로부터 배지를 판정한다.
     #[must_use]
     pub const fn from_score(total: u8) -> Self {
         match total {
@@ -45,7 +45,7 @@ impl Grade {
         }
     }
 
-    /// DB에 저장된 문자열에서 등급을 되돌린다.
+    /// DB에 저장된 문자열에서 배지를 되돌린다.
     #[must_use]
     pub fn from_label(s: &str) -> Option<Self> {
         match s {
@@ -157,11 +157,11 @@ impl ReviewScores {
 
     /// 종합 판정.
     #[must_use]
-    pub fn grade(self) -> Grade {
+    pub fn badge(self) -> Badge {
         if self.license_blocked() {
-            return Grade::Silver;
+            return Badge::Silver;
         }
-        Grade::from_score(self.total())
+        Badge::from_score(self.total())
     }
 }
 
@@ -209,14 +209,14 @@ mod tests {
     }
 
     #[test]
-    fn grade_boundaries_are_inclusive() {
-        assert_eq!(Grade::from_score(90), Grade::Challenger);
-        assert_eq!(Grade::from_score(89), Grade::Diamond);
-        assert_eq!(Grade::from_score(80), Grade::Diamond);
-        assert_eq!(Grade::from_score(79), Grade::Platinum);
-        assert_eq!(Grade::from_score(70), Grade::Platinum);
-        assert_eq!(Grade::from_score(69), Grade::Silver);
-        assert_eq!(Grade::from_score(0), Grade::Silver);
+    fn badge_boundaries_are_inclusive() {
+        assert_eq!(Badge::from_score(90), Badge::Challenger);
+        assert_eq!(Badge::from_score(89), Badge::Diamond);
+        assert_eq!(Badge::from_score(80), Badge::Diamond);
+        assert_eq!(Badge::from_score(79), Badge::Platinum);
+        assert_eq!(Badge::from_score(70), Badge::Platinum);
+        assert_eq!(Badge::from_score(69), Badge::Silver);
+        assert_eq!(Badge::from_score(0), Badge::Silver);
     }
 
     #[test]
@@ -253,7 +253,7 @@ mod tests {
             ..scores(100)
         };
         assert!(s.license_blocked());
-        assert_eq!(s.grade(), Grade::Silver, "출처 불분명은 무조건 탈락");
+        assert_eq!(s.badge(), Badge::Silver, "출처 불분명은 무조건 탈락");
     }
 
     #[test]
@@ -275,28 +275,28 @@ mod tests {
     #[test]
     fn label_roundtrip() {
         for g in [
-            Grade::Challenger,
-            Grade::Diamond,
-            Grade::Platinum,
-            Grade::Silver,
+            Badge::Challenger,
+            Badge::Diamond,
+            Badge::Platinum,
+            Badge::Silver,
         ] {
-            assert_eq!(Grade::from_label(g.as_str()), Some(g));
+            assert_eq!(Badge::from_label(g.as_str()), Some(g));
         }
-        assert_eq!(Grade::from_label("bronze"), None);
+        assert_eq!(Badge::from_label("bronze"), None);
     }
 
     #[test]
     fn exposure_weight_orders_grades() {
-        assert!(Grade::Challenger.exposure_weight() > Grade::Diamond.exposure_weight());
-        assert!(Grade::Diamond.exposure_weight() > Grade::Platinum.exposure_weight());
-        assert!(Grade::Platinum.exposure_weight() > Grade::Silver.exposure_weight());
+        assert!(Badge::Challenger.exposure_weight() > Badge::Diamond.exposure_weight());
+        assert!(Badge::Diamond.exposure_weight() > Badge::Platinum.exposure_weight());
+        assert!(Badge::Platinum.exposure_weight() > Badge::Silver.exposure_weight());
     }
 
     #[test]
     fn production_ready_excludes_silver_only() {
-        assert!(Grade::Challenger.production_ready());
-        assert!(Grade::Platinum.production_ready());
-        assert!(!Grade::Silver.production_ready());
+        assert!(Badge::Challenger.production_ready());
+        assert!(Badge::Platinum.production_ready());
+        assert!(!Badge::Silver.production_ready());
     }
 
     #[test]

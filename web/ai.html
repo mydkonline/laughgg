@@ -1,0 +1,440 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LaughGG — AI 파이프라인</title>
+<style>
+:root {
+    --ground:#1C1C1F; --surface:#23232A; --surface-2:#2A2A33; --surface-3:#31313C;
+    --line:#3A3A47; --line-soft:#27272E;
+    --ink:#EBEBEF; --muted:#9AA4AF; --faint:#6E6E7C;
+    --accent:#5383E8; --accent-2:#7AA3F5; --accent-soft:rgba(83,131,232,.13);
+    --pass:#3FBF8F; --fail:#E8556A;
+    --chal:#F0B457; --dia:#A55EEA; --plat:#4E9D8D; --silv:#8E9BA5;
+  }
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+    font-family:Roboto,system-ui,-apple-system,"Apple SD Gothic Neo",Pretendard,sans-serif;
+    font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;letter-spacing:-.01em}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.in{max-width:1080px;margin:0 auto;padding:0 24px}
+.tab{font-variant-numeric:tabular-nums}
+section{padding:clamp(64px,9vw,108px) 0;border-top:1px solid var(--line)}
+.alt{background:var(--surface-2)}
+.shead{text-align:center;max-width:46ch;margin:0 auto clamp(38px,5vw,60px)}
+.shead p{margin:16px 0 0;color:var(--muted);font-size:16px}
+.kick{font-size:16px;font-weight:700;letter-spacing:.04em;color:var(--accent);margin:0 0 12px}
+h2{margin:0;font-size:clamp(24px,3.8vw,48px);line-height:1.14;letter-spacing:-.035em;font-weight:800;text-wrap:balance}
+h2{max-width:20ch;margin:0 auto}
+
+  .ailanes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+  @media(max-width:920px){.ailanes{grid-template-columns:1fr}}
+  .lane{border:1px solid var(--line);border-radius:18px;background:var(--surface);
+    padding:22px;display:flex;flex-direction:column;gap:12px}
+  .lhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .lhead h3{margin:0;font-size:16px;font-weight:750;letter-spacing:-.025em}
+  .ltag{padding:4px 10px;border-radius:99px;font-size:9.5pt;font-weight:800;letter-spacing:.06em}
+  .ltag.make{background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent)}
+  .ltag.fix{background:color-mix(in srgb,var(--dia) 18%,transparent);color:var(--dia)}
+  .lsub{margin:0;color:var(--muted);font-size:11pt;line-height:1.6}
+  .lnote{margin:2px 0 0;color:var(--faint);font-size:10pt}
+
+  .pchips{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+  .pchips::-webkit-scrollbar{display:none}
+  .pchips button{flex:none;white-space:nowrap;padding:5px 11px;border-radius:99px;
+    border:1px solid var(--line);background:transparent;color:var(--muted);font-size:10pt;cursor:pointer;
+    transition:border-color .16s ease,color .16s ease,scale .16s cubic-bezier(.22,1,.36,1)}
+  .pchips button:hover{border-color:var(--accent);color:var(--accent)}
+  .pchips button:active{scale:.96}
+  .pchips button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+  .pbar{display:flex;gap:8px;margin-top:8px}
+  .pbar input{flex:1;min-width:0;padding:10px 13px;border-radius:11px;border:1px solid var(--line);
+    background:var(--bg);color:var(--ink);font-size:11pt;font-family:inherit;outline:none;
+    transition:border-color .16s ease,box-shadow .16s ease}
+  .pbar input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .pgo{padding:10px 20px;border-radius:11px;border:0;background:var(--accent);color:#fff;
+    font-size:11pt;font-weight:700;cursor:pointer;transition:scale .16s cubic-bezier(.22,1,.36,1)}
+  .pgo:active{scale:.96}
+  .pgo[disabled]{opacity:.55;pointer-events:none}
+
+  .steps4{list-style:none;margin:6px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+  .steps4 li{display:flex;flex-direction:column;gap:4px;padding:9px 10px;border-radius:10px;
+    background:var(--surface-2);border:1px solid transparent;
+    font-size:9.5pt;color:var(--faint);transition:background-color .3s ease,border-color .3s ease,color .3s ease}
+  .steps4 li b{font-size:9pt;font-weight:800;letter-spacing:.06em}
+  .steps4 li.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+  .steps4 li.done{color:var(--pass)}
+  .steps4 li.done b::after{content:" ✓"}
+
+  .mkout{margin:8px 0 0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg)}
+  .mkshot{position:relative;aspect-ratio:16/9;display:grid;place-items:center;
+    background:linear-gradient(160deg,var(--accent-soft),var(--surface-2) 72%)}
+  .mkshot canvas{width:100%;height:100%;display:block}
+  .mkph{position:absolute;color:var(--faint);font-size:10pt}
+  .mkout figcaption{padding:13px 15px 15px;display:flex;flex-direction:column;gap:9px;
+    border-top:1px solid var(--line)}
+  .mkrow{display:flex;align-items:center;gap:9px}
+  .mkname{font-size:12pt;font-weight:700}
+  .mkbadge{margin-left:auto;display:inline-flex;align-items:center;gap:5px;padding:3px 10px;
+    border-radius:99px;font-size:9.5pt;font-weight:800}
+  .mkbadge .rk{width:14px;height:14px}
+  .mkbars{display:flex;flex-direction:column;gap:5px}
+  .mkb{display:grid;grid-template-columns:76px 1fr 26px;gap:8px;align-items:center;
+    font-size:9.5pt;color:var(--faint)}
+  .mkb i{height:4px;border-radius:99px;background:var(--line);display:block;overflow:hidden}
+  .mkb i b{display:block;height:100%;background:var(--accent);width:0;
+    transition:width .7s cubic-bezier(.22,1,.36,1) var(--d,0s)}
+  .mkb u{text-decoration:none;text-align:right;color:var(--ink);font-weight:700;
+    font-variant-numeric:tabular-nums}
+
+  .fixrows{display:flex;flex-direction:column;gap:8px}
+  .fxr{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;
+    padding:10px 12px;border-radius:11px;border:1px solid var(--line);background:var(--bg)}
+  .fxr .n{font-size:11pt;font-weight:650}
+  .fxr .n small{display:block;color:var(--faint);font-size:9.5pt;font-weight:400;margin-top:2px}
+  .fxr .d{display:flex;align-items:center;gap:7px;font-variant-numeric:tabular-nums;font-size:11pt}
+  .fxr .d .a{color:var(--faint)}
+  .fxr .d .b2{color:var(--pass);font-weight:800;opacity:0;translate:-6px 0;
+    transition:opacity .4s ease,translate .4s cubic-bezier(.22,1,.36,1)}
+  .fxr.on .d .b2{opacity:1;translate:0 0}
+  .fixgo{align-self:flex-start;padding:10px 18px;border-radius:11px;border:1px solid var(--dia);
+    background:transparent;color:var(--dia);font-size:11pt;font-weight:700;cursor:pointer;
+    transition:background-color .16s ease,color .16s ease,scale .16s cubic-bezier(.22,1,.36,1)}
+  .fixgo:hover{background:var(--dia);color:#fff}
+  .fixgo:active{scale:.96}
+  .fixcode{margin:0;padding:14px;border-radius:12px;background:var(--surface-2);
+    border:1px solid var(--line);overflow-x:auto;font-size:10pt;line-height:1.65;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ink);white-space:pre}
+  .fixcode .cm{color:var(--faint)}
+  .fixcode .kw{color:var(--accent)}
+  .fixcode .st{color:var(--pass)}
+  @media(prefers-reduced-motion:reduce){.steps4 li,.mkb i b,.fxr .d .b2{transition:none}}
+
+.demonote { max-width: 1120px; margin: 0 auto; padding: 26px 24px 60px; color: var(--faint);
+  font-size: 11pt; line-height: 1.6; text-align: center; }
+.demonote b { color: var(--muted); }
+</style>
+
+<style id="igg-nav-css">
+  :root { --igg-navy:#28344E; --igg-dark:#1C1C1F; --igg-blue:#5383E8; --igg-dim:#9AA4AF; }
+  .igg-nav, .igg-nav * { box-sizing: border-box; }
+  .igg-nav { position: sticky; top: 0; z-index: 9000;
+    font-family: Roboto, system-ui, -apple-system, "Apple SD Gothic Neo", Pretendard, sans-serif; }
+  .igg-r1 { background: var(--igg-dark); border-bottom: 1px solid #2E2E35; }
+  .igg-r1in { max-width: 1240px; margin: 0 auto; padding: 0 20px; height: 46px;
+    display: flex; align-items: center; gap: 16px; }
+  .igg-logo { display: flex; align-items: center; gap: 7px; color: #fff; font-weight: 900;
+    font-size: 13pt; letter-spacing: -.03em; text-decoration: none; flex: none; }
+  .igg-logo i { width: 15px; height: 15px; border: 3px solid #fff; border-radius: 50%; display: block; }
+  .igg-logo b { font-weight: 900; }
+  .igg-logo span { font-size: 7.5pt; letter-spacing: .16em; color: #7B8494; font-weight: 700; }
+  .igg-r1 .igg-sp { margin-left: auto; }
+  .igg-ghost { padding: 5px 12px; border-radius: 4px; background: #424254; color: #C3CBD1;
+    font-size: 10pt; text-decoration: none; border: 0; cursor: pointer; }
+  .igg-ghost:hover { background: #4E4E60; color: #fff; }
+  .igg-ghost b { color: var(--igg-blue); font-weight: 800; margin-left: 2px; }
+  .igg-cta { padding: 5px 12px; border-radius: 4px; background: var(--igg-blue); color: #fff;
+    font-size: 10pt; font-weight: 700; text-decoration: none; }
+
+  .igg-r2 { background: var(--igg-navy); }
+  .igg-r2in { max-width: 1240px; margin: 0 auto; padding: 0 20px; height: 50px;
+    display: flex; align-items: center; gap: 14px; }
+  .igg-tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+  .igg-tabs::-webkit-scrollbar { display: none; }
+  .igg-tabs a { padding: 6px 12px; border-radius: 4px; color: #C3CBD1; font-size: 12pt;
+    text-decoration: none; white-space: nowrap; display: flex; align-items: center; gap: 4px; }
+  .igg-tabs a:hover { background: rgba(255,255,255,.09); color: #fff; }
+  .igg-tabs a[aria-current="page"] { background: var(--igg-blue); color: #fff; font-weight: 700; }
+  .igg-tabs sup { font-size: 7pt; color: #FF6B7A; font-weight: 800; }
+  .igg-tabs a[aria-current="page"] sup { color: #FFD9DE; }
+
+  /* 눌리는 느낌 — 전 페이지 공통. transform 이 아니라 scale 프로퍼티라 기존 transform 과 안 싸운다 */
+  @media (prefers-reduced-motion: no-preference) {
+    button, .btn, .igg-ghost, .igg-cta, .igg-tabs a, [role="button"] {
+      transition: scale .16s cubic-bezier(.22,1,.36,1),
+                  background-color .16s ease, color .16s ease, border-color .16s ease;
+    }
+    button:active, .btn:active, .igg-ghost:active, .igg-cta:active,
+    .igg-tabs a:active, [role="button"]:active { scale: .97; }
+    .igg-cta:hover { scale: 1.03; }
+  }
+  :where(a, button, input, select, textarea):focus-visible {
+    outline: 2px solid var(--igg-blue); outline-offset: 2px;
+  }
+</style>
+
+<nav class="igg-nav">
+  <div class="igg-r1"><div class="igg-r1in">
+    <a class="igg-logo" href="index.html"><i></i><b>LaughGG</b><span>BY OP.GG</span></a>
+    <span class="igg-sp"></span>
+    <button class="igg-ghost" id="cartb" type="button">장바구니 <b id="cartn">0</b></button>
+    <button class="igg-ghost" id="loginb" type="button">로그인</button>
+    <button class="igg-ghost" id="theme" type="button">테마</button>
+    <a class="igg-cta" href="community.html">에셋 올리기</a>
+  </div></div>
+  <div class="igg-r2"><div class="igg-r2in">
+    <div class="igg-tabs"><a href="index.html">홈</a><a href="about.html">서비스 소개</a><a href="market.html">마켓</a><a href="community.html">게임 스택</a><a href="ai.html" aria-current="page">AI 파이프라인<sup>N</sup></a><a href="scene.html">에셋 시연</a><a href="viewer3d.html">3D 뷰어</a><a href="vlog.html">개발 브이로그<sup>N</sup></a></div>
+  </div></div>
+</nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rkg-chal" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFEFC4"/><stop offset=".42" stop-color="#F0B457"/><stop offset="1" stop-color="#8E5F17"/></linearGradient>
+  <linearGradient id="rkg-dia" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EBD9FF"/><stop offset=".42" stop-color="#A55EEA"/><stop offset="1" stop-color="#54277D"/></linearGradient>
+  <linearGradient id="rkg-plat" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#CFF3EA"/><stop offset=".42" stop-color="#4E9D8D"/><stop offset="1" stop-color="#1F5148"/></linearGradient>
+  <linearGradient id="rkg-silv" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EDF1F5"/><stop offset=".42" stop-color="#8E9BA5"/><stop offset="1" stop-color="#464F58"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 48 48">
+    <path d="M9.5 15.5 1 10.6l3.4 8.8-2.2 1.2 7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M38.5 15.5 47 10.6l-3.4 8.8 2.2 1.2-7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-chal)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m16.6 27.4-2.3-9.3 5.8 4.4L24 15l3.9 7.5 5.8-4.4-2.3 9.3z" fill="url(#rkg-chal)"/>
+    <path d="M16.6 29.6h14.8v2.4H16.6z" fill="url(#rkg-chal)"/>
+  </symbol>
+  <symbol id="rk-dia" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-dia)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.4 7.4 6.6L24 32.4 16.6 21z" fill="url(#rkg-dia)"/>
+    <path d="M16.6 21h14.8L24 24.2z" fill="#0A0A10" opacity=".28"/>
+    <path d="m24 14.4 3 6.6-3 3.2-3-3.2z" fill="#fff" opacity=".34"/>
+  </symbol>
+  <symbol id="rk-plat" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-plat)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.6 6.6 3.8v7.6L24 29.8l-6.6-3.8v-7.6z" fill="url(#rkg-plat)"/>
+    <path d="M17.4 18.4 24 22.2l6.6-3.8L24 14.6z" fill="#fff" opacity=".26"/>
+  </symbol>
+  <symbol id="rk-silv" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-silv)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="M17.6 20.4h12.8v3.6H17.6z" fill="url(#rkg-silv)"/>
+    <path d="M17.6 20.4h12.8v1.6H17.6z" fill="#fff" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+<section class="alt" id="ai"><div class="in">
+  <div class="shead">
+    <p class="kick">AI 파이프라인</p>
+    <h2>AI로 만들고, AI로 고칩니다</h2>
+    <p>에셋을 만드는 일은 곧 흔해집니다. 남는 건 <b>쓸 만한지 보증하는 능력</b>입니다.
+      그래서 생성부터 검수까지 한 줄에 놓았습니다.</p>
+  </div>
+
+  <div class="ailanes">
+    <!-- ── AI Make ── -->
+    <div class="lane">
+      <div class="lhead"><span class="ltag make">AI Make</span><h3>말로 쓰면 초안이 나옵니다</h3></div>
+      <p class="lsub">프롬프트를 넣으면 메시·텍스처·LOD까지 만들고, 그대로 자동 검수에 넘깁니다.</p>
+
+      <div class="prompt">
+        <div class="pchips" id="pchips"></div>
+        <div class="pbar">
+          <input id="pin" value="이끼 낀 던전 석주, 로우폴리, 게임용" aria-label="생성 프롬프트">
+          <button class="pgo" id="pgo" type="button">생성</button>
+        </div>
+      </div>
+
+      <ol class="steps4" id="steps4">
+        <li><b>01</b><span>프롬프트 해석</span></li>
+        <li><b>02</b><span>메시 생성</span></li>
+        <li><b>03</b><span>텍스처 · LOD</span></li>
+        <li><b>04</b><span>자동 검수</span></li>
+      </ol>
+
+      <figure class="mkout" id="mkout">
+        <div class="mkshot"><canvas id="mk3d"></canvas><span class="mkph">생성을 눌러 보세요</span></div>
+        <figcaption>
+          <div class="mkrow">
+            <span class="mkname" id="mkname">—</span>
+            <span class="mkbadge" id="mkbadge"></span>
+          </div>
+          <div class="mkbars" id="mkbars"></div>
+        </figcaption>
+      </figure>
+    </div>
+
+    <!-- ── AI 개선 ── -->
+    <div class="lane">
+      <div class="lhead"><span class="ltag fix">AI 개선</span><h3>떨어진 항목을 코드로 고칩니다</h3></div>
+      <p class="lsub">낮은 항목을 짚고 고치는 코드를 만들어 드립니다. 적용하면 다시 채점합니다.</p>
+
+      <div class="fixrows" id="fixrows"></div>
+
+      <button class="fixgo" id="fixgo" type="button">개선 코드 생성</button>
+      <pre class="fixcode" id="fixcode"><span class="cm">// 개선 코드 생성을 누르면 여기에 나옵니다</span></pre>
+      <p class="lnote">무료 횟수를 넘긴 요청만 과금합니다. 배지가 오르면 창작자가 더 법니다.</p>
+    </div>
+  </div>
+</div></section>
+
+<p class="demonote">이 화면은 <b>시연용 데모</b>입니다. 배치와 동작은 실제 제품과 같게 만들었지만,
+  생성 결과와 점수는 미리 넣어 둔 값이며 실제 생성 엔진이 붙어 있지 않습니다.</p>
+
+<script type="importmap">
+{ "imports": {
+  "three": "./vendor/three/build/three.module.min.js",
+  "three/addons/": "./vendor/three/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+/* AI Make — 프롬프트에서 초안을 만들고 그대로 검수까지 태우는 흐름을 화면으로 보여준다.
+   지금은 시각화이고, 생성 엔진을 붙이면 PRESETS 자리에 실제 결과가 들어간다. */
+const PRESETS = [
+  ["던전 석주", "이끼 낀 던전 석주, 로우폴리, 게임용", "column",
+   [["재료 출처", 96], ["실행 성능", 92], ["면 구성", 90], ["텍스처", 88], ["거리별 단계", 91]], 91, "챌린저", "chal"],
+  ["보물 상자", "철제 보강한 나무 보물상자, 스타일라이즈드", "chest",
+   [["재료 출처", 94], ["실행 성능", 88], ["면 구성", 86], ["텍스처", 85], ["거리별 단계", 84]], 87, "다이아", "dia"],
+  ["성문", "쇠창살 내려오는 성문, 중세, 대형", "gate",
+   [["재료 출처", 92], ["실행 성능", 79], ["면 구성", 82], ["텍스처", 76], ["거리별 단계", 74]], 80, "다이아", "dia"],
+  ["길드 깃발", "찢어진 길드 깃발, 천 시뮬레이션 없이", "banner",
+   [["재료 출처", 90], ["실행 성능", 84], ["면 구성", 72], ["텍스처", 70], ["거리별 단계", 68]], 76, "플래티넘", "plat"],
+];
+const TC = { chal: "var(--chal)", dia: "var(--dia)", plat: "var(--plat)", silv: "var(--silv)" };
+
+const chips = document.getElementById("pchips");
+const pin = document.getElementById("pin");
+const pgo = document.getElementById("pgo");
+const steps = [...document.querySelectorAll("#steps4 li")];
+let cur = 0;
+
+if (chips) {
+  chips.innerHTML = PRESETS.map((p, i) =>
+    `<button type="button" data-i="${i}" aria-pressed="${i === 0}">${p[0]}</button>`).join("");
+  chips.addEventListener("click", e => {
+    const b = e.target.closest("button[data-i]");
+    if (!b) return;
+    cur = +b.dataset.i;
+    chips.querySelectorAll("button").forEach(o => o.setAttribute("aria-pressed", String(o === b)));
+    pin.value = PRESETS[cur][1];
+  });
+}
+
+/* 결과 미리보기 렌더러 — 생성 결과를 그 자리에서 돌려 보여준다 */
+const cv = document.getElementById("mk3d");
+let show = () => {};
+if (cv) {
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const r = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
+  r.setPixelRatio(Math.min(devicePixelRatio, 2));
+  r.outputColorSpace = THREE.SRGBColorSpace;
+  r.toneMapping = THREE.ACESFilmicToneMapping;
+  r.toneMappingExposure = 1.3;
+  const sc = new THREE.Scene();
+  sc.add(new THREE.HemisphereLight(0xdfe9ff, 0x2a2d38, 2.1));
+  const k1 = new THREE.DirectionalLight(0xfff3e2, 2.7); k1.position.set(2.6, 4.2, 3.2);
+  const k2 = new THREE.DirectionalLight(0x5383e8, 1.9); k2.position.set(-3, 1.2, -2.6);
+  sc.add(k1, k2);
+  const cam = new THREE.PerspectiveCamera(27, 16 / 9, .1, 60);
+  cam.position.set(1.75, 1.25, 2.4); cam.lookAt(0, 0, 0);
+  const pivot = new THREE.Group(); sc.add(pivot);
+  const loader = new GLTFLoader(), cache = new Map();
+
+  show = async name => {
+    let node = cache.get(name);
+    if (!node) {
+      const g = await new Promise((ok, no) => loader.load("./assets/dungeon/" + name + ".glb", ok, undefined, no));
+      const o = g.scene, bb = new THREE.Box3().setFromObject(o);
+      const sz = new THREE.Vector3(), ct = new THREE.Vector3();
+      bb.getSize(sz); bb.getCenter(ct);
+      o.position.set(-ct.x, -ct.y, -ct.z);
+      node = new THREE.Group(); node.add(o);
+      node.scale.setScalar(1.5 / Math.max(sz.x, sz.y, sz.z, 1e-6));
+      cache.set(name, node);
+    }
+    pivot.clear(); pivot.add(node);
+    document.querySelector(".mkph")?.remove();
+  };
+
+  let t = 0, live = true;
+  new IntersectionObserver(e => { live = e[0].isIntersecting; }, { threshold: 0 }).observe(cv);
+  (function loop() {
+    requestAnimationFrame(loop);
+    if (!live) return;
+    const w = cv.clientWidth || 1, h = cv.clientHeight || 1;
+    r.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix();
+    if (!reduce) t += 0.006;
+    pivot.rotation.y = -0.6 + Math.sin(t) * 0.5;
+    r.render(sc, cam);
+  })();
+}
+
+const wait = ms => new Promise(res => setTimeout(res, ms));
+
+async function generate() {
+  const [, , model, bars, total, badge, tc] = PRESETS[cur];
+  pgo.disabled = true;
+  steps.forEach(li => li.classList.remove("on", "done"));
+  document.getElementById("mkbars").innerHTML = "";
+  document.getElementById("mkbadge").textContent = "";
+  document.getElementById("mkname").textContent = "생성 중…";
+
+  for (let i = 0; i < steps.length; i++) {
+    steps[i].classList.add("on");
+    if (i === 1) await show(model).catch(() => {});
+    await wait(520);
+    steps[i].classList.remove("on");
+    steps[i].classList.add("done");
+  }
+
+  document.getElementById("mkname").textContent = pin.value.split(",")[0].trim() || "생성 결과";
+  const bg = document.getElementById("mkbadge");
+  bg.style.color = TC[tc];
+  bg.style.background = `color-mix(in srgb, ${TC[tc]} 16%, transparent)`;
+  bg.innerHTML = `<svg class="rk"><use href="#rk-${tc}"/></svg>${badge} ${total}`;
+
+  const box = document.getElementById("mkbars");
+  box.innerHTML = bars.map(([k, v], i) =>
+    `<span class="mkb"><span>${k}</span><i><b data-w="${v}" style="--d:${(i * .07).toFixed(2)}s"></b></i><u>${v}</u></span>`).join("");
+  requestAnimationFrame(() => box.querySelectorAll("b[data-w]").forEach(b => { b.style.width = b.dataset.w + "%"; }));
+  pgo.disabled = false;
+}
+pgo?.addEventListener("click", () => { generate(); });
+
+/* AI 개선 — 낮은 항목을 짚고 코드를 만들어 준다 */
+const FIX = [
+  ["텍스처", "2048 아틀라스 3장이 따로 있습니다", 70, 91],
+  ["거리별 단계", "LOD가 없어 멀리서도 원본을 그립니다", 68, 92],
+  ["실행 성능", "드로우콜 3회 → 1회로 줄일 수 있습니다", 79, 90],
+];
+const fr = document.getElementById("fixrows");
+if (fr) {
+  fr.innerHTML = FIX.map(([k, why, a, b]) => `
+    <div class="fxr"><span class="n">${k}<small>${why}</small></span>
+      <span class="d"><span class="a">${a}</span>→<span class="b2">${b}</span></span></div>`).join("");
+}
+document.getElementById("fixgo")?.addEventListener("click", async function () {
+  this.disabled = true;
+  const rows = [...fr.querySelectorAll(".fxr")];
+  document.getElementById("fixcode").innerHTML =
+    '<span class="cm">// LaughGG AI · 검수 결과에서 생성한 개선 코드</span>\n' +
+    '<span class="kw">public static void</span> Optimize(GameObject asset) {\n' +
+    '    TextureAtlas.<span class="kw">Merge</span>(asset, maxSize: <span class="st">2048</span>);   <span class="cm">// 3장 → 1장</span>\n' +
+    '    LODGroupBuilder.<span class="kw">Generate</span>(asset, levels: <span class="st">3</span>);  <span class="cm">// 100 / 45 / 15%</span>\n' +
+    '    StaticBatching.<span class="kw">Apply</span>(asset);              <span class="cm">// 드로우콜 3 → 1</span>\n' +
+    '}';
+  for (const row of rows) { await wait(320); row.classList.add("on"); }
+  this.disabled = false;
+});
+</script>
