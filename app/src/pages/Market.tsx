@@ -143,7 +143,7 @@ export function Market() {
                 <div className="mt-auto flex items-baseline justify-between gap-2">
                   <span className="text-base font-bold text-ink">{won(p.price)}</span>
                   <span className="truncate text-xs text-faint">
-                    {p.eng.map((e) => ENGINE_NAME[e]).join(" · ")}
+                    {p.eng.map((e) => ENGINE_NAME[e]).join(", ")}
                   </span>
                 </div>
               </div>

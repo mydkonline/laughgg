@@ -39,7 +39,7 @@ function toPiece(file: File, id: number): Upload | null {
     days: 0,
     tri: "—",
     tex: "—",
-    desc: `${file.name} · ${(file.size / 1024 / 1024).toFixed(1)}MB · 이 브라우저에만 있습니다.`,
+    desc: `${file.name}, ${(file.size / 1024 / 1024).toFixed(1)}MB. 이 브라우저에만 있습니다.`,
   };
 }
 

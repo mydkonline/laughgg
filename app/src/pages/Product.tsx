@@ -162,7 +162,7 @@ function Detail({ p }: { p: Piece }) {
           <p className="text-base leading-relaxed text-muted">{p.desc}</p>
         </Acc>
 
-        <Acc title={`검수 리포트 · 종합 ${p.score}점`}>
+        <Acc title={`검수 리포트 (종합 ${p.score}점)`}>
           <div className="flex flex-col gap-2.5">
             {CHECKS.map((c, i) => {
               const v = scores[i] ?? 0;
@@ -190,7 +190,7 @@ function Detail({ p }: { p: Piece }) {
           <dl className="m-0 flex flex-col">
             <Kv k="폴리곤" v={p.tri} />
             <Kv k="텍스처" v={p.tex} />
-            <Kv k="지원 엔진" v={p.eng.map((e) => ENGINE_NAME[e]).join(" · ")} />
+            <Kv k="지원 엔진" v={p.eng.map((e) => ENGINE_NAME[e]).join(", ")} />
             <Kv k="내려받기" v={`${num(p.dl)}회`} />
             <Kv k="최근 갱신" v={`${p.days}일 전`} />
           </dl>

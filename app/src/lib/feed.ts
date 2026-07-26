@@ -6,7 +6,7 @@ import type { Knobs, RasterSet } from "../data/concepts";
    결과물이 쌓이고, 댓글은 그 결과물에 달린다.
 
    기여는 사람이 아니라 물건에 붙는다. 사람한테 점수를 주면 서열이 생기므로
-   드러나는 숫자는 "이 레시피를 몇 명이 가져다 썼는가" 하나뿐이다. */
+   드러나는 숫자는 "이 프리셋를 몇 명이 가져다 썼는가" 하나뿐이다. */
 
 export type Author = {
   /** 표시 이름. 익명이 기본이다. */
@@ -25,20 +25,20 @@ export type Comment = {
 
 export type Post = {
   id: string;
-  /** 어떤 상품을 어떤 레시피로 바꿨는가 */
+  /** 어떤 상품을 어떤 프리셋로 바꿨는가 */
   pieceId: number;
   title: string;
   concept: string;
   prompt: string;
   knobs: Knobs;
-  /** 2D 로 뽑은 레시피면 팔레트·도트 설정이 같이 붙는다. 없으면 3D 레시피다. */
+  /** 2D 로 뽑은 프리셋면 팔레트·도트 설정이 같이 붙는다. 없으면 3D 프리셋다. */
   raster?: RasterSet;
   /** 검수 점수가 어떻게 움직였는지. 자랑도 실패도 그대로 남긴다. */
   before: number;
   after: number;
   by: Author;
   at: number;
-  /** 이 레시피를 가져다 쓴 횟수. 유일한 공개 지표다. */
+  /** 이 프리셋를 가져다 쓴 횟수. 유일한 공개 지표다. */
   forks: number;
   comments: Comment[];
   /** 운영자가 심은 씨앗. 빈 피드를 열지 않기 위한 것이고 숨기지 않는다. */

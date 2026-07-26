@@ -11,7 +11,7 @@ import { paletteRgb, nearest, BAYER4 } from "../data/palettes";
      채도     → 채도
      외곽선   → 소벨 에지 (뒷면 사본 대신 윤곽 검출)
 
-   그래서 같은 레시피를 3D 로 보든 2D 로 뽑든 같은 느낌이 나온다. */
+   그래서 같은 프리셋를 3D 로 보든 2D 로 뽑든 같은 느낌이 나온다. */
 
 const clamp255 = (v: number) => (v < 0 ? 0 : v > 255 ? 255 : v);
 const mix = (a: number, b: number, u: number) => a + (b - a) * u;

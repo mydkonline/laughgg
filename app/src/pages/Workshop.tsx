@@ -57,7 +57,7 @@ export function Workshop() {
   const [published, setPublished] = useState<string | null>(null);
   const [dropping, setDropping] = useState(false);
 
-  /* 피드에서 포크해 들어온 경우 — 그 레시피를 그대로 작업대에 올린다.
+  /* 피드에서 포크해 들어온 경우 — 그 프리셋를 그대로 작업대에 올린다.
      구경이 곧 시도가 되는 지점이라 이 경로가 제일 중요하다. */
   const forkFrom = params.get("fork");
   useEffect(() => {
@@ -131,9 +131,9 @@ export function Workshop() {
           원하는 느낌을 쓰면 그 자리에서 바뀝니다. 3D 는 조명과 재질을, 2D 는 팔레트와 도트를 맞춥니다.
         </p>
         <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-t border-line pt-4">
-          <Spec k="다루는 것" v="3D 모델 · 2D 스프라이트" />
-          <Spec k="고를 수 있는 톤" v={`컨셉 ${CONCEPTS.length}종 · 팔레트 ${PALETTES.length - 1}종`} />
-          <Spec k="가져가는 것" v="바뀐 에셋 · 검수 리포트 · 레시피" />
+          <Spec k="다루는 것" v="3D 모델, 2D 스프라이트" />
+          <Spec k="고를 수 있는 톤" v={`컨셉 ${CONCEPTS.length}종, 팔레트 ${PALETTES.length - 1}종`} />
+          <Spec k="가져가는 것" v="바뀐 에셋, 검수 리포트, 프리셋" />
         </dl>
       </header>
 
@@ -141,7 +141,7 @@ export function Workshop() {
       <section className="rounded-xl border border-line bg-surface p-4">
         <div className="flex flex-wrap items-center gap-2">
           <h2 className="text-base font-bold text-ink">프롬프트</h2>
-          <span className="text-xs text-faint">색 · 재질 · 팔레트 · 도트 굵기를 한 번에 정합니다</span>
+          <span className="text-xs text-faint">색, 재질, 팔레트, 도트 굵기를 한 번에 정합니다</span>
         </div>
         <div className="mt-3 flex gap-2">
           <input
@@ -166,10 +166,10 @@ export function Workshop() {
               인식한 파라미터 —{" "}
               {[...hits.map((h) => KNOB_LABEL[h][0]), promptWantsSprite(prompt) ? "2D 팔레트" : null]
                 .filter(Boolean)
-                .join(" · ")}
+                .join(", ")}
             </>
           ) : (
-            "어둡게 · 따뜻하게 · 금속 · 로우폴리 · 만화 · 게임보이 · 세피아 · 네온 · 굵은 도트 같은 말을 읽습니다."
+            "어둡게, 따뜻하게, 금속, 로우폴리, 만화, 게임보이, 세피아, 네온, 굵은 도트 같은 말을 읽습니다."
           )}
         </p>
       </section>
@@ -210,7 +210,7 @@ export function Workshop() {
               <Preview model={modelSrc(piece)!} knobs={NEUTRAL} className="h-full w-full" />
             )}
           </Frame>
-          <Frame label={`${conceptName}${sprite ? ` · ${palette?.name ?? "스프라이트"}` : ""}`} accent>
+          <Frame label={`${conceptName}${sprite ? ` (${palette?.name ?? "스프라이트"})` : ""}`} accent>
             {sprite ? (
               <Sprite piece={piece} knobs={knobs} raster={raster} />
             ) : (
@@ -265,7 +265,7 @@ export function Workshop() {
               onClick={onPublish}
               className="mt-auto w-full cursor-pointer rounded-lg border-0 bg-accent px-4 py-3 pt-3 text-base font-bold text-white hover:bg-accent-strong"
             >
-              레시피로 올리기
+              프리셋로 올리기
             </button>
           )}
         </aside>
@@ -466,7 +466,7 @@ export function Workshop() {
         </div>
 
         <p className="text-xs text-faint">
-          glb · gltf · png · jpg 를 끌어다 놓아도 됩니다. 파일은 이 브라우저에만 있고 서버로 보내지 않습니다.
+          glb, gltf, png, jpg 를 끌어다 놓아도 됩니다. 파일은 이 브라우저에만 있고 서버로 보내지 않습니다.
         </p>
       </section>
 
@@ -475,7 +475,7 @@ export function Workshop() {
           다른 사람 작업물 보기 →
         </Link>
         <p className="max-w-[58ch] text-xs leading-relaxed text-faint">
-          <b className="text-muted">시연용 데모입니다.</b> 조명·재질·팔레트·디더링은 실제로 그림을 바꾸지만,
+          <b className="text-muted">시연용 데모입니다.</b> 조명, 재질, 팔레트, 디더링은 실제로 그림을 바꾸지만,
           프롬프트 해석은 지금 키워드 규칙이고 생성 엔진이 붙어 있지 않습니다.
         </p>
       </div>

@@ -13,7 +13,7 @@ type Sort = "new" | "forks" | "drop";
 
 const SORTS: [Sort, string][] = [
   ["new", "최신"],
-  ["forks", "많이 가져간 순"],
+  ["forks", "많이 적용한 순"],
   ["drop", "점수가 떨어진 것"],
 ];
 
@@ -31,11 +31,15 @@ export function Feed() {
     <main className="mx-auto max-w-[840px] px-5 pb-20">
       <header className="py-8">
         <p className="text-xs tracking-wide text-accent">작업물</p>
-        <h1 className="mt-1 text-4xl font-bold text-ink">남이 어떻게 맞췄는지 봅니다</h1>
-        <p className="mt-3 max-w-[52ch] text-base text-muted">
-          여기 있는 건 전부 공방에서 나온 결과입니다. 프롬프트와 슬라이더 값이 같이 공개되니
-          <b className="text-ink"> 마음에 들면 그대로 내 에셋에 돌려 보면 됩니다</b>.
+        <h1 className="mt-1 text-4xl font-bold text-ink">다른 사람이 만든 프리셋을 그대로 씁니다</h1>
+        <p className="mt-2 text-base text-muted">
+          공방에서 나온 결과가 프롬프트와 파라미터까지 공개됩니다. 적용하면 내 에셋에 같은 설정이 걸립니다.
         </p>
+        <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-t border-line pt-4">
+          <FeedSpec k="공개되는 것" v="프롬프트, 파라미터 9개, 검수 점수 변화" />
+          <FeedSpec k="적용" v="누르면 공방으로 넘어갑니다" />
+          <FeedSpec k="댓글" v="익명 기본, 소속만 인증" />
+        </dl>
       </header>
 
       <div className="mb-5 flex items-center gap-1.5 border-b border-line pb-3">
@@ -103,7 +107,6 @@ function Card({ post }: { post: Post }) {
 
           <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-faint">
             <Byline by={post.by} />
-            <span>·</span>
             <span>{ago(post.at)}</span>
             {post.seeded && <span className="rounded border border-line px-1.5 py-px">운영자 씨앗</span>}
           </p>
@@ -120,7 +123,7 @@ function Card({ post }: { post: Post }) {
               </b>
             </span>
             <span className="text-faint">
-              <b className="tabular-nums text-ink">{post.forks}</b>명이 가져다 씀
+              <b className="tabular-nums text-ink">{post.forks}</b>명이 적용함
             </span>
           </div>
 
@@ -129,7 +132,7 @@ function Card({ post }: { post: Post }) {
               to={`/workshop?fork=${post.id}`}
               className="rounded-lg bg-accent px-3.5 py-1.5 text-xs font-bold text-white no-underline hover:bg-accent-strong"
             >
-              이 레시피 가져오기
+              이 프리셋 적용
             </Link>
             <button
               type="button"
@@ -151,7 +154,6 @@ function Card({ post }: { post: Post }) {
               <div key={c.id}>
                 <p className="flex items-center gap-2 text-xs text-faint">
                   <Byline by={c.by} />
-                  <span>·</span>
                   <span>{ago(c.at)}</span>
                 </p>
                 <p className="mt-1 text-base leading-relaxed text-muted">{c.body}</p>
@@ -180,11 +182,20 @@ function Card({ post }: { post: Post }) {
           {/* 실명으로는 실무 얘기가 안 나온다. 소속만 인증하고 신원은 가린다. */}
           <label className="mt-2 flex cursor-pointer items-center gap-2 text-xs text-faint">
             <input type="checkbox" checked={!anon} onChange={(e) => setAnon(!e.target.checked)} className="accent-[var(--accent)]" />
-            소속만 밝히기 — 회사는 인증되고 이름은 가려집니다
+            소속만 밝히기. 회사는 인증되고 이름은 가려집니다
           </label>
         </div>
       )}
     </article>
+  );
+}
+
+function FeedSpec({ k, v }: { k: string; v: string }) {
+  return (
+    <div>
+      <dt className="text-xs text-faint">{k}</dt>
+      <dd className="m-0 text-base font-semibold text-ink">{v}</dd>
+    </div>
   );
 }
 

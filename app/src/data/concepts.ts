@@ -22,12 +22,12 @@ export type Knobs = {
 export const NEUTRAL: Knobs = { tone: 50, warm: 50, gloss: 50, facet: 0, sat: 50, line: 0 };
 
 export const KNOB_LABEL: Record<keyof Knobs, [string, string]> = {
-  tone: ["분위기", "밝게 · 어둡게"],
-  warm: ["색온도", "차갑게 · 따뜻하게"],
-  gloss: ["재질", "거칠게 · 광택"],
-  facet: ["면 처리", "부드럽게 · 각지게"],
-  sat: ["채도", "빛바래게 · 쨍하게"],
-  line: ["외곽선", "없이 · 두껍게"],
+  tone: ["분위기", "밝게 → 어둡게"],
+  warm: ["색온도", "차갑게 → 따뜻하게"],
+  gloss: ["재질", "거칠게 → 광택"],
+  facet: ["면 처리", "부드럽게 → 각지게"],
+  sat: ["채도", "빛바래게 → 쨍하게"],
+  line: ["외곽선", "없이 → 두껍게"],
 };
 
 /** 2D 로 뽑을 때만 쓰는 설정. 3D 미리보기에는 영향이 없다. */
@@ -78,7 +78,7 @@ export const CONCEPTS: Concept[] = [
   {
     id: "pico",
     name: "PICO-8 도트",
-    note: "16색 안에서 해결한다. 팬게임·잼 프로젝트 톤.",
+    note: "16색 안에서 해결한다. 팬게임이나 잼 프로젝트 톤.",
     knobs: { tone: 40, warm: 56, gloss: 24, facet: 92, sat: 88, line: 10 },
     raster: { pixel: 5, palette: "pico8", dither: 52 },
   },
@@ -99,7 +99,7 @@ export const CONCEPTS: Concept[] = [
   {
     id: "ink",
     name: "잉크 흑백",
-    note: "색을 버리고 명암만 남긴다. 느와르·펜화 계열.",
+    note: "색을 버리고 명암만 남긴다. 느와르나 펜화 계열.",
     knobs: { tone: 52, warm: 50, gloss: 30, facet: 70, sat: 0, line: 84 },
     raster: { pixel: 2, palette: "ink", dither: 62 },
   },

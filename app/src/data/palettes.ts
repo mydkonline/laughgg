@@ -45,7 +45,7 @@ export const PALETTES: Palette[] = [
   {
     id: "ink",
     name: "잉크 4단계",
-    from: "펜화 · 느와르용 무채색",
+    from: "펜화와 느와르용 무채색",
     colors: ["#0B0B0F", "#3A3A46", "#8A8A99", "#E8E8EF"],
   },
   {
@@ -63,13 +63,13 @@ export const PALETTES: Palette[] = [
   {
     id: "moss",
     name: "이끼 6색",
-    from: "던전 · 습지 계열 저채도",
+    from: "던전과 습지 계열 저채도",
     colors: ["#12140F", "#28301E", "#43512F", "#6B7A4A", "#9BA872", "#D2D6B4"],
   },
   {
     id: "ember",
     name: "잿불 6색",
-    from: "용암 · 대장간 계열 난색",
+    from: "용암과 대장간 계열 난색",
     colors: ["#140A08", "#3B1A12", "#6E2C15", "#B0521B", "#E2903A", "#F7D9A0"],
   },
 ];
