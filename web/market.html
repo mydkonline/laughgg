@@ -1,0 +1,943 @@
+<meta charset="utf-8">
+<title>IndyGG — 마켓</title>
+
+<style>
+  :root {
+    --ground: #1C1C1F;
+    --surface: #23232A;
+    --surface-2: #2A2A33;
+    --surface-3: #31313C;
+    --line: #3A3A47;
+    --line-soft: #27272E;
+    --ink: #EBEBEF;
+    --muted: #9AA4AF;
+    --faint: #6E6E7C;
+    --brass: #5383E8;
+    --brass-dim: #3A5DA8;
+    --brass-soft: rgba(83,131,232,.14);
+    --common: #8E9BA5;
+    --rare: #4E9D8D;
+    --epic: #7A6FD4;
+    --legend: #F0B457;
+    --pass: #5383E8;
+    --fail: #E84057;
+    --radius: 4px;
+  }
+
+  :root[data-theme="light"] {
+    --ground: #F2F2F5;
+    --surface: #FFFFFF;
+    --surface-2: #F7F7FA;
+    --surface-3: #EBEBF0;
+    --line: #DCDCE3;
+    --line-soft: #EAEAF0;
+    --ink: #1F1F26;
+    --muted: #5B6875;
+    --faint: #8A93A0;
+    --brass: #3A6BD8;
+    --brass-dim: #9BB6EE;
+    --brass-soft: rgba(58,107,216,.1);
+    --common: #7B8792;
+    --rare: #337F70;
+    --epic: #5A4CB8;
+    --legend: #B07B18;
+    --pass: #3A6BD8;
+    --fail: #D02B43;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --ground: #F2F2F5; --surface: #FFFFFF; --surface-2: #F7F7FA; --surface-3: #EBEBF0;
+      --line: #DCDCE3; --line-soft: #EAEAF0; --ink: #1F1F26; --muted: #5B6875; --faint: #8A93A0;
+      --brass: #3A6BD8; --brass-dim: #9BB6EE; --brass-soft: rgba(58,107,216,.1);
+      --common: #7B8792; --rare: #337F70; --epic: #5A4CB8; --legend: #B07B18;
+      --pass: #3A6BD8; --fail: #D02B43;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, "Apple SD Gothic Neo", Pretendard, sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .m {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  input { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+
+  .shell { max-width: 1240px; margin: 0 auto; padding: 0 22px 80px; }
+
+  /* ================= header ================= */
+  header.top {
+    position: sticky; top: 0; z-index: 40;
+    background: color-mix(in srgb, var(--ground) 92%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .topin { max-width: 1240px; margin: 0 auto; padding: 0 22px; height: 58px; display: flex; align-items: center; gap: 22px; }
+
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo .anv {
+    width: 28px; height: 28px; border-radius: 5px; display: grid; place-items: center;
+    background: var(--brass); color: #fff; font-weight: 800; font-size: 11px; letter-spacing: -.03em;
+  }
+  .logo .wm { font-weight: 800; letter-spacing: .02em; font-size: 15px; }
+  .logo .wm small { display: block; font-size: 9px; letter-spacing: .18em; color: var(--faint); font-weight: 600; }
+
+  .tabs { display: flex; gap: 2px; }
+  .tabs button {
+    padding: 7px 13px; border-radius: 5px; color: var(--muted); font-size: 13px;
+  }
+  .tabs button:hover { background: var(--surface-2); color: var(--ink); }
+  .tabs button[aria-current="true"] { color: var(--brass); background: var(--brass-soft); font-weight: 650; }
+
+  .spacer { margin-left: auto; }
+
+  .iconbtn {
+    display: flex; align-items: center; gap: 7px;
+    padding: 6px 12px; border: 1px solid var(--line); border-radius: 5px; color: var(--muted);
+  }
+  .iconbtn:hover { border-color: var(--brass); color: var(--brass); }
+  .iconbtn .cnt {
+    min-width: 17px; padding: 0 4px; border-radius: 9px; background: var(--brass);
+    color: #fff; font-size: 10px; font-weight: 800; text-align: center;
+  }
+
+  /* ================= masthead ================= */
+  .mast {
+    padding: 46px 0 30px;
+    border-bottom: 1px solid var(--line);
+    display: grid; grid-template-columns: minmax(0,1.4fr) minmax(0,1fr); gap: 40px; align-items: end;
+  }
+  @media (max-width: 860px) { .mast { grid-template-columns: 1fr; gap: 24px; } }
+
+  .mast h1 {
+    margin: 0 0 12px;
+    font-size: clamp(30px, 4.6vw, 46px);
+    line-height: 1.08; letter-spacing: -.03em; font-weight: 800;
+    text-wrap: balance; max-width: 15ch;
+  }
+  .mast h1 em { font-style: normal; color: var(--brass); }
+  .mast p { margin: 0; color: var(--muted); max-width: 46ch; }
+
+  .livestats { display: flex; flex-direction: column; gap: 10px; }
+  .lsrow { display: flex; align-items: baseline; gap: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--line-soft); }
+  .lsrow .n { font-size: 21px; font-weight: 750; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+  .lsrow .l { color: var(--faint); }
+  .lsrow .t { margin-left: auto; color: var(--pass); font-size: 11.5px; font-variant-numeric: tabular-nums; }
+
+  /* ================= layout ================= */
+  .page { display: none; padding-top: 24px; }
+  .page.on { display: block; }
+
+  .market { display: grid; grid-template-columns: 196px minmax(0,1fr); gap: 26px; }
+  @media (max-width: 900px) { .market { grid-template-columns: 1fr; } }
+
+  aside.rail { display: flex; flex-direction: column; gap: 22px; align-self: start; position: sticky; top: 78px; }
+  @media (max-width: 900px) { aside.rail { position: static; } }
+
+  .rgroup { display: flex; flex-direction: column; gap: 7px; }
+  .rgroup > .m { color: var(--faint); padding-bottom: 3px; border-bottom: 1px solid var(--line-soft); }
+
+  .fbtn {
+    display: flex; align-items: center; gap: 8px; width: 100%;
+    padding: 5px 8px; border-radius: 4px; color: var(--muted); font-size: 13px; text-align: left;
+  }
+  .fbtn:hover { background: var(--surface-2); color: var(--ink); }
+  .fbtn[aria-pressed="true"] { color: var(--brass); background: var(--brass-soft); font-weight: 600; }
+  .fbtn .c { margin-left: auto; color: var(--faint); font-size: 11px; font-variant-numeric: tabular-nums; }
+
+  .scorectl { display: flex; flex-direction: column; gap: 8px; }
+  .scorectl .row { display: flex; justify-content: space-between; align-items: baseline; }
+  .scorectl output { font-weight: 750; font-variant-numeric: tabular-nums; color: var(--brass); }
+
+  input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: 3px; background: var(--surface-3); }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%;
+    background: var(--brass); border: 2px solid var(--surface); cursor: grab;
+  }
+  input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--brass); border: 2px solid var(--surface); }
+
+  .toolbar { display: flex; gap: 10px; align-items: center; margin-bottom: 18px; flex-wrap: wrap; }
+  .search {
+    flex: 1; min-width: 200px; padding: 9px 13px; border-radius: 5px;
+    background: var(--surface); border: 1px solid var(--line);
+  }
+  .search::placeholder { color: var(--faint); }
+  .sortsel {
+    padding: 9px 12px; border-radius: 5px; background: var(--surface);
+    border: 1px solid var(--line); color: var(--muted); font-size: 13px;
+  }
+
+  /* ================= piece cards ================= */
+  .pgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(238px, 1fr)); gap: 16px; }
+
+  .piece {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    overflow: hidden; text-align: left; display: flex; flex-direction: column;
+    transition: transform .16s cubic-bezier(.2,.8,.2,1), border-color .16s;
+    position: relative;
+  }
+  .piece:hover { transform: translateY(-2px); border-color: var(--rr, var(--brass)); }
+  .piece[aria-pressed="true"] { border-color: var(--rr, var(--brass)); box-shadow: 0 0 0 1px var(--rr, var(--brass)); }
+
+  .piece .art {
+    aspect-ratio: 16/10; position: relative;
+    background:
+      radial-gradient(120% 90% at 50% 110%, color-mix(in srgb, var(--rr) 26%, transparent), transparent 68%),
+      repeating-linear-gradient(45deg, var(--surface-2) 0 9px, var(--surface) 9px 18px);
+    display: grid; place-items: center;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .piece .art .gl { font-size: 34px; filter: saturate(.85); }
+
+  .seal {
+    position: absolute; top: 8px; left: 8px;
+    display: flex; align-items: center; gap: 5px;
+    padding: 3px 8px; border-radius: 3px;
+    background: color-mix(in srgb, var(--ground) 78%, transparent);
+    border: 1px solid var(--rr); color: var(--rr);
+    font-family: ui-monospace, Menlo, monospace; font-size: 10px; letter-spacing: .07em; font-weight: 700;
+  }
+
+  .engbadge {
+    position: absolute; bottom: 8px; right: 8px;
+    display: flex; gap: 4px;
+  }
+  .engbadge span {
+    padding: 2px 6px; border-radius: 3px; font-size: 9.5px; letter-spacing: .06em;
+    background: color-mix(in srgb, var(--ground) 78%, transparent);
+    border: 1px solid var(--line); color: var(--muted);
+    font-family: ui-monospace, Menlo, monospace;
+  }
+
+  .piece .info { padding: 11px 12px 12px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  .piece .ttl { font-weight: 650; font-size: 14px; letter-spacing: -.01em; line-height: 1.35; }
+  .piece .by { color: var(--faint); font-size: 11.5px; }
+  .piece .foot { display: flex; align-items: baseline; gap: 8px; margin-top: auto; padding-top: 8px; }
+  .piece .prc { font-weight: 750; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+  .piece .dl { margin-left: auto; color: var(--faint); font-size: 11px; font-variant-numeric: tabular-nums; }
+
+  .feelbar { display: flex; align-items: center; gap: 7px; }
+  .feelbar .fb { flex: 1; height: 4px; border-radius: 3px; background: var(--surface-3); overflow: hidden; }
+  .feelbar .fb b { display: block; height: 100%; background: var(--rr); }
+  .feelbar .fl { color: var(--faint); font-size: 10px; font-family: ui-monospace, Menlo, monospace; letter-spacing: .06em; }
+
+  .empty { grid-column: 1/-1; padding: 56px; text-align: center; color: var(--faint); border: 1px dashed var(--line); border-radius: var(--radius); }
+
+  /* ================= drawer ================= */
+  .scrim {
+    position: fixed; inset: 0; background: rgba(8,8,6,.6); z-index: 50;
+    opacity: 0; pointer-events: none; transition: opacity .2s;
+  }
+  .scrim.on { opacity: 1; pointer-events: auto; }
+
+  .drawer {
+    position: fixed; top: 0; right: 0; bottom: 0; width: min(560px, 100%);
+    background: var(--surface); border-left: 1px solid var(--line); z-index: 51;
+    transform: translateX(102%); transition: transform .26s cubic-bezier(.2,.8,.2,1);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .drawer.on { transform: none; }
+  @media (prefers-reduced-motion: reduce) { .drawer, .scrim { transition: none; } }
+
+  .dhead { padding: 16px 20px; border-bottom: 1px solid var(--line); display: flex; align-items: flex-start; gap: 12px; }
+  .dhead h2 { margin: 0 0 3px; font-size: 17px; letter-spacing: -.02em; }
+  .dhead .by { color: var(--faint); }
+  .closeb { margin-left: auto; padding: 4px 9px; border-radius: 4px; color: var(--faint); border: 1px solid var(--line); }
+  .closeb:hover { color: var(--ink); border-color: var(--muted); }
+
+  .dbody { flex: 1; overflow-y: auto; padding: 18px 20px 26px; display: flex; flex-direction: column; gap: 20px; }
+
+  .sect { display: flex; flex-direction: column; gap: 10px; }
+  .sect > .m { color: var(--faint); padding-bottom: 5px; border-bottom: 1px solid var(--line-soft); }
+
+  .vp {
+    aspect-ratio: 16/9; border-radius: 5px; border: 1px solid var(--line);
+    background:
+      radial-gradient(120% 90% at 50% 110%, color-mix(in srgb, var(--rr) 22%, transparent), transparent 68%),
+      repeating-linear-gradient(45deg, var(--surface-2) 0 9px, var(--surface) 9px 18px);
+    display: grid; place-items: center; gap: 8px; color: var(--faint);
+  }
+  .vp .pl {
+    width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center;
+    border: 1px solid var(--rr); color: var(--rr); background: color-mix(in srgb, var(--rr) 12%, transparent);
+  }
+
+  .chk { display: flex; flex-direction: column; gap: 9px; }
+  .ck { display: grid; grid-template-columns: 15px 1fr 92px 38px; gap: 10px; align-items: center; font-size: 13px; }
+  .ck .ic { text-align: center; font-size: 12px; }
+  .ck.p .ic { color: var(--pass); }
+  .ck.f .ic { color: var(--fail); }
+  .ck .nm { color: var(--muted); }
+  .ck .bar { height: 5px; border-radius: 3px; background: var(--surface-3); overflow: hidden; }
+  .ck .bar b { display: block; height: 100%; }
+  .ck .sc { text-align: right; font-variant-numeric: tabular-nums; font-weight: 650; font-size: 12.5px; }
+
+  .kv { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--line-soft); font-size: 13px; }
+  .kv:last-child { border-bottom: 0; }
+  .kv .k { color: var(--faint); }
+  .kv .v { font-variant-numeric: tabular-nums; }
+
+  pre.code {
+    margin: 0; padding: 13px; border-radius: 5px; overflow-x: auto;
+    background: var(--ground); border: 1px solid var(--line);
+    font-family: ui-monospace, Menlo, monospace; font-size: 11.5px; line-height: 1.7;
+    color: var(--muted); white-space: pre; min-height: 96px;
+  }
+  pre.code .kw { color: var(--epic); }
+  pre.code .st { color: var(--pass); }
+  pre.code .cm { color: var(--faint); }
+  pre.code .fn { color: var(--brass); }
+  .caret { border-right: 2px solid var(--brass); animation: bl .9s steps(1) infinite; }
+  @keyframes bl { 50% { border-color: transparent; } }
+  @media (prefers-reduced-motion: reduce) { .caret { animation: none; } }
+
+  .dfoot { padding: 14px 20px; border-top: 1px solid var(--line); display: flex; gap: 10px; align-items: center; background: var(--surface-2); }
+  .dfoot .p { font-size: 19px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+  .buy {
+    margin-left: auto; padding: 10px 20px; border-radius: 5px;
+    background: var(--brass); color: #fff; font-weight: 750; font-size: 13.5px;
+  }
+  .buy:hover { filter: brightness(1.07); }
+  .ghostb { padding: 10px 15px; border-radius: 5px; border: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+  .ghostb:hover { border-color: var(--brass); color: var(--brass); }
+
+  /* ================= community ================= */
+  .comm { display: grid; grid-template-columns: minmax(0,1fr) 292px; gap: 26px; }
+  @media (max-width: 900px) { .comm { grid-template-columns: 1fr; } }
+
+  .post {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 16px; display: flex; flex-direction: column; gap: 11px; margin-bottom: 14px;
+  }
+  .phead { display: flex; align-items: center; gap: 10px; }
+  .ava {
+    width: 32px; height: 32px; border-radius: 4px; flex: none;
+    display: grid; place-items: center; font-weight: 800; font-size: 12px; color: #16161C;
+  }
+  .phead .nm { font-weight: 650; font-size: 13.5px; }
+  .phead .sub { color: var(--faint); font-size: 11.5px; }
+  .ptag {
+    margin-left: auto; padding: 2px 9px; border-radius: 20px; font-size: 10.5px;
+    border: 1px solid var(--line); color: var(--faint);
+    font-family: ui-monospace, Menlo, monospace; letter-spacing: .06em;
+  }
+  .ptag.wip { color: var(--rare); border-color: color-mix(in srgb, var(--rare) 50%, transparent); }
+  .ptag.ask { color: var(--epic); border-color: color-mix(in srgb, var(--epic) 50%, transparent); }
+  .ptag.ship { color: var(--pass); border-color: color-mix(in srgb, var(--pass) 50%, transparent); }
+
+  .pbody { font-size: 13.5px; line-height: 1.6; }
+  .pshot {
+    aspect-ratio: 21/9; border-radius: 5px; border: 1px solid var(--line-soft);
+    background: repeating-linear-gradient(45deg, var(--surface-2) 0 9px, var(--surface-3) 9px 18px);
+    display: grid; place-items: center; color: var(--faint); font-size: 24px;
+  }
+  .pacts { display: flex; gap: 6px; padding-top: 3px; }
+  .pacts button {
+    display: flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 4px;
+    border: 1px solid var(--line); color: var(--faint); font-size: 12px;
+  }
+  .pacts button:hover { border-color: var(--brass); color: var(--brass); }
+  .pacts button[aria-pressed="true"] { color: var(--brass); border-color: var(--brass); background: var(--brass-soft); }
+
+  .side { display: flex; flex-direction: column; gap: 16px; align-self: start; position: sticky; top: 78px; }
+  @media (max-width: 900px) { .side { position: static; } }
+
+  .box { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+  .box h3 { margin: 0; padding: 11px 14px; border-bottom: 1px solid var(--line-soft); font-size: 12.5px; font-weight: 650; display: flex; align-items: center; gap: 7px; }
+  .box .pad { padding: 12px 14px; }
+
+  .qrow { display: flex; align-items: center; gap: 10px; padding: 8px 14px; border-bottom: 1px solid var(--line-soft); font-size: 12.5px; }
+  .qrow:last-child { border-bottom: 0; }
+  .qrow .st2 { margin-left: auto; font-family: ui-monospace, Menlo, monospace; font-size: 10px; letter-spacing: .06em; }
+  .spin { width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--line); border-top-color: var(--brass); animation: sp .8s linear infinite; flex: none; }
+  @keyframes sp { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
+
+  .lead { display: flex; align-items: center; gap: 10px; padding: 7px 14px; border-bottom: 1px solid var(--line-soft); font-size: 12.5px; }
+  .lead:last-child { border-bottom: 0; }
+  .lead .rk { width: 16px; color: var(--faint); font-family: ui-monospace, Menlo, monospace; font-size: 11px; }
+  .lead .amt { margin-left: auto; font-variant-numeric: tabular-nums; color: var(--muted); font-size: 12px; }
+
+  .toast {
+    position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: var(--surface-3); border: 1px solid var(--brass-dim); color: var(--ink);
+    padding: 10px 18px; border-radius: 6px; font-size: 13px; z-index: 60;
+    transition: transform .25s cubic-bezier(.2,.8,.2,1);
+  }
+  .toast.on { transform: translateX(-50%) translateY(0); }
+
+  .note { margin-top: 34px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--faint); max-width: 62ch; }
+</style>
+
+<style id="igg-nav-css">
+  :root { --igg-navy:#28344E; --igg-dark:#1C1C1F; --igg-blue:#5383E8; --igg-dim:#9AA4AF; }
+  .igg-nav, .igg-nav * { box-sizing: border-box; }
+  .igg-nav { position: sticky; top: 0; z-index: 9000;
+    font-family: Roboto, system-ui, -apple-system, "Apple SD Gothic Neo", Pretendard, sans-serif; }
+  .igg-r1 { background: var(--igg-dark); border-bottom: 1px solid #2E2E35; }
+  .igg-r1in { max-width: 1240px; margin: 0 auto; padding: 0 20px; height: 44px;
+    display: flex; align-items: center; gap: 16px; }
+  .igg-logo { display: flex; align-items: center; gap: 7px; color: #fff; font-weight: 900;
+    font-size: 16px; letter-spacing: -.03em; text-decoration: none; flex: none; }
+  .igg-logo i { width: 15px; height: 15px; border: 3px solid #fff; border-radius: 50%; display: block; }
+  .igg-logo b { font-weight: 900; }
+  .igg-logo span { font-size: 9px; letter-spacing: .16em; color: #7B8494; font-weight: 700; }
+  .igg-r1 .igg-sp { margin-left: auto; }
+  .igg-ghost { padding: 5px 12px; border-radius: 4px; background: #424254; color: #C3CBD1;
+    font-size: 11.5px; text-decoration: none; border: 0; cursor: pointer; }
+  .igg-ghost:hover { background: #4E4E60; color: #fff; }
+  .igg-cta { padding: 5px 12px; border-radius: 4px; background: var(--igg-blue); color: #fff;
+    font-size: 11.5px; font-weight: 700; text-decoration: none; }
+
+  .igg-r2 { background: var(--igg-navy); }
+  .igg-r2in { max-width: 1240px; margin: 0 auto; padding: 0 20px; height: 46px;
+    display: flex; align-items: center; gap: 14px; }
+  .igg-tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+  .igg-tabs::-webkit-scrollbar { display: none; }
+  .igg-tabs a { padding: 6px 12px; border-radius: 4px; color: #C3CBD1; font-size: 12.5px;
+    text-decoration: none; white-space: nowrap; display: flex; align-items: center; gap: 4px; }
+  .igg-tabs a:hover { background: rgba(255,255,255,.09); color: #fff; }
+  .igg-tabs a[aria-current="page"] { background: var(--igg-blue); color: #fff; font-weight: 700; }
+  .igg-tabs sup { font-size: 8px; color: #FF6B7A; font-weight: 800; }
+  .igg-tabs a[aria-current="page"] sup { color: #FFD9DE; }
+  .igg-search { margin-left: auto; display: flex; align-items: center; gap: 6px;
+    background: #31313C; padding: 6px 10px; min-width: 190px; }
+  .igg-search input { background: none; border: 0; outline: none; color: #fff;
+    font-size: 12px; width: 100%; font-family: inherit; }
+  .igg-search input::placeholder { color: #7B8494; }
+  @media (max-width: 760px) { .igg-search { display: none; } }
+</style>
+
+<nav class="igg-nav">
+  <div class="igg-r1"><div class="igg-r1in">
+    <a class="igg-logo" href="index.html"><i></i><b>IndyGG</b><span>BY OP.GG</span></a>
+    <span class="igg-sp"></span>
+    <button class="igg-ghost" type="button">로그인</button>
+    <a class="igg-cta" href="community.html">에셋 올리기</a>
+  </div></div>
+  <div class="igg-r2"><div class="igg-r2in">
+    <div class="igg-tabs"><a href="index.html">홈</a><a href="market.html" aria-current="page">마켓</a><a href="community.html">커뮤니티</a><a href="scene.html">화풍 시연<sup>N</sup></a><a href="viewer3d.html">3D 뷰어</a></div>
+    <span class="igg-search">🔍<input placeholder="에셋 · 창작자 · 게임 검색" autocomplete="off"></span>
+  </div></div>
+</nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="shell">
+
+  <section class="mast">
+    <div>
+      <h1>검수를 통과한<br><em>에셋만</em> 있습니다.</h1>
+      <p>올라온 것의 <strong style="color:var(--ink)">61.2%가 떨어집니다.</strong>
+        면 무결성·텍스처·LOD·런타임 비용·라이선스 출처·코드 품질·통합 난이도까지
+        일곱 가지를 기계가 채점하고, 통과한 것만 여기 남습니다.</p>
+    </div>
+    <div class="livestats">
+      <div class="lsrow"><span class="n">34</span><span class="m l">검수 완료</span><span class="t">실제 제품</span></div>
+      <div class="lsrow"><span class="n">61.2%</span><span class="m l">검수 탈락률</span><span class="t">엄격 유지</span></div>
+      <div class="lsrow"><span class="n">$3,368</span><span class="m l">전체 카탈로그 정가</span><span class="t">34개 중 7개 무료</span></div>
+    </div>
+  </section>
+
+  <!-- ================= MARKET ================= -->
+  <div class="page on" id="p-market">
+    <div class="market">
+      <aside class="rail">
+        <div class="rgroup">
+          <div class="m">분류</div>
+          <div id="cats"></div>
+        </div>
+        <div class="rgroup">
+          <div class="m">엔진</div>
+          <div id="engs"></div>
+        </div>
+        <div class="rgroup">
+          <div class="m">검수 점수</div>
+          <div class="scorectl">
+            <div class="row"><span style="color:var(--muted);font-size:12.5px">최소</span><output id="so">0</output></div>
+            <input type="range" id="srange" min="0" max="95" value="0" step="5" aria-label="최소 검수 점수" />
+          </div>
+        </div>
+        <div class="rgroup">
+          <div class="m">등급 기준</div>
+          <div style="display:flex;flex-direction:column;gap:5px;font-size:11.5px;color:var(--muted)">
+            <span><b style="color:var(--legend)">◆ 챌린저</b> 90+ · 게임필까지 검증</span>
+            <span><b style="color:var(--epic)">◆ 다이아</b> 80+ · 통합까지 확인</span>
+            <span><b style="color:var(--rare)">◆ 플래티넘</b> 70+ · 기본 검수 통과</span>
+            <span><b style="color:var(--common)">◆ 실버</b> 70 미만 · 참고용</span>
+          </div>
+        </div>
+      </aside>
+
+      <div>
+        <div class="toolbar">
+          <input class="search" id="q" placeholder="조각 검색 — 보스전, 인벤토리, 히트스톱…" autocomplete="off" />
+          <select class="sortsel" id="sort">
+            <option value="score">검수 점수순</option>
+            <option value="dl">인기순</option>
+            <option value="new">최신순</option>
+            <option value="price">가격 낮은순</option>
+          </select>
+        </div>
+        <div class="pgrid" id="grid"></div>
+        <p class="note m">제품명 · 제작사 · 가격 · 판매처 = 실제 조사값 (2026.07) &nbsp;|&nbsp; 검수 점수 · 게임 필 · 받은 사람 수 = IndyGG 가상 지표</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= COMMUNITY ================= -->
+  <div class="page" id="p-comm">
+    <div class="comm">
+      <div>
+        <div class="toolbar">
+          <div class="tabs" id="ftabs" style="gap:4px">
+            <button data-f="all" aria-current="true">전체</button>
+            <button data-f="wip">작업중</button>
+            <button data-f="ask">피드백 요청</button>
+            <button data-f="ship">출시</button>
+          </div>
+        </div>
+        <div id="feed"></div>
+      </div>
+
+      <div class="side">
+        <div class="box">
+          <h3><span class="spin"></span> 지금 검수 중</h3>
+          <div id="queue"></div>
+        </div>
+        <div class="box">
+          <h3>검수 점수 상위 제작사</h3>
+          <div id="board"></div>
+        </div>
+        <div class="box">
+          <h3>검수 기준</h3>
+          <div class="pad" style="color:var(--muted);font-size:12.5px;line-height:1.65">
+            올라오는 조각은 사람이 보기 전에 <b style="color:var(--brass)">6개 자동 검사</b>를 거침 —
+            에셋 무결성, 런타임 성능, 라이선스 출처, 코드 품질, 통합 난이도, 그리고
+            <b style="color:var(--brass)">게임 필</b>(입력 반응·연출 타이밍 실측).
+            <br><br>지금까지 <b style="color:var(--ink)">61.2%</b>가 떨어짐. 그게 이 마켓의 상품임.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true"></aside>
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const el = (t, c, h) => { const n = document.createElement(t); if (c) n.className = c; if (h != null) n.innerHTML = h; return n; };
+  const esc = s => String(s).replace(/[&<>]/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[m]));
+
+  const toastEl = $("#toast"); let tt;
+  const toast = m => { toastEl.textContent = m; toastEl.classList.add("on"); clearTimeout(tt); tt = setTimeout(() => toastEl.classList.remove("on"), 2100); };
+
+  $("#theme").onclick = () => {
+    const cur = document.documentElement.getAttribute("data-theme");
+    const dark = cur ? cur === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    document.documentElement.setAttribute("data-theme", dark ? "light" : "dark");
+  };
+
+  /* ---------- data ---------- */
+  const CATS = [
+    ["all", "전체"], ["move", "이동 · 컨트롤러"], ["combat", "전투 · AI"], ["feel", "게임 필"],
+    ["ui", "UI · 텍스트"], ["system", "시스템"], ["level", "레벨 · 월드"],
+    ["art", "아트 · 모델"], ["audio", "사운드"], ["narrative", "내러티브"], ["tool", "툴 · 에디터"],
+  ];
+  const ENGS = [["any", "전체"], ["unity", "Unity"], ["unreal", "Unreal"], ["godot", "Godot"]];
+
+  // 제품명 · 제작사 · 가격 · 판매처 · 평점수 = 실제 조사값 (2026.07 기준)
+  // 검수 점수 · 게임 필 점수 · 받은 사람 수 = IndyGG 가상 지표 (지어낸 값)
+  const PIECES = [
+    { id: 1, t: "Feel", by: "More Mountains", cat: "feel", eng: ["unity"], score: 97, feel: 98, price: 50, dl: 41200, gl: "💥", days: 2, rat: 238, src: "Unity Asset Store",
+      desc: "게임 필 하나만 파고든 물건. 히트스톱, 카메라 셰이크, 색 플래시, 진동, 사운드를 'MMFeedbacks' 한 컴포넌트로 묶어서 인스펙터에서 조립함. 이 마켓의 게임 필 항목이 존재하는 이유 같은 에셋임." },
+    { id: 2, t: "Corgi Engine — 2D + 2.5D Platformer", by: "More Mountains", cat: "move", eng: ["unity"], score: 94, feel: 93, price: 75, dl: 28400, gl: "🏃", days: 6, rat: 832, src: "Unity Asset Store",
+      desc: "레이캐스트 기반 플랫포머 컨트롤러. 점프·대시·기어가기·제트팩까지 이동 옵션이 전부 들어있고, 코요테 타임 같은 감각 파라미터가 인스펙터에 노출돼 있음." },
+    { id: 3, t: "TopDown Engine", by: "More Mountains", cat: "move", eng: ["unity"], score: 92, feel: 91, price: 75, dl: 16800, gl: "🕹", days: 6, rat: 355, src: "Unity Asset Store",
+      desc: "탑다운 2D/3D 공용 엔진. Corgi와 같은 뼈대를 쓰지만 시점이 다름. 모바일 대응과 확장성 위주로 짜여 있음." },
+    { id: 4, t: "Odin Inspector and Serializer", by: "Sirenix", cat: "tool", eng: ["unity"], score: 96, feel: 62, price: 55, dl: 52100, gl: "🔧", days: 3, rat: 785, src: "Unity Asset Store",
+      desc: "커스텀 에디터 코드를 한 줄도 안 쓰고 인스펙터를 뜯어고침. 직렬화도 같이 해결됨. 다만 매출 넘어가면 별도 엔터프라이즈 라이선스 필요 — 구매 전 EULA 확인 권장." },
+    { id: 5, t: "A* Pathfinding Project Pro", by: "Aron Granberg", cat: "combat", eng: ["unity"], score: 94, feel: 74, price: 140, dl: 33900, gl: "🧭", days: 11, src: "Unity Asset Store",
+      desc: "유니티 길찾기의 사실상 표준. 그리드/내비메시/포인트 그래프, 로컬 회피, 런타임 재계산. 유닛 수천 기 규모에서도 버팀." },
+    { id: 6, t: "Behavior Designer Pro 3", by: "Opsive", cat: "combat", eng: ["unity"], score: 89, feel: 78, price: 145, dl: 12400, gl: "🧠", days: 8, src: "Unity Asset Store",
+      desc: "노드 기반 비헤이비어 트리. DOTS로 돌아가서 적 AI를 많이 굴려야 하는 게임에 맞음. 러닝커브가 있는 편." },
+    { id: 7, t: "Final IK", by: "RootMotion", cat: "move", eng: ["unity"], score: 93, feel: 90, price: 90, dl: 27600, gl: "🦴", days: 14, src: "Unity Asset Store",
+      desc: "역운동학 종합. 발이 지면에 붙고, 손이 물건을 정확히 잡고, 시선이 목표를 따라감. 캐릭터가 '살아있는 느낌'의 절반은 여기서 나옴." },
+    { id: 8, t: "Hot Reload — Edit Code Without Compiling", by: "The Naughty Cult", cat: "tool", eng: ["unity"], score: 90, feel: 58, price: 79.99, dl: 18700, gl: "⚡", days: 1, rat: 291, src: "Unity Asset Store",
+      desc: "플레이 중에 C# 고치면 멈추지 않고 바로 반영됨. 게임 필 튜닝처럼 수백 번 반복해야 하는 작업에서 체감이 제일 큼." },
+    { id: 9, t: "PlayMaker 2", by: "Hutong Games", cat: "tool", eng: ["unity"], score: 84, feel: 66, price: 32.50, dl: 44300, gl: "🧩", days: 4, src: "Unity Asset Store",
+      desc: "코드 없이 상태머신으로 로직 짜는 비주얼 스크립팅. 프로그래머 없는 팀이 프로토타입 돌릴 때 많이 씀." },
+    { id: 10, t: "Amplify Shader Editor", by: "Amplify Creations", cat: "tool", eng: ["unity"], score: 91, feel: 84, price: 80, dl: 31200, gl: "🎨", days: 9, rat: 701, src: "Unity Asset Store",
+      desc: "노드로 셰이더 만드는 에디터. 셰이더그래프보다 먼저 나왔고 여전히 기능이 더 넓음. 스타일라이즈드 룩 잡을 때 필수급." },
+    { id: 11, t: "Text Animator for Unity", by: "Febucci", cat: "ui", eng: ["unity"], score: 92, feel: 95, price: 65, dl: 9800, gl: "🔤", days: 5, src: "Unity Asset Store",
+      desc: "대사 텍스트가 흔들리고 튀고 물결치게 만듦. 태그만 넣으면 됨. 대사 연출의 체감 품질이 이거 하나로 확 올라감." },
+    { id: 12, t: "Magica Cloth 2", by: "Magica Soft", cat: "feel", eng: ["unity"], score: 88, feel: 89, price: 35, dl: 14100, gl: "🧣", days: 7, src: "Unity Asset Store",
+      desc: "머리카락·옷·장신구 흔들림 물리. Dynamic Bone 대안으로 많이 넘어감. Burst 기반이라 캐릭터 여럿 나와도 버팀." },
+    { id: 13, t: "Stylized Water 3", by: "Staggart Creations", cat: "level", eng: ["unity"], score: 90, feel: 86, price: 49, dl: 11600, gl: "🌊", days: 3, src: "Unity Asset Store",
+      desc: "사실적인 물이 아니라 예쁜 물. URP 기준으로 가볍고, 파도·거품·수중 굴절 파라미터가 직관적임." },
+    { id: 14, t: "Voxel Play 4", by: "Kronnect", cat: "level", eng: ["unity"], score: 85, feel: 80, price: 75, dl: 6400, gl: "🧱", days: 10, src: "Unity Asset Store",
+      desc: "마인크래프트류 복셀 월드 프레임워크. 무한 지형 생성, 파괴/건설, 조명까지 포함." },
+    { id: 15, t: "Grabbit 2 — Physics Placement", by: "Jungle", cat: "tool", eng: ["unity"], score: 87, feel: 72, price: 40, dl: 8200, gl: "🪄", days: 2, src: "Unity Asset Store",
+      desc: "씬에 오브젝트 배치할 때 물리로 툭 떨어뜨려 자연스럽게 놓아줌. 콜라이더 자동 생성도 같이. 레벨 꾸미는 시간이 반으로 줌." },
+    { id: 16, t: "Poly Universal Pack", by: "polyperfect", cat: "art", eng: ["unity"], score: 86, feel: 70, price: 300, dl: 5100, gl: "📦", days: 12, src: "Unity Asset Store",
+      desc: "6,000개 넘는 로우폴리 모델. 도시·판타지·SF·생존 테마를 한 번에 커버함. 톤이 일관돼서 섞어 써도 안 튐." },
+    { id: 17, t: "Low Poly Animated Animals", by: "polyperfect", cat: "art", eng: ["unity"], score: 83, feel: 76, price: 100, dl: 13700, gl: "🦊", days: 16, rat: 146, src: "Unity Asset Store",
+      desc: "애니메이션 붙은 로우폴리 동물 세트. 오픈월드에 생태계 깔 때 제일 빠른 길." },
+    { id: 18, t: "Low Poly Modular NPCs — Lords & Outcasts", by: "Polytope Studio", cat: "art", eng: ["unity"], score: 84, feel: 73, price: 69.99, dl: 4300, gl: "🧑‍🌾", days: 5, src: "Unity Asset Store",
+      desc: "중세 판타지 모듈러 NPC. 부위별로 조합해서 마을 사람 수십 명을 안 겹치게 뽑을 수 있음." },
+    { id: 19, t: "Medieval & Fantasy Giga Bundle", by: "Hivemind", cat: "art", eng: ["unity"], score: 81, feel: 68, price: 179.99, dl: 3900, gl: "🏰", days: 8, src: "Unity Asset Store",
+      desc: "중세 판타지 환경 대용량 번들. 건물·소품·자연물이 한 세트로 와서 룩 통일이 쉬움." },
+    { id: 20, t: "Sky Master — Weather, Lighting & Water", by: "ARTnGAME", cat: "level", eng: ["unity"], score: 79, feel: 77, price: 199, dl: 2800, gl: "🌦", days: 13, src: "Unity Asset Store",
+      desc: "날씨·시간 순환·볼류메트릭 구름·물까지 묶인 번들. 기능은 방대한데 문서가 얇은 편이라 통합 난이도가 높음." },
+    { id: 21, t: "LUMINA GI 2024 — Voxel Global Illumination", by: "ARTnGAME", cat: "level", eng: ["unity"], score: 76, feel: 82, price: 99, dl: 1900, gl: "💡", days: 15, src: "Unity Asset Store",
+      desc: "실시간 복셀 전역조명. 라이트맵 굽지 않고 간접광을 뽑음. 성능 부담이 있어서 타겟 사양 확인 필수." },
+    { id: 22, t: "Aeon — Sci-Fi Sound Bundle", by: "Shapeforms", cat: "audio", eng: ["unity", "unreal", "godot"], score: 91, feel: 88, price: 149.99, dl: 7200, gl: "🔊", days: 4, src: "Unity Asset Store",
+      desc: "SF 효과음 대용량 팩. UI·무기·기계·앰비언트가 톤 통일돼서 들어있음. 사운드는 직접 만들기 제일 어려운 영역이라 가성비가 좋음." },
+    { id: 23, t: "Big Fantasy Sound Effects Bundle", by: "Cyberwave Orchestra", cat: "audio", eng: ["unity", "unreal", "godot"], score: 87, feel: 85, price: 174.50, dl: 5600, gl: "🎺", days: 9, src: "Unity Asset Store",
+      desc: "판타지 효과음 모음. 마법·검격·몬스터·환경음. 로열티프리라 상업 프로젝트에 바로 씀." },
+    { id: 24, t: "Controller Overlays & Button Kits", by: "nickknacks", cat: "ui", eng: ["unity", "unreal", "godot"], score: 80, feel: 71, price: 19.99, dl: 6900, gl: "🎮", days: 6, src: "Unity Asset Store",
+      desc: "패드 9종 + 키보드/마우스 버튼 아이콘 세트. 3가지 스타일. 튜토리얼 UI에서 '이 버튼 누르셈' 표시할 때 필요함." },
+    { id: 25, t: "AVPro Video v3 — Ultra Edition", by: "RenderHeads", cat: "system", eng: ["unity"], score: 89, feel: 60, price: 900, dl: 1400, gl: "🎬", days: 11, src: "Unity Asset Store",
+      desc: "유니티 안에서 영상 재생. 유니티 기본 VideoPlayer가 못 하는 코덱·스트리밍·360도를 처리함. 가격대가 스튜디오용임." },
+    { id: 26, t: "Aseprite", by: "Igara Studio", cat: "art", eng: ["unity", "unreal", "godot"], score: 95, feel: 92, price: 19.99, dl: 128000, gl: "🖌", days: 1, src: "Steam · itch.io",
+      desc: "픽셀아트 도트 찍는 표준 도구. 어니언스킨, 타임라인, 팔레트 관리, 시트 내보내기. 인디 2D 씬에서 사실상 기본값임." },
+    { id: 27, t: "Spine — Essential", by: "Esoteric Software", cat: "art", eng: ["unity", "unreal", "godot"], score: 93, feel: 94, price: 69, dl: 34700, gl: "🦴", days: 7, src: "공식 사이트",
+      desc: "2D 스켈레탈 애니메이션. 프레임을 한 장씩 그리는 대신 뼈를 움직임. 유니티·언리얼·고도용 런타임을 공식 제공함. 프로 버전은 $329." },
+    { id: 28, t: "LDtk — Level Designer Toolkit", by: "Deepnight Games", cat: "tool", eng: ["unity", "godot"], score: 92, feel: 87, price: 0, dl: 61300, gl: "🗺", days: 2, src: "오픈소스 · 기부",
+      desc: "데드셀 디렉터가 만든 2D 레벨 에디터. 규칙 기반 타일 자동 배치가 핵심이고, JSON으로 뽑아서 아무 엔진에나 붙임. 무료." },
+    { id: 29, t: "FMOD Studio", by: "Firelight Technologies", cat: "audio", eng: ["unity", "unreal", "godot"], score: 94, feel: 91, price: 0, dl: 88400, gl: "🎚", days: 3, src: "매출 $200K 미만 무료",
+      desc: "적응형 오디오 미들웨어 업계 표준. 상황에 따라 음악이 자연스럽게 갈라지고 합쳐짐. 인디 매출 구간에선 무료라 안 쓸 이유가 없음." },
+    { id: 30, t: "Wwise", by: "Audiokinetic", cat: "audio", eng: ["unity", "unreal", "godot"], score: 90, feel: 88, price: 0, dl: 42600, gl: "🎛", days: 10, src: "에셋 200개 미만 무료",
+      desc: "FMOD의 경쟁자. 기능은 더 방대하지만 러닝커브가 가파름. AAA 현장 점유율이 높아서 배워두면 이직에 유리함." },
+    { id: 31, t: "Yarn Spinner", by: "Secret Lab", cat: "narrative", eng: ["unity", "godot"], score: 89, feel: 83, price: 0, dl: 24800, gl: "🧶", days: 4, src: "오픈소스 (MIT)",
+      desc: "대사 스크립트 언어 + 런타임. 작가가 코드 몰라도 분기 대사를 씀. Night in the Woods, A Short Hike 등이 씀. 무료." },
+    { id: 32, t: "ink", by: "inkle", cat: "narrative", eng: ["unity", "unreal", "godot"], score: 91, feel: 85, price: 0, dl: 31500, gl: "✒️", days: 6, src: "오픈소스 (MIT)",
+      desc: "80 Days, Heaven's Vault 만든 스튜디오가 자기들 게임에 쓰려고 만든 내러티브 스크립팅 언어. 상태 추적이 강력함. 무료." },
+    { id: 33, t: "Kenney Game Assets", by: "Kenney", cat: "art", eng: ["unity", "unreal", "godot"], score: 82, feel: 74, price: 0, dl: 214000, gl: "🧊", days: 1, src: "CC0 · 퍼블릭 도메인",
+      desc: "4만 개 넘는 2D·3D·UI·오디오 에셋을 전부 CC0로 뿌림. 프로토타입 단계에서 이걸 안 쓴 인디 개발자를 찾기가 더 어려움." },
+    { id: 34, t: "Blender", by: "Blender Foundation", cat: "tool", eng: ["unity", "unreal", "godot"], score: 93, feel: 79, price: 0, dl: 340000, gl: "🌀", days: 1, src: "오픈소스 (GPL)",
+      desc: "모델링·리깅·애니메이션·렌더링 전부. 유료 DCC와 격차가 사실상 사라졌고 가격은 0원. 인디 3D 파이프라인의 시작점." },
+  ];
+
+  const rarity = s => s >= 90 ? ["legend", "챌린저"] : s >= 80 ? ["epic", "다이아"] : s >= 70 ? ["rare", "플래티넘"] : ["common", "실버"];
+  const won = n => n === 0 ? "무료" : "$" + (Number.isInteger(n) ? n : n.toFixed(2));
+  const CATNAME = Object.fromEntries(CATS);
+  const ENGNAME = { unity: "UNITY", unreal: "UNREAL", godot: "GODOT" };
+
+  /* ---------- page tabs ---------- */
+  $$(".tabs > button[data-p]").forEach(b => b.onclick = () => {
+    $$(".tabs > button[data-p]").forEach(o => o.setAttribute("aria-current", String(o === b)));
+    $$(".page").forEach(p => p.classList.toggle("on", p.id === "p-" + b.dataset.p));
+    window.scrollTo(0, 0);
+  });
+
+  /* ---------- filters ---------- */
+  let fc = "all", fe = "any", fs = 0, fq = "", fsort = "score";
+
+  const countCat = id => id === "all" ? PIECES.length : PIECES.filter(p => p.cat === id).length;
+  const countEng = id => id === "any" ? PIECES.length : PIECES.filter(p => p.eng.includes(id)).length;
+
+  $("#cats").append(...CATS.map(([id, nm]) => {
+    const b = el("button", "fbtn", `<span>${nm}</span><span class="c">${countCat(id)}</span>`);
+    b.setAttribute("aria-pressed", String(id === "all"));
+    b.onclick = () => { fc = id; $$("#cats .fbtn").forEach(o => o.setAttribute("aria-pressed", "false")); b.setAttribute("aria-pressed", "true"); render(); };
+    return b;
+  }));
+
+  $("#engs").append(...ENGS.map(([id, nm]) => {
+    const b = el("button", "fbtn", `<span>${nm}</span><span class="c">${countEng(id)}</span>`);
+    b.setAttribute("aria-pressed", String(id === "any"));
+    b.onclick = () => { fe = id; $$("#engs .fbtn").forEach(o => o.setAttribute("aria-pressed", "false")); b.setAttribute("aria-pressed", "true"); render(); };
+    return b;
+  }));
+
+  $("#srange").oninput = e => { fs = +e.target.value; $("#so").value = fs; render(); };
+  $("#q").oninput = e => { fq = e.target.value.trim().toLowerCase(); render(); };
+  $("#sort").onchange = e => { fsort = e.target.value; render(); };
+
+  /* ---------- cart ---------- */
+  const cart = new Set();
+  const syncCart = () => $("#cartn").textContent = cart.size;
+  $("#cartb").onclick = () => toast(cart.size ? `${cart.size}개 담김 · ${won([...cart].reduce((a, id) => a + PIECES.find(p => p.id === id).price, 0))}` : "아직 담은 조각 없음");
+
+  /* ---------- grid ---------- */
+  let sel = null;
+
+  const render = () => {
+    const list = PIECES
+      .filter(p => (fc === "all" || p.cat === fc) && (fe === "any" || p.eng.includes(fe)) && p.score >= fs)
+      .filter(p => !fq || (p.t + p.by + p.desc + CATNAME[p.cat]).toLowerCase().includes(fq))
+      .sort((a, b) =>
+        fsort === "score" ? b.score - a.score :
+        fsort === "dl" ? b.dl - a.dl :
+        fsort === "new" ? a.days - b.days : a.price - b.price);
+
+    const g = $("#grid"); g.innerHTML = "";
+    if (!list.length) { g.append(el("div", "empty", "조건에 맞는 조각이 없음.<br>검수 점수 기준을 낮추거나 분류를 넓혀보셈.")); return; }
+
+    list.forEach(p => {
+      const [rk, rn] = rarity(p.score);
+      const b = el("button", "piece");
+      b.style.setProperty("--rr", `var(--${rk})`);
+      b.setAttribute("aria-pressed", String(sel === p.id));
+      b.innerHTML = `
+        <div class="art">
+          <span class="gl">${p.gl}</span>
+          <span class="seal">◆ ${rn} ${p.score}</span>
+          <span class="engbadge">${p.eng.map(e => `<span>${ENGNAME[e]}</span>`).join("")}</span>
+        </div>
+        <div class="info">
+          <span class="ttl">${esc(p.t)}</span>
+          <span class="by">${esc(p.by)} · ${CATNAME[p.cat]}</span>
+          <div class="feelbar">
+            <span class="fl">필</span>
+            <span class="fb"><b style="width:${p.feel}%"></b></span>
+            <span class="fl">${p.feel}</span>
+          </div>
+          <div class="foot">
+            <span class="prc">${won(p.price)}</span>
+            <span class="dl">↓ ${p.dl.toLocaleString()}</span>
+          </div>
+        </div>`;
+      b.onclick = () => openDrawer(p);
+      g.append(b);
+    });
+  };
+
+  /* ---------- drawer ---------- */
+  const CHECKS = [
+    { k: "에셋 무결성", d: "토폴로지 · UV · LOD", w: 0 },
+    { k: "런타임 성능", d: "실측 프레임 영향", w: 1 },
+    { k: "라이선스 출처", d: "학습 소스 추적", w: 2 },
+    { k: "코드 품질", d: "결합도 · 테스트", w: 3 },
+    { k: "통합 난이도", d: "붙이는 데 걸리는 시간", w: 4 },
+    { k: "게임 필", d: "입력 반응 · 연출 타이밍", w: 5 },
+  ];
+
+  const drawer = $("#drawer"), scrim = $("#scrim");
+  const closeDrawer = () => { drawer.classList.remove("on"); scrim.classList.remove("on"); drawer.setAttribute("aria-hidden", "true"); sel = null; render(); };
+  scrim.onclick = closeDrawer;
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && drawer.classList.contains("on")) closeDrawer(); });
+
+  function openDrawer(p) {
+    sel = p.id; render();
+    const [rk, rn] = rarity(p.score);
+    drawer.style.setProperty("--rr", `var(--${rk})`);
+    drawer.setAttribute("aria-hidden", "false");
+
+    // per-check scores derived from the piece so the report reads consistent
+    const scores = CHECKS.map((c, i) => {
+      const base = i === 5 ? p.feel : p.score;
+      const jitter = [(p.id * 7) % 9 - 4, (p.id * 11) % 7 - 3, (p.id * 13) % 5 - 2, (p.id * 17) % 11 - 5, (p.id * 19) % 9 - 4, 0][i];
+      return Math.max(31, Math.min(99, base + jitter));
+    });
+
+    drawer.innerHTML = `
+      <div class="dhead">
+        <div>
+          <h2>${esc(p.t)}</h2>
+          <span class="by">${esc(p.by)} · ${CATNAME[p.cat]} · ${p.days}일 전 갱신</span>
+        </div>
+        <button class="closeb m" id="dclose">닫기 ESC</button>
+      </div>
+      <div class="dbody">
+        <div class="vp">
+          <div class="pl">▶</div>
+          <span class="m">인게임 미리보기 · 42초</span>
+        </div>
+
+        <p style="margin:0;color:var(--muted);font-size:13.5px;line-height:1.65">${esc(p.desc)}</p>
+
+        <div class="sect">
+          <div class="m">자동 검수 리포트 · 종합 ${p.score}점 <span style="color:var(--${rk})">◆ ${rn}</span></div>
+          <div class="chk">
+            ${CHECKS.map((c, i) => {
+              const s = scores[i], pass = s >= 70;
+              return `<div class="ck ${pass ? "p" : "f"}">
+                <span class="ic">${pass ? "✓" : "✕"}</span>
+                <span class="nm">${c.k} <span style="color:var(--faint);font-size:11.5px">${c.d}</span></span>
+                <span class="bar"><b style="width:${s}%;background:var(--${pass ? "pass" : "fail"})"></b></span>
+                <span class="sc">${s}</span>
+              </div>`;
+            }).join("")}
+          </div>
+        </div>
+
+        <div class="sect">
+          <div class="m">사양</div>
+          <div>
+            <div class="kv"><span class="k">엔진</span><span class="v">${p.eng.map(e => ENGNAME[e]).join(" · ")}</span></div>
+            <div class="kv"><span class="k">실제 판매처</span><span class="v">${esc(p.src)}</span></div>
+            <div class="kv"><span class="k">실제 가격</span><span class="v">${won(p.price)}</span></div>
+            ${p.rat ? `<div class="kv"><span class="k">실제 평점 수</span><span class="v">${p.rat.toLocaleString()}개</span></div>` : ""}
+            <div class="kv"><span class="k">받은 사람</span><span class="v" style="color:var(--faint)">${p.dl.toLocaleString()}명 · 가상</span></div>
+            <div class="kv"><span class="k">평균 통합 시간</span><span class="v" style="color:var(--faint)">${(6 + (p.id * 13) % 40)}분 · 가상</span></div>
+          </div>
+        </div>
+
+        <div class="sect">
+          <div class="m">내 프로젝트에 붙이기</div>
+          <p style="margin:0;color:var(--faint);font-size:12.5px">프로젝트 구조를 읽고 통합 코드를 만들어줌. 이 조각의 값을 님 게임 톤에 맞춰 다시 잡아줌.</p>
+          <pre class="code" id="gen"><span class="cm">// "코드 생성" 누르면 여기에 나옴</span></pre>
+          <button class="ghostb" id="genb" style="align-self:flex-start">⚡ 통합 코드 생성</button>
+        </div>
+      </div>
+      <div class="dfoot">
+        <span class="p">${won(p.price)}</span>
+        <button class="ghostb" id="wish">제작사에 질문</button>
+        <button class="buy" id="add">${cart.has(p.id) ? "담김 ✓" : "담기"}</button>
+      </div>`;
+
+    $("#dclose", drawer).onclick = closeDrawer;
+    $("#wish", drawer).onclick = () => toast("창작자 " + p.by + " 에게 질문 보냄");
+    $("#add", drawer).onclick = e => {
+      if (cart.has(p.id)) { cart.delete(p.id); e.target.textContent = "담기"; toast("뺐음"); }
+      else { cart.add(p.id); e.target.textContent = "담김 ✓"; toast(p.t + " 담음"); }
+      syncCart();
+    };
+
+    $("#genb", drawer).onclick = () => typeCode(p);
+
+    drawer.classList.add("on"); scrim.classList.add("on");
+  }
+
+  function typeCode(p) {
+    const box = $("#gen", drawer), btn = $("#genb", drawer);
+    btn.disabled = true; btn.textContent = "생성 중…";
+    const lines = [
+      `<span class="cm">// 프로젝트 스캔: Assets/Scripts · ${5 + p.id * 3}개 파일 분석됨</span>`,
+      `<span class="cm">// 톤 매칭: 님 게임은 '무겁고 느린' 쪽 → 값 재조정함</span>`,
+      ``,
+      `<span class="kw">using</span> IndyGG.<span class="fn">${p.cat === "combat" ? "Boss" : p.cat === "feel" ? "Feel" : "Kit"}</span>;`,
+      ``,
+      `<span class="kw">public class</span> <span class="fn">Bootstrap</span> : MonoBehaviour {`,
+      `  <span class="kw">void</span> <span class="fn">Awake</span>() {`,
+      `    <span class="kw">var</span> kit = IndyGG.<span class="fn">Load</span>(<span class="st">"${p.by}/${p.id}"</span>);`,
+      `    kit.tuning.weight   = <span class="st">1.35f</span>;  <span class="cm">// 기본 1.0 → 님 톤 반영</span>`,
+      `    kit.tuning.response = <span class="st">0.82f</span>;  <span class="cm">// 입력 반응 살짝 둔하게</span>`,
+      `    kit.<span class="fn">BindTo</span>(playerController);`,
+      `  }`,
+      `}`,
+      ``,
+      `<span class="cm">// 충돌 없음 · 예상 통합 시간 ${(6 + (p.id * 13) % 40)}분</span>`,
+    ];
+    box.innerHTML = "";
+    let i = 0;
+    const step = () => {
+      if (i >= lines.length) {
+        btn.disabled = false; btn.textContent = "⚡ 다시 생성";
+        toast("통합 코드 생성됨 — 충돌 0건");
+        return;
+      }
+      box.innerHTML = lines.slice(0, i + 1).join("\n") + '<span class="caret"></span>';
+      i++;
+      setTimeout(step, 75);
+    };
+    step();
+  }
+
+  /* ---------- community ---------- */
+  const AVCOL = ["--legend", "--rare", "--epic", "--pass"];
+  const POSTS = [
+    { by: "More Mountains", ini: "M", tag: "ship", tn: "출시", when: "2시간 전", sub: "Feel 4.3 업데이트",
+      body: "MMFeedbacks에 시간 감속 곡선을 따로 뺐음. 사망 연출에서 히트스톱만으로는 부족하다는 피드백이 많았어서. 검수 게임 필 98점 — 이 마켓에서 아직 안 깨진 최고점임.", shot: "💥", likes: 412, cmt: 63 },
+    { by: "익명 인디", ini: "익", tag: "ask", tn: "피드백", when: "5시간 전", sub: "Odin 살까 말까",
+      body: "인스펙터 커스텀 짜는 데 시간을 너무 씀. Odin이 $55인데 세일 때 $27.50까지 떨어진다길래 기다리는 중임. 근데 매출 넘으면 엔터프라이즈 $250/seat 붙는다는 게 걸림. 나중에 갈아타기 힘들다는 얘기 진짜임?", shot: "🔧", likes: 186, cmt: 94 },
+    { by: "도트찍는사람", ini: "도", tag: "wip", tn: "작업중", when: "어제", sub: "Aseprite → LDtk 파이프라인",
+      body: "Aseprite에서 타일셋 뽑고 LDtk에서 규칙 기반으로 배치하는 흐름 정리했음. LDtk가 무료인데 데드셀 디렉터가 만든 거라 완성도가 이상할 정도로 높음. JSON으로 나와서 엔진 안 가림.", shot: "🗺", likes: 238, cmt: 41 },
+    { by: "점프감각", ini: "점", tag: "ask", tn: "피드백", when: "어제", sub: "코요테 타임 기본값",
+      body: "Corgi Engine 기본 코요테 타임이 관대하다는 얘기가 있는데, 셀레스테가 0.1초임. 처음 만드는 사람 기준이면 관대한 게 낫지 않음? 이런 감각 파라미터 기본값은 누가 정하는 게 맞는 건지 모르겠음.", shot: "🏃", likes: 157, cmt: 88 },
+    { by: "사운드늦게함", ini: "사", tag: "ask", tn: "피드백", when: "3일 전", sub: "FMOD vs Wwise",
+      body: "둘 다 인디 구간에선 무료인데 뭐부터 배워야 함? Wwise가 현장 점유율 높아서 이직에 낫다는 얘기랑, FMOD가 러닝커브 완만해서 게임 완성이 먼저라는 얘기가 갈림. 오디오를 맨 마지막에 미룬 게 후회됨.", shot: "🎚", likes: 94, cmt: 112 },
+    { by: "3인팀", ini: "3", tag: "ship", tn: "출시", when: "5일 전", sub: "에셋비 총정산 공개",
+      body: "3년 걸린 프로젝트 에셋비 다 합쳐서 $1,180 나옴. 제일 잘 쓴 돈은 Hot Reload($79.99) — 게임 필 튜닝을 수백 번 반복하는데 컴파일 대기가 사라지니까 체감이 달랐음. 제일 아까운 건 안 쓴 번들들.", shot: "⚡", likes: 521, cmt: 76 },
+  ];
+
+  let ff = "all";
+  const renderFeed = () => {
+    const f = $("#feed"); f.innerHTML = "";
+    const list = POSTS.filter(p => ff === "all" || p.tag === ff);
+    if (!list.length) { f.append(el("div", "empty", "이 분류에 글이 없음")); return; }
+    list.forEach((p, i) => {
+      const d = el("div", "post");
+      d.innerHTML = `
+        <div class="phead">
+          <span class="ava" style="background:var(${AVCOL[i % AVCOL.length]})">${p.ini}</span>
+          <span><span class="nm">${esc(p.by)}</span><br><span class="sub">${esc(p.sub)} · ${p.when}</span></span>
+          <span class="ptag ${p.tag}">${p.tn}</span>
+        </div>
+        <div class="pbody">${esc(p.body)}</div>
+        <div class="pshot">${p.shot}</div>
+        <div class="pacts">
+          <button data-a="like">▲ <span>${p.likes}</span></button>
+          <button data-a="cmt">💬 ${p.cmt}</button>
+          <button data-a="fork">⑂ 내 프로젝트로</button>
+        </div>`;
+      const lb = $('[data-a="like"]', d);
+      lb.onclick = () => {
+        const on = lb.getAttribute("aria-pressed") === "true";
+        lb.setAttribute("aria-pressed", String(!on));
+        $("span", lb).textContent = p.likes + (on ? 0 : 1);
+      };
+      $('[data-a="cmt"]', d).onclick = () => toast("댓글 " + p.cmt + "개 — 데모라 여기까지임");
+      $('[data-a="fork"]', d).onclick = () => toast("내 프로젝트에 복사됨");
+      f.append(d);
+    });
+  };
+
+  $$("#ftabs button").forEach(b => b.onclick = () => {
+    ff = b.dataset.f;
+    $$("#ftabs button").forEach(o => o.setAttribute("aria-current", String(o === b)));
+    renderFeed();
+  });
+
+  /* queue + leaderboard */
+  const QUEUE = [
+    ["Febucci / Text Animator 4.0", "게임 필 측정", 1], ["Kronnect / Voxel Play 4.2", "성능 검사", 1],
+    ["Staggart / Stylized Water 3.1", "라이선스 추적", 1], ["Opsive / Behavior Designer 3.1", "대기 중", 0],
+  ];
+  $("#queue").append(...QUEUE.map(([n, s, run]) =>
+    el("div", "qrow", `${run ? '<span class="spin"></span>' : '<span style="width:11px;color:var(--faint)">·</span>'}
+      <span>${n}</span><span class="st2" style="color:var(--${run ? "brass" : "faint"})">${s}</span>`)));
+
+  const BOARD = [["More Mountains", "97 · Feel"], ["Sirenix", "96 · Odin"], ["Aseprite", "95 · Igara"], ["A* Project", "94 · Granberg"], ["FMOD", "94 · Firelight"]];
+  $("#board").append(...BOARD.map(([n, a], i) =>
+    el("div", "lead", `<span class="rk">${i + 1}</span>
+      <span class="ava" style="width:22px;height:22px;font-size:10px;background:var(${AVCOL[i % AVCOL.length]})">${n[0]}</span>
+      <span>${n}</span><span class="amt">${a}</span>`)));
+
+  render(); renderFeed(); syncCart();
+})();
+</script>
