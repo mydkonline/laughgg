@@ -512,6 +512,30 @@
   .bars i, .shbar i, .fstep2, .mrrchart .line { transition: none; }
 }
 
+
+/* ── 개발자 모수 교차검증 ── */
+.xcheck { margin: clamp(30px,4vw,44px) 0 0; padding: 24px; border-radius: 16px;
+  border: 1px solid var(--line); background: var(--card); }
+.xhead { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+.xk { font-size: 16px; font-weight: 700; }
+.xv { margin-left: auto; font-size: 12px; color: var(--ink-3); }
+.xv b { font-size: 32px; font-weight: 800; letter-spacing: -.04em; color: var(--accent);
+  margin-right: 2px; }
+.xsub { margin: 8px 0 0; color: var(--ink-2); font-size: 12px; }
+.xways { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 20px 0 0; }
+@media (max-width: 700px) { .xways { grid-template-columns: 1fr; } }
+.xway { padding: 18px; border-radius: 12px; background: var(--bg-2); border: 1px solid var(--line); }
+.wt { font-size: 12px; font-weight: 700; letter-spacing: .03em; color: var(--ink-3); }
+.xway ol { margin: 12px 0 0; padding-left: 18px; color: var(--ink-2); font-size: 12px;
+  line-height: 1.75; }
+.xway ol b { color: var(--ink); font-weight: 700; }
+.wr { display: block; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line);
+  font-size: 16px; font-weight: 800; letter-spacing: -.02em; }
+.xtail { display: flex; gap: 30px; flex-wrap: wrap; margin: 20px 0 0; padding-top: 18px;
+  border-top: 1px solid var(--line); }
+.xtail b { display: block; font-size: 24px; font-weight: 800; letter-spacing: -.03em; }
+.xtail span { font-size: 12px; color: var(--ink-3); }
+
 </style>
 
 <style id="igg-nav-css">
@@ -1851,6 +1875,43 @@
         </div>
       </div>
 
+      <div class="xcheck">
+        <div class="xhead">
+          <span class="xk">OP.GG를 참조하는 게임 개발자</span>
+          <span class="xv"><b class="tab" id="xnum">0</b>만 명</span>
+        </div>
+        <p class="xsub">두 방향에서 따로 계산해 겹치는 구간을 잡았습니다. 12.5만 ~ 20.8만, 중앙값 16.7만.</p>
+
+        <div class="xways">
+          <div class="xway">
+            <span class="wt">A · 이용자에서 내려오기</span>
+            <ol>
+              <li>OP.GG 월간 이용자 <b>2,500만</b></li>
+              <li>전 세계 게이머 30억 대비 개발자 500만 = <b>0.167%</b></li>
+              <li>OP.GG 이용자는 데이터를 파는 층이라 <b>3~5배</b> 가중</li>
+            </ol>
+            <span class="wr">12.5만 ~ 20.8만</span>
+          </div>
+          <div class="xway">
+            <span class="wt">B · 개발자에서 올라오기</span>
+            <ol>
+              <li>Steam 출시 팀 <b>15,100</b></li>
+              <li>개발 중·미출시를 포함해 <b>3~4배</b></li>
+              <li>팀당 <b>3~5명</b>, 시장 조사를 하는 비율 <b>70~85%</b></li>
+            </ol>
+            <span class="wr">9.5만 ~ 25.7만</span>
+          </div>
+        </div>
+
+        <div class="xtail">
+          <div><b class="tab">4.2만</b><span>팀 환산 · 4명 기준</span></div>
+          <div><b class="tab">1.7만</b><span>그중 유료 에셋 구매층</span></div>
+          <div><b class="tab">4배</b><span>Steam 출시 확정 팀(4,100) 대비</span></div>
+        </div>
+        <p class="bmnote">OP.GG MAU 는 공개 확인값(ZDNet, 2025-06)이고 나머지 비율은 가정입니다.
+          두 경로가 겹친다는 것이 값의 신뢰도이지, 정확도는 아닙니다.</p>
+      </div>
+
       <div class="funnel" id="funnel"></div>
       <p class="bmnote c">깔때기는 Steam 신작 수에서 시작해 팀당 평균 출시 1.3개, 외주율 68%,
         유료 에셋 실구매 40%를 차례로 적용한 값입니다. 마지막 칸만 목표치입니다.</p>
@@ -2135,6 +2196,29 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
   watch(sh, () => sh.querySelectorAll("i[data-w]").forEach(i => { i.style.width = i.dataset.w + "%"; }));
   watch(fn, () => fn.classList.add("on"));
   watch(document.querySelector(".mrr"), () => document.querySelector(".mrr").classList.add("on"));
+})();
+</script>
+
+<script>
+(function () {
+  /* 16.7만은 두 경로가 겹치는 구간의 중앙값이다. 세는 동안 근거를 읽게 한다. */
+  var el = document.getElementById("xnum");
+  if (!el) return;
+  var end = 16.7;
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) { el.textContent = end; return; }
+  var io = new IntersectionObserver(function (es) {
+    if (!es[0].isIntersecting) return;
+    io.disconnect();
+    var t0 = null;
+    function step(t) {
+      if (t0 === null) t0 = t;
+      var p = Math.min((t - t0) / 1200, 1);
+      el.textContent = (end * (1 - Math.pow(1 - p, 4))).toFixed(1);
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }, { threshold: .4 });
+  io.observe(el);
 })();
 </script>
 
