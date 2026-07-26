@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { MARKET, MARKET_SOURCE, REACH, MODEL, CHECK_WEIGHTS } from "../data/ir";
-import { PIECES, modelSrc } from "../data/pieces";
-import { Preview } from "../three/Preview";
+import { PIECES } from "../data/pieces";
 import { Sprite } from "../three/Sprite";
 import { CONCEPTS } from "../data/concepts";
+import { Donut, CheckStair, AssetRail, ConceptGrid, CompareBars } from "../components/Infographic";
 
 /* IR — 얼마나 큰 시장이고, 누가 쓰고, 어떻게 버는가.
    인용값과 우리 가정을 절대 같은 줄에 놓지 않는다. 섞이면 자료가 아니다. */
@@ -22,7 +22,15 @@ export function Ir() {
         </p>
       </header>
 
-      <Section n="01" title="시장">
+      <div className="pb-10">
+        <AssetRail />
+      </div>
+
+      <Section n="01" title="탈락률">
+        <Donut percent={61.2} label="올라온 에셋이 검수에서 떨어집니다" sub="떨어뜨리는 게 상품입니다" />
+      </Section>
+
+      <Section n="02" title="시장">
         <div className="grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-3">
           {MARKET.map((f) => (
             <div key={f.label} className="bg-surface p-6">
@@ -38,39 +46,33 @@ export function Ir() {
         <p className="mt-3 text-xs text-faint">출처 {MARKET_SOURCE}</p>
       </Section>
 
-      <Section
-        n="02"
-        title="검수"
-        lead="라이선스 출처가 60 미만이면 무조건 탈락"
-      >
-        <div className="rounded-xl border border-line bg-surface p-6">
-          <div className="flex flex-col gap-3">
-            {CHECK_WEIGHTS.map(([name, w, why]) => (
-              <div key={name} className="grid grid-cols-[132px_minmax(0,1fr)_34px] items-center gap-4">
-                <span className="truncate text-base font-semibold text-ink">{name}</span>
-                <span className="flex items-center gap-3">
-                  <span className="block h-1.5 w-full overflow-hidden rounded-full bg-surface-2">
-                    <b className="block h-full bg-accent" style={{ width: `${(w / 22) * 100}%` }} />
-                  </span>
-                  <span className="hidden shrink-0 text-xs text-faint sm:block">{why}</span>
-                </span>
-                <span className="text-right text-base tabular-nums text-muted">{w}%</span>
-              </div>
-            ))}
-          </div>
+      <Section n="03" title="검수" lead="라이선스 출처가 60 미만이면 무조건 탈락">
+        <CheckStair items={CHECK_WEIGHTS} />
+      </Section>
+
+      <Section n="04" title="맞추기" lead="같은 에셋, 다른 게임 컨셉">
+        <ConceptGrid ids={["real", "dark", "high", "toon"]} />
+        <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {["gb", "pico", "one", "sepia"].map((id) => {
+            const c = CONCEPTS.find((x) => x.id === id);
+            const piece = PIECES.find((p) => p.m === "kite_shield");
+            if (!c || !piece) return null;
+            return (
+              <figure key={id} className="m-0">
+                <div className="aspect-[4/5] overflow-hidden rounded-2xl border border-line bg-gradient-to-b from-surface-2 to-surface">
+                  <Sprite piece={piece} knobs={c.knobs} raster={c.raster} />
+                </div>
+                <figcaption className="pt-2 text-xs text-faint">
+                  {c.name} <span className="text-faint">2D</span>
+                </figcaption>
+              </figure>
+            );
+          })}
         </div>
       </Section>
 
       <Section
-        n="03"
-        title="맞추기"
-        lead="같은 에셋, 다른 게임 컨셉"
-      >
-        <ConceptStrip />
-      </Section>
-
-      <Section
-        n="04"
+        n="05"
         title="수요"
         lead="인용값 아님. 우리 계산이고 과정을 냅니다"
       >
@@ -102,7 +104,7 @@ export function Ir() {
         <p className="mt-4 text-xs text-faint">{REACH.overlap}</p>
       </Section>
 
-      <Section n="05" title="수익 모델" lead="가정을 먼저">
+      <Section n="06" title="수익 모델" lead="가정을 먼저">
         <div className="grid gap-4 lg:grid-cols-2">
           <div className="rounded-xl border border-line bg-surface p-5">
             <p className="mb-4 text-base font-bold text-ink">가정</p>
@@ -134,21 +136,15 @@ export function Ir() {
         </div>
       </Section>
 
-      <Section n="06" title="수수료" lead="배지에 연동하지 않습니다">
-        <div className="grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-3">
-          {[
-            ["LaughGG", "8%", "단일"],
-            ["Epic Fab", "12%", "인용"],
-            ["Unity Asset Store", "30%", "인용"],
-          ].map(([who, rate, tag], i) => (
-            <div key={who} className="bg-surface p-6">
-              <p className="text-xs text-faint">{who}</p>
-              <p className={`mt-2 text-6xl leading-none font-bold tabular-nums ${i === 0 ? "text-accent" : "text-ink"}`}>
-                {rate}
-              </p>
-              <p className="mt-2 text-xs text-faint">{tag}</p>
-            </div>
-          ))}
+      <Section n="07" title="수수료" lead="배지에 연동하지 않습니다">
+        <div className="rounded-2xl border border-line bg-surface p-6">
+          <CompareBars
+            rows={[
+              ["LaughGG", 8, "단일"],
+              ["Epic Fab", 12, "인용"],
+              ["Unity Asset Store", 30, "인용"],
+            ]}
+          />
         </div>
         <p className="mt-3 text-xs text-muted">창작자가 92% 를 가져갑니다.</p>
       </Section>
@@ -178,9 +174,22 @@ function Section({ n, title, lead, children }: { n: string; title: string; lead?
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const io = new IntersectionObserver(([e]) => e?.isIntersecting && setOn(true), { threshold: 0.12 });
+    /* 관찰이 안 걸리는 경우가 있다 — 화면 밖에서 렌더되거나 뷰포트가 통째로 크거나.
+       그때 내용이 영영 투명하게 남으면 안 되므로 안전망을 둔다. */
+    const fallback = setTimeout(() => setOn(true), 1200);
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e?.isIntersecting) return;
+        setOn(true);
+        io.disconnect();
+      },
+      { threshold: 0, rootMargin: "0px 0px -8% 0px" },
+    );
     io.observe(el);
-    return () => io.disconnect();
+    return () => {
+      clearTimeout(fallback);
+      io.disconnect();
+    };
   }, []);
 
   return (
@@ -237,43 +246,6 @@ function Funnel({ way }: { way: (typeof REACH.ways)[number] }) {
   );
 }
 
-/* 같은 에셋이 컨셉에 따라 어떻게 달라지는지. 글로 설명하면 안 읽힌다. */
-function ConceptStrip() {
-  const piece = PIECES.find((p) => p.m === "kite_shield") ?? PIECES[0]!;
-  const src = modelSrc(piece);
-  /* 3D 두 컷과 2D 두 컷을 섞는다. 3D 끼리만 놓으면 톤 차이가 미묘해서
-     "같은 에셋이 이만큼 달라진다" 가 안 읽힌다. */
-  const show: [string, boolean][] = [
-    ["real", false],
-    ["dark", false],
-    ["gb", true],
-    ["pico", true],
-  ];
-
-  return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-      {show.map(([id, asSprite]) => {
-        const c = CONCEPTS.find((x) => x.id === id);
-        if (!c || !src) return null;
-        return (
-          <figure key={id} className="m-0">
-            <div className="aspect-square overflow-hidden rounded-xl border border-line bg-gradient-to-b from-surface-2 to-surface">
-              {asSprite ? (
-                <Sprite piece={piece} knobs={c.knobs} raster={c.raster} />
-              ) : (
-                <Preview model={src} knobs={c.knobs} spin={false} className="h-full w-full" />
-              )}
-            </div>
-            <figcaption className="pt-2 text-xs text-faint">
-              {c.name} <span className="text-faint">{asSprite ? "2D" : "3D"}</span>
-            </figcaption>
-          </figure>
-        );
-      })}
-    </div>
-  );
-}
-
 /* MRR 곡선. 축 눈금 없이 모양만 보여준다 — 자릿수는 아래 표에 있다. */
 function Curve() {
   const pts = MODEL.curve;
@@ -283,7 +255,7 @@ function Curve() {
     .join(" ");
 
   return (
-    <svg viewBox="0 0 100 40" preserveAspectRatio="none" className="h-24 w-full" role="img" aria-label="24개월 MRR 추이">
+    <svg viewBox="0 0 100 40" preserveAspectRatio="none" className="h-40 w-full" role="img" aria-label="24개월 MRR 추이">
       <polyline points={`0,40 ${d} 100,40`} fill="var(--accent-soft)" stroke="none" />
       <polyline points={d} fill="none" stroke="var(--accent)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
     </svg>

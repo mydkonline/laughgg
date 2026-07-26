@@ -14,10 +14,10 @@ import { RankIcon, BADGE_LABEL, type BadgeKey } from "../components/Rank";
 const HERO = PIECES.find((p) => p.m === "gothic_statue") ?? PIECES[0]!;
 
 const STEPS: [string, string][] = [
-  ["올린다", "glb, gltf, png. 변환 없이"],
-  ["검수한다", "7항목 자동 채점. 라이선스 60 미만은 탈락"],
-  ["고친다", "떨어진 항목의 수정 코드 생성"],
-  ["맞춘다", "게임 컨셉에 맞춰 톤과 팔레트 변경"],
+  ["업로드", "glb, gltf, png"],
+  ["자동 검수", "7항목, 라이선스 60 미만 탈락"],
+  ["개선 코드", "떨어진 항목만"],
+  ["컨셉 정합", "톤과 팔레트 변경"],
 ];
 
 const TIERS: { badge: BadgeKey; range: string; note: string }[] = [
@@ -70,13 +70,13 @@ export function Home() {
       {/* 진행 순서 */}
       <section className="border-t border-line bg-surface">
         <div className="mx-auto max-w-[1240px] px-5 py-16">
-          <h2 className="text-4xl font-bold text-ink">올린 뒤에 일어나는 일</h2>
+          <h2 className="text-4xl font-bold text-ink">파이프라인</h2>
           <ol className="mt-8 grid list-none gap-px overflow-hidden rounded-xl border border-line bg-line p-0 sm:grid-cols-2 lg:grid-cols-4">
             {STEPS.map(([t, d], i) => (
               <li key={t} className="bg-surface p-5">
                 <b className="text-xs tabular-nums text-faint">{String(i + 1).padStart(2, "0")}</b>
                 <p className="mt-2 text-2xl font-bold text-ink">{t}</p>
-                <p className="mt-2 text-base leading-relaxed text-muted">{d}</p>
+                <p className="mt-2 text-xs text-faint">{d}</p>
               </li>
             ))}
           </ol>
@@ -86,14 +86,14 @@ export function Home() {
       {/* 배지 */}
       <section className="mx-auto max-w-[1240px] px-5 py-16">
         <h2 className="text-4xl font-bold text-ink">배지가 노출 순위를 정합니다</h2>
-        <p className="mt-2 text-base text-muted">수수료는 8% 단일. 배지는 값이 아니라 자리를 정합니다.</p>
+        <p className="mt-2 text-xs text-muted">수수료는 8% 단일. 배지는 자리를 정합니다.</p>
         <div className="mt-8 grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
           {TIERS.map((t) => (
             <div key={t.badge} className="flex flex-col items-start gap-3 bg-surface p-6">
               <RankIcon badge={t.badge} size={48} />
               <p className="text-2xl font-bold text-ink">{BADGE_LABEL[t.badge]}</p>
               <p className="text-xs tabular-nums text-faint">{t.range}</p>
-              <p className="text-base leading-relaxed text-muted">{t.note}</p>
+              <p className="text-xs text-faint">{t.note}</p>
             </div>
           ))}
         </div>
@@ -104,11 +104,11 @@ export function Home() {
         <div className="mx-auto grid max-w-[1240px] gap-10 px-5 py-16 sm:grid-cols-2">
           <div>
             <p className="text-6xl font-bold tabular-nums text-ink">92%</p>
-            <p className="mt-2 text-base text-muted">창작자 정산</p>
+            <p className="mt-2 text-xs text-muted">창작자 정산</p>
           </div>
           <div>
             <p className="text-6xl font-bold tabular-nums text-ink">8%</p>
-            <p className="mt-2 text-base text-muted">단일 수수료. Epic Fab 12%, Unity 30%</p>
+            <p className="mt-2 text-xs text-muted">단일 수수료. Epic Fab 12%, Unity 30%</p>
           </div>
         </div>
       </section>
