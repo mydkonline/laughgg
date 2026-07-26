@@ -2,36 +2,31 @@
 <title>LaughGG — 커뮤니티</title>
 
 <style>
-  :root {
-    --ground: #1C1C1F; --surface: #23232A; --surface-2: #2A2A33; --surface-3: #31313C;
+  :root { --ground: #EBEEF1; --surface: #FFF; --surface-2: #F7F7F9; --surface-3: #E8EBEF;
+    --line: #D5D9DE; --line-soft: #E8EBEF;
+    --ink: #202D37; --muted: #57646F; --faint: #8894A0;
+    --accent: #2B5FD9; --accent-soft: rgba(43,95,217,.1); --link: #2B5FD9;
+    --navy: #28344E; --secondary: #C3CBD1;
+    --pass: #3F7A63; --fail: #9E4A54; --warn: #8A6B2E;
+    --moba: #96701F; --fps: #C9202F; --auto: #7038C0; --br: #B07B00; color-scheme: light; }
+:root[data-theme="dark"] { --ground: #1C1C1F; --surface: #23232A; --surface-2: #2A2A33; --surface-3: #31313C;
     --line: #3A3A47; --line-soft: #27272E;
     --ink: #EBEBEF; --muted: #9AA4AF; --faint: #6E6E7C;
     --accent: #5383E8; --accent-soft: rgba(83,131,232,.15); --link: #B3CDFF;
     --navy: #28344E; --secondary: #424254;
     --pass: #6E9C88; --fail: #B08088; --warn: #B49A6E;
     --moba: #C89B3C; --fps: #FF4655; --auto: #A55EEA; --br: #F2A900;
-    --r: 4px;
-  }
-  :root[data-theme="light"] {
-    --ground: #EBEEF1; --surface: #FFF; --surface-2: #F7F7F9; --surface-3: #E8EBEF;
-    --line: #D5D9DE; --line-soft: #E8EBEF;
-    --ink: #202D37; --muted: #57646F; --faint: #8894A0;
-    --accent: #2B5FD9; --accent-soft: rgba(43,95,217,.1); --link: #2B5FD9;
-    --navy: #28344E; --secondary: #C3CBD1;
-    --pass: #3F7A63; --fail: #9E4A54; --warn: #8A6B2E;
-    --moba: #96701F; --fps: #C9202F; --auto: #7038C0; --br: #B07B00;
-  }
-  @media (prefers-color-scheme: light) {
-    :root:not([data-theme="dark"]) {
-      --ground: #EBEEF1; --surface: #FFF; --surface-2: #F7F7F9; --surface-3: #E8EBEF;
-      --line: #D5D9DE; --line-soft: #E8EBEF;
-      --ink: #202D37; --muted: #57646F; --faint: #8894A0;
-      --accent: #2B5FD9; --accent-soft: rgba(43,95,217,.1); --link: #2B5FD9;
-      --navy: #28344E; --secondary: #C3CBD1;
-      --pass: #3F7A63; --fail: #9E4A54; --warn: #8A6B2E;
-      --moba: #96701F; --fps: #C9202F; --auto: #7038C0; --br: #B07B00;
-    }
-  }
+    --r: 4px; color-scheme: dark; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --ground: #1C1C1F; --surface: #23232A; --surface-2: #2A2A33; --surface-3: #31313C;
+    --line: #3A3A47; --line-soft: #27272E;
+    --ink: #EBEBEF; --muted: #9AA4AF; --faint: #6E6E7C;
+    --accent: #5383E8; --accent-soft: rgba(83,131,232,.15); --link: #B3CDFF;
+    --navy: #28344E; --secondary: #424254;
+    --pass: #6E9C88; --fail: #B08088; --warn: #B49A6E;
+    --moba: #C89B3C; --fps: #FF4655; --auto: #A55EEA; --br: #F2A900;
+    --r: 4px; color-scheme: dark; }
+}
 
   * { box-sizing: border-box; }
   body {
@@ -385,6 +380,84 @@
     <div class="igg-tabs"><a href="index.html">홈</a><a href="about.html">IR</a><a href="market.html">마켓</a><a href="community.html" aria-current="page">게임 스택</a><a href="ai.html">AI 파이프라인<sup>N</sup></a><a href="scene.html">에셋 시연</a><a href="viewer3d.html">3D 뷰어</a><a href="vlog.html">개발 브이로그<sup>N</sup></a></div>
   </div></div>
 </nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rg-chal" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFF3D2"/><stop offset=".34" stop-color="#F2C066"/>
+    <stop offset=".68" stop-color="#C68F2E"/><stop offset="1" stop-color="#7A551A"/></linearGradient>
+  <linearGradient id="rg-dia" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#F2F5FA"/><stop offset=".34" stop-color="#C3CBD8"/>
+    <stop offset=".68" stop-color="#8A94A5"/><stop offset="1" stop-color="#4E5666"/></linearGradient>
+  <linearGradient id="rg-plat" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#E4E9F0"/><stop offset=".34" stop-color="#AAB3C0"/>
+    <stop offset=".68" stop-color="#727B88"/><stop offset="1" stop-color="#3E454F"/></linearGradient>
+  <linearGradient id="rg-silv" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#D6DBE2"/><stop offset=".34" stop-color="#98A0AC"/>
+    <stop offset=".68" stop-color="#646C78"/><stop offset="1" stop-color="#353B44"/></linearGradient>
+  <linearGradient id="rg-sheen" x1="12" y1="6" x2="52" y2="34" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#fff" stop-opacity=".55"/>
+    <stop offset=".52" stop-color="#fff" stop-opacity=".08"/>
+    <stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 64 64">
+    <path d="M11.5 21.5 1 12.4l3.9 11.4-3 1.9 9.6 4.1z" fill="url(#rg-chal)" opacity=".62"/>
+    <path d="M52.5 21.5 63 12.4l-3.9 11.4 3 1.9-9.6 4.1z" fill="url(#rg-chal)" opacity=".62"/>
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-chal)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="m21.4 36.6-3.1-12.9 8 6.1L32 20l5.7 9.8 8-6.1-3.1 12.9z" fill="url(#rg-chal)"/>
+    <path d="M21.4 39.4h21.2v3.4H21.4z" fill="url(#rg-chal)"/>
+    <circle cx="32" cy="31.4" r="2.5" fill="#fff" opacity=".55"/>
+  </symbol>
+
+  <symbol id="rk-dia" viewBox="0 0 64 64">
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-dia)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="m32 19.4 11.6 9.4L32 46 20.4 28.8z" fill="url(#rg-dia)"/>
+    <path d="M20.4 28.8h23.2L32 33.2z" fill="#0A0A10" opacity=".3"/>
+    <path d="m32 19.4 5.2 9.4L32 33.2l-5.2-4.4z" fill="#fff" opacity=".42"/>
+    <path d="M14.6 24h3.2v9h-3.2zM46.2 24h3.2v9h-3.2z" fill="url(#rg-dia)" opacity=".7"/>
+  </symbol>
+
+  <symbol id="rk-plat" viewBox="0 0 64 64">
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-plat)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="m32 19.6 10.4 6v12l-10.4 6-10.4-6v-12z" fill="url(#rg-plat)"/>
+    <path d="M21.6 25.6 32 31.6l10.4-6L32 19.6z" fill="#fff" opacity=".34"/>
+    <path d="M32 31.6v12l-10.4-6v-12z" fill="#0A0A10" opacity=".22"/>
+  </symbol>
+
+  <symbol id="rk-silv" viewBox="0 0 64 64">
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-silv)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="M22.4 26.4h19.2v5.2H22.4z" fill="url(#rg-silv)"/>
+    <path d="M22.4 26.4h19.2v2.1H22.4z" fill="#fff" opacity=".36"/>
+    <path d="M25.6 35.6h12.8v3.2H25.6z" fill="url(#rg-silv)" opacity=".8"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
   <linearGradient id="rkg-chal" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
     <stop offset="0" stop-color="#FFEFC4"/><stop offset=".42" stop-color="#F0B457"/><stop offset="1" stop-color="#8E5F17"/></linearGradient>
@@ -1428,7 +1501,6 @@
     <div class="hero shero">
         <h1>어느 게임에 맞는지 <em>찾아보세요</em></h1>
         <div class="bigsearch">
-          <span class="si" aria-hidden="true">🔍</span>
           <input id="gq" placeholder="게임 이름 검색 — Balatro, 데드셀, 하데스…" autocomplete="off" />
           <button class="gbtn solid" id="gsearch">검색</button>
         </div>
@@ -1512,7 +1584,7 @@
         <div class="pad" style="display:flex;flex-direction:column;gap:12px">
           <textarea class="pin" id="pin" placeholder="예) 체력이 낮을수록 피해가 올라가는 패시브를 만들어줘"></textarea>
           <div class="quick" id="presets" style="justify-content:flex-start"></div>
-          <button class="gbtn solid" id="pgo" style="align-self:flex-start;padding:9px 18px">⚡ 생성</button>
+          <button class="gbtn solid" id="pgo" style="align-self:flex-start;padding:9px 18px">생성</button>
         </div>
       </div>
       <div class="card">
@@ -1829,7 +1901,7 @@
             <span class="conf ${hi ? "hi" : "lo"}">${hi ? "확인됨" : "추정"}</span></div>`).join("")}
         </div>
         <a class="gbtn solid" style="text-align:center;text-decoration:none;display:block;padding:10px"
-           href="community.html?style=${g.st || "diablo"}">내 에셋 이 게임에 적용해보기 →</a>
+           href="community.html?style=${g.st || "diablo"}">내 에셋 이 게임에 적용해보기</a>
         <button class="gbtn" data-act="report">＋ 빠진 부품 제보하기</button>
       </div>`;
     $('[data-act="report"]', d).onclick = () => user ? toast("제보 접수됨 — 검토 후 반영") : (toast("로그인이 필요함"), openLogin());
@@ -2688,10 +2760,10 @@
     let best = 1, bestR = 0;
     for (let i = 1; i <= 200; i++) { const r = revenue(i); if (r > bestR) { bestR = r; best = i; } }
     const a = $("#uadvice");
-    if (U.free) a.innerHTML = `<div class="alert g">✓ 무료 배포 — 수익은 0이지만 커뮤니티 노출이 우선순위로 올라감. 첫 조각이면 나쁘지 않은 선택임</div>`;
+    if (U.free) a.innerHTML = `<div class="alert g"> 무료 배포 — 수익은 0이지만 커뮤니티 노출이 우선순위로 올라감. 첫 조각이면 나쁘지 않은 선택임</div>`;
     else if (p > best * 1.6) a.innerHTML = `<div class="alert w">⚠ 예상 수익 최대점은 $${best} 근처임. 지금 가격은 총수익 기준으로 손해일 수 있음</div>`;
     else if (p < best * 0.5) a.innerHTML = `<div class="alert w">⚠ 너무 싸게 잡음. $${best}까지 올려도 판매량 감소보다 단가 상승이 큼</div>`;
-    else a.innerHTML = `<div class="alert g">✓ 예상 수익 최대점($${best}) 근처임 · 월 예상 ${Math.round(demand(p))}건 · $${Math.round(revenue(p)).toLocaleString()}</div>`;
+    else a.innerHTML = `<div class="alert g"> 예상 수익 최대점($${best}) 근처임 · 월 예상 ${Math.round(demand(p))}건 · $${Math.round(revenue(p)).toLocaleString()}</div>`;
     drawRev();
   };
 
