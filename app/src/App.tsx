@@ -5,6 +5,7 @@ import { Market } from "./pages/Market";
 import { Product } from "./pages/Product";
 import { Workshop } from "./pages/Workshop";
 import { Feed } from "./pages/Feed";
+import { Scene } from "./pages/Scene";
 import { Home } from "./pages/Home";
 import { Ir } from "./pages/Ir";
 import { Stack } from "./pages/Stack";
@@ -28,7 +29,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/ir" element={<Ir />} />
         <Route path="/stack" element={<Stack />} />
-        <Route path="/scene" element={<Soon title="AI 에셋 시연" />} />
+        <Route path="/scene" element={<Scene />} />
         <Route path="/viewer" element={<Soon title="AI 3D 뷰어" />} />
         <Route path="/vlog" element={<Vlog />} />
         <Route path="/cart" element={<Soon title="장바구니" />} />

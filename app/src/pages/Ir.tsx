@@ -5,6 +5,7 @@ import { PIECES } from "../data/pieces";
 import { Sprite } from "../three/Sprite";
 import { CONCEPTS } from "../data/concepts";
 import { Donut, CheckWeights, AssetRail, ConceptGrid, CompareBars, useCountUp } from "../components/Infographic";
+import { Globe, CITIES } from "../components/Globe";
 
 /* IR — 얼마나 큰 시장이고, 누가 쓰고, 어떻게 버는가.
    인용값과 우리 가정을 절대 같은 줄에 놓지 않는다. 섞이면 자료가 아니다. */
@@ -200,7 +201,29 @@ export function Ir() {
         </div>
       </Section>
 
-      <Section n="07" title="수수료" lead="배지와 무관한 단일 요율">
+      <Section n="07" title="공급 지역" lead="어디서 올라오든 같은 기준으로 채점합니다">
+        <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)]">
+          <Globe className="aspect-square w-full" />
+          <dl className="grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-3">
+            <div className="bg-surface p-5">
+              <dt className="text-xs text-faint">창작자 국가</dt>
+              <dd className="num m-0 text-4xl text-ink">{CITIES.filter((c) => c[3] === "maker").length}</dd>
+            </div>
+            <div className="bg-surface p-5">
+              <dt className="text-xs text-faint">게임사 국가</dt>
+              <dd className="num m-0 text-4xl text-ink">{CITIES.filter((c) => c[3] === "studio").length}</dd>
+            </div>
+            <div className="bg-surface p-5">
+              <dt className="text-xs text-faint">적용 기준</dt>
+              <dd className="num m-0 text-4xl text-accent">1</dd>
+              <dd className="m-0 text-xs text-faint">국가와 무관하게 동일</dd>
+            </div>
+          </dl>
+        </div>
+        <p className="mt-3 text-xs text-faint">끌어서 돌려 보세요. 표시된 도시는 서비스 구상 단계의 목표 지역입니다.</p>
+      </Section>
+
+      <Section n="08" title="수수료" lead="배지와 무관한 단일 요율">
         <div className="rounded-2xl border border-line bg-surface p-6">
           <CompareBars
             rows={[
