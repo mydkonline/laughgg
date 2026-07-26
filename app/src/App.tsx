@@ -15,7 +15,7 @@ import { Stack } from "./pages/Stack";
 import { Vlog } from "./pages/Vlog";
 import { Soon } from "./pages/Soon";
 
-/* GitHub Pages 는 /indygg/ 하위에 올라간다. 라우터 basename 을 빌드 설정과 맞춘다. */
+/* GitHub Pages 는 /laughgg/ 하위에 올라간다. basename 은 빌드의 base 를 그대로 따라간다. */
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 export default function App() {

@@ -313,7 +313,10 @@ export function ConceptGrid({ piece, ids }: { piece?: Piece; ids: string[] }) {
   if (!modelSrc(target)) return null;
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    /* 모바일에서도 2열이다. 1열로 두면 정사각형 하나가 화면을 통째로 먹어
+       여덟 장을 보려고 스크롤을 2,500px 내려야 한다. 컨셉 비교는 나란히
+       놓여야 성립하는데, 한 번에 하나만 보이면 비교 자체가 안 된다. */
+    <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
       {ids.map((id) => {
         const c = CONCEPTS.find((x) => x.id === id);
         if (!c) return null;

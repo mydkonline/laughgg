@@ -131,7 +131,9 @@ export function Ir() {
               <span className="text-xs text-faint">통과한 에셋을 게임 컨셉으로 변환</span>
             </p>
             <ConceptGrid ids={["real", "dark", "high", "toon"]} />
-            <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {/* 위 3D 그리드와 같은 열 수를 쓴다. 두 줄이 어긋나면 8종이
+                한 벌이라는 게 안 읽힌다. */}
+            <div className="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
               {["gb", "pico", "one", "sepia"].map((id) => {
                 const c = CONCEPTS.find((x) => x.id === id);
                 const piece = PIECES.find((p) => p.m === "kite_shield");

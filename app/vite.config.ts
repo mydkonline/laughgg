@@ -2,12 +2,12 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 
-// GitHub Pages 는 /indygg/ 하위에 올라간다. 개발 중에는 루트로 둔다.
+// GitHub Pages 는 /laughgg/ 하위에 올라간다. 개발 중에는 루트로 둔다.
 export default defineConfig(({ command }) => ({
-  base: command === "build" ? "/indygg/" : "/",
+  base: command === "build" ? "/laughgg/" : "/",
   plugins: [react(), tailwindcss()],
   server: { port: 5173 },
-  // 배포는 아직 web/ 정적 빌드가 담당한다. 패리티가 날 때까지 dist 로만 뽑는다.
+  // Pages 워크플로가 이 dist 를 그대로 올린다.
   build: {
     outDir: "dist",
     emptyOutDir: true,
