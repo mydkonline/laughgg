@@ -2,110 +2,22 @@
 //!
 //! 게임 에셋 마켓의 백엔드다. 창작자가 에셋을 올리면 7개 항목을 채점해 배지를 매기고,
 //! 게임 스튜디오가 구독으로 카탈로그에 접근한다. 수수료는 8% 단일이며 주 수익원은 구독이다.
-//! 저장소는 `MySQL` 8.0 이상을 쓴다.
+//! 저장소는 `PostgreSQL` 16 이상을 쓴다.
+//!
+//! 계층은 셋이고 의존은 한 방향이다.
+//!   [`domain`]  판정과 계산. 바깥을 모른다.
+//!   [`repo`]    Postgres 질의. `domain` 만 안다.
+//!   [`http`]    라우팅과 직렬화. 둘 다 안다.
+//!
+//! 이 파일은 부팅만 한다 — 설정을 읽고, 풀을 열고, 라우터를 띄운다.
 
-mod db;
 mod domain;
+mod http;
+mod repo;
 
 use std::net::SocketAddr;
 
 use anyhow::{Context as _, Result};
-use axum::{
-    Json, Router,
-    extract::{Query, State},
-    http::StatusCode,
-    response::{IntoResponse, Response},
-    routing::{get, post},
-};
-use serde_json::json;
-use sqlx::MySqlPool;
-use tower_http::{cors::CorsLayer, services::ServeDir, trace::TraceLayer};
-
-use crate::db::{AssetQuery, NewAsset};
-
-#[derive(Clone)]
-struct AppState {
-    pool: MySqlPool,
-}
-
-/// HTTP 경계에서의 오류. 내부 사정은 로그로 남기고 클라이언트에는 요약만 준다.
-struct ApiError(anyhow::Error);
-
-impl IntoResponse for ApiError {
-    fn into_response(self) -> Response {
-        tracing::error!(error = ?self.0, "request failed");
-        (
-            StatusCode::INTERNAL_SERVER_ERROR,
-            Json(json!({ "error": self.0.to_string() })),
-        )
-            .into_response()
-    }
-}
-
-impl<E> From<E> for ApiError
-where
-    E: Into<anyhow::Error>,
-{
-    fn from(err: E) -> Self {
-        Self(err.into())
-    }
-}
-
-type ApiResult<T> = Result<T, ApiError>;
-
-async fn health() -> Json<serde_json::Value> {
-    Json(json!({ "status": "ok", "service": "laughgg-api" }))
-}
-
-async fn get_assets(
-    State(st): State<AppState>,
-    Query(q): Query<AssetQuery>,
-) -> ApiResult<Json<serde_json::Value>> {
-    let rows = db::list_assets(&st.pool, &q).await?;
-    Ok(Json(json!({ "count": rows.len(), "assets": rows })))
-}
-
-async fn post_asset(
-    State(st): State<AppState>,
-    Json(input): Json<NewAsset>,
-) -> ApiResult<(StatusCode, Json<serde_json::Value>)> {
-    let result = db::create_asset(&st.pool, &input).await?;
-    Ok((StatusCode::CREATED, Json(json!(result))))
-}
-
-#[derive(serde::Deserialize)]
-struct GameQuery {
-    platform: Option<String>,
-}
-
-async fn get_games(
-    State(st): State<AppState>,
-    Query(q): Query<GameQuery>,
-) -> ApiResult<Json<serde_json::Value>> {
-    let rows = db::list_games(&st.pool, q.platform.as_deref()).await?;
-    Ok(Json(json!({ "count": rows.len(), "games": rows })))
-}
-
-async fn get_metrics(State(st): State<AppState>) -> ApiResult<Json<serde_json::Value>> {
-    let m = db::metrics(&st.pool).await?;
-    Ok(Json(json!(m)))
-}
-
-fn router(state: AppState) -> Router {
-    let api = Router::new()
-        .route("/health", get(health))
-        .route("/assets", get(get_assets).post(post_asset))
-        .route("/review", post(post_asset))
-        .route("/games", get(get_games))
-        .route("/metrics", get(get_metrics))
-        .with_state(state);
-
-    Router::new()
-        .nest("/api", api)
-        .fallback_service(ServeDir::new("web").append_index_html_on_directories(true))
-        .layer(CorsLayer::permissive())
-        .layer(TraceLayer::new_for_http())
-}
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -117,14 +29,14 @@ async fn main() -> Result<()> {
         .init();
 
     let db_url = std::env::var("DATABASE_URL")
-        .unwrap_or_else(|_| "mysql://laughgg:laughgg@127.0.0.1:3306/laughgg".into());
+        .unwrap_or_else(|_| "postgres://laughgg:laughgg@127.0.0.1:5432/laughgg".into());
     let port: u16 = std::env::var("PORT")
         .ok()
         .and_then(|p| p.parse().ok())
         .unwrap_or(8420);
 
-    let pool = db::connect(&db_url).await?;
-    tracing::info!(%db_url, "database ready");
+    let pool = repo::connect(&db_url).await?;
+    tracing::info!("database ready");
 
     let addr = SocketAddr::from(([127, 0, 0, 1], port));
     let listener = tokio::net::TcpListener::bind(addr)
@@ -132,7 +44,7 @@ async fn main() -> Result<()> {
         .with_context(|| format!("binding {addr}"))?;
     tracing::info!("listening on http://{addr}");
 
-    axum::serve(listener, router(AppState { pool }))
+    axum::serve(listener, http::router(http::AppState { pool }))
         .with_graceful_shutdown(shutdown_signal())
         .await
         .context("server error")?;

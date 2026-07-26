@@ -1,68 +1,8 @@
-//! 도메인 타입 — 검수 채점과 배지 판정.
+//! 7개 자동 검사 항목의 채점.
 
 use serde::{Deserialize, Serialize};
 
-/// 검수 배지. 수수료는 배지와 무관하게 8% 단일이며, 배지는 노출 순위를 정한다.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "lowercase")]
-pub enum Badge {
-    Challenger,
-    Diamond,
-    Platinum,
-    Silver,
-}
-
-impl Badge {
-    /// 종합 점수로부터 배지를 판정한다.
-    #[must_use]
-    pub const fn from_score(total: u8) -> Self {
-        match total {
-            90..=100 => Self::Challenger,
-            80..=89 => Self::Diamond,
-            70..=79 => Self::Platinum,
-            _ => Self::Silver,
-        }
-    }
-
-    /// 검색 결과 노출 가중치. 높을수록 위에 노출된다.
-    #[must_use]
-    pub const fn exposure_weight(self) -> u8 {
-        match self {
-            Self::Challenger => 8,
-            Self::Diamond => 4,
-            Self::Platinum => 2,
-            Self::Silver => 1,
-        }
-    }
-
-    #[must_use]
-    pub const fn as_str(self) -> &'static str {
-        match self {
-            Self::Challenger => "challenger",
-            Self::Diamond => "diamond",
-            Self::Platinum => "platinum",
-            Self::Silver => "silver",
-        }
-    }
-
-    /// DB에 저장된 문자열에서 배지를 되돌린다.
-    #[must_use]
-    pub fn from_label(s: &str) -> Option<Self> {
-        match s {
-            "challenger" => Some(Self::Challenger),
-            "diamond" => Some(Self::Diamond),
-            "platinum" => Some(Self::Platinum),
-            "silver" => Some(Self::Silver),
-            _ => None,
-        }
-    }
-
-    /// 프로덕션 투입 가능 여부 — 플래티넘 이상.
-    #[must_use]
-    pub const fn production_ready(self) -> bool {
-        matches!(self, Self::Challenger | Self::Diamond | Self::Platinum)
-    }
-}
+use super::Badge;
 
 /// 7개 자동 검사 항목의 점수.
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
@@ -165,36 +105,10 @@ impl ReviewScores {
     }
 }
 
-/// 판매 1건의 정산 내역. D안 기준 수수료 8% 단일.
-#[derive(Debug, Clone, Copy, Serialize)]
-pub struct Settlement {
-    pub gross_usd: f64,
-    pub fee_usd: f64,
-    pub creator_usd: f64,
-    pub fee_rate: f64,
-}
-
-impl Settlement {
-    /// 판매가와 수수료율로 정산을 계산한다.
-    #[must_use]
-    pub fn new(gross_usd: f64, fee_rate: f64) -> Self {
-        let rate = fee_rate.clamp(0.0, 1.0);
-        let fee = (gross_usd * rate * 100.0).round() / 100.0;
-        Self {
-            gross_usd,
-            fee_usd: fee,
-            creator_usd: ((gross_usd - fee) * 100.0).round() / 100.0,
-            fee_rate: rate,
-        }
-    }
-}
-
-/// D안 기본 수수료율.
-pub const DEFAULT_FEE_RATE: f64 = 0.08;
-
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::{ReviewScores, ScoreError};
+    use crate::domain::Badge;
 
     fn scores(v: u8) -> ReviewScores {
         ReviewScores {
@@ -206,17 +120,6 @@ mod tests {
             code_quality: v,
             integration: v,
         }
-    }
-
-    #[test]
-    fn badge_boundaries_are_inclusive() {
-        assert_eq!(Badge::from_score(90), Badge::Challenger);
-        assert_eq!(Badge::from_score(89), Badge::Diamond);
-        assert_eq!(Badge::from_score(80), Badge::Diamond);
-        assert_eq!(Badge::from_score(79), Badge::Platinum);
-        assert_eq!(Badge::from_score(70), Badge::Platinum);
-        assert_eq!(Badge::from_score(69), Badge::Silver);
-        assert_eq!(Badge::from_score(0), Badge::Silver);
     }
 
     #[test]
@@ -270,51 +173,6 @@ mod tests {
             })
         );
         assert!(scores(100).validate().is_ok());
-    }
-
-    #[test]
-    fn label_roundtrip() {
-        for g in [
-            Badge::Challenger,
-            Badge::Diamond,
-            Badge::Platinum,
-            Badge::Silver,
-        ] {
-            assert_eq!(Badge::from_label(g.as_str()), Some(g));
-        }
-        assert_eq!(Badge::from_label("bronze"), None);
-    }
-
-    #[test]
-    fn exposure_weight_orders_grades() {
-        assert!(Badge::Challenger.exposure_weight() > Badge::Diamond.exposure_weight());
-        assert!(Badge::Diamond.exposure_weight() > Badge::Platinum.exposure_weight());
-        assert!(Badge::Platinum.exposure_weight() > Badge::Silver.exposure_weight());
-    }
-
-    #[test]
-    fn production_ready_excludes_silver_only() {
-        assert!(Badge::Challenger.production_ready());
-        assert!(Badge::Platinum.production_ready());
-        assert!(!Badge::Silver.production_ready());
-    }
-
-    #[test]
-    fn settlement_gives_creator_92_percent() {
-        let s = Settlement::new(100.0, DEFAULT_FEE_RATE);
-        assert!((s.fee_usd - 8.0).abs() < f64::EPSILON);
-        assert!((s.creator_usd - 92.0).abs() < f64::EPSILON);
-    }
-
-    #[test]
-    fn settlement_clamps_absurd_rates() {
-        let over = Settlement::new(50.0, 3.0);
-        assert!((over.fee_rate - 1.0).abs() < f64::EPSILON);
-        assert!((over.creator_usd - 0.0).abs() < f64::EPSILON);
-
-        let under = Settlement::new(50.0, -1.0);
-        assert!((under.fee_rate - 0.0).abs() < f64::EPSILON);
-        assert!((under.creator_usd - 50.0).abs() < f64::EPSILON);
     }
 
     #[test]
