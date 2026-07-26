@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { NavLink, Link, useLocation } from "react-router-dom";
 import { useCart } from "../lib/cart";
 import { useTheme } from "../lib/theme";
@@ -32,6 +33,86 @@ const GROUPS: Group[] = [
   },
 ];
 
+/* 대분류 하나. 눌러서 열고, 밖을 누르거나 Esc 로 닫는다.
+   호버로도 열리지만 그건 보조다 — 터치에는 호버가 없다. */
+function Group({ group }: { group: Group }) {
+  const { pathname } = useLocation();
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLSpanElement>(null);
+  const menuRef = useRef<HTMLSpanElement>(null);
+  /* 오른쪽 끝 탭에서 열면 메뉴가 화면 밖으로 나간다. 열릴 때 안쪽으로 민다. */
+  const [shift, setShift] = useState(0);
+  const inside = group.subs!.some((s) => s.to === pathname) || group.to === pathname;
+
+  useEffect(() => {
+    if (!open) return;
+    const away = (e: PointerEvent) => {
+      if (!ref.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const esc = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("pointerdown", away);
+    document.addEventListener("keydown", esc);
+    return () => {
+      document.removeEventListener("pointerdown", away);
+      document.removeEventListener("keydown", esc);
+    };
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) {
+      setShift(0);
+      return;
+    }
+    const el = menuRef.current;
+    if (!el) return;
+    const over = el.getBoundingClientRect().right - (document.documentElement.clientWidth - 12);
+    setShift(over > 0 ? -over : 0);
+  }, [open]);
+
+  /* 다른 화면으로 넘어가면 닫는다. 열린 채 남으면 본문을 가린다. */
+  useEffect(() => setOpen(false), [pathname]);
+
+  return (
+    <span ref={ref} className="relative flex">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-haspopup="menu"
+        className={[
+          "flex cursor-pointer items-center gap-1 rounded border-0 bg-transparent px-2.5 py-1 whitespace-nowrap text-[length:var(--text-navsub)]",
+          inside
+            ? "rounded-b-none font-bold text-white shadow-[inset_0_-2px_0_var(--accent)]"
+            : "text-chrome-300 hover:bg-white/7 hover:text-white",
+        ].join(" ")}
+      >
+        {group.label}
+        {group.badge && <sup className="text-[6pt] font-extrabold text-[#FF6B7A]">{group.badge}</sup>}
+        <span className={`ml-0.5 text-[6pt] opacity-55 transition-transform ${open ? "rotate-180" : ""}`}>▾</span>
+      </button>
+
+      {/* 닫혔을 때는 아예 그리지 않는다. 안 보이는 메뉴도 폭을 차지해서
+          오른쪽 탭의 메뉴가 화면 밖으로 스크롤을 만든다. */}
+      {open && (
+        <span
+          ref={menuRef}
+          role="menu"
+          style={{ marginLeft: shift }}
+          className="absolute top-[calc(100%+4px)] left-0 z-[9600] flex min-w-[168px] max-w-[calc(100vw-1.5rem)] animate-[drop_.14s_ease-out] flex-col gap-px rounded-md border border-chrome-800 bg-chrome-900 p-1 shadow-[0_12px_28px_rgb(0_0_0/0.34)]"
+        >
+          {group.subs!.map((s) => (
+            <NavLink key={s.to + s.label} to={s.to} className={tabClass} role="menuitem">
+              {s.label}
+              {s.badge && <sup className="text-[6pt] font-extrabold text-[#FF6B7A]">{s.badge}</sup>}
+            </NavLink>
+          ))}
+          <style>{`@keyframes drop { from { opacity: 0; translate: 0 -4px } }`}</style>
+        </span>
+      )}
+    </span>
+  );
+}
+
 const tabClass = ({ isActive }: { isActive: boolean }) =>
   [
     "flex items-center gap-1 rounded px-2.5 py-1 whitespace-nowrap text-[length:var(--text-navsub)] no-underline",
@@ -41,7 +122,6 @@ const tabClass = ({ isActive }: { isActive: boolean }) =>
   ].join(" ");
 
 export function Nav() {
-  const { pathname } = useLocation();
   const { count } = useCart();
   const { toggle } = useTheme();
 
@@ -78,42 +158,11 @@ export function Nav() {
       <div className="bg-chrome-850">
         <div className="mx-auto flex min-h-[36px] max-w-[1240px] items-center gap-3.5 px-5 py-1.5">
           <div className="flex flex-wrap gap-0.5">
-            {GROUPS.map((g) =>
-              g.subs ? (
-                /* 좁은 화면에서는 드롭다운을 안 쓴다. 숨겨진 메뉴도 폭을 차지해서
-                   오른쪽에 붙은 그룹이면 화면 밖으로 밀려 가로 스크롤이 생긴다.
-                   대신 하위 항목을 그대로 펼쳐 보여준다 — 어차피 탭 줄이 접힌다. */
-                <span
-                  key={g.to}
-                  className={[
-                    "group contents md:relative md:flex",
-                    /* 지금 보고 있는 대분류가 아니면 좁은 화면에서 하위를 숨긴다.
-                       전부 펼치면 열두 개가 세 줄이 되어 본문보다 크롬이 커진다. */
-                    g.subs.some((x) => x.to === pathname) || g.to === pathname
-                      ? ""
-                      : "[&>span:last-child>a]:hidden md:[&>span:last-child>a]:flex",
-                  ].join(" ")}
-                >
-                  <NavLink to={g.to} className={tabClass} end={g.to === "/"}>
-                    {g.label}
-                    {g.badge && <sup className="text-[6pt] font-extrabold text-[#FF6B7A]">{g.badge}</sup>}
-                    <span className="ml-0.5 hidden text-[6pt] opacity-55 md:inline">▾</span>
-                  </NavLink>
-                  <span className="contents md:invisible md:absolute md:top-[calc(100%+4px)] md:left-0 md:z-[9600] md:flex md:min-w-[168px] md:-translate-y-1 md:flex-col md:gap-px md:rounded-md md:border md:border-chrome-800 md:bg-chrome-900 md:p-1 md:opacity-0 md:shadow-[0_12px_28px_rgb(0_0_0/0.34)] md:transition-[opacity,translate,visibility] md:duration-150 md:group-hover:visible md:group-hover:translate-y-0 md:group-hover:opacity-100 md:group-focus-within:visible md:group-focus-within:translate-y-0 md:group-focus-within:opacity-100">
-                    {g.subs.map((s) => (
-                      <NavLink key={s.to + s.label} to={s.to} className={tabClass}>
-                        {s.label}
-                        {s.badge && <sup className="text-[6pt] font-extrabold text-[#FF6B7A]">{s.badge}</sup>}
-                      </NavLink>
-                    ))}
-                  </span>
-                </span>
-              ) : (
-                <NavLink key={g.to} to={g.to} className={tabClass} end={g.to === "/"}>
-                  {g.label}
-                </NavLink>
-              ),
-            )}
+            {GROUPS.map((g) => (g.subs ? <Group key={g.to} group={g} /> : (
+              <NavLink key={g.to} to={g.to} className={tabClass} end={g.to === "/"}>
+                {g.label}
+              </NavLink>
+            )))}
           </div>
         </div>
       </div>

@@ -44,14 +44,13 @@ export function Scene() {
   const [picked, setPicked] = useState<Record<string, Set<string>>>({});
   const [page, setPage] = useState(1);
 
+  /* 한 축에 하나만 고른다. 여러 개를 겹쳐 고를 일이 드물고,
+     겹치면 지금 무엇이 걸렸는지 읽기가 어려워진다. 같은 값을 다시 누르면 풀린다. */
   const toggle = (axis: string, value: string) =>
     setPicked((prev) => {
       const next = { ...prev };
-      const set = new Set(next[axis] ?? []);
-      if (set.has(value)) set.delete(value);
-      else set.add(value);
-      if (set.size) next[axis] = set;
-      else delete next[axis];
+      if (prev[axis]?.has(value)) delete next[axis];
+      else next[axis] = new Set([value]);
       return next;
     });
 
@@ -118,8 +117,8 @@ export function Scene() {
               <summary className="flex cursor-pointer list-none items-center gap-2 text-xs font-bold text-ink">
                 {f.label}
                 {picked[f.key] && (
-                  <span className="num rounded-full bg-accent px-1.5 text-[10px] text-white">
-                    {picked[f.key]!.size}
+                  <span className="truncate text-[10px] font-normal text-accent">
+                    {[...picked[f.key]!][0]}
                   </span>
                 )}
                 <span className="ml-auto text-[10px] text-faint group-open:hidden">+</span>
