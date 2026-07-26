@@ -204,12 +204,11 @@
   .piece .art {
     aspect-ratio: 16/10; position: relative;
     background:
-      radial-gradient(120% 90% at 50% 110%, color-mix(in srgb, var(--rr) 26%, transparent), transparent 68%),
-      repeating-linear-gradient(45deg, var(--surface-2) 0 9px, var(--surface) 9px 18px);
+      radial-gradient(120% 90% at 50% 110%, color-mix(in srgb, var(--rr) 26%, transparent), transparent 68%);
     display: grid; place-items: center;
     border-bottom: 1px solid var(--line-soft);
   }
-  .piece .art .gl { font-size:32px; filter: saturate(.85); }
+  
 
   .seal {
     position: absolute; top: 8px; left: 8px;
@@ -249,10 +248,21 @@
 
 
   /* 카드는 그림·배지·이름·가격만. 나머지는 열어서 본다 */
-  .piece .art .gl { font-size: 48px; }
-  .piece .seal { position: absolute; top: 10px; left: 10px; display: inline-flex; align-items: center;
-    gap: 5px; padding: 4px 9px; border-radius: 99px; background: rgba(10,10,12,.72);
-    color: #fff; font-size: 10pt; font-weight: 800; backdrop-filter: blur(5px); }
+  .piece .art .thumb { width: 100%; height: 100%; object-fit: contain; display: block;
+    opacity: 0; transition: opacity .45s ease, transform .3s cubic-bezier(.22,1,.36,1); }
+  .piece .art .thumb.on { opacity: 1; }
+  .piece:hover .art .thumb { transform: scale(1.05); }
+  /* 도트는 보간하면 뭉개진다 */
+  .piece .art .thumb.dot { image-rendering: pixelated;
+    width: auto; height: auto; max-width: 82%; max-height: 82%; object-fit: contain; }
+  /* 카드 높이를 맞춰 그리드가 들쭉날쭉하지 않게 */
+  .piece { display: flex; flex-direction: column; }
+  .piece .info { flex: 1; }
+  .piece .ttl { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .piece .seal { position: absolute; top: 10px; left: 10px; display: grid; place-items: center;
+    width: 30px; height: 30px; border-radius: 50%; background: color-mix(in srgb, var(--ground) 72%, transparent);
+    backdrop-filter: blur(5px); }
+  .piece .seal .rk { width: 19px; height: 19px; }
   .piece .info { padding: 13px 14px 15px; display: flex; flex-direction: column; gap: 8px; }
   .piece .ttl { font-size: 12pt; font-weight: 700; line-height: 1.35; }
   .piece .foot { display: flex; align-items: baseline; gap: 10px; white-space: nowrap; }
@@ -375,8 +385,7 @@
   .vp {
     aspect-ratio: 16/9; border-radius: 5px; border: 1px solid var(--line);
     background:
-      radial-gradient(120% 90% at 50% 110%, color-mix(in srgb, var(--rr) 22%, transparent), transparent 68%),
-      repeating-linear-gradient(45deg, var(--surface-2) 0 9px, var(--surface) 9px 18px);
+      radial-gradient(120% 90% at 50% 110%, color-mix(in srgb, var(--rr) 22%, transparent), transparent 68%);
     display: grid; place-items: center; gap: 8px; color: var(--faint);
   }
   .vp .pl {
@@ -450,7 +459,7 @@
   .pbody { font-size:16px; line-height: 1.6; }
   .pshot {
     aspect-ratio: 21/9; border-radius: 5px; border: 1px solid var(--line-soft);
-    background: repeating-linear-gradient(45deg, var(--surface-2) 0 9px, var(--surface-3) 9px 18px);
+    background: var(--surface-2);
     display: grid; place-items: center; color: var(--faint); font-size:24px;
   }
   .pacts { display: flex; gap: 6px; padding-top: 3px; }
@@ -1781,83 +1790,44 @@
 
   /* ---------- data ---------- */
   const CATS = [
-    ["all", "전체"], ["move", "이동 · 컨트롤러"], ["combat", "전투 · AI"], ["feel", "게임 필"],
-    ["ui", "UI · 텍스트"], ["system", "시스템"], ["level", "레벨 · 월드"],
-    ["art", "아트 · 모델"], ["audio", "사운드"], ["narrative", "내러티브"], ["tool", "툴 · 에디터"],
+    ["all", "전체"], ["env", "환경 · 구조물"], ["weapon", "무기 · 방어구"],
+    ["char", "캐릭터 · 도트"], ["prop", "소품"], ["light", "조명"], ["furniture", "가구"], ["tex", "재질"],
   ];
   const ENGS = [["any", "전체"], ["unity", "Unity"], ["unreal", "Unreal"], ["godot", "Godot"]];
 
   // 제품명 · 제작사 · 가격 · 판매처 · 평점수 = 실제 조사값 (2026.07 기준)
   // 검수 점수 · 게임 필 점수 · 받은 사람 수 = LaughGG 가상 지표 (지어낸 값)
+  /* 전부 Poly Haven CC0 PBR 모델이다. 창작자 핸들·가격·점수·받은 수는 시연용 가정치고,
+     모델과 텍스처 해상도만 실제 값이다. 썸네일은 페이지에서 그때그때 렌더한다. */
   const PIECES = [
-    { id: 1, t: "Feel", by: "More Mountains", cat: "feel", eng: ["unity"], score: 97, feel: 98, price: 50, dl: 41200, gl: "💥", days: 2, rat: 238, src: "Unity Asset Store",
-      desc: "게임 필 하나만 파고든 물건. 히트스톱, 카메라 셰이크, 색 플래시, 진동, 사운드를 'MMFeedbacks' 한 컴포넌트로 묶어서 인스펙터에서 조립함. 이 마켓의 게임 필 항목이 존재하는 이유 같은 에셋임." },
-    { id: 2, t: "Corgi Engine — 2D + 2.5D Platformer", by: "More Mountains", cat: "move", eng: ["unity"], score: 94, feel: 93, price: 75, dl: 28400, gl: "🏃", days: 6, rat: 832, src: "Unity Asset Store",
-      desc: "레이캐스트 기반 플랫포머 컨트롤러. 점프·대시·기어가기·제트팩까지 이동 옵션이 전부 들어있고, 코요테 타임 같은 감각 파라미터가 인스펙터에 노출돼 있음." },
-    { id: 3, t: "TopDown Engine", by: "More Mountains", cat: "move", eng: ["unity"], score: 92, feel: 91, price: 75, dl: 16800, gl: "🕹", days: 6, rat: 355, src: "Unity Asset Store",
-      desc: "탑다운 2D/3D 공용 엔진. Corgi와 같은 뼈대를 쓰지만 시점이 다름. 모바일 대응과 확장성 위주로 짜여 있음." },
-    { id: 4, t: "Odin Inspector and Serializer", by: "Sirenix", cat: "tool", eng: ["unity"], score: 96, feel: 62, price: 55, dl: 52100, gl: "🔧", days: 3, rat: 785, src: "Unity Asset Store",
-      desc: "커스텀 에디터 코드를 한 줄도 안 쓰고 인스펙터를 뜯어고침. 직렬화도 같이 해결됨. 다만 매출 넘어가면 별도 엔터프라이즈 라이선스 필요 — 구매 전 EULA 확인 권장." },
-    { id: 5, t: "A* Pathfinding Project Pro", by: "Aron Granberg", cat: "combat", eng: ["unity"], score: 94, feel: 74, price: 140, dl: 33900, gl: "🧭", days: 11, src: "Unity Asset Store",
-      desc: "유니티 길찾기의 사실상 표준. 그리드/내비메시/포인트 그래프, 로컬 회피, 런타임 재계산. 유닛 수천 기 규모에서도 버팀." },
-    { id: 6, t: "Behavior Designer Pro 3", by: "Opsive", cat: "combat", eng: ["unity"], score: 89, feel: 78, price: 145, dl: 12400, gl: "🧠", days: 8, src: "Unity Asset Store",
-      desc: "노드 기반 비헤이비어 트리. DOTS로 돌아가서 적 AI를 많이 굴려야 하는 게임에 맞음. 러닝커브가 있는 편." },
-    { id: 7, t: "Final IK", by: "RootMotion", cat: "move", eng: ["unity"], score: 93, feel: 90, price: 90, dl: 27600, gl: "🦴", days: 14, src: "Unity Asset Store",
-      desc: "역운동학 종합. 발이 지면에 붙고, 손이 물건을 정확히 잡고, 시선이 목표를 따라감. 캐릭터가 '살아있는 느낌'의 절반은 여기서 나옴." },
-    { id: 8, t: "Hot Reload — Edit Code Without Compiling", by: "The Naughty Cult", cat: "tool", eng: ["unity"], score: 90, feel: 58, price: 79.99, dl: 18700, gl: "", days: 1, rat: 291, src: "Unity Asset Store",
-      desc: "플레이 중에 C# 고치면 멈추지 않고 바로 반영됨. 게임 필 튜닝처럼 수백 번 반복해야 하는 작업에서 체감이 제일 큼." },
-    { id: 9, t: "PlayMaker 2", by: "Hutong Games", cat: "tool", eng: ["unity"], score: 84, feel: 66, price: 32.50, dl: 44300, gl: "🧩", days: 4, src: "Unity Asset Store",
-      desc: "코드 없이 상태머신으로 로직 짜는 비주얼 스크립팅. 프로그래머 없는 팀이 프로토타입 돌릴 때 많이 씀." },
-    { id: 10, t: "Amplify Shader Editor", by: "Amplify Creations", cat: "tool", eng: ["unity"], score: 91, feel: 84, price: 80, dl: 31200, gl: "🎨", days: 9, rat: 701, src: "Unity Asset Store",
-      desc: "노드로 셰이더 만드는 에디터. 셰이더그래프보다 먼저 나왔고 여전히 기능이 더 넓음. 스타일라이즈드 룩 잡을 때 필수급." },
-    { id: 11, t: "Text Animator for Unity", by: "Febucci", cat: "ui", eng: ["unity"], score: 92, feel: 95, price: 65, dl: 9800, gl: "🔤", days: 5, src: "Unity Asset Store",
-      desc: "대사 텍스트가 흔들리고 튀고 물결치게 만듦. 태그만 넣으면 됨. 대사 연출의 체감 품질이 이거 하나로 확 올라감." },
-    { id: 12, t: "Magica Cloth 2", by: "Magica Soft", cat: "feel", eng: ["unity"], score: 88, feel: 89, price: 35, dl: 14100, gl: "🧣", days: 7, src: "Unity Asset Store",
-      desc: "머리카락·옷·장신구 흔들림 물리. Dynamic Bone 대안으로 많이 넘어감. Burst 기반이라 캐릭터 여럿 나와도 버팀." },
-    { id: 13, t: "Stylized Water 3", by: "Staggart Creations", cat: "level", eng: ["unity"], score: 90, feel: 86, price: 49, dl: 11600, gl: "🌊", days: 3, src: "Unity Asset Store",
-      desc: "사실적인 물이 아니라 예쁜 물. URP 기준으로 가볍고, 파도·거품·수중 굴절 파라미터가 직관적임." },
-    { id: 14, t: "Voxel Play 4", by: "Kronnect", cat: "level", eng: ["unity"], score: 85, feel: 80, price: 75, dl: 6400, gl: "🧱", days: 10, src: "Unity Asset Store",
-      desc: "마인크래프트류 복셀 월드 프레임워크. 무한 지형 생성, 파괴/건설, 조명까지 포함." },
-    { id: 15, t: "Grabbit 2 — Physics Placement", by: "Jungle", cat: "tool", eng: ["unity"], score: 87, feel: 72, price: 40, dl: 8200, gl: "🪄", days: 2, src: "Unity Asset Store",
-      desc: "씬에 오브젝트 배치할 때 물리로 툭 떨어뜨려 자연스럽게 놓아줌. 콜라이더 자동 생성도 같이. 레벨 꾸미는 시간이 반으로 줌." },
-    { id: 16, t: "Poly Universal Pack", by: "polyperfect", cat: "art", eng: ["unity"], score: 86, feel: 70, price: 300, dl: 5100, gl: "📦", days: 12, src: "Unity Asset Store",
-      desc: "6,000개 넘는 로우폴리 모델. 도시·판타지·SF·생존 테마를 한 번에 커버함. 톤이 일관돼서 섞어 써도 안 튐." },
-    { id: 17, t: "Low Poly Animated Animals", by: "polyperfect", cat: "art", eng: ["unity"], score: 83, feel: 76, price: 100, dl: 13700, gl: "🦊", days: 16, rat: 146, src: "Unity Asset Store",
-      desc: "애니메이션 붙은 로우폴리 동물 세트. 오픈월드에 생태계 깔 때 제일 빠른 길." },
-    { id: 18, t: "Low Poly Modular NPCs — Lords & Outcasts", by: "Polytope Studio", cat: "art", eng: ["unity"], score: 84, feel: 73, price: 69.99, dl: 4300, gl: "🧑‍🌾", days: 5, src: "Unity Asset Store",
-      desc: "중세 판타지 모듈러 NPC. 부위별로 조합해서 마을 사람 수십 명을 안 겹치게 뽑을 수 있음." },
-    { id: 19, t: "Medieval & Fantasy Giga Bundle", by: "Hivemind", cat: "art", eng: ["unity"], score: 81, feel: 68, price: 179.99, dl: 3900, gl: "🏰", days: 8, src: "Unity Asset Store",
-      desc: "중세 판타지 환경 대용량 번들. 건물·소품·자연물이 한 세트로 와서 룩 통일이 쉬움." },
-    { id: 20, t: "Sky Master — Weather, Lighting & Water", by: "ARTnGAME", cat: "level", eng: ["unity"], score: 79, feel: 77, price: 199, dl: 2800, gl: "🌦", days: 13, src: "Unity Asset Store",
-      desc: "날씨·시간 순환·볼류메트릭 구름·물까지 묶인 번들. 기능은 방대한데 문서가 얇은 편이라 통합 난이도가 높음." },
-    { id: 21, t: "LUMINA GI 2024 — Voxel Global Illumination", by: "ARTnGAME", cat: "level", eng: ["unity"], score: 76, feel: 82, price: 99, dl: 1900, gl: "💡", days: 15, src: "Unity Asset Store",
-      desc: "실시간 복셀 전역조명. 라이트맵 굽지 않고 간접광을 뽑음. 성능 부담이 있어서 타겟 사양 확인 필수." },
-    { id: 22, t: "Aeon — Sci-Fi Sound Bundle", by: "Shapeforms", cat: "audio", eng: ["unity", "unreal", "godot"], score: 91, feel: 88, price: 149.99, dl: 7200, gl: "🔊", days: 4, src: "Unity Asset Store",
-      desc: "SF 효과음 대용량 팩. UI·무기·기계·앰비언트가 톤 통일돼서 들어있음. 사운드는 직접 만들기 제일 어려운 영역이라 가성비가 좋음." },
-    { id: 23, t: "Big Fantasy Sound Effects Bundle", by: "Cyberwave Orchestra", cat: "audio", eng: ["unity", "unreal", "godot"], score: 87, feel: 85, price: 174.50, dl: 5600, gl: "🎺", days: 9, src: "Unity Asset Store",
-      desc: "판타지 효과음 모음. 마법·검격·몬스터·환경음. 로열티프리라 상업 프로젝트에 바로 씀." },
-    { id: 24, t: "Controller Overlays & Button Kits", by: "nickknacks", cat: "ui", eng: ["unity", "unreal", "godot"], score: 80, feel: 71, price: 19.99, dl: 6900, gl: "🎮", days: 6, src: "Unity Asset Store",
-      desc: "패드 9종 + 키보드/마우스 버튼 아이콘 세트. 3가지 스타일. 튜토리얼 UI에서 '이 버튼 누르셈' 표시할 때 필요함." },
-    { id: 25, t: "AVPro Video v3 — Ultra Edition", by: "RenderHeads", cat: "system", eng: ["unity"], score: 89, feel: 60, price: 900, dl: 1400, gl: "🎬", days: 11, src: "Unity Asset Store",
-      desc: "유니티 안에서 영상 재생. 유니티 기본 VideoPlayer가 못 하는 코덱·스트리밍·360도를 처리함. 가격대가 스튜디오용임." },
-    { id: 26, t: "Aseprite", by: "Igara Studio", cat: "art", eng: ["unity", "unreal", "godot"], score: 95, feel: 92, price: 19.99, dl: 128000, gl: "🖌", days: 1, src: "Steam · itch.io",
-      desc: "픽셀아트 도트 찍는 표준 도구. 어니언스킨, 타임라인, 팔레트 관리, 시트 내보내기. 인디 2D 씬에서 사실상 기본값임." },
-    { id: 27, t: "Spine — Essential", by: "Esoteric Software", cat: "art", eng: ["unity", "unreal", "godot"], score: 93, feel: 94, price: 69, dl: 34700, gl: "🦴", days: 7, src: "공식 사이트",
-      desc: "2D 스켈레탈 애니메이션. 프레임을 한 장씩 그리는 대신 뼈를 움직임. 유니티·언리얼·고도용 런타임을 공식 제공함. 프로 버전은 $329." },
-    { id: 28, t: "LDtk — Level Designer Toolkit", by: "Deepnight Games", cat: "tool", eng: ["unity", "godot"], score: 92, feel: 87, price: 0, dl: 61300, gl: "🗺", days: 2, src: "오픈소스 · 기부",
-      desc: "데드셀 디렉터가 만든 2D 레벨 에디터. 규칙 기반 타일 자동 배치가 핵심이고, JSON으로 뽑아서 아무 엔진에나 붙임. 무료." },
-    { id: 29, t: "FMOD Studio", by: "Firelight Technologies", cat: "audio", eng: ["unity", "unreal", "godot"], score: 94, feel: 91, price: 0, dl: 88400, gl: "🎚", days: 3, src: "매출 $200K 미만 무료",
-      desc: "적응형 오디오 미들웨어 업계 표준. 상황에 따라 음악이 자연스럽게 갈라지고 합쳐짐. 인디 매출 구간에선 무료라 안 쓸 이유가 없음." },
-    { id: 30, t: "Wwise", by: "Audiokinetic", cat: "audio", eng: ["unity", "unreal", "godot"], score: 90, feel: 88, price: 0, dl: 42600, gl: "🎛", days: 10, src: "에셋 200개 미만 무료",
-      desc: "FMOD의 경쟁자. 기능은 더 방대하지만 러닝커브가 가파름. AAA 현장 점유율이 높아서 배워두면 이직에 유리함." },
-    { id: 31, t: "Yarn Spinner", by: "Secret Lab", cat: "narrative", eng: ["unity", "godot"], score: 89, feel: 83, price: 0, dl: 24800, gl: "🧶", days: 4, src: "오픈소스 (MIT)",
-      desc: "대사 스크립트 언어 + 런타임. 작가가 코드 몰라도 분기 대사를 씀. Night in the Woods, A Short Hike 등이 씀. 무료." },
-    { id: 32, t: "ink", by: "inkle", cat: "narrative", eng: ["unity", "unreal", "godot"], score: 91, feel: 85, price: 0, dl: 31500, gl: "✒️", days: 6, src: "오픈소스 (MIT)",
-      desc: "80 Days, Heaven's Vault 만든 스튜디오가 자기들 게임에 쓰려고 만든 내러티브 스크립팅 언어. 상태 추적이 강력함. 무료." },
-    { id: 33, t: "Kenney Game Assets", by: "Kenney", cat: "art", eng: ["unity", "unreal", "godot"], score: 82, feel: 74, price: 0, dl: 214000, gl: "🧊", days: 1, src: "CC0 · 퍼블릭 도메인",
-      desc: "4만 개 넘는 2D·3D·UI·오디오 에셋을 전부 CC0로 뿌림. 프로토타입 단계에서 이걸 안 쓴 인디 개발자를 찾기가 더 어려움." },
-    { id: 34, t: "Blender", by: "Blender Foundation", cat: "tool", eng: ["unity", "unreal", "godot"], score: 93, feel: 79, price: 0, dl: 340000, gl: "🌀", days: 1, src: "오픈소스 (GPL)",
-      desc: "모델링·리깅·애니메이션·렌더링 전부. 유료 DCC와 격차가 사실상 사라졌고 가격은 0원. 인디 3D 파이프라인의 시작점." },
+    { id:1,  m:"gothic_statue",         t:"Gothic Statue",        by:"stonewright", cat:"env",       eng:["unity","unreal"],        score:94, feel:91, price:38, dl:2140, days:2,  tri:"18.4k", tex:"1K", desc:"성당 정면에 놓는 석상. 노멀맵으로 조각 디테일을 담아 폴리곤을 아꼈고, 정면·측면 실루엣이 모두 살아 있습니다." },
+    { id:2,  m:"kite_shield",           t:"Kite Shield",          by:"ironbark",    cat:"weapon",    eng:["unity","unreal","godot"], score:92, feel:89, price:24, dl:3820, days:4,  tri:"4.2k",  tex:"1K", desc:"가죽 띠와 금속 보스가 분리된 머티리얼로 들어갑니다. 손에 쥐는 각도에서 두께가 자연스럽게 보이도록 옆면을 살렸습니다." },
+    { id:3,  m:"lantern_chandelier_01", t:"Lantern Chandelier",   by:"emberforge",  cat:"light",     eng:["unity","unreal"],        score:91, feel:88, price:32, dl:1680, days:1,  tri:"22.1k", tex:"1K", desc:"천장에 매다는 랜턴형 샹들리에. 유리 부분이 별도 머티리얼이라 안쪽 광원을 그대로 통과시킵니다." },
+    { id:4,  m:"brass_candleholders",   t:"Brass Candleholders",  by:"emberforge",  cat:"light",     eng:["unity"],                 score:90, feel:87, price:18, dl:2960, days:3,  tri:"9.8k",  tex:"1K", desc:"5구 황동 촛대. 금속 러프니스가 부위별로 달라 촛농 자국이 남은 아랫부분이 무광으로 보입니다." },
+    { id:5,  m:"cross_pein_hammer",     t:"Cross Pein Hammer",    by:"ironbark",    cat:"weapon",    eng:["unreal","godot"],        score:88, feel:86, price:12, dl:4410, days:6,  tri:"3.1k",  tex:"1K", desc:"대장간 소품이자 근접 무기로 쓸 수 있는 망치. 나무 자루의 결과 쇠머리의 마모가 텍스처에 들어 있습니다." },
+    { id:6,  m:"Lantern_01",            t:"Lantern 01",           by:"emberforge",  cat:"light",     eng:["unity","unreal"],        score:87, feel:85, price:16, dl:5230, days:2,  tri:"7.4k",  tex:"1K", desc:"손에 드는 등불. 유리·황동·심지가 각각 머티리얼로 나뉘어 있어 불빛만 따로 제어할 수 있습니다." },
+    { id:7,  m:"horse_statue_01",       t:"Horse Statue",         by:"stonewright", cat:"env",       eng:["unity","unreal"],        score:85, feel:83, price:34, dl:1120, days:9,  tri:"26.7k", tex:"1K", desc:"광장 중앙에 놓는 기마상. 받침대까지 한 메시라 배치가 간단하고, 뒤쪽도 마감돼 있어 어느 각도에서든 씁니다." },
+    { id:8,  m:"brass_goblets",         t:"Brass Goblets",        by:"tinsmith",    cat:"prop",      eng:["unity"],                 score:84, feel:82, price:9,  dl:6740, days:5,  tri:"5.6k",  tex:"1K", desc:"연회 테이블용 잔 세트. 세 가지 형태가 한 파일에 들어 있어 나눠 배치하면 손으로 놓은 것처럼 보입니다." },
+    { id:9,  m:"GothicCabinet_01",      t:"Gothic Cabinet",       by:"oakmoor",     cat:"furniture", eng:["unity","unreal"],        score:83, feel:80, price:28, dl:1490, days:7,  tri:"14.2k", tex:"1K", desc:"문이 열리는 고딕 장식장. 문짝이 별도 오브젝트라 애니메이션을 붙일 수 있습니다." },
+    { id:10, m:"bronze_whale_statue",   t:"Bronze Statue",        by:"stonewright", cat:"env",       eng:["unreal"],                score:82, feel:79, price:22, dl:880,  days:12, tri:"31.5k", tex:"1K", desc:"청동 조형물. 산화된 녹색 얼룩이 텍스처에 들어 있어 야외 배치에 그대로 씁니다." },
+    { id:11, m:"Chandelier_01",         t:"Chandelier 01",        by:"emberforge",  cat:"light",     eng:["unity","unreal","godot"], score:81, feel:78, price:26, dl:2010, days:4,  tri:"19.3k", tex:"1K", desc:"연회장용 대형 샹들리에. 촛대 하나하나가 분리돼 있어 일부만 켜는 연출이 됩니다." },
+    { id:12, m:"gothic_coffee_table",   t:"Gothic Table",         by:"oakmoor",     cat:"furniture", eng:["unity"],                 score:80, feel:77, price:15, dl:2380, days:8,  tri:"6.9k",  tex:"1K", desc:"조각 다리가 있는 낮은 탁자. 상판이 평평해 소품을 올려 놓기 좋습니다." },
+    { id:13, m:"barrel_03",             t:"Barrel 03",            by:"coopers",     cat:"prop",      eng:["unity","unreal","godot"], score:78, feel:76, price:7,  dl:9120, days:3,  tri:"2.8k",  tex:"1K", desc:"쇠테를 두른 나무통. 폴리곤이 가벼워 창고나 부두에 수십 개를 깔아도 부담이 없습니다." },
+    { id:14, m:"WoodenTable_02",        t:"Wooden Table",         by:"oakmoor",     cat:"furniture", eng:["unity","godot"],         score:77, feel:75, price:11, dl:5580, days:6,  tri:"3.4k",  tex:"1K", desc:"선술집용 나무 탁자. 상판 나뭇결이 이어져 있어 여러 개를 붙여도 반복이 티나지 않습니다." },
+    { id:15, m:"metal_jug",             t:"Metal Jug",            by:"tinsmith",    cat:"prop",      eng:["godot"],                 score:76, feel:74, price:6,  dl:4230, days:10, tri:"4.1k",  tex:"1K", desc:"찌그러진 금속 주전자. 눌린 자국이 메시에 들어 있어 노멀맵만으로 만든 것과 다릅니다." },
+    { id:16, m:"WoodenChair_01",        t:"Wooden Chair",         by:"oakmoor",     cat:"furniture", eng:["unity","unreal"],        score:75, feel:73, price:8,  dl:6310, days:5,  tri:"2.6k",  tex:"1K", desc:"등받이 있는 나무 의자. 탁자와 같은 재질 세트라 나란히 놓으면 톤이 맞습니다." },
+    { id:17, m:"ceramic_pot",           t:"Ceramic Pot",          by:"tinsmith",    cat:"prop",      eng:["unity"],                 score:74, feel:72, price:5,  dl:7840, days:2,  tri:"1.9k",  tex:"1K", desc:"유약을 바른 항아리. 표면 반사가 강해 실내 조명 확인용으로도 씁니다." },
+    { id:18, m:"jug_01",                t:"Jug 01",               by:"tinsmith",    cat:"prop",      eng:["godot"],                 score:72, feel:70, price:4,  dl:3120, days:14, tri:"2.2k",  tex:"1K", desc:"손잡이 달린 도기 주전자. 깨진 변형이 없는 온전한 형태 하나입니다." },
+    { id:19, m:"coast_rocks_01",        t:"Coast Rocks",          by:"stonewright", cat:"env",       eng:["unity","unreal","godot"], score:70, feel:68, price:0,  dl:12400,days:1,  tri:"8.7k",  tex:"1K", desc:"해안 바위 덩어리. 무료로 풀어 둔 것이라 지형 채우기에 부담 없이 씁니다." },
+    { id:20, m:"brass_pot_01",          t:"Brass Pot",            by:"tinsmith",    cat:"prop",      eng:["unity"],                 score:66, feel:64, price:3,  dl:2740, days:18, tri:"3.8k",  tex:"1K", desc:"작은 황동 냄비. 폴리곤 대비 텍스처 해상도가 높아 가까이서만 씁니다." },
+    { id:21, img:"px-char1",  t:"Dark Knight Sprite",  by:"utumno",  cat:"char", eng:["unity","godot"],          score:89, feel:92, price:14, dl:5120, days:3,  tri:"—", tex:"32×48", desc:"쿼터뷰 도트 캐릭터. 다크에덴·녹스 계열 화면에 맞춘 8방향 스프라이트로, 어두운 배경에서 실루엣이 뭉개지지 않게 외곽을 한 픽셀 밝혔습니다." },
+    { id:22, img:"px-char2",  t:"Cleric Sprite",       by:"utumno",  cat:"char", eng:["unity","godot"],          score:86, feel:88, price:14, dl:3940, days:5,  tri:"—", tex:"32×48", desc:"성직자 계열 도트 캐릭터. 로브 자락이 걷는 프레임마다 흔들리도록 나뉘어 있습니다." },
+    { id:23, img:"px-mon1",   t:"Crypt Ghoul",         by:"utumno",  cat:"char", eng:["godot"],                  score:84, feel:87, price:11, dl:4680, days:2,  tri:"—", tex:"32×32", desc:"납골당 몬스터. 어두운 타일 위에서 눈만 밝게 보이도록 대비를 잡았습니다." },
+    { id:24, img:"px-mon3",   t:"Bone Warden",         by:"utumno",  cat:"char", eng:["unity","godot"],          score:82, feel:85, price:11, dl:3210, days:8,  tri:"—", tex:"32×32", desc:"해골 계열 몬스터. 피격 프레임에서 뼈가 흩어지는 컷이 포함돼 있습니다." },
+    { id:25, img:"L05",       t:"Ruin Layer Set",      by:"utumno",  cat:"env",  eng:["unity","unreal","godot"], score:80, feel:79, price:19, dl:2870, days:6,  tri:"—", tex:"512²", desc:"폐허 배경 레이어. 앞뒤로 겹쳐 깔면 쿼터뷰 화면에 깊이가 생깁니다." },
+    { id:26, img:"L19",       t:"Crypt Layer Set",     by:"utumno",  cat:"env",  eng:["unity","godot"],          score:78, feel:77, price:19, dl:2140, days:9,  tri:"—", tex:"512²", desc:"지하 납골당 배경 레이어. 벽·바닥·기둥이 분리돼 있어 방 크기를 자유롭게 잡습니다." },
+    { id:27, img:"mt-tile04", t:"Dungeon Wall Tiles",  by:"utumno",  cat:"env",  eng:["unity","godot"],          score:76, feel:75, price:8,  dl:6420, days:4,  tri:"—", tex:"64²",  desc:"이어 붙이는 벽 타일. 모서리와 이음매가 포함돼 있어 반복 배치에서 티가 나지 않습니다." },
+    { id:28, img:"px-item2",  t:"Loot Icon Pack",      by:"utumno",  cat:"prop", eng:["unity","unreal","godot"], score:74, feel:73, price:6,  dl:8930, days:1,  tri:"—", tex:"32²",  desc:"인벤토리용 아이템 아이콘. 물약·반지·두루마리 등이 같은 색 팔레트로 통일돼 있습니다." },
   ];
 
   const RKID = { 챌린저: "chal", 다이아: "dia", 플래티넘: "plat", 실버: "silv" };
@@ -1933,8 +1903,8 @@
       b.setAttribute("aria-pressed", String(sel === p.id));
       b.innerHTML = `
         <div class="art">
-          <span class="gl">${p.gl}</span>
-          <span class="seal">${p.score}</span>
+          ${p.m ? `<img class="thumb" alt="" data-m="${p.m}">` : `<img class="thumb dot on" alt="" src="./assets/${p.img}.png">`}
+          <span class="seal" title="${rn}"><svg class="rk"><use href="#rk-${RKID[rn]}"/></svg></span>
         </div>
         <div class="info">
           <span class="ttl">${esc(p.t)}</span>
@@ -2112,9 +2082,9 @@
           <div class="m">사양</div>
           <div>
             <div class="kv"><span class="k">엔진</span><span class="v">${p.eng.map(e => ENGNAME[e]).join(" · ")}</span></div>
-            <div class="kv"><span class="k">실제 판매처</span><span class="v">${esc(p.src)}</span></div>
-            <div class="kv"><span class="k">실제 가격</span><span class="v">${won(p.price)}</span></div>
-            ${p.rat ? `<div class="kv"><span class="k">실제 평점 수</span><span class="v">${p.rat.toLocaleString()}개</span></div>` : ""}
+            <div class="kv"><span class="k">폴리곤</span><span class="v">${p.tri}</span></div>
+            <div class="kv"><span class="k">텍스처</span><span class="v">${p.tex}</span></div>
+            
             <div class="kv"><span class="k">받은 사람</span><span class="v" style="color:var(--faint)">${p.dl.toLocaleString()}명 · 가상</span></div>
             <div class="kv"><span class="k">평균 통합 시간</span><span class="v" style="color:var(--faint)">${(6 + (p.id * 13) % 40)}분 · 가상</span></div>
           </div>
@@ -2270,3 +2240,91 @@
   render(); renderFeed(); syncCart();
 })();
 </script>
+
+<script type="importmap">
+{ "imports": {
+  "three": "./vendor/three/build/three.module.min.js",
+  "three/addons/": "./vendor/three/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { HDRLoader } from "three/addons/loaders/HDRLoader.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+
+/* 카탈로그 썸네일 — 상품이 3D 에셋이니 그림도 실제 모델을 렌더해서 쓴다.
+   렌더러 하나로 한 장씩 구워 data URL 로 넣고, 같은 모델은 다시 굽지 않는다. */
+(async function () {
+  const W = 520, H = 340;
+  const r = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+  r.setSize(W, H);
+  r.setPixelRatio(Math.min(devicePixelRatio, 2));
+  r.outputColorSpace = THREE.SRGBColorSpace;
+  r.toneMapping = THREE.ACESFilmicToneMapping;
+  r.toneMappingExposure = 1.05;
+
+  const sc = new THREE.Scene();
+  const pmrem = new THREE.PMREMGenerator(r);
+  await new Promise(done => {
+    new HDRLoader().load("./assets/ph/studio_1k.hdr", tex => {
+      tex.mapping = THREE.EquirectangularReflectionMapping;
+      sc.environment = pmrem.fromEquirectangular(tex).texture;
+      tex.dispose(); done();
+    }, undefined, () => { sc.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture; done(); });
+  });
+  const key = new THREE.DirectionalLight(0xffffff, 1.25);
+  key.position.set(0.8, 1.2, 0.9);
+  sc.add(key);
+  const cam = new THREE.PerspectiveCamera(30, W / H, 0.01, 100);
+  const loader = new GLTFLoader();
+  const cache = new Map();
+
+  async function bake(id) {
+    if (cache.has(id)) return cache.get(id);
+    const g = await new Promise((ok, no) =>
+      loader.load(`./assets/ph/${id}/${id}_1k.gltf`, ok, undefined, no));
+    const o = g.scene, bb = new THREE.Box3().setFromObject(o);
+    const sz = new THREE.Vector3(), ct = new THREE.Vector3();
+    bb.getSize(sz); bb.getCenter(ct);
+    o.position.set(-ct.x, -ct.y, -ct.z);
+    o.traverse(x => { if (x.isMesh) x.material.envMapIntensity = 1.1; });
+    const n = new THREE.Group(); n.add(o);
+    n.scale.setScalar(1 / Math.max(sz.x, sz.y, sz.z, 1e-6));
+    n.rotation.y = -0.55;
+    sc.add(n);
+
+    /* 모델마다 비율이 달라 고정 거리로는 잘린다. 바운딩 스피어로 거리를 맞춘다. */
+    const sph = new THREE.Box3().setFromObject(n).getBoundingSphere(new THREE.Sphere());
+    const fov = cam.fov * Math.PI / 180;
+    const dist = (sph.radius / Math.sin(fov / 2)) * 1.2;
+    cam.position.copy(sph.center)
+       .addScaledVector(new THREE.Vector3(0.6, 0.42, 0.86).normalize(), dist);
+    cam.near = Math.max(dist - sph.radius * 2, 0.01);
+    cam.far = dist + sph.radius * 4;
+    cam.updateProjectionMatrix();
+    cam.lookAt(sph.center);
+
+    r.render(sc, cam);
+    const url = r.domElement.toDataURL("image/png");
+    sc.remove(n);
+    cache.set(id, url);
+    return url;
+  }
+
+  /* 그리드는 필터로 다시 그려지니 새로 붙은 것만 굽는다 */
+  async function paint() {
+    for (const img of document.querySelectorAll(".thumb[data-m]:not([data-done])")) {
+      img.dataset.done = "1";
+      try {
+        img.src = await bake(img.dataset.m);
+        img.classList.add("on");
+      } catch (e) { img.remove(); }
+    }
+  }
+  await paint();
+  new MutationObserver(() => { paint(); })
+    .observe(document.getElementById("grid"), { childList: true, subtree: true });
+})();
+</script>
+
