@@ -14,17 +14,17 @@ import { RankIcon, BADGE_LABEL, type BadgeKey } from "../components/Rank";
 const HERO = PIECES.find((p) => p.m === "gothic_statue") ?? PIECES[0]!;
 
 const STEPS: [string, string][] = [
-  ["올린다", "glb, gltf, png 를 올립니다. 형식 변환은 필요 없습니다."],
-  ["검수한다", "7항목을 자동 채점합니다. 라이선스 출처가 60 미만이면 그대로 탈락입니다."],
-  ["고친다", "떨어진 항목마다 고치는 코드를 만들어 줍니다. 적용하면 다시 채점합니다."],
-  ["맞춘다", "사는 쪽 게임 컨셉에 맞춰 톤과 팔레트를 바꿔 내보냅니다."],
+  ["올린다", "glb, gltf, png. 변환 없이"],
+  ["검수한다", "7항목 자동 채점. 라이선스 60 미만은 탈락"],
+  ["고친다", "떨어진 항목의 수정 코드 생성"],
+  ["맞춘다", "게임 컨셉에 맞춰 톤과 팔레트 변경"],
 ];
 
 const TIERS: { badge: BadgeKey; range: string; note: string }[] = [
-  { badge: "chal", range: "90점 이상", note: "그대로 프로덕션에 들어갑니다" },
-  { badge: "dia", range: "80점 이상", note: "손볼 곳이 한둘 있습니다" },
-  { badge: "plat", range: "70점 이상", note: "쓸 수는 있지만 정리가 필요합니다" },
-  { badge: "silv", range: "70점 미만", note: "노출되지 않습니다" },
+  { badge: "chal", range: "90점 이상", note: "프로덕션 투입 가능" },
+  { badge: "dia", range: "80점 이상", note: "손볼 곳 한둘" },
+  { badge: "plat", range: "70점 이상", note: "정리 필요" },
+  { badge: "silv", range: "70점 미만", note: "노출 제외" },
 ];
 
 export function Home() {
@@ -39,9 +39,8 @@ export function Home() {
             <br />
             사기 전에 압니다
           </h1>
-          <p className="mt-4 max-w-[46ch] text-base text-muted">
-            창작자가 올린 에셋을 7항목으로 채점해 배지를 매깁니다. 사는 쪽은 점수를 보고 고르고,
-            공방에서 자기 게임 컨셉에 맞춰 내려받습니다.
+          <p className="mt-4 max-w-[42ch] text-base text-muted">
+            7항목으로 채점해 배지를 매깁니다. 사는 쪽은 점수로 고르고 컨셉에 맞춰 내려받습니다.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Link
@@ -87,9 +86,7 @@ export function Home() {
       {/* 배지 */}
       <section className="mx-auto max-w-[1240px] px-5 py-16">
         <h2 className="text-4xl font-bold text-ink">배지가 노출 순위를 정합니다</h2>
-        <p className="mt-2 max-w-[52ch] text-base text-muted">
-          수수료는 배지와 무관하게 8% 단일입니다. 배지는 값이 아니라 자리를 정합니다.
-        </p>
+        <p className="mt-2 text-base text-muted">수수료는 8% 단일. 배지는 값이 아니라 자리를 정합니다.</p>
         <div className="mt-8 grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
           {TIERS.map((t) => (
             <div key={t.badge} className="flex flex-col items-start gap-3 bg-surface p-6">
@@ -107,19 +104,17 @@ export function Home() {
         <div className="mx-auto grid max-w-[1240px] gap-10 px-5 py-16 sm:grid-cols-2">
           <div>
             <p className="text-6xl font-bold tabular-nums text-ink">92%</p>
-            <p className="mt-2 text-base text-muted">창작자가 가져갑니다. 창작자는 공급이지 수익원이 아닙니다.</p>
+            <p className="mt-2 text-base text-muted">창작자 정산</p>
           </div>
           <div>
             <p className="text-6xl font-bold tabular-nums text-ink">8%</p>
-            <p className="mt-2 text-base text-muted">
-              단일 수수료입니다. Epic Fab 12%, Unity Asset Store 30% 와 비교하면 됩니다.
-            </p>
+            <p className="mt-2 text-base text-muted">단일 수수료. Epic Fab 12%, Unity 30%</p>
           </div>
         </div>
       </section>
 
       <section className="mx-auto max-w-[1240px] px-5 py-20 text-center">
-        <h2 className="text-4xl font-bold text-ink">가진 에셋이 몇 점인지 먼저 보세요</h2>
+        <h2 className="text-4xl font-bold text-ink">가진 에셋이 몇 점인지 보기</h2>
         <Link
           to="/workshop"
           className="mt-6 inline-block rounded-xl bg-accent px-8 py-4 text-base font-bold text-white no-underline hover:bg-accent-strong"

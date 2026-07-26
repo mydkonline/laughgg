@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { MARKET, REACH, MODEL, CHECK_WEIGHTS } from "../data/ir";
+import { MARKET, MARKET_SOURCE, REACH, MODEL, CHECK_WEIGHTS } from "../data/ir";
 import { PIECES, modelSrc } from "../data/pieces";
 import { Preview } from "../three/Preview";
 import { Sprite } from "../three/Sprite";
@@ -17,32 +17,31 @@ export function Ir() {
         <h1 className="mt-1 max-w-[20ch] text-6xl leading-[1.1] font-bold text-ink">
           에셋을 만들지 않고 배지를 만듭니다
         </h1>
-        <p className="mt-4 max-w-[52ch] text-base text-muted">
-          AI 가 생성을 흔하게 만들수록 희소해지는 건 만드는 능력이 아니라 쓸 만한지 보증하는 능력입니다.
-          그 보증을 팔고, 사는 쪽 게임 컨셉에 맞춰 내보냅니다.
+        <p className="mt-4 max-w-[44ch] text-base text-muted">
+          생성이 흔해질수록 희소해지는 건 보증입니다. 보증을 팔고, 사는 쪽 컨셉에 맞춰 내보냅니다.
         </p>
       </header>
 
-      <Section n="01" title="시장" lead="인용값만 씁니다. 출처를 각 항목에 붙였습니다.">
+      <Section n="01" title="시장">
         <div className="grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-3">
           {MARKET.map((f) => (
             <div key={f.label} className="bg-surface p-6">
               <p className="text-xs text-faint">{f.label}</p>
-              <p className="mt-2 text-6xl leading-none font-bold tabular-nums text-ink">
+              <p className="mt-3 text-6xl leading-none font-bold tabular-nums text-ink">
                 {f.value}
                 <span className="ml-1 text-2xl font-semibold text-muted">{f.unit}</span>
               </p>
-              <p className="mt-3 text-base leading-relaxed text-muted">{f.note}</p>
-              <p className="mt-2 text-xs text-faint">{f.source}</p>
+              <p className="mt-3 text-xs text-muted">{f.note}</p>
             </div>
           ))}
         </div>
+        <p className="mt-3 text-xs text-faint">출처 {MARKET_SOURCE}</p>
       </Section>
 
       <Section
         n="02"
         title="검수"
-        lead="7항목을 가중 합산합니다. 라이선스 출처가 60 미만이면 다른 점수와 무관하게 탈락입니다."
+        lead="라이선스 출처가 60 미만이면 무조건 탈락"
       >
         <div className="rounded-xl border border-line bg-surface p-6">
           <div className="flex flex-col gap-3">
@@ -65,7 +64,7 @@ export function Ir() {
       <Section
         n="03"
         title="맞추기"
-        lead="검수만으로는 사는 쪽이 바로 못 씁니다. 같은 에셋을 게임 컨셉에 맞춰 내보냅니다."
+        lead="같은 에셋, 다른 게임 컨셉"
       >
         <ConceptStrip />
       </Section>
@@ -73,7 +72,7 @@ export function Ir() {
       <Section
         n="04"
         title="수요"
-        lead="OP.GG 를 참조하는 개발자가 몇 명인가. 인용값이 아니라 우리 계산이며, 계산 과정을 그대로 냅니다."
+        lead="인용값 아님. 우리 계산이고 과정을 냅니다"
       >
         <div className="grid gap-4 lg:grid-cols-[280px_minmax(0,1fr)]">
           <div className="rounded-xl border border-line bg-surface p-6">
@@ -82,7 +81,7 @@ export function Ir() {
               {REACH.headline.value}
               <span className="ml-1 text-2xl font-semibold text-muted">{REACH.headline.unit}</span>
             </p>
-            <p className="mt-3 text-base text-muted">범위 {REACH.band}</p>
+            <p className="mt-3 text-xs text-muted">범위 {REACH.band}</p>
             <dl className="mt-5 flex flex-col gap-3 border-t border-line pt-4">
               {REACH.derived.map(([k, v, note]) => (
                 <div key={k}>
@@ -96,41 +95,24 @@ export function Ir() {
 
           <div className="grid gap-4 sm:grid-cols-2">
             {REACH.ways.map((w) => (
-              <div key={w.way} className="rounded-xl border border-line bg-surface p-5">
-                <p className="text-base font-bold text-ink">{w.way}</p>
-                <ol className="mt-4 flex list-none flex-col gap-3 p-0">
-                  {w.steps.map(([k, v], i) => (
-                    <li key={k} className="flex items-baseline justify-between gap-3 text-base">
-                      <span className="text-muted">
-                        <b className="mr-2 text-xs tabular-nums text-faint">{i + 1}</b>
-                        {k}
-                      </span>
-                      <b className="shrink-0 tabular-nums text-ink">{v}</b>
-                    </li>
-                  ))}
-                </ol>
-                <p className="mt-4 border-t border-line pt-3 text-base">
-                  <span className="text-faint">결과 </span>
-                  <b className="tabular-nums text-accent">{w.result}</b>
-                </p>
-              </div>
+              <Funnel key={w.way} way={w} />
             ))}
           </div>
         </div>
-        <p className="mt-4 text-xs leading-relaxed text-faint">{REACH.overlap}</p>
+        <p className="mt-4 text-xs text-faint">{REACH.overlap}</p>
       </Section>
 
-      <Section n="05" title="수익 모델" lead="가정을 먼저 적습니다. 고정비와 이탈률 없이는 검증할 수 없습니다.">
+      <Section n="05" title="수익 모델" lead="가정을 먼저">
         <div className="grid gap-4 lg:grid-cols-2">
           <div className="rounded-xl border border-line bg-surface p-5">
             <p className="mb-4 text-base font-bold text-ink">가정</p>
-            <dl className="flex flex-col gap-2.5">
-              {MODEL.assumptions.map(([k, v, note]) => (
-                <div key={k} className="grid grid-cols-[112px_minmax(0,1fr)] items-baseline gap-3">
+            <dl className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
+              {MODEL.assumptions.map(([k, v, unit]) => (
+                <div key={k}>
                   <dt className="text-xs text-faint">{k}</dt>
-                  <dd className="m-0 flex flex-wrap items-baseline gap-2">
-                    <b className="text-base tabular-nums text-ink">{v}</b>
-                    <span className="text-xs text-faint">{note}</span>
+                  <dd className="m-0 text-2xl font-bold tabular-nums text-ink">
+                    {v}
+                    <span className="ml-1 text-xs font-normal text-faint">{unit}</span>
                   </dd>
                 </div>
               ))}
@@ -152,7 +134,7 @@ export function Ir() {
         </div>
       </Section>
 
-      <Section n="06" title="수수료" lead="배지에 연동하지 않습니다. 배지는 값이 아니라 노출 순위를 정합니다.">
+      <Section n="06" title="수수료" lead="배지에 연동하지 않습니다">
         <div className="grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-3">
           {[
             ["LaughGG", "8%", "단일"],
@@ -168,9 +150,7 @@ export function Ir() {
             </div>
           ))}
         </div>
-        <p className="mt-4 text-base text-muted">
-          창작자가 판매액의 92% 를 가져갑니다. 창작자는 공급이지 수익원이 아니라고 봅니다.
-        </p>
+        <p className="mt-3 text-xs text-muted">창작자가 92% 를 가져갑니다.</p>
       </Section>
 
       <div className="mt-16 flex flex-wrap gap-3 border-t border-line pt-8">
@@ -191,7 +171,7 @@ export function Ir() {
   );
 }
 
-function Section({ n, title, lead, children }: { n: string; title: string; lead: string; children: React.ReactNode }) {
+function Section({ n, title, lead, children }: { n: string; title: string; lead?: string; children: React.ReactNode }) {
   const ref = useRef<HTMLElement>(null);
   const [on, setOn] = useState(false);
 
@@ -214,10 +194,46 @@ function Section({ n, title, lead, children }: { n: string; title: string; lead:
       <div className="mb-6 flex flex-wrap items-baseline gap-x-4 gap-y-1">
         <span className="text-xs tabular-nums text-faint">{n}</span>
         <h2 className="text-4xl font-bold text-ink">{title}</h2>
-        <p className="max-w-[58ch] text-base text-muted">{lead}</p>
+        {lead && <p className="text-xs text-muted">{lead}</p>}
       </div>
       {children}
     </section>
+  );
+}
+
+/* 퍼널 — 단계마다 몇 명이 남는지를 막대 폭으로 보여준다.
+   숫자 세 줄을 글로 늘어놓으면 아무도 안 읽는다. */
+function Funnel({ way }: { way: (typeof REACH.ways)[number] }) {
+  const top = way.steps[0]?.value ?? 1;
+  /* 2,500만에서 16만으로 떨어지는 구간이라 선형으로 그리면 아래 두 칸이 안 보인다.
+     로그로 눕혀야 단계가 눈에 남는다. */
+  const w = (v: number) => `${Math.max(6, (Math.log10(v) / Math.log10(top)) * 100)}%`;
+
+  return (
+    <div className="rounded-xl border border-line bg-surface p-5">
+      <p className="text-xs text-faint">{way.way}</p>
+      <div className="mt-4 flex flex-col gap-3">
+        {way.steps.map((s, i) => (
+          <div key={s.label}>
+            <div className="flex items-baseline justify-between gap-2">
+              <span className="text-xs text-muted">
+                {s.label}
+                {s.rate && <span className="ml-1.5 text-faint">{s.rate}</span>}
+              </span>
+              <b className="shrink-0 text-base tabular-nums text-ink">{s.show}</b>
+            </div>
+            <span
+              className={`mt-1 block h-2 rounded-sm ${i === way.steps.length - 1 ? "bg-accent" : "bg-chrome-700"}`}
+              style={{ width: w(s.value) }}
+            />
+          </div>
+        ))}
+      </div>
+      <p className="mt-4 border-t border-line pt-3 text-xs">
+        <span className="text-faint">결과 </span>
+        <b className="text-base tabular-nums text-accent">{way.result}</b>
+      </p>
+    </div>
   );
 }
 

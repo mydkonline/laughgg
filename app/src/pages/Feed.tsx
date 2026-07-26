@@ -31,14 +31,12 @@ export function Feed() {
     <main className="mx-auto max-w-[840px] px-5 pb-20">
       <header className="py-8">
         <p className="text-xs tracking-wide text-accent">작업물</p>
-        <h1 className="mt-1 text-4xl font-bold text-ink">다른 사람이 만든 프리셋을 그대로 씁니다</h1>
-        <p className="mt-2 text-base text-muted">
-          공방에서 나온 결과가 프롬프트와 파라미터까지 공개됩니다. 적용하면 내 에셋에 같은 설정이 걸립니다.
-        </p>
+        <h1 className="mt-1 text-4xl font-bold text-ink">남이 만든 프리셋 쓰기</h1>
+        <p className="mt-2 text-base text-muted">적용하면 내 에셋에 같은 설정이 걸립니다.</p>
         <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-t border-line pt-4">
-          <FeedSpec k="공개되는 것" v="프롬프트, 파라미터 9개, 검수 점수 변화" />
-          <FeedSpec k="적용" v="누르면 공방으로 넘어갑니다" />
-          <FeedSpec k="댓글" v="익명 기본, 소속만 인증" />
+          <FeedSpec k="공개" v="프롬프트, 파라미터 9개, 점수 변화" />
+          <FeedSpec k="적용" v="공방으로 이동" />
+          <FeedSpec k="댓글" v="익명, 소속만 인증" />
         </dl>
       </header>
 
@@ -167,7 +165,7 @@ function Card({ post }: { post: Post }) {
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && send()}
-              placeholder="실제로 붙여 보고 어땠는지 남겨 주세요"
+              placeholder="붙여 보고 어땠는지"
               aria-label="댓글"
               className="min-w-0 flex-1 rounded-lg border border-line bg-ground px-3 py-2.5 text-xs text-ink placeholder:text-faint"
             />
@@ -182,7 +180,7 @@ function Card({ post }: { post: Post }) {
           {/* 실명으로는 실무 얘기가 안 나온다. 소속만 인증하고 신원은 가린다. */}
           <label className="mt-2 flex cursor-pointer items-center gap-2 text-xs text-faint">
             <input type="checkbox" checked={!anon} onChange={(e) => setAnon(!e.target.checked)} className="accent-[var(--accent)]" />
-            소속만 밝히기. 회사는 인증되고 이름은 가려집니다
+            소속만 밝히기
           </label>
         </div>
       )}

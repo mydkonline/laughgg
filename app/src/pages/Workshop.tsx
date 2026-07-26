@@ -127,13 +127,11 @@ export function Workshop() {
       <header className="py-8">
         <p className="text-xs tracking-wide text-accent">공방</p>
         <h1 className="mt-1 text-4xl leading-tight font-bold text-ink">에셋을 게임 컨셉에 맞춥니다</h1>
-        <p className="mt-2 text-base text-muted">
-          원하는 느낌을 쓰면 그 자리에서 바뀝니다. 3D 는 조명과 재질을, 2D 는 팔레트와 도트를 맞춥니다.
-        </p>
+        <p className="mt-2 text-base text-muted">3D 는 조명과 재질을, 2D 는 팔레트와 도트를 바꿉니다.</p>
         <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-t border-line pt-4">
-          <Spec k="다루는 것" v="3D 모델, 2D 스프라이트" />
-          <Spec k="고를 수 있는 톤" v={`컨셉 ${CONCEPTS.length}종, 팔레트 ${PALETTES.length - 1}종`} />
-          <Spec k="가져가는 것" v="바뀐 에셋, 검수 리포트, 프리셋" />
+          <Spec k="입력" v="3D 모델, 2D 스프라이트" />
+          <Spec k="컨셉" v={`${CONCEPTS.length}종, 팔레트 ${PALETTES.length - 1}종`} />
+          <Spec k="출력" v="에셋, 검수 리포트, 프리셋" />
         </dl>
       </header>
 
@@ -141,14 +139,13 @@ export function Workshop() {
       <section className="rounded-xl border border-line bg-surface p-4">
         <div className="flex flex-wrap items-center gap-2">
           <h2 className="text-base font-bold text-ink">프롬프트</h2>
-          <span className="text-xs text-faint">색, 재질, 팔레트, 도트 굵기를 한 번에 정합니다</span>
         </div>
         <div className="mt-3 flex gap-2">
           <input
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && applyPrompt()}
-            placeholder="예 — 어둡고 축축한 던전, 게임보이 초록 4색으로, 굵은 도트"
+            placeholder="어둡고 축축한 던전, 게임보이 초록 4색, 굵은 도트"
             aria-label="변형 프롬프트"
             className="min-w-0 flex-1 rounded-lg border border-line bg-ground px-4 py-3 text-base text-ink placeholder:text-faint"
           />
@@ -169,7 +166,7 @@ export function Workshop() {
                 .join(", ")}
             </>
           ) : (
-            "어둡게, 따뜻하게, 금속, 로우폴리, 만화, 게임보이, 세피아, 네온, 굵은 도트 같은 말을 읽습니다."
+            "어둡게, 금속, 로우폴리, 만화, 게임보이, 세피아, 네온, 굵은 도트"
           )}
         </p>
       </section>
@@ -465,18 +462,15 @@ export function Workshop() {
           ))}
         </div>
 
-        <p className="text-xs text-faint">
-          glb, gltf, png, jpg 를 끌어다 놓아도 됩니다. 파일은 이 브라우저에만 있고 서버로 보내지 않습니다.
-        </p>
+        <p className="text-xs text-faint">glb, gltf, png, jpg. 파일은 브라우저에만 남습니다.</p>
       </section>
 
       <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-6">
         <Link to="/feed" className="text-xs text-faint no-underline hover:text-ink">
           다른 사람 작업물 보기 →
         </Link>
-        <p className="max-w-[58ch] text-xs leading-relaxed text-faint">
-          <b className="text-muted">시연용 데모입니다.</b> 조명, 재질, 팔레트, 디더링은 실제로 그림을 바꾸지만,
-          프롬프트 해석은 지금 키워드 규칙이고 생성 엔진이 붙어 있지 않습니다.
+        <p className="text-xs text-faint">
+          <b className="text-muted">데모.</b> 렌더는 실제로 바뀌고, 프롬프트 해석은 키워드 규칙입니다.
         </p>
       </div>
     </main>

@@ -5,6 +5,7 @@ import { RankIcon, badgeOf, BADGE_LABEL } from "../components/Rank";
 import { Thumb } from "../components/Thumb";
 import { Spin } from "../three/Spin";
 import { bakeView, type Dir, type Material } from "../three/baker";
+import { packageTree, bytes, type Entry } from "../data/contents";
 import { useCart } from "../lib/cart";
 import { won, num } from "../lib/format";
 
@@ -44,6 +45,7 @@ function Detail({ p }: { p: Piece }) {
 
   const stars = (3.9 + ((p.id * 7) % 11) / 10).toFixed(1);
   const reviews = 20 + (p.id * 37) % 180;
+  const tree = packageTree(p);
   const also = PIECES.filter((o) => o.cat === p.cat && o.id !== p.id)
     .sort((a, b) => b.score - a.score)
     .slice(0, 3);
@@ -186,6 +188,17 @@ function Detail({ p }: { p: Piece }) {
           </div>
         </Acc>
 
+        <Acc title={`패키지 콘텐츠 (${tree.files}개 파일, ${bytes(tree.bytes)})`}>
+          <ul className="m-0 flex list-none flex-col gap-1 p-0">
+            {tree.folders.map((f) => (
+              <Folder key={f.name} entry={f} defaultOpen={f.name === "Meshes" || f.name === "Sprites"} />
+            ))}
+          </ul>
+          <p className="mt-4 text-xs leading-relaxed text-faint">
+            내려받으면 이 구조 그대로 들어옵니다. Documentation 폴더에 재료 출처가 파일별로 적혀 있습니다.
+          </p>
+        </Acc>
+
         <Acc title="기술 사양">
           <dl className="m-0 flex flex-col">
             <Kv k="폴리곤" v={p.tri} />
@@ -253,6 +266,48 @@ function GalleryShot({ piece, view }: { piece: Piece; view: (typeof VIEWS)[numbe
     <img src={src} alt={piece.t} className="h-full w-full object-contain" />
   ) : (
     <div className="h-full w-full animate-pulse rounded-xl bg-surface-2" />
+  );
+}
+
+/* 폴더 한 줄. Unity 처럼 접었다 펴는 트리다 — 파일이 수십 개라 한 번에 다 펴면 안 읽힌다. */
+function Folder({ entry, defaultOpen }: { entry: Entry; defaultOpen?: boolean }) {
+  const [open, setOpen] = useState(defaultOpen ?? false);
+  const kids = entry.children ?? [];
+  const total = kids.reduce((a, k) => a + (k.size ?? 0), 0);
+
+  return (
+    <li>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="flex w-full cursor-pointer items-center gap-3 rounded-lg border-0 bg-transparent px-2 py-2 text-left hover:bg-surface-2"
+      >
+        <span className="w-3 shrink-0 text-xs text-faint">{open ? "−" : "+"}</span>
+        <span className="min-w-0 flex-1 truncate text-base font-semibold text-ink">{entry.name}</span>
+        <span className="shrink-0 text-xs tabular-nums text-faint">{kids.length}개</span>
+        <span className="w-20 shrink-0 text-right text-xs tabular-nums text-faint">{bytes(total)}</span>
+      </button>
+
+      {open && (
+        <ul className="m-0 flex list-none flex-col p-0 pl-6">
+          {kids.map((k, i) => (
+            <li
+              key={k.name + k.ext + i}
+              className="grid grid-cols-[minmax(0,1fr)_auto_56px_72px] items-center gap-3 border-b border-line-soft px-2 py-1.5 last:border-b-0"
+            >
+              <span className="min-w-0 truncate text-base text-muted">
+                {k.name}
+                <span className="text-faint">.{k.ext}</span>
+              </span>
+              <span className="text-xs text-faint">{k.note ?? ""}</span>
+              <span className="text-right text-xs tracking-wide text-faint uppercase">{k.ext}</span>
+              <span className="text-right text-xs tabular-nums text-faint">{bytes(k.size ?? 0)}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </li>
   );
 }
 

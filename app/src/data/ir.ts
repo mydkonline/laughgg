@@ -12,49 +12,37 @@ export type Figure = {
 
 /** 시장이 실제로 얼마나 큰가. 전부 인용값이다. */
 export const MARKET: Figure[] = [
-  {
-    label: "2025년 스팀 신작",
-    value: "19,606",
-    unit: "종",
-    note: "전년 대비 14.3% 증가",
-    source: "Video Game Insights, 2026",
-  },
-  {
-    label: "Unity 생태계 개발자",
-    value: "500",
-    unit: "만 명",
-    note: "엔진 점유 Unity 51%, Unreal 28%, Godot 5%",
-    source: "Unity 게임 산업 리포트, 2026",
-  },
-  {
-    label: "게임 아트 외주 시장",
-    value: "58",
-    unit: "억 달러",
-    note: "개발사의 68%가 아트를 외주",
-    source: "Dataintelo, 2025",
-  },
+  { label: "2025년 스팀 신작", value: "19,606", unit: "종", note: "전년 대비 +14.3%" },
+  { label: "Unity 생태계 개발자", value: "500", unit: "만 명", note: "엔진 점유 51%" },
+  { label: "게임 아트 외주 시장", value: "58", unit: "억 달러", note: "개발사 68%가 외주" },
 ];
+
+/** 출처는 카드마다 붙이면 숫자를 가린다. 섹션 아래 한 줄로 모은다. */
+export const MARKET_SOURCE =
+  "Video Game Insights 2026, Unity 게임 산업 리포트 2026, Dataintelo 2025";
 
 /** OP.GG 를 참조하는 개발자 규모. 우리 계산이며 계산 과정을 같이 낸다. */
 export const REACH = {
   headline: { value: "16.7", unit: "만 명", label: "OP.GG 참조 개발자 추정" },
   band: "12.5만 ~ 20.8만",
+  /* 단계마다 절대값을 들고 있어야 막대 길이가 나온다.
+     글로 설명하는 대신 폭이 줄어드는 것으로 보여준다. */
   ways: [
     {
       way: "사용자에서 내려오기",
       steps: [
-        ["OP.GG 월간 이용자", "2,500만 명"],
-        ["게임 업계 종사 비율 가정", "0.8% ~ 1.3%"],
-        ["개발 직군 비율 가정", "6.3%"],
+        { label: "OP.GG 이용자", value: 25_000_000, show: "2,500만", rate: "" },
+        { label: "게임 업계", value: 262_500, show: "26만", rate: "0.8~1.3%" },
+        { label: "개발 직군", value: 166_000, show: "16.6만", rate: "6.3%" },
       ],
       result: "12.5만 ~ 20.8만",
     },
     {
       way: "개발자에서 올라가기",
       steps: [
-        ["Unity 생태계 개발자", "500만 명"],
-        ["경쟁 게임 개발 비중 가정", "19% ~ 34%"],
-        ["OP.GG 인지 및 사용 가정", "10% ~ 15%"],
+        { label: "Unity 개발자", value: 5_000_000, show: "500만", rate: "" },
+        { label: "경쟁 게임", value: 1_325_000, show: "133만", rate: "19~34%" },
+        { label: "OP.GG 사용", value: 165_000, show: "16.5만", rate: "10~15%" },
       ],
       result: "9.5만 ~ 25.7만",
     },
@@ -69,11 +57,11 @@ export const REACH = {
 /** 수익 모델. 고정비와 이탈률까지 적어 두지 않으면 검증할 수 없다. */
 export const MODEL = {
   assumptions: [
-    ["스튜디오 구독", "월 49만원", "주 수익원"],
-    ["거래 수수료", "8% 단일", "Epic Fab 12%, Unity 30%"],
-    ["고정비", "월 1,700만원", "인건비와 인프라"],
-    ["월 순증", "4곳", "영업 없이 유입 기준"],
-    ["월 이탈", "2%", "구독 서비스 통상치"],
+    ["구독", "49만원", "월"],
+    ["수수료", "8%", "단일"],
+    ["고정비", "1,700만원", "월"],
+    ["순증", "4곳", "월"],
+    ["이탈", "2%", "월"],
   ],
   milestones: [
     ["월 흑자 전환", "7개월"],
