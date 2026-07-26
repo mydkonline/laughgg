@@ -13,11 +13,45 @@ import { RankIcon, BADGE_LABEL, type BadgeKey } from "../components/Rank";
 
 const HERO = PIECES.find((p) => p.m === "gothic_statue") ?? PIECES[0]!;
 
-const STEPS: [string, string][] = [
-  ["업로드", "glb, gltf, png"],
-  ["AI 정적 분석", "7항목, 라이선스 60 미만 탈락"],
-  ["개선 코드", "떨어진 항목만"],
-  ["컨셉 정합", "톤과 팔레트 변경"],
+/* 파이프라인 아이콘. 이모지를 안 쓰고 같은 규격으로 직접 그린다 —
+   24 뷰박스, 1.5 스트로크, 채우기 없음. 색은 상속받아 테마를 따라간다. */
+const ICONS: Record<string, React.ReactNode> = {
+  upload: (
+    <>
+      <path d="M12 15V4" />
+      <path d="m8 8 4-4 4 4" />
+      <path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" />
+    </>
+  ),
+  scan: (
+    <>
+      <rect x="4" y="3" width="12" height="17" rx="1.5" />
+      <path d="M7 8h6M7 11.5h6M7 15h3" />
+      <circle cx="17" cy="16" r="3.4" />
+      <path d="m19.6 18.6 1.9 1.9" />
+    </>
+  ),
+  fix: (
+    <>
+      <path d="m8 8-4 4 4 4" />
+      <path d="m16 8 4 4-4 4" />
+      <path d="m10.5 12.5 1.6 1.6 3.2-3.9" />
+    </>
+  ),
+  match: (
+    <>
+      <path d="M4 8.5 10 5l6 3.5v7L10 19l-6-3.5z" />
+      <path d="M10 12v7M4 8.5 10 12l6-3.5" />
+      <circle cx="18" cy="6" r="2.6" />
+    </>
+  ),
+};
+
+const STEPS: [keyof typeof ICONS, string, string][] = [
+  ["upload", "업로드", "glb, gltf, png"],
+  ["scan", "AI 정적 분석", "7항목, 라이선스 60 미만 탈락"],
+  ["fix", "개선 코드", "떨어진 항목만"],
+  ["match", "컨셉 정합", "톤과 팔레트 변경"],
 ];
 
 const TIERS: { badge: BadgeKey; range: string; note: string }[] = [
@@ -69,11 +103,25 @@ export function Home() {
         <div className="mx-auto max-w-[1240px] px-5 py-16">
           <h2 className="text-2xl font-bold text-ink">파이프라인</h2>
           <ol className="mt-8 grid list-none gap-px overflow-hidden rounded-xl border border-line bg-line p-0 sm:grid-cols-2 lg:grid-cols-4">
-            {STEPS.map(([t, d], i) => (
-              <li key={t} className="bg-surface p-5">
-                <b className="text-xs tabular-nums text-faint">{String(i + 1).padStart(2, "0")}</b>
-                <p className="mt-2 text-base font-bold text-ink">{t}</p>
-                <p className="mt-2 text-xs text-faint">{d}</p>
+            {STEPS.map(([icon, t, d], i) => (
+              <li key={t} className="flex flex-col items-start gap-3 bg-surface p-5">
+                <span className="flex w-full items-start justify-between">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-8 w-8 text-accent"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    {ICONS[icon]}
+                  </svg>
+                  <b className="num text-xs text-faint">{String(i + 1).padStart(2, "0")}</b>
+                </span>
+                <p className="text-base font-bold text-ink">{t}</p>
+                <p className="text-xs text-faint">{d}</p>
               </li>
             ))}
           </ol>
