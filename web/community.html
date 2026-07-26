@@ -1,3 +1,12 @@
+
+<script id="igg-theme-boot">
+/* 기본은 다크다. 저장된 선택이 OS 설정보다 우선한다. */
+(function () {
+  var saved = null;
+  try { saved = localStorage.getItem("igg-theme"); } catch (e) {}
+  document.documentElement.setAttribute("data-theme", saved === "light" ? "light" : "dark");
+})();
+</script>
 <meta charset="utf-8">
 <title>LaughGG — 커뮤니티</title>
 
@@ -5,14 +14,14 @@
   :root { --ground: #EBEEF1; --surface: #FFF; --surface-2: #F7F7F9; --surface-3: #E8EBEF;
     --line: #D5D9DE; --line-soft: #E8EBEF;
     --ink: #202D37; --muted: #57646F; --faint: #8894A0;
-    --accent: #2B5FD9; --accent-soft: rgba(43,95,217,.1); --link: #2B5FD9;
+    --accent: #6B42DC; --accent-soft: rgba(107,66,220,.1); --link: #6B42DC;
     --navy: #28344E; --secondary: #C3CBD1;
     --pass: #3F7A63; --fail: #9E4A54; --warn: #8A6B2E;
     --moba: #96701F; --fps: #C9202F; --auto: #7038C0; --br: #B07B00; color-scheme: light; }
 :root[data-theme="dark"] { --ground: #1C1C1F; --surface: #23232A; --surface-2: #2A2A33; --surface-3: #31313C;
     --line: #3A3A47; --line-soft: #27272E;
     --ink: #EBEBEF; --muted: #9AA4AF; --faint: #6E6E7C;
-    --accent: #5383E8; --accent-soft: rgba(83,131,232,.15); --link: #B3CDFF;
+    --accent: #7D59EA; --accent-soft: rgba(125,89,234,.15); --link: #B3CDFF;
     --navy: #28344E; --secondary: #424254;
     --pass: #6E9C88; --fail: #B08088; --warn: #B49A6E;
     --moba: #C89B3C; --fps: #FF4655; --auto: #A55EEA; --br: #F2A900;
@@ -21,7 +30,7 @@
   :root:not([data-theme="light"]) { --ground: #1C1C1F; --surface: #23232A; --surface-2: #2A2A33; --surface-3: #31313C;
     --line: #3A3A47; --line-soft: #27272E;
     --ink: #EBEBEF; --muted: #9AA4AF; --faint: #6E6E7C;
-    --accent: #5383E8; --accent-soft: rgba(83,131,232,.15); --link: #B3CDFF;
+    --accent: #7D59EA; --accent-soft: rgba(125,89,234,.15); --link: #B3CDFF;
     --navy: #28344E; --secondary: #424254;
     --pass: #6E9C88; --fail: #B08088; --warn: #B49A6E;
     --moba: #C89B3C; --fps: #FF4655; --auto: #A55EEA; --br: #F2A900;
@@ -300,7 +309,7 @@
     transition: background-color .16s ease, scale .16s cubic-bezier(.22,1,.36,1); }
   .grow:hover { background: var(--surface-2); }
   .grow:active { scale: .995; }
-  .grow[aria-pressed="true"] { background: var(--accent-soft, rgba(83,131,232,.14));
+  .grow[aria-pressed="true"] { background: var(--accent-soft, rgba(125,89,234,.14));
     box-shadow: inset 3px 0 0 var(--accent); }
   .grow .cap { width: 78px; aspect-ratio: 16/9; border-radius: 6px; display: grid;
     place-items: center; font-size: 26px; background: var(--surface-3, var(--surface-2));
@@ -318,38 +327,53 @@
 </style>
 
 <style id="igg-nav-css">
-  :root { --igg-navy:#28344E; --igg-dark:#1C1C1F; --igg-blue:#5383E8; --igg-dim:#9AA4AF; }
+  /* op.gg Gigs 팔레트 — darkpurple-900/850/800 + purple-500/600. 색은 셋 + 흰색뿐이다. */
+  :root { --igg-dark:#1C1C1F; --igg-navy:#282830; --igg-line:#31313C;
+          --igg-blue:#7D59EA; --igg-blue-d:#6B42DC; --igg-dim:#9E9EB1; }
   .igg-nav, .igg-nav * { box-sizing: border-box; }
   .igg-nav { position: sticky; top: 0; z-index: 9000;
     font-family: Roboto, system-ui, -apple-system, "Apple SD Gothic Neo", Pretendard, sans-serif; }
-  .igg-r1 { background: var(--igg-dark); border-bottom: 1px solid #2E2E35; }
+  .igg-r1 { background: var(--igg-dark); border-bottom: 1px solid var(--igg-line); }
   .igg-r1in { max-width: 1240px; margin: 0 auto; padding: 0 20px; height: 46px;
     display: flex; align-items: center; gap: 16px; }
   .igg-logo { display: flex; align-items: center; gap: 7px; color: #fff; font-weight: 900;
     font-size: 13pt; letter-spacing: -.03em; text-decoration: none; flex: none; }
-  .igg-logo i { width: 15px; height: 15px; border: 3px solid #fff; border-radius: 50%; display: block; }
   .igg-logo b { font-weight: 900; }
-  .igg-logo span { font-size: 7.5pt; letter-spacing: .16em; color: #7B8494; font-weight: 700; }
+  .igg-logo span { font-size: 4pt; letter-spacing: .14em; color: #7B7A8E; font-weight: 700;
+    text-transform: uppercase; align-self: flex-end; padding-bottom: 2px; }
   .igg-r1 .igg-sp { margin-left: auto; }
-  .igg-ghost { padding: 5px 12px; border-radius: 4px; background: #424254; color: #C3CBD1;
+  .igg-ghost { padding: 5px 12px; border-radius: 4px; background: #31313C; color: #C3CBD1;
     font-size: 10pt; text-decoration: none; border: 0; cursor: pointer; }
-  .igg-ghost:hover { background: #4E4E60; color: #fff; }
+  .igg-ghost:hover { background: #424254; color: #fff; }
   .igg-ghost b { color: var(--igg-blue); font-weight: 800; margin-left: 2px; }
   .igg-cta { padding: 5px 12px; border-radius: 4px; background: var(--igg-blue); color: #fff;
     font-size: 10pt; font-weight: 700; text-decoration: none; }
 
   .igg-r2 { background: var(--igg-navy); }
-  .igg-r2in { max-width: 1240px; margin: 0 auto; padding: 0 20px; height: 50px;
+  .igg-r2in { max-width: 1240px; margin: 0 auto; padding: 6px 20px; min-height: 50px;
     display: flex; align-items: center; gap: 14px; }
-  .igg-tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
-  .igg-tabs::-webkit-scrollbar { display: none; }
-  .igg-tabs a { padding: 6px 12px; border-radius: 4px; color: #C3CBD1; font-size: 12pt;
+  .igg-tabs { display: flex; gap: 2px; flex-wrap: wrap; overflow: visible; }
+
+  .igg-tabs a { padding: 6px 12px; border-radius: 4px; color: #9E9EB1; font-size: 12pt;
     text-decoration: none; white-space: nowrap; display: flex; align-items: center; gap: 4px; }
-  .igg-tabs a:hover { background: rgba(255,255,255,.09); color: #fff; }
-  .igg-tabs a[aria-current="page"] { background: var(--igg-blue); color: #fff; font-weight: 700; }
+  .igg-tabs a:hover { background: rgba(255,255,255,.07); color: #fff; }
+  .igg-tabs a[aria-current="page"] { color: #fff; font-weight: 700;
+    box-shadow: inset 0 -2px 0 var(--igg-blue); border-radius: 4px 4px 0 0; }
   .igg-tabs sup { font-size: 7pt; color: #FF6B7A; font-weight: 800; }
   .igg-tabs a[aria-current="page"] sup { color: #FFD9DE; }
 
+  /* 대분류 아래 서브 카테고리 — 호버/포커스로만 열린다 */
+  .igg-grp { position: relative; display: flex; }
+  .igg-grp > a::after { content: "▾"; font-size: 7pt; opacity: .55; margin-left: 2px; }
+  .igg-menu { position: absolute; top: calc(100% + 4px); left: 0; min-width: 168px;
+    background: #1C1C1F; border: 1px solid var(--igg-line); border-radius: 6px;
+    padding: 4px; box-shadow: 0 12px 28px rgba(0,0,0,.34); z-index: 9600;
+    display: flex; flex-direction: column; gap: 1px;
+    opacity: 0; visibility: hidden; translate: 0 -4px;
+    transition: opacity .14s ease, translate .14s ease, visibility .14s; }
+  .igg-grp:hover > .igg-menu, .igg-grp:focus-within > .igg-menu {
+    opacity: 1; visibility: visible; translate: 0 0; }
+  .igg-menu a { font-size: 12pt; padding: 7px 10px; }
 
 
   /* 눌리는 느낌 — 전 페이지 공통. transform 이 아니라 scale 프로퍼티라 기존 transform 과 안 싸운다 */
@@ -360,7 +384,7 @@
     }
     button:active, .btn:active, .igg-ghost:active, .igg-cta:active,
     .igg-tabs a:active, [role="button"]:active { scale: .97; }
-    .igg-cta:hover { scale: 1.03; }
+    .igg-cta:hover { scale: 1.03; background: var(--igg-blue-d); }
   }
   :where(a, button, input, select, textarea):focus-visible {
     outline: 2px solid var(--igg-blue); outline-offset: 2px;
@@ -369,7 +393,7 @@
 
 <nav class="igg-nav">
   <div class="igg-r1"><div class="igg-r1in">
-    <a class="igg-logo" href="index.html"><i></i><b>LaughGG</b><span>BY OP.GG</span></a>
+    <a class="igg-logo" href="index.html"><b>LaughGG</b><span>Agent by OP.GG</span></a>
     <span class="igg-sp"></span>
     <button class="igg-ghost" id="cartb" type="button">장바구니 <b id="cartn">0</b></button>
     <button class="igg-ghost" id="loginb" type="button">로그인</button>
@@ -380,6 +404,397 @@
     <div class="igg-tabs"><a href="index.html">홈</a><a href="about.html">IR</a><a href="market.html">마켓</a><a href="community.html" aria-current="page">게임 스택</a><span class="igg-grp"><a href="ai.html">AI<sup>N</sup><i class="igg-car" aria-hidden="true">▾</i></a><span class="igg-menu"><a href="ai.html">AI 파이프라인<sup>N</sup></a><a href="scene.html">AI 에셋 시연</a><a href="viewer3d.html">AI 3D 뷰어</a></span></span><a href="vlog.html">개발 브이로그</a></div>
   </div></div>
 </nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rg-chal" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFF3D2"/><stop offset=".34" stop-color="#F2C066"/>
+    <stop offset=".68" stop-color="#C68F2E"/><stop offset="1" stop-color="#7A551A"/></linearGradient>
+  <linearGradient id="rg-dia" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#F2F5FA"/><stop offset=".34" stop-color="#C3CBD8"/>
+    <stop offset=".68" stop-color="#8A94A5"/><stop offset="1" stop-color="#4E5666"/></linearGradient>
+  <linearGradient id="rg-plat" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#E4E9F0"/><stop offset=".34" stop-color="#AAB3C0"/>
+    <stop offset=".68" stop-color="#727B88"/><stop offset="1" stop-color="#3E454F"/></linearGradient>
+  <linearGradient id="rg-silv" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#D6DBE2"/><stop offset=".34" stop-color="#98A0AC"/>
+    <stop offset=".68" stop-color="#646C78"/><stop offset="1" stop-color="#353B44"/></linearGradient>
+  <linearGradient id="rg-sheen" x1="12" y1="6" x2="52" y2="34" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#fff" stop-opacity=".55"/>
+    <stop offset=".52" stop-color="#fff" stop-opacity=".08"/>
+    <stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 64 64">
+    <path d="M11.5 21.5 1 12.4l3.9 11.4-3 1.9 9.6 4.1z" fill="url(#rg-chal)" opacity=".62"/>
+    <path d="M52.5 21.5 63 12.4l-3.9 11.4 3 1.9-9.6 4.1z" fill="url(#rg-chal)" opacity=".62"/>
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-chal)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="m21.4 36.6-3.1-12.9 8 6.1L32 20l5.7 9.8 8-6.1-3.1 12.9z" fill="url(#rg-chal)"/>
+    <path d="M21.4 39.4h21.2v3.4H21.4z" fill="url(#rg-chal)"/>
+    <circle cx="32" cy="31.4" r="2.5" fill="#fff" opacity=".55"/>
+  </symbol>
+
+  <symbol id="rk-dia" viewBox="0 0 64 64">
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-dia)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="m32 19.4 11.6 9.4L32 46 20.4 28.8z" fill="url(#rg-dia)"/>
+    <path d="M20.4 28.8h23.2L32 33.2z" fill="#0A0A10" opacity=".3"/>
+    <path d="m32 19.4 5.2 9.4L32 33.2l-5.2-4.4z" fill="#fff" opacity=".42"/>
+    <path d="M14.6 24h3.2v9h-3.2zM46.2 24h3.2v9h-3.2z" fill="url(#rg-dia)" opacity=".7"/>
+  </symbol>
+
+  <symbol id="rk-plat" viewBox="0 0 64 64">
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-plat)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="m32 19.6 10.4 6v12l-10.4 6-10.4-6v-12z" fill="url(#rg-plat)"/>
+    <path d="M21.6 25.6 32 31.6l10.4-6L32 19.6z" fill="#fff" opacity=".34"/>
+    <path d="M32 31.6v12l-10.4-6v-12z" fill="#0A0A10" opacity=".22"/>
+  </symbol>
+
+  <symbol id="rk-silv" viewBox="0 0 64 64">
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-silv)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="M22.4 26.4h19.2v5.2H22.4z" fill="url(#rg-silv)"/>
+    <path d="M22.4 26.4h19.2v2.1H22.4z" fill="#fff" opacity=".36"/>
+    <path d="M25.6 35.6h12.8v3.2H25.6z" fill="url(#rg-silv)" opacity=".8"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var r = document.documentElement;
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var next = r.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    r.setAttribute("data-theme", next);
+    try { localStorage.setItem("igg-theme", next); } catch (e) {}
+  });
+})();
+</script>
+
+
+
+
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rg-chal" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFF3D2"/><stop offset=".34" stop-color="#F2C066"/>
+    <stop offset=".68" stop-color="#C68F2E"/><stop offset="1" stop-color="#7A551A"/></linearGradient>
+  <linearGradient id="rg-dia" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#F2F5FA"/><stop offset=".34" stop-color="#C3CBD8"/>
+    <stop offset=".68" stop-color="#8A94A5"/><stop offset="1" stop-color="#4E5666"/></linearGradient>
+  <linearGradient id="rg-plat" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#E4E9F0"/><stop offset=".34" stop-color="#AAB3C0"/>
+    <stop offset=".68" stop-color="#727B88"/><stop offset="1" stop-color="#3E454F"/></linearGradient>
+  <linearGradient id="rg-silv" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#D6DBE2"/><stop offset=".34" stop-color="#98A0AC"/>
+    <stop offset=".68" stop-color="#646C78"/><stop offset="1" stop-color="#353B44"/></linearGradient>
+  <linearGradient id="rg-sheen" x1="12" y1="6" x2="52" y2="34" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#fff" stop-opacity=".55"/>
+    <stop offset=".52" stop-color="#fff" stop-opacity=".08"/>
+    <stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 64 64">
+    <path d="M11.5 21.5 1 12.4l3.9 11.4-3 1.9 9.6 4.1z" fill="url(#rg-chal)" opacity=".62"/>
+    <path d="M52.5 21.5 63 12.4l-3.9 11.4 3 1.9-9.6 4.1z" fill="url(#rg-chal)" opacity=".62"/>
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-chal)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="m21.4 36.6-3.1-12.9 8 6.1L32 20l5.7 9.8 8-6.1-3.1 12.9z" fill="url(#rg-chal)"/>
+    <path d="M21.4 39.4h21.2v3.4H21.4z" fill="url(#rg-chal)"/>
+    <circle cx="32" cy="31.4" r="2.5" fill="#fff" opacity=".55"/>
+  </symbol>
+
+  <symbol id="rk-dia" viewBox="0 0 64 64">
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-dia)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="m32 19.4 11.6 9.4L32 46 20.4 28.8z" fill="url(#rg-dia)"/>
+    <path d="M20.4 28.8h23.2L32 33.2z" fill="#0A0A10" opacity=".3"/>
+    <path d="m32 19.4 5.2 9.4L32 33.2l-5.2-4.4z" fill="#fff" opacity=".42"/>
+    <path d="M14.6 24h3.2v9h-3.2zM46.2 24h3.2v9h-3.2z" fill="url(#rg-dia)" opacity=".7"/>
+  </symbol>
+
+  <symbol id="rk-plat" viewBox="0 0 64 64">
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-plat)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="m32 19.6 10.4 6v12l-10.4 6-10.4-6v-12z" fill="url(#rg-plat)"/>
+    <path d="M21.6 25.6 32 31.6l10.4-6L32 19.6z" fill="#fff" opacity=".34"/>
+    <path d="M32 31.6v12l-10.4-6v-12z" fill="#0A0A10" opacity=".22"/>
+  </symbol>
+
+  <symbol id="rk-silv" viewBox="0 0 64 64">
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-silv)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="M22.4 26.4h19.2v5.2H22.4z" fill="url(#rg-silv)"/>
+    <path d="M22.4 26.4h19.2v2.1H22.4z" fill="#fff" opacity=".36"/>
+    <path d="M25.6 35.6h12.8v3.2H25.6z" fill="url(#rg-silv)" opacity=".8"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rg-chal" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFF3D2"/><stop offset=".34" stop-color="#F2C066"/>
+    <stop offset=".68" stop-color="#C68F2E"/><stop offset="1" stop-color="#7A551A"/></linearGradient>
+  <linearGradient id="rg-dia" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#F2F5FA"/><stop offset=".34" stop-color="#C3CBD8"/>
+    <stop offset=".68" stop-color="#8A94A5"/><stop offset="1" stop-color="#4E5666"/></linearGradient>
+  <linearGradient id="rg-plat" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#E4E9F0"/><stop offset=".34" stop-color="#AAB3C0"/>
+    <stop offset=".68" stop-color="#727B88"/><stop offset="1" stop-color="#3E454F"/></linearGradient>
+  <linearGradient id="rg-silv" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#D6DBE2"/><stop offset=".34" stop-color="#98A0AC"/>
+    <stop offset=".68" stop-color="#646C78"/><stop offset="1" stop-color="#353B44"/></linearGradient>
+  <linearGradient id="rg-sheen" x1="12" y1="6" x2="52" y2="34" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#fff" stop-opacity=".55"/>
+    <stop offset=".52" stop-color="#fff" stop-opacity=".08"/>
+    <stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 64 64">
+    <path d="M11.5 21.5 1 12.4l3.9 11.4-3 1.9 9.6 4.1z" fill="url(#rg-chal)" opacity=".62"/>
+    <path d="M52.5 21.5 63 12.4l-3.9 11.4 3 1.9-9.6 4.1z" fill="url(#rg-chal)" opacity=".62"/>
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-chal)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="m21.4 36.6-3.1-12.9 8 6.1L32 20l5.7 9.8 8-6.1-3.1 12.9z" fill="url(#rg-chal)"/>
+    <path d="M21.4 39.4h21.2v3.4H21.4z" fill="url(#rg-chal)"/>
+    <circle cx="32" cy="31.4" r="2.5" fill="#fff" opacity=".55"/>
+  </symbol>
+
+  <symbol id="rk-dia" viewBox="0 0 64 64">
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-dia)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="m32 19.4 11.6 9.4L32 46 20.4 28.8z" fill="url(#rg-dia)"/>
+    <path d="M20.4 28.8h23.2L32 33.2z" fill="#0A0A10" opacity=".3"/>
+    <path d="m32 19.4 5.2 9.4L32 33.2l-5.2-4.4z" fill="#fff" opacity=".42"/>
+    <path d="M14.6 24h3.2v9h-3.2zM46.2 24h3.2v9h-3.2z" fill="url(#rg-dia)" opacity=".7"/>
+  </symbol>
+
+  <symbol id="rk-plat" viewBox="0 0 64 64">
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-plat)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="m32 19.6 10.4 6v12l-10.4 6-10.4-6v-12z" fill="url(#rg-plat)"/>
+    <path d="M21.6 25.6 32 31.6l10.4-6L32 19.6z" fill="#fff" opacity=".34"/>
+    <path d="M32 31.6v12l-10.4-6v-12z" fill="#0A0A10" opacity=".22"/>
+  </symbol>
+
+  <symbol id="rk-silv" viewBox="0 0 64 64">
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-silv)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="M22.4 26.4h19.2v5.2H22.4z" fill="url(#rg-silv)"/>
+    <path d="M22.4 26.4h19.2v2.1H22.4z" fill="#fff" opacity=".36"/>
+    <path d="M25.6 35.6h12.8v3.2H25.6z" fill="url(#rg-silv)" opacity=".8"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rg-chal" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFF3D2"/><stop offset=".34" stop-color="#F2C066"/>
+    <stop offset=".68" stop-color="#C68F2E"/><stop offset="1" stop-color="#7A551A"/></linearGradient>
+  <linearGradient id="rg-dia" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#F2F5FA"/><stop offset=".34" stop-color="#C3CBD8"/>
+    <stop offset=".68" stop-color="#8A94A5"/><stop offset="1" stop-color="#4E5666"/></linearGradient>
+  <linearGradient id="rg-plat" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#E4E9F0"/><stop offset=".34" stop-color="#AAB3C0"/>
+    <stop offset=".68" stop-color="#727B88"/><stop offset="1" stop-color="#3E454F"/></linearGradient>
+  <linearGradient id="rg-silv" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#D6DBE2"/><stop offset=".34" stop-color="#98A0AC"/>
+    <stop offset=".68" stop-color="#646C78"/><stop offset="1" stop-color="#353B44"/></linearGradient>
+  <linearGradient id="rg-sheen" x1="12" y1="6" x2="52" y2="34" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#fff" stop-opacity=".55"/>
+    <stop offset=".52" stop-color="#fff" stop-opacity=".08"/>
+    <stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 64 64">
+    <path d="M11.5 21.5 1 12.4l3.9 11.4-3 1.9 9.6 4.1z" fill="url(#rg-chal)" opacity=".62"/>
+    <path d="M52.5 21.5 63 12.4l-3.9 11.4 3 1.9-9.6 4.1z" fill="url(#rg-chal)" opacity=".62"/>
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-chal)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="m21.4 36.6-3.1-12.9 8 6.1L32 20l5.7 9.8 8-6.1-3.1 12.9z" fill="url(#rg-chal)"/>
+    <path d="M21.4 39.4h21.2v3.4H21.4z" fill="url(#rg-chal)"/>
+    <circle cx="32" cy="31.4" r="2.5" fill="#fff" opacity=".55"/>
+  </symbol>
+
+  <symbol id="rk-dia" viewBox="0 0 64 64">
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-dia)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="m32 19.4 11.6 9.4L32 46 20.4 28.8z" fill="url(#rg-dia)"/>
+    <path d="M20.4 28.8h23.2L32 33.2z" fill="#0A0A10" opacity=".3"/>
+    <path d="m32 19.4 5.2 9.4L32 33.2l-5.2-4.4z" fill="#fff" opacity=".42"/>
+    <path d="M14.6 24h3.2v9h-3.2zM46.2 24h3.2v9h-3.2z" fill="url(#rg-dia)" opacity=".7"/>
+  </symbol>
+
+  <symbol id="rk-plat" viewBox="0 0 64 64">
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-plat)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="m32 19.6 10.4 6v12l-10.4 6-10.4-6v-12z" fill="url(#rg-plat)"/>
+    <path d="M21.6 25.6 32 31.6l10.4-6L32 19.6z" fill="#fff" opacity=".34"/>
+    <path d="M32 31.6v12l-10.4-6v-12z" fill="#0A0A10" opacity=".22"/>
+  </symbol>
+
+  <symbol id="rk-silv" viewBox="0 0 64 64">
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-silv)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="M22.4 26.4h19.2v5.2H22.4z" fill="url(#rg-silv)"/>
+    <path d="M22.4 26.4h19.2v2.1H22.4z" fill="#fff" opacity=".36"/>
+    <path d="M25.6 35.6h12.8v3.2H25.6z" fill="url(#rg-silv)" opacity=".8"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rg-chal" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFF3D2"/><stop offset=".34" stop-color="#F2C066"/>
+    <stop offset=".68" stop-color="#C68F2E"/><stop offset="1" stop-color="#7A551A"/></linearGradient>
+  <linearGradient id="rg-dia" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#F2F5FA"/><stop offset=".34" stop-color="#C3CBD8"/>
+    <stop offset=".68" stop-color="#8A94A5"/><stop offset="1" stop-color="#4E5666"/></linearGradient>
+  <linearGradient id="rg-plat" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#E4E9F0"/><stop offset=".34" stop-color="#AAB3C0"/>
+    <stop offset=".68" stop-color="#727B88"/><stop offset="1" stop-color="#3E454F"/></linearGradient>
+  <linearGradient id="rg-silv" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#D6DBE2"/><stop offset=".34" stop-color="#98A0AC"/>
+    <stop offset=".68" stop-color="#646C78"/><stop offset="1" stop-color="#353B44"/></linearGradient>
+  <linearGradient id="rg-sheen" x1="12" y1="6" x2="52" y2="34" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#fff" stop-opacity=".55"/>
+    <stop offset=".52" stop-color="#fff" stop-opacity=".08"/>
+    <stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 64 64">
+    <path d="M11.5 21.5 1 12.4l3.9 11.4-3 1.9 9.6 4.1z" fill="url(#rg-chal)" opacity=".62"/>
+    <path d="M52.5 21.5 63 12.4l-3.9 11.4 3 1.9-9.6 4.1z" fill="url(#rg-chal)" opacity=".62"/>
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-chal)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="m21.4 36.6-3.1-12.9 8 6.1L32 20l5.7 9.8 8-6.1-3.1 12.9z" fill="url(#rg-chal)"/>
+    <path d="M21.4 39.4h21.2v3.4H21.4z" fill="url(#rg-chal)"/>
+    <circle cx="32" cy="31.4" r="2.5" fill="#fff" opacity=".55"/>
+  </symbol>
+
+  <symbol id="rk-dia" viewBox="0 0 64 64">
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-dia)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="m32 19.4 11.6 9.4L32 46 20.4 28.8z" fill="url(#rg-dia)"/>
+    <path d="M20.4 28.8h23.2L32 33.2z" fill="#0A0A10" opacity=".3"/>
+    <path d="m32 19.4 5.2 9.4L32 33.2l-5.2-4.4z" fill="#fff" opacity=".42"/>
+    <path d="M14.6 24h3.2v9h-3.2zM46.2 24h3.2v9h-3.2z" fill="url(#rg-dia)" opacity=".7"/>
+  </symbol>
+
+  <symbol id="rk-plat" viewBox="0 0 64 64">
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-plat)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="m32 19.6 10.4 6v12l-10.4 6-10.4-6v-12z" fill="url(#rg-plat)"/>
+    <path d="M21.6 25.6 32 31.6l10.4-6L32 19.6z" fill="#fff" opacity=".34"/>
+    <path d="M32 31.6v12l-10.4-6v-12z" fill="#0A0A10" opacity=".22"/>
+  </symbol>
+
+  <symbol id="rk-silv" viewBox="0 0 64 64">
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-silv)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="M22.4 26.4h19.2v5.2H22.4z" fill="url(#rg-silv)"/>
+    <path d="M22.4 26.4h19.2v2.1H22.4z" fill="#fff" opacity=".36"/>
+    <path d="M25.6 35.6h12.8v3.2H25.6z" fill="url(#rg-silv)" opacity=".8"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
   <linearGradient id="rg-chal" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
     <stop offset="0" stop-color="#FFF3D2"/><stop offset=".34" stop-color="#F2C066"/>
@@ -2517,7 +2932,7 @@
         x.strokeStyle = "#3a3a47"; x.lineWidth = 1; x.strokeRect(gx, gy, W * .075, H * .15);
       }
       const bx = W * .06, by = H * .16;
-      x.fillStyle = "rgba(83,131,232,.18)"; x.fillRect(bx, by, W * .075, H * .15);
+      x.fillStyle = "rgba(125,89,234,.18)"; x.fillRect(bx, by, W * .075, H * .15);
       x.strokeStyle = C.glow; x.lineWidth = 2; x.strokeRect(bx, by, W * .075, H * .15);
       x.save(); x.translate(bx + W * .0375, by + H * .12); x.rotate(-.42);
       x.scale(H / 400 * sc, H / 400 * sc); x.translate(-32, -60);
