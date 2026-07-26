@@ -27,7 +27,13 @@ CC0는 저작권을 포기한 것으로 출처 표기 의무가 없으나, 만�
 | Brass Goblets · Ceramic Pot · Barrel 01 | IR 쇼케이스 |
 | Cross Pein Hammer | IR 쇼케이스 |
 | Bolt Action Rifle 7.62 | 홈 히어로 |
-| Ammo Box | 예비 |
 | Brown Photostudio 02 (HDRI 1k) | 전 페이지 환경광 |
 
 모델은 1k 텍스처(베이스컬러·러프니스/메탈/AO·노멀)를 포함한 glTF입니다.
+
+전체 목록 — Gothic Statue · Kite Shield · Lantern Chandelier 01 · Brass Candleholders ·
+Cross Pein Hammer · Lantern 01 · Horse Statue 01 · Brass Goblets · Bronze Whale Statue ·
+Barrel 03 · Metal Jug · Ceramic Pot · Jug 01 · Brass Pot 01 · Bolt Action Rifle 7.62 ·
+Brown Photostudio 02 (HDRI 1k)
+
+품질을 섞지 않기 위해 스타일라이즈드 로우폴리(Quaternius)는 쓰지 않았습니다.

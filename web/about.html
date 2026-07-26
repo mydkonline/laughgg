@@ -437,6 +437,8 @@
 .hero-shot figure img { opacity: 0; transition: opacity .5s ease; }
 .hero-shot figure img.on { opacity: 1; }
 
+
+
 </style>
 
 <style id="igg-nav-css">
@@ -1705,7 +1707,7 @@
     <div>
       <p class="kick">마켓에 올라온 것</p>
       <h2 class="railh">LaughGG의 게임 에셋</h2>
-      <p class="raillede">Poly Haven CC0 PBR 모델을 스튜디오 조명으로 렌더한 화면입니다.</p>
+      <p class="raillede">전부 Poly Haven CC0 PBR 모델입니다. 스튜디오 HDRI 환경광으로 렌더했습니다.</p>
     </div>
     <div class="railnav">
       <button type="button" id="rprev" aria-label="이전">&#8592;</button>
@@ -1811,15 +1813,23 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
    모델은 전부 CC0 던전 킷 원본이고, 타일 아트워크는 런타임에 three.js 로 렌더한 결과다. */
 /* Poly Haven 이 CC0 로 공개한 PBR 모델. 1k 텍스처(베이스컬러·노멀·러프니스)가 딸려 있어
    환경광만 제대로 주면 하드서피스 질감이 그대로 나온다. */
+  /* 품질을 섞지 않는다. 로우폴리와 PBR 을 나란히 놓으면 낮은 쪽이 전체를 끌어내린다.
+     전부 Poly Haven CC0 PBR — 1k 베이스컬러·러프니스/메탈/AO·노멀이 들어 있다. */
   const ITEMS = [
-    ["kite_shield",       "무기",   "Kite Shield",        "챌린저", 94, "chal", ["Unity", "UE"]],
-    ["gothic_statue",     "환경",   "Gothic Statue",      "챌린저", 92, "chal", ["Unity", "UE", "Godot"]],
-    ["cross_pein_hammer", "무기",   "Cross Pein Hammer",  "다이아", 87, "dia",  ["UE", "Godot"]],
-    ["brass_goblets",     "소품",   "Brass Goblets",      "다이아", 84, "dia",  ["Unity"]],
-    ["Lantern_01",        "소품",   "Lantern 01",         "챌린저", 91, "chal", ["Unity", "UE"]],
-    ["Barrel_01",         "환경",   "Barrel 01",          "플래티넘", 78, "plat", ["Unity", "UE", "Godot"]],
-    ["ceramic_pot",       "소품",   "Ceramic Pot",        "플래티넘", 74, "plat", ["Godot"]],
-    ["bolt_action_rifle_7_62", "무기", "Bolt Action Rifle", "다이아", 82, "dia", ["UE"]],
+    ["gothic_statue",         "환경",   "Gothic Statue",       "챌린저", 94, "chal", ["Unity", "UE"]],
+    ["kite_shield",           "무기",   "Kite Shield",         "챌린저", 92, "chal", ["Unity", "UE", "Godot"]],
+    ["lantern_chandelier_01", "환경",   "Lantern Chandelier",  "챌린저", 91, "chal", ["Unity", "UE"]],
+    ["brass_candleholders",   "소품",   "Brass Candleholders", "챌린저", 90, "chal", ["Unity"]],
+    ["cross_pein_hammer",     "무기",   "Cross Pein Hammer",   "다이아", 88, "dia",  ["UE", "Godot"]],
+    ["Lantern_01",            "소품",   "Lantern 01",          "다이아", 87, "dia",  ["Unity", "UE"]],
+    ["horse_statue_01",       "환경",   "Horse Statue",        "다이아", 85, "dia",  ["Unity", "UE"]],
+    ["brass_goblets",         "소품",   "Brass Goblets",       "다이아", 84, "dia",  ["Unity"]],
+    ["bronze_whale_statue",   "환경",   "Bronze Statue",       "다이아", 82, "dia",  ["UE"]],
+    ["barrel_03",             "환경",   "Barrel 03",           "플래티넘", 78, "plat", ["Unity", "UE", "Godot"]],
+    ["metal_jug",             "소품",   "Metal Jug",           "플래티넘", 76, "plat", ["Godot"]],
+    ["ceramic_pot",           "소품",   "Ceramic Pot",         "플래티넘", 74, "plat", ["Unity"]],
+    ["jug_01",                "소품",   "Jug 01",              "플래티넘", 72, "plat", ["Godot"]],
+    ["brass_pot_01",          "소품",   "Brass Pot",           "실버",   66, "silv", ["Unity"]],
   ];
   const PH = m => `./assets/ph/${m}/${m}_1k.gltf`;
 
@@ -1844,61 +1854,76 @@ if (track) {
 
   /* ── 타일 아트워크를 three.js 로 굽는다 ── */
   (async function render() {
-    const loader = new GLTFLoader();
-    const W = 620, H = 620;
-    const rr = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
-    rr.setSize(W, H);
-    rr.setPixelRatio(Math.min(devicePixelRatio, 2));
-    rr.outputColorSpace = THREE.SRGBColorSpace;
-    rr.toneMapping = THREE.ACESFilmicToneMapping;
-    rr.toneMappingExposure = 1.0;
+  /* 다크 판타지 조명 하나로 고정한다. 횃불 하나가 형태를 만들고 뒤에서 차가운 림이 받친다. */
+  const loader = new GLTFLoader();
+  const W = 620, H = 620;
+  const rr = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+  rr.setSize(W, H);
+  rr.setPixelRatio(Math.min(devicePixelRatio, 2));
+  rr.outputColorSpace = THREE.SRGBColorSpace;
+  rr.toneMapping = THREE.ACESFilmicToneMapping;
+  rr.toneMappingExposure = 1.0;
 
-    const sc = new THREE.Scene();
-    /* 스튜디오 HDRI 로 환경광을 만든다 — 금속·나무 질감은 반사가 만든다 */
-    const pmrem = new THREE.PMREMGenerator(rr);
-    await new Promise(done => {
-      new HDRLoader().load("./assets/ph/studio_1k.hdr", tex => {
-        tex.mapping = THREE.EquirectangularReflectionMapping;
-        sc.environment = pmrem.fromEquirectangular(tex).texture;
-        tex.dispose(); done();
-      }, undefined, () => {
-        sc.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-        done();
-      });
-    });
-    const key = new THREE.DirectionalLight(0xffffff, 1.3);
-    key.position.set(0.7, 1.2, 0.8);
-    sc.add(key);
+  const sc = new THREE.Scene();
+  const pmrem = new THREE.PMREMGenerator(rr);
+  await new Promise(done => {
+    new HDRLoader().load("./assets/ph/studio_1k.hdr", tex => {
+      tex.mapping = THREE.EquirectangularReflectionMapping;
+      sc.environment = pmrem.fromEquirectangular(tex).texture;
+      tex.dispose(); done();
+    }, undefined, () => { sc.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture; done(); });
+  });
+  
+  const keyL = new THREE.DirectionalLight(0xfff2e2, 1.5); keyL.position.set(0.9, 1.2, 0.7);
+  const rimL = new THREE.DirectionalLight(0xbdd0ff, 0.7); rimL.position.set(-0.9, 0.4, -0.8);
+  sc.add(keyL, rimL);
 
-    const cam = new THREE.PerspectiveCamera(30, W / H, 0.05, 60);
+  const cam = new THREE.PerspectiveCamera(30, 1, 0.01, 100);
 
-    for (const t of tiles) {
-      try {
-        const g = await new Promise((ok, no) => loader.load(PH(t.model), ok, undefined, no));
-        const o = g.scene, bb = new THREE.Box3().setFromObject(o);
-        const sz = new THREE.Vector3(), ct = new THREE.Vector3();
-        bb.getSize(sz); bb.getCenter(ct);
-        o.position.set(-ct.x, -ct.y, -ct.z);
-        o.traverse(mesh => { if (mesh.isMesh) mesh.material.envMapIntensity = 1.1; });
-        const n = new THREE.Group();
-        n.add(o);
-        n.scale.setScalar(0.92 / Math.max(sz.x, sz.y, sz.z, 1e-6));
-        n.rotation.y = -0.55;
-        sc.add(n);
-        cam.position.set(0.58, 0.40, 0.80);
-        cam.lookAt(0, 0, 0);
-        rr.render(sc, cam);
-        const img = t.el.querySelector("img");
-        img.src = rr.domElement.toDataURL("image/png");
-        img.classList.add("on");
-        sc.remove(n);
-      } catch (e) {
-        t.el.classList.add("noart");
-      }
+  /* 색보정은 2D 캔버스에서 한 번 더 — 채도를 낮추고 대비를 올린다 */
+  const grade = document.createElement("canvas");
+  grade.width = W; grade.height = H;
+  const gx = grade.getContext("2d");
+
+  for (const t of tiles) {
+    try {
+      const g = await new Promise((ok, no) => loader.load(PH(t.model), ok, undefined, no));
+      const o = g.scene, bb = new THREE.Box3().setFromObject(o);
+      const sz = new THREE.Vector3(), ct = new THREE.Vector3();
+      bb.getSize(sz); bb.getCenter(ct);
+      o.position.set(-ct.x, -ct.y, -ct.z);
+      o.traverse(x => { if (x.isMesh) x.material.envMapIntensity = 1.15; });
+      const n = new THREE.Group(); n.add(o);
+      n.scale.setScalar(1 / Math.max(sz.x, sz.y, sz.z, 1e-6));
+      n.rotation.y = -0.55;
+      sc.add(n);
+
+      /* 모델마다 비율이 달라 고정 거리로는 잘리거나 작게 나온다.
+         정규화 후 바운딩 스피어를 재서 화각에 딱 맞는 거리를 구한다. */
+      const sph = new THREE.Box3().setFromObject(n).getBoundingSphere(new THREE.Sphere());
+      const fov = cam.fov * Math.PI / 180;
+      const dist = (sph.radius / Math.sin(fov / 2)) * 1.16;
+      const dir = new THREE.Vector3(0.62, 0.42, 0.86).normalize();
+      cam.position.copy(sph.center).addScaledVector(dir, dist);
+      cam.near = Math.max(dist - sph.radius * 2, 0.01);
+      cam.far = dist + sph.radius * 4;
+      cam.updateProjectionMatrix();
+      cam.lookAt(sph.center);
+
+      rr.render(sc, cam);
+      gx.filter = "none";
+      gx.clearRect(0, 0, W, H);
+      gx.filter = "saturate(1.02) contrast(1.04)";
+      gx.drawImage(rr.domElement, 0, 0, W, H);
+      const img = t.el.querySelector("img");
+      img.src = grade.toDataURL("image/png");
+      img.classList.add("on");
+      sc.remove(n);
+    } catch (e) {
+      t.el.classList.add("noart");
     }
-    pmrem.dispose();
-    rr.dispose();
-    rr.forceContextLoss();
+  }
+  pmrem.dispose();
   })();
 
   /* ── 좌우 이동 ── */
@@ -2156,19 +2181,19 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 /* 검수 일곱 항목을 계단식으로 놓고, 각 항목이 실제로 보는 게 뭔지 3D 로 그린다.
    가중치는 crates/api/src/domain.rs 의 값과 같다. */
 const CHECKS = [
-  ["재료 출처 확인",     22, "banner",          "tex",
+  ["재료 출처 확인",       22, "gothic_statue",         "tex",
    "남의 재료가 섞이지 않았는지 확인하고 목록을 만듭니다.", "60점 미만이면 다른 점수와 무관하게 실버"],
-  ["실행 성능 영향",     18, "character-orc",   "flat",
+  ["실행 성능 영향",       18, "lantern_chandelier_01", "flat",
    "실제로 돌려 보고 프레임에 얼마나 부담을 주는지 잽니다.", "드로우콜 · 셰이더 · 텍스처 메모리"],
-  ["면 구성 상태",       15, "weapon-sword",    "retopo",
+  ["면 구성 상태",         15, "kite_shield",           "retopo",
    "면이 깔끔하게 짜였는지 봅니다. 여기가 무너지면 뒤가 다 무너집니다.", "사각면 비율 · 겹친 면 · 뒤집힌 면"],
-  ["텍스처 적용",        13, "chest",           "tex",
+  ["텍스처 적용",          13, "brass_candleholders",   "tex",
    "텍스처가 제대로 입혀지는지, 해상도가 과한지 봅니다.", "UV 겹침 · 아틀라스 · 해상도 낭비"],
-  ["거리별 단계 처리",   12, "column",          "lod",
+  ["거리별 단계 처리",     12, "barrel_03",             "lod",
    "멀리 있을 때 가볍게 바뀌는지 봅니다.", "LOD 단계 수 · 실루엣 유지"],
-  ["프로젝트 통합 난이도", 12, "character-human", "flat",
+  ["프로젝트 통합 난이도", 12, "horse_statue_01",       "flat",
    "내 게임에 붙이는 데 몇 분 걸리는지 잽니다.", "의존성 · 프리팹 구조 · 설정 값"],
-  ["코드 품질",           8, "gate",            "wire",
+  ["코드 품질",             8, "cross_pein_hammer",     "wire",
    "같이 들어오는 스크립트의 결합도와 테스트를 봅니다.", "결합도 · 네임스페이스 · 테스트"],
 ];
 
@@ -2195,7 +2220,7 @@ if (box) {
 
   /* 커버 굽기 — 레일 썸네일과 같은 방식이되 단계별 표현을 입힌다 */
   (async () => {
-    const DIR = "./assets/dungeon/";
+    const PHP = m => `./assets/ph/${m}/${m}_1k.gltf`;
     const loader = new GLTFLoader();
     const W = 640, H = 480;
     const r = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
@@ -2233,7 +2258,7 @@ if (box) {
     for (const el of box.querySelectorAll(".step2")) {
       const fig = el.querySelector(".sfig");
       try {
-        const gltf = await new Promise((ok, no) => loader.load(DIR + el.dataset.model + ".glb", ok, undefined, no));
+        const gltf = await new Promise((ok, no) => loader.load(PHP(el.dataset.model), ok, undefined, no));
         const obj = gltf.scene;
         const bb = new THREE.Box3().setFromObject(obj);
         const sz = new THREE.Vector3(), ct = new THREE.Vector3();
