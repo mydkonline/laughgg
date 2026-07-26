@@ -534,8 +534,6 @@ export function Workshop() {
               >
                 프리셋 저장
               </button>
-              {/* 저장이라고 부르되 공개된다는 사실을 숨기지 않는다. */}
-              <p className="mt-2 text-xs text-faint">저장하면 공략집에 공개됩니다.</p>
             </div>
           )}
           </div>

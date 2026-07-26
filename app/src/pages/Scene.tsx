@@ -2,15 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import {
   SCENE_GAMES,
   PLACE_MODEL,
-  fitReport,
-  fitVerdict,
-  fitSummary,
   type SceneGame,
 } from "../data/scenes";
 import { useCart } from "../lib/cart";
 import { Pager } from "../components/Pager";
-import { Link } from "react-router-dom";
-import { PIECES, modelSrc, type Piece } from "../data/pieces";
+import { PIECES, modelSrc } from "../data/pieces";
 import { bakeView } from "../three/baker";
 
 /* 산 에셋이 우리 게임에 맞는가.
@@ -89,7 +85,6 @@ export function Scene() {
     [q, picked],
   );
 
-  const active = Object.values(picked).flatMap((set) => [...set]);
   useEffect(() => setPage(1), [q, picked]);
   const game = SCENE_GAMES.find((g) => g.id === id) ?? SCENE_GAMES[0]!;
 
@@ -101,19 +96,17 @@ export function Scene() {
         <p className="mt-2 text-xs text-muted">산 에셋이 우리 게임 컨셉에 맞는지 확인합니다.</p>
       </header>
 
-      {/* 검색이 이 화면의 입구다. 무엇부터 해야 하는지가 한눈에 보여야 한다. */}
-      <input
-        value={q}
-        onChange={(e) => setQ(e.target.value)}
-        placeholder="우리 게임 찾기"
-        aria-label="게임 검색"
-        className="mb-6 w-full rounded-full border border-line bg-surface px-5 py-3.5 text-base text-ink placeholder:text-faint focus:border-accent"
-      />
+      <div className="grid gap-x-10 gap-y-8 lg:grid-cols-[260px_minmax(0,1fr)]">
+        {/* 고르는 자리는 왼쪽으로 몬다. 오른쪽은 시연만 본다. */}
+        <div className="lg:sticky lg:top-[100px] lg:self-start">
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="우리 게임 찾기"
+            aria-label="게임 검색"
+            className="mb-4 w-full rounded-full border border-line bg-surface px-4 py-2.5 text-xs text-ink placeholder:text-faint focus:border-accent"
+          />
 
-      <div className="mb-6 grid gap-x-12 gap-y-6 lg:grid-cols-[200px_minmax(0,1fr)]">
-        {/* 왼쪽은 고르는 자리다. 200종이 되면 다 늘어놓을 수 없으니
-            엔진 목록과 같은 구조로 간다 — 검색, 드롭다운 패싯, 쪽 번호. */}
-        <div>
           {facets.map((f) => (
             <details key={f.key} className="group mb-3 border-b border-line pb-3" open={f.key === "cat"}>
               <summary className="flex cursor-pointer list-none items-center gap-2 text-xs font-bold text-ink">
@@ -149,27 +142,11 @@ export function Scene() {
               </ul>
             </details>
           ))}
-        </div>
 
-        <div className="min-w-0">
-          <div className="mb-3 flex flex-wrap items-center gap-2 border-b border-line pb-3">
-            <span className="text-xs text-faint">
-              <b className="num text-ink">{list.length}</b>
-              {list.length !== SCENE_GAMES.length && <span> / {SCENE_GAMES.length}</span>}
-            </span>
-            {active.length > 0 && (
-              <button
-                type="button"
-                onClick={() => setPicked({})}
-                aria-label="필터 전체 해제"
-                className="flex cursor-pointer items-center gap-1.5 rounded-full border-0 bg-accent px-2.5 py-1 text-xs text-white"
-              >
-                {active.join(", ")}
-                <span className="opacity-70">✕</span>
-              </button>
-            )}
-          </div>
-
+          <p className="mt-4 mb-2 text-xs text-faint">
+            <b className="num text-ink">{list.length}</b>
+            {list.length !== SCENE_GAMES.length && <span> / {SCENE_GAMES.length}</span>}
+          </p>
           <ul className="m-0 flex list-none flex-col p-0">
             {list.slice((page - 1) * PAGE, page * PAGE).map((g) => (
               <li key={g.id}>
@@ -178,7 +155,7 @@ export function Scene() {
                   onClick={() => setId(g.id)}
                   aria-pressed={g.id === game.id}
                   className={[
-                    "flex w-full cursor-pointer items-center gap-3 border-0 border-b border-line bg-transparent py-2.5 text-left",
+                    "flex w-full cursor-pointer items-center gap-2.5 border-0 border-b border-line bg-transparent py-2 text-left",
                     g.id === game.id ? "text-ink" : "text-muted hover:text-ink",
                   ].join(" ")}
                 >
@@ -187,134 +164,67 @@ export function Scene() {
                     style={{ background: g.sw }}
                   />
                   <span className={`truncate text-xs ${g.id === game.id ? "font-bold" : ""}`}>{g.n}</span>
-                  <span className="ml-auto shrink-0 text-[10px] text-faint">{g.cat}</span>
-                  <span className="w-24 shrink-0 truncate text-right text-[10px] text-faint">{g.sub}</span>
+                  <span className="ml-auto shrink-0 text-[10px] text-faint">{g.sub}</span>
                 </button>
               </li>
             ))}
           </ul>
-
           <Pager total={list.length} page={page} perPage={PAGE} onGo={setPage} />
         </div>
+
+        {/* 시연. 이 화면에서 제일 크게 보여야 하는 것이다. */}
+        <div className="min-w-0">
+          <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2">
+            <span className="text-base font-bold text-ink">{game.n}</span>
+            <span className="text-xs text-faint">
+              {game.cat}, {game.sub}
+            </span>
+            <span className="ml-auto flex overflow-hidden rounded-full border border-line">
+              {[
+                [false, "원본 그대로"],
+                [true, "이 게임에 맞춤"],
+              ].map(([v, label]) => (
+                <button
+                  key={String(v)}
+                  type="button"
+                  onClick={() => setFit(v as boolean)}
+                  aria-pressed={fit === v}
+                  className={[
+                    "cursor-pointer border-0 px-3 py-1 text-xs",
+                    fit === v ? "bg-ink font-bold text-ground" : "bg-transparent text-muted hover:text-ink",
+                  ].join(" ")}
+                >
+                  {label as string}
+                </button>
+              ))}
+            </span>
+          </div>
+
+          <Stage game={game} fit={fit} />
+
+          {/* 어떤 에셋을 올려 볼지 */}
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <span className="text-xs text-faint">{cartIds.length ? "산 에셋" : "마켓 상위"}</span>
+            {owned.map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => setPieceId(p.id)}
+                aria-pressed={p.id === piece.id}
+                className={[
+                  "cursor-pointer rounded-full border px-3 py-1 text-xs",
+                  p.id === piece.id
+                    ? "border-transparent bg-ink font-bold text-ground"
+                    : "border-line text-muted hover:border-accent hover:text-ink",
+                ].join(" ")}
+              >
+                {p.t}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
-
-      {/* 검토 대상. 어느 에셋을 보고 있는지가 먼저다. */}
-      <div className="mb-4 flex flex-wrap items-center gap-2 border-t border-line pt-5">
-        <span className="text-xs text-faint">{cartIds.length ? "산 에셋" : "마켓 상위"}</span>
-        {owned.map((p) => (
-          <button
-            key={p.id}
-            type="button"
-            onClick={() => setPieceId(p.id)}
-            aria-pressed={p.id === piece.id}
-            className={[
-              "cursor-pointer rounded-full border px-3 py-1 text-xs",
-              p.id === piece.id
-                ? "border-transparent bg-ink font-bold text-ground"
-                : "border-line text-muted hover:border-accent hover:text-ink",
-            ].join(" ")}
-          >
-            {p.t}
-          </button>
-        ))}
-      </div>
-
-      <FitPanel game={game} piece={piece} />
-
-      <div className="mt-6 mb-3 flex flex-wrap items-center gap-x-3 gap-y-2">
-        <span className="text-xs font-bold text-ink">{game.n}</span>
-        <span className="text-xs text-faint">{game.sub}</span>
-        <span className="ml-auto text-xs text-faint">에셋</span>
-        {[
-          [false, "원본 그대로"],
-          [true, "이 게임에 맞춤"],
-        ].map(([v, label]) => (
-          <button
-            key={String(v)}
-            type="button"
-            onClick={() => setFit(v as boolean)}
-            aria-pressed={fit === v}
-            className={[
-              "cursor-pointer rounded-full border px-3 py-1 text-xs",
-              fit === v
-                ? "border-transparent bg-ink font-bold text-ground"
-                : "border-line text-muted hover:border-accent hover:text-ink",
-            ].join(" ")}
-          >
-            {label as string}
-          </button>
-        ))}
-      </div>
-
-      <Stage game={game} fit={fit} />
-
-      <p className="mt-3 text-xs leading-relaxed text-muted">
-        {game.note}{" "}
-        <span className="text-faint">
-          {fit ? "에셋에도 이 게임의 색을 입혔습니다." : "산 그대로 놓아 재질색이 남아 있습니다."}
-        </span>
-      </p>
     </main>
-  );
-}
-
-/* 검토 결과.
-
-   사는 사람이 알아야 할 건 셋이다 — 써도 되나, 뭐가 문제인가, 고칠 수 있나.
-   축별 수치는 그 셋 중 어느 것도 아니라 아래로 접어 둔다. 0.86 은 기계가 쓰는
-   값이고 사람은 "이 게임보다 밝다" 로 판단한다. */
-function FitPanel({ game, piece }: { game: SceneGame; piece: Piece }) {
-  const report = fitReport(game);
-  const verdict = fitVerdict(report.score);
-  const tone =
-    verdict.tone === "ok" ? "text-accent" : verdict.tone === "warn" ? "text-ink" : "text-[#FF6B7A]";
-
-  return (
-    <div className="border-b border-line pb-8">
-      <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
-        <div>
-          <p className="text-xs text-faint">
-            {piece.t} → {game.n}
-          </p>
-          <p className="num mt-2 text-6xl leading-none text-ink">{report.score}</p>
-        </div>
-
-        <div className="min-w-0 flex-1">
-          <p className={`text-base font-bold ${tone}`}>{verdict.label}</p>
-          <p className="mt-1.5 text-xs text-muted">{fitSummary(game)}</p>
-        </div>
-
-        {report.score < 80 && (
-          <Link
-            to="/workshop"
-            className="shrink-0 rounded-lg bg-accent px-4 py-2.5 text-xs font-bold text-white no-underline hover:bg-accent-strong"
-          >
-            에디터에서 맞추기
-          </Link>
-        )}
-      </div>
-
-      {/* 수치는 확인하고 싶은 사람만 편다. 대부분은 위 세 줄이면 끝난다. */}
-      <details className="mt-5">
-        <summary className="cursor-pointer text-xs text-faint">축별 수치</summary>
-        <dl className="mt-3 grid gap-x-12 gap-y-2 sm:grid-cols-2">
-          {report.axes.map((a) => (
-            <div key={a.label} className="grid grid-cols-[44px_minmax(0,1fr)_44px] items-center gap-3">
-              <dt className={`text-xs ${a.gap > 0.2 ? "text-ink" : "text-faint"}`}>{a.label}</dt>
-              <dd className="m-0">
-                <span className="block h-1.5 overflow-hidden rounded-full bg-surface-2">
-                  <b
-                    className={`block h-full ${a.gap > 0.5 ? "bg-[#FF6B7A]" : a.gap > 0.2 ? "bg-accent" : "bg-chrome-600"}`}
-                    style={{ width: `${Math.max(3, a.gap * 100)}%` }}
-                  />
-                </span>
-              </dd>
-              <dd className="num m-0 text-right text-xs text-muted">{a.want}</dd>
-            </div>
-          ))}
-        </dl>
-      </details>
-    </div>
   );
 }
 

@@ -68,7 +68,7 @@ export function Feed() {
         </Link>
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col">
         {sorted.map((p) => (
           <Card key={p.id} post={p} />
         ))}
@@ -95,86 +95,93 @@ function Card({ post }: { post: Post }) {
   };
 
   return (
-    <article className="rounded-xl border border-line bg-surface p-4">
-      <div className="flex gap-4">
-        {piece && (
-          <Link to={`/market/${piece.id}`} className="relative block aspect-square w-20 flex-none rounded-lg bg-surface-2">
-            <Thumb piece={piece} />
-          </Link>
-        )}
+    /* 글처럼 읽히게 둔다. 카드 안에 항목을 욱여넣으면 목록으로 보이고,
+       목록으로 보이면 아무도 안 읽는다. */
+    <article className="border-b border-line py-8">
+      <header>
+        <h2 className="text-2xl leading-snug font-bold text-ink">{post.title}</h2>
+        <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-faint">
+          <Byline by={post.by} />
+          <span>{ago(post.at)}</span>
+          {post.seeded && <span className="rounded border border-line px-1.5 py-px">운영자 작성</span>}
+        </p>
+      </header>
 
-        <div className="min-w-0 flex-1">
-          <h2 className="text-base leading-snug font-bold text-ink">{post.title}</h2>
+      <div className="mt-5 grid gap-x-8 gap-y-5 sm:grid-cols-[minmax(0,1fr)_160px]">
+        <div className="min-w-0">
+          <section>
+            <h3 className="text-xs font-bold text-ink">상황</h3>
+            <p className="mt-1.5 text-xs leading-relaxed text-muted">{post.situation}</p>
+          </section>
 
-          <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-faint">
-            <Byline by={post.by} />
-            <span>{ago(post.at)}</span>
-            {post.seeded && <span className="rounded border border-line px-1.5 py-px">운영자 작성</span>}
-          </p>
+          <section className="mt-4">
+            <h3 className="text-xs font-bold text-ink">문제</h3>
+            <p className="mt-1.5 text-xs leading-relaxed text-muted">{post.problem}</p>
+          </section>
 
-          {/* 상황과 문제를 먼저 낸다. 남이 자기 경우인지 여기서 판단한다. */}
-          <dl className="mt-3 flex flex-col gap-1.5">
-            <div className="flex gap-2.5">
-              <dt className="w-9 shrink-0 text-xs text-faint">상황</dt>
-              <dd className="m-0 text-xs leading-relaxed text-muted">{post.situation}</dd>
-            </div>
-            <div className="flex gap-2.5">
-              <dt className="w-9 shrink-0 text-xs text-faint">문제</dt>
-              <dd className="m-0 text-xs leading-relaxed text-muted">{post.problem}</dd>
-            </div>
-          </dl>
-
-          <ol className="mt-3 flex list-none flex-col gap-1.5 p-0">
-            {(post.steps ?? []).map((st, i) => (
-              <li key={st} className="flex gap-2.5 text-xs">
-                <span className="num w-9 shrink-0 text-faint">{String(i + 1).padStart(2, "0")}</span>
-                <span className="text-muted">{st}</span>
-              </li>
-            ))}
-          </ol>
-
-          <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs">
-            <span className="text-faint">
-              분석 <b className="tabular-nums text-muted line-through">{post.before}</b>{" "}
-              <b className={`tabular-nums ${diff >= 0 ? "text-accent" : "text-[#FF6B7A]"}`}>
-                {post.after} ({diff >= 0 ? `+${diff}` : diff})
-              </b>
-            </span>
-            <span className="text-faint">
-              <b className="tabular-nums text-ink">{post.forks}</b>명이 따라함
-            </span>
-          </div>
-
-          <div className="mt-3 flex flex-wrap gap-2">
-            <Link
-              to={`/workshop?fork=${post.id}`}
-              className="rounded-lg bg-accent px-3.5 py-1.5 text-xs font-bold text-white no-underline hover:bg-accent-strong"
-            >
-              이대로 따라하기
-            </Link>
-            <button
-              type="button"
-              onClick={() => setOpen((v) => !v)}
-              className="cursor-pointer rounded-lg border border-line bg-transparent px-3.5 py-1.5 text-xs text-muted hover:text-ink"
-            >
-              댓글 {post.comments.length}
-            </button>
-          </div>
+          <section className="mt-4">
+            <h3 className="text-xs font-bold text-ink">해결</h3>
+            <ol className="mt-1.5 flex list-none flex-col gap-1.5 p-0">
+              {(post.steps ?? []).map((st, i) => (
+                <li key={st} className="flex gap-2.5 text-xs">
+                  <span className="num w-6 shrink-0 text-faint">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="leading-relaxed text-muted">{st}</span>
+                </li>
+              ))}
+            </ol>
+          </section>
         </div>
+
+        {/* 결과. 글 옆에 붙여 두면 읽는 흐름을 안 끊는다. */}
+        <aside className="sm:border-l sm:border-line sm:pl-6">
+          {piece && (
+            <Link to={`/market/${piece.id}`} className="relative block aspect-square rounded-lg bg-surface">
+              <Thumb piece={piece} pad="10%" />
+            </Link>
+          )}
+          <p className="mt-3 text-xs text-faint">분석</p>
+          <p className="mt-0.5 flex items-baseline gap-1.5">
+            <b className="num text-base text-faint line-through">{post.before}</b>
+            <b className={`num text-2xl ${diff >= 0 ? "text-accent" : "text-[#FF6B7A]"}`}>{post.after}</b>
+            <span className={`text-xs ${diff >= 0 ? "text-accent" : "text-[#FF6B7A]"}`}>
+              {diff >= 0 ? `+${diff}` : diff}
+            </span>
+          </p>
+        </aside>
       </div>
 
+      <footer className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
+        <span className="text-faint">
+          <b className="num text-ink">{post.forks}</b>명이 따라함
+        </span>
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          className="cursor-pointer border-0 bg-transparent p-0 text-xs text-faint hover:text-ink"
+        >
+          댓글 {post.comments.length}
+        </button>
+        <Link
+          to={`/workshop?fork=${post.id}`}
+          className="ml-auto text-xs text-faint no-underline hover:text-accent"
+        >
+          설정 열기 →
+        </Link>
+      </footer>
+
       {open && (
-        <div className="mt-4 border-t border-line pt-4">
+        <div className="mt-5 border-t border-line pt-5">
           <Knoblist knobs={post.knobs} />
 
-          <div className="mt-4 flex flex-col gap-3">
+          <div className="mt-5 flex flex-col gap-4">
             {post.comments.map((c) => (
               <div key={c.id}>
                 <p className="flex items-center gap-2 text-xs text-faint">
                   <Byline by={c.by} />
                   <span>{ago(c.at)}</span>
                 </p>
-                <p className="mt-1 text-base leading-relaxed text-muted">{c.body}</p>
+                <p className="mt-1 text-xs leading-relaxed text-muted">{c.body}</p>
               </div>
             ))}
             {post.comments.length === 0 && <p className="text-xs text-faint">아직 댓글이 없습니다.</p>}
@@ -199,7 +206,12 @@ function Card({ post }: { post: Post }) {
           </div>
           {/* 실명으로는 실무 얘기가 안 나온다. 소속만 인증하고 신원은 가린다. */}
           <label className="mt-2 flex cursor-pointer items-center gap-2 text-xs text-faint">
-            <input type="checkbox" checked={!anon} onChange={(e) => setAnon(!e.target.checked)} className="accent-[var(--accent)]" />
+            <input
+              type="checkbox"
+              checked={!anon}
+              onChange={(e) => setAnon(!e.target.checked)}
+              className="accent-[var(--accent)]"
+            />
             소속만 밝히기
           </label>
         </div>
