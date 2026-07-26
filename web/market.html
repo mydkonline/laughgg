@@ -249,6 +249,7 @@
 
   /* 카드는 그림·배지·이름·가격만. 나머지는 열어서 본다 */
   .piece .art .thumb { width: 100%; height: 100%; object-fit: contain; display: block;
+    filter: drop-shadow(0 10px 14px rgba(0,0,0,.28));
     opacity: 0; transition: opacity .45s ease, transform .3s cubic-bezier(.22,1,.36,1); }
   .piece .art .thumb.on { opacity: 1; }
   .piece:hover .art .thumb { transform: scale(1.05); }
@@ -259,10 +260,9 @@
   .piece { display: flex; flex-direction: column; }
   .piece .info { flex: 1; }
   .piece .ttl { min-height: 2.6em; display: flex; align-items: flex-start; }
-  .piece .seal { position: absolute; top: 10px; left: 10px; display: grid; place-items: center;
-    width: 30px; height: 30px; border-radius: 50%; background: color-mix(in srgb, var(--ground) 72%, transparent);
-    backdrop-filter: blur(5px); }
-  .piece .seal .rk { width: 19px; height: 19px; }
+  .piece .seal { position: absolute; top: 10px; left: 11px; display: block; }
+  .piece .seal .rk { width: 22px; height: 22px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,.35)); }
   .piece .info { padding: 13px 14px 15px; display: flex; flex-direction: column; gap: 8px; }
   .piece .ttl { font-size: 12pt; font-weight: 700; line-height: 1.35; }
   .piece .foot { display: flex; align-items: baseline; gap: 10px; white-space: nowrap; }
@@ -355,6 +355,128 @@
   }
   .empty .resetb { margin: 14px auto 0; display: inline-block; }
 
+
+  /* ── 상세 = 상품 페이지 ──
+     Baymard 기준으로 PDP 절반이 미흡한 이유가 갤러리·CTA·신뢰정보 셋 중 하나가 빠져서다.
+     세 개를 다 넣고, 스크롤이 길어지니 상단에 담기 바를 고정한다. */
+  /* .drawer 는 아래 drawer 섹션에서 한 곳으로 정의한다 */
+  .pdpbar { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 14px;
+    padding: 12px 22px; background: color-mix(in srgb, var(--ground) 92%, transparent);
+    backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+  .pb-t { font-size: 12pt; font-weight: 700; overflow: hidden; text-overflow: ellipsis;
+    white-space: nowrap; }
+  .pb-p { margin-left: auto; font-size: 12pt; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .pb-buy { padding: 9px 18px; border-radius: 99px; border: 0; background: var(--brass);
+    color: var(--ground); font-size: 10pt; font-weight: 800; cursor: pointer;
+    transition: scale .16s cubic-bezier(.22,1,.36,1); }
+  .pb-buy:active { scale: .96; }
+  .pdpbar .closeb { border: 0; background: none; color: var(--muted); font-size: 12pt;
+    cursor: pointer; padding: 4px 6px; }
+
+  .pdp { display: grid; grid-template-columns: 1.25fr .95fr; gap: 26px; padding: 26px 22px 0; }
+  @media (max-width: 900px) { .pdp { grid-template-columns: 1fr; } }
+
+  .galmain { aspect-ratio: 4/3; border-radius: 14px; overflow: hidden; border: 1px solid var(--line);
+    background: var(--surface); display: grid; place-items: center; }
+  .galmain img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .galmain img.dot { image-rendering: pixelated; max-width: 80%; max-height: 80%;
+    width: auto; height: auto; }
+  .galthumbs { display: flex; gap: 8px; margin-top: 10px; }
+  .galthumbs button { flex: 1; aspect-ratio: 4/3; border-radius: 9px; overflow: hidden;
+    border: 1px solid var(--line); background: var(--surface); padding: 0; cursor: pointer;
+    transition: border-color .16s ease, scale .16s cubic-bezier(.22,1,.36,1); }
+  .galthumbs button:hover { border-color: var(--brass); }
+  .galthumbs button:active { scale: .96; }
+  .galthumbs button[aria-pressed="true"] { border-color: var(--brass); border-width: 2px; }
+  .galthumbs img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+
+  .galmain canvas { width: 100%; height: 100%; display: block; }
+  .galthumbs button[data-spin] { display: grid; place-items: center; }
+  .spinlbl { font-size: 9pt; color: var(--muted); font-weight: 700; }
+  .galthumbs button[data-spin][aria-pressed="true"] .spinlbl { color: var(--brass); }
+  .pdpbuy { position: sticky; top: 74px; align-self: start; display: flex; flex-direction: column;
+    gap: 10px; }
+  .bcrumb { font-size: 9.5pt; letter-spacing: .1em; color: var(--faint); font-weight: 700; }
+  .pdpbuy h2 { margin: 0; font-size: 20pt; font-weight: 780; letter-spacing: -.035em; line-height: 1.2; }
+  .bby { font-size: 10pt; color: var(--muted); }
+  .brate { display: flex; align-items: center; gap: 9px; margin-top: 4px; font-size: 10pt;
+    color: var(--faint); }
+  .brate b { font-size: 12pt; color: var(--ink); font-weight: 800; }
+  .bbadge { margin-left: auto; display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px; border-radius: 99px; background: var(--surface-2); color: var(--muted);
+    font-size: 9.5pt; font-weight: 700; }
+  .bbadge .rk { width: 15px; height: 15px; }
+  .bprice { display: flex; align-items: baseline; gap: 10px; padding: 14px 0;
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-top: 6px; }
+  .bprice b { font-size: 24pt; font-weight: 800; letter-spacing: -.04em; }
+  .bprice span { font-size: 9.5pt; color: var(--faint); }
+
+  .bopt { margin-top: 6px; }
+  .ol { display: block; font-size: 9.5pt; font-weight: 700; color: var(--faint); margin-bottom: 7px; }
+  .och { display: flex; gap: 7px; flex-wrap: wrap; }
+  .och button { padding: 9px 14px; border-radius: 9px; border: 1px solid var(--line);
+    background: transparent; color: var(--muted); font-size: 10pt; cursor: pointer;
+    transition: border-color .16s ease, color .16s ease, scale .16s cubic-bezier(.22,1,.36,1); }
+  .och button i { font-style: normal; color: var(--faint); font-size: 9pt; }
+  .och button:hover { border-color: var(--brass); color: var(--ink); }
+  .och button:active { scale: .96; }
+  .och button[aria-pressed="true"] { border-color: var(--ink); color: var(--ink); font-weight: 700; }
+
+  .bbuy { margin-top: 12px; padding: 15px; border-radius: 12px; border: 0; background: var(--brass);
+    color: var(--ground); font-size: 12pt; font-weight: 800; cursor: pointer;
+    transition: scale .16s cubic-bezier(.22,1,.36,1), filter .16s ease; }
+  .bbuy:hover { filter: brightness(1.08); }
+  .bbuy:active { scale: .98; }
+  .bwish { padding: 14px; border-radius: 12px; border: 1px solid var(--line);
+    background: transparent; color: var(--ink); font-size: 11pt; cursor: pointer;
+    transition: border-color .16s ease, scale .16s cubic-bezier(.22,1,.36,1); }
+  .bwish:hover { border-color: var(--brass); }
+  .bwish:active { scale: .98; }
+  .btrust { list-style: none; margin: 14px 0 0; padding: 14px 0 0; border-top: 1px solid var(--line);
+    display: flex; flex-direction: column; gap: 8px; font-size: 9.5pt; color: var(--muted);
+    line-height: 1.5; }
+  .btrust b { color: var(--ink); }
+
+  .pdpbody { padding: 30px 22px 40px; max-width: 720px; }
+  .acc { border-bottom: 1px solid var(--line); }
+  .acc summary { list-style: none; cursor: pointer; padding: 16px 0; font-size: 12pt;
+    font-weight: 700; display: flex; align-items: center; }
+  .acc summary::-webkit-details-marker { display: none; }
+  .acc summary::after { content: "＋"; margin-left: auto; color: var(--faint); font-weight: 400; }
+  .acc[open] summary::after { content: "－"; }
+  .acc summary:hover { color: var(--brass); }
+  .acc > div { padding: 0 0 18px; }
+  .acc p { margin: 0; color: var(--muted); font-size: 10.5pt; line-height: 1.75; }
+
+  .revblock { margin-top: 26px; }
+  .revblock h3, .crosssell h3 { margin: 0 0 14px; font-size: 12pt; font-weight: 750; }
+  .revsum { display: flex; gap: 26px; align-items: center; padding: 18px;
+    border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+  .rvbig { text-align: center; flex: none; }
+  .rvbig b { display: block; font-size: 28pt; font-weight: 800; letter-spacing: -.04em; }
+  .rvbig span { font-size: 9pt; color: var(--faint); }
+  .rvdist { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+  .rvrow { display: flex; align-items: center; gap: 9px; }
+  .rvrow i { font-style: normal; font-size: 9pt; color: var(--faint); width: 1ch; }
+  .rvrow u { flex: 1; text-decoration: none; height: 6px; border-radius: 99px;
+    background: var(--surface-2); overflow: hidden; }
+  .rvrow u b { display: block; height: 100%; background: var(--brass); }
+
+  .crosssell { margin-top: 30px; }
+  .csrow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .cscard { border: 1px solid var(--line); border-radius: 12px; overflow: hidden;
+    background: var(--surface); padding: 0 0 12px; cursor: pointer; text-align: left;
+    display: flex; flex-direction: column; gap: 8px;
+    transition: border-color .16s ease, transform .2s cubic-bezier(.22,1,.36,1); }
+  .cscard:hover { border-color: var(--brass); transform: translateY(-3px); }
+  .csimg { aspect-ratio: 16/10; display: grid; place-items: center; background: var(--surface-2); }
+  .csimg img { width: 100%; height: 100%; object-fit: contain; }
+  .csimg img.dot { image-rendering: pixelated; max-width: 76%; max-height: 76%;
+    width: auto; height: auto; }
+  .cst { padding: 0 12px; font-size: 10pt; font-weight: 650; }
+  .csp { padding: 0 12px; font-size: 10pt; font-weight: 800; color: var(--brass); }
+
   /* ================= drawer ================= */
   .scrim {
     position: fixed; inset: 0; background: rgba(8,8,6,.6); z-index: 50;
@@ -362,13 +484,12 @@
   }
   .scrim.on { opacity: 1; pointer-events: auto; }
 
-  .drawer {
-    position: fixed; top: 0; right: 0; bottom: 0; width: min(560px, 100%);
-    background: var(--surface); border-left: 1px solid var(--line); z-index: 51;
-    transform: translateX(102%); transition: transform .26s cubic-bezier(.2,.8,.2,1);
-    display: flex; flex-direction: column; overflow: hidden;
-  }
-  .drawer.on { transform: none; }
+  .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(1080px, 100%);
+    background: var(--ground); border-left: 1px solid var(--line); z-index: 51;
+    overflow-y: auto; overscroll-behavior: contain;
+    transform: translateX(100%); transition: transform .28s cubic-bezier(.22,1,.36,1);
+    visibility: hidden; }
+  .drawer.on { transform: none; visibility: visible; }
   @media (prefers-reduced-motion: reduce) { .drawer, .scrim { transition: none; } }
 
   .dhead { padding: 16px 20px; border-bottom: 1px solid var(--line); display: flex; align-items: flex-start; gap: 12px; }
@@ -560,9 +681,87 @@
     <a class="igg-cta" href="community.html">에셋 올리기</a>
   </div></div>
   <div class="igg-r2"><div class="igg-r2in">
-    <div class="igg-tabs"><a href="index.html">홈</a><a href="about.html">IR</a><a href="market.html" aria-current="page">마켓</a><a href="community.html">게임 스택</a><a href="ai.html">AI 파이프라인<sup>N</sup></a><a href="scene.html">에셋 시연</a><a href="viewer3d.html">3D 뷰어</a><a href="vlog.html">개발 브이로그<sup>N</sup></a></div>
+    <div class="igg-tabs"><a href="index.html">홈</a><a href="about.html">IR</a><a href="market.html" aria-current="page">마켓</a><a href="community.html">게임 스택</a><span class="igg-grp"><a href="ai.html">AI<sup>N</sup><i class="igg-car" aria-hidden="true">▾</i></a><span class="igg-menu"><a href="ai.html">AI 파이프라인<sup>N</sup></a><a href="scene.html">AI 에셋 시연</a><a href="viewer3d.html">AI 3D 뷰어</a></span></span><a href="vlog.html">개발 브이로그</a></div>
   </div></div>
 </nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rg-chal" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFF3D2"/><stop offset=".34" stop-color="#F2C066"/>
+    <stop offset=".68" stop-color="#C68F2E"/><stop offset="1" stop-color="#7A551A"/></linearGradient>
+  <linearGradient id="rg-dia" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#F2F5FA"/><stop offset=".34" stop-color="#C3CBD8"/>
+    <stop offset=".68" stop-color="#8A94A5"/><stop offset="1" stop-color="#4E5666"/></linearGradient>
+  <linearGradient id="rg-plat" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#E4E9F0"/><stop offset=".34" stop-color="#AAB3C0"/>
+    <stop offset=".68" stop-color="#727B88"/><stop offset="1" stop-color="#3E454F"/></linearGradient>
+  <linearGradient id="rg-silv" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#D6DBE2"/><stop offset=".34" stop-color="#98A0AC"/>
+    <stop offset=".68" stop-color="#646C78"/><stop offset="1" stop-color="#353B44"/></linearGradient>
+  <linearGradient id="rg-sheen" x1="12" y1="6" x2="52" y2="34" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#fff" stop-opacity=".55"/>
+    <stop offset=".52" stop-color="#fff" stop-opacity=".08"/>
+    <stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 64 64">
+    <path d="M11.5 21.5 1 12.4l3.9 11.4-3 1.9 9.6 4.1z" fill="url(#rg-chal)" opacity=".62"/>
+    <path d="M52.5 21.5 63 12.4l-3.9 11.4 3 1.9-9.6 4.1z" fill="url(#rg-chal)" opacity=".62"/>
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-chal)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="m21.4 36.6-3.1-12.9 8 6.1L32 20l5.7 9.8 8-6.1-3.1 12.9z" fill="url(#rg-chal)"/>
+    <path d="M21.4 39.4h21.2v3.4H21.4z" fill="url(#rg-chal)"/>
+    <circle cx="32" cy="31.4" r="2.5" fill="#fff" opacity=".55"/>
+  </symbol>
+
+  <symbol id="rk-dia" viewBox="0 0 64 64">
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-dia)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="m32 19.4 11.6 9.4L32 46 20.4 28.8z" fill="url(#rg-dia)"/>
+    <path d="M20.4 28.8h23.2L32 33.2z" fill="#0A0A10" opacity=".3"/>
+    <path d="m32 19.4 5.2 9.4L32 33.2l-5.2-4.4z" fill="#fff" opacity=".42"/>
+    <path d="M14.6 24h3.2v9h-3.2zM46.2 24h3.2v9h-3.2z" fill="url(#rg-dia)" opacity=".7"/>
+  </symbol>
+
+  <symbol id="rk-plat" viewBox="0 0 64 64">
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-plat)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="m32 19.6 10.4 6v12l-10.4 6-10.4-6v-12z" fill="url(#rg-plat)"/>
+    <path d="M21.6 25.6 32 31.6l10.4-6L32 19.6z" fill="#fff" opacity=".34"/>
+    <path d="M32 31.6v12l-10.4-6v-12z" fill="#0A0A10" opacity=".22"/>
+  </symbol>
+
+  <symbol id="rk-silv" viewBox="0 0 64 64">
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-silv)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="M22.4 26.4h19.2v5.2H22.4z" fill="url(#rg-silv)"/>
+    <path d="M22.4 26.4h19.2v2.1H22.4z" fill="#fff" opacity=".36"/>
+    <path d="M25.6 35.6h12.8v3.2H25.6z" fill="url(#rg-silv)" opacity=".8"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
   <linearGradient id="rg-chal" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
     <stop offset="0" stop-color="#FFF3D2"/><stop offset=".34" stop-color="#F2C066"/>
@@ -1820,14 +2019,14 @@
     { id:18, m:"jug_01",                t:"Jug 01",               by:"tinsmith",    cat:"prop",      eng:["godot"],                 score:72, feel:70, price:4,  dl:3120, days:14, tri:"2.2k",  tex:"1K", desc:"손잡이 달린 도기 주전자. 깨진 변형이 없는 온전한 형태 하나입니다." },
     { id:19, m:"coast_rocks_01",        t:"Coast Rocks",          by:"stonewright", cat:"env",       eng:["unity","unreal","godot"], score:70, feel:68, price:0,  dl:12400,days:1,  tri:"8.7k",  tex:"1K", desc:"해안 바위 덩어리. 무료로 풀어 둔 것이라 지형 채우기에 부담 없이 씁니다." },
     { id:20, m:"brass_pot_01",          t:"Brass Pot",            by:"tinsmith",    cat:"prop",      eng:["unity"],                 score:66, feel:64, price:3,  dl:2740, days:18, tri:"3.8k",  tex:"1K", desc:"작은 황동 냄비. 폴리곤 대비 텍스처 해상도가 높아 가까이서만 씁니다." },
-    { id:21, img:"px-char1",  t:"Dark Knight Sprite",  by:"utumno",  cat:"char", eng:["unity","godot"],          score:89, feel:92, price:14, dl:5120, days:3,  tri:"—", tex:"32×48", desc:"쿼터뷰 도트 캐릭터. 다크에덴·녹스 계열 화면에 맞춘 8방향 스프라이트로, 어두운 배경에서 실루엣이 뭉개지지 않게 외곽을 한 픽셀 밝혔습니다." },
-    { id:22, img:"px-char2",  t:"Cleric Sprite",       by:"utumno",  cat:"char", eng:["unity","godot"],          score:86, feel:88, price:14, dl:3940, days:5,  tri:"—", tex:"32×48", desc:"성직자 계열 도트 캐릭터. 로브 자락이 걷는 프레임마다 흔들리도록 나뉘어 있습니다." },
-    { id:23, img:"px-mon1",   t:"Crypt Ghoul",         by:"utumno",  cat:"char", eng:["godot"],                  score:84, feel:87, price:11, dl:4680, days:2,  tri:"—", tex:"32×32", desc:"납골당 몬스터. 어두운 타일 위에서 눈만 밝게 보이도록 대비를 잡았습니다." },
-    { id:24, img:"px-mon3",   t:"Bone Warden",         by:"utumno",  cat:"char", eng:["unity","godot"],          score:82, feel:85, price:11, dl:3210, days:8,  tri:"—", tex:"32×32", desc:"해골 계열 몬스터. 피격 프레임에서 뼈가 흩어지는 컷이 포함돼 있습니다." },
+    { id:21, img:"iso/house3",   t:"Isometric House Set",  by:"indiesquid", cat:"env", eng:["unity","godot"],          score:89, feel:92, price:14, dl:5120, days:3,  tri:"—", tex:"32×48", desc:"쿼터뷰 마을 건물 타일. 지붕·벽이 한 장에 들어 있어 그대로 놓으면 격자에 맞습니다." },
+    { id:22, img:"iso/trees7",   t:"Isometric Tree Pack",  by:"indiesquid", cat:"env", eng:["unity","godot"],          score:86, feel:88, price:14, dl:3940, days:5,  tri:"—", tex:"32×48", desc:"쿼터뷰 나무 타일. 여러 종을 섞어 심으면 같은 타일을 반복한 티가 나지 않습니다." },
+    { id:23, img:"iso/road_nsew",t:"Isometric Road Tiles", by:"indiesquid", cat:"env", eng:["godot"],                  score:84, feel:87, price:11, dl:4680, days:2,  tri:"—", tex:"32×32", desc:"사거리·직선·곡선이 한 세트인 길 타일. 이음매가 맞아떨어집니다." },
+    { id:24, img:"iso/bridge_ew",t:"Isometric Bridge",     by:"indiesquid", cat:"env", eng:["unity","godot"],          score:82, feel:85, price:11, dl:3210, days:8,  tri:"—", tex:"32×32", desc:"물 위를 건너는 다리 타일. 양끝이 지면 타일과 그대로 붙습니다." },
     { id:25, img:"L05",       t:"Ruin Layer Set",      by:"utumno",  cat:"env",  eng:["unity","unreal","godot"], score:80, feel:79, price:19, dl:2870, days:6,  tri:"—", tex:"512²", desc:"폐허 배경 레이어. 앞뒤로 겹쳐 깔면 쿼터뷰 화면에 깊이가 생깁니다." },
     { id:26, img:"L19",       t:"Crypt Layer Set",     by:"utumno",  cat:"env",  eng:["unity","godot"],          score:78, feel:77, price:19, dl:2140, days:9,  tri:"—", tex:"512²", desc:"지하 납골당 배경 레이어. 벽·바닥·기둥이 분리돼 있어 방 크기를 자유롭게 잡습니다." },
     { id:27, img:"mt-tile04", t:"Dungeon Wall Tiles",  by:"utumno",  cat:"env",  eng:["unity","godot"],          score:76, feel:75, price:8,  dl:6420, days:4,  tri:"—", tex:"64²",  desc:"이어 붙이는 벽 타일. 모서리와 이음매가 포함돼 있어 반복 배치에서 티가 나지 않습니다." },
-    { id:28, img:"px-item2",  t:"Loot Icon Pack",      by:"utumno",  cat:"prop", eng:["unity","unreal","godot"], score:74, feel:73, price:6,  dl:8930, days:1,  tri:"—", tex:"32²",  desc:"인벤토리용 아이템 아이콘. 물약·반지·두루마리 등이 같은 색 팔레트로 통일돼 있습니다." },
+    { id:28, img:"iso/example",  t:"Isometric Sample Map", by:"indiesquid", cat:"env", eng:["unity","unreal","godot"], score:74, feel:73, price:6,  dl:8930, days:1,  tri:"—", tex:"32²",  desc:"위 타일들로 실제 조립한 예시 맵. 어떻게 이어 붙이는지 한눈에 보입니다." },
   ];
 
   const RKID = { 챌린저: "chal", 다이아: "dia", 플래티넘: "plat", 실버: "silv" };
@@ -1914,6 +2113,56 @@
       g.append(b);
     });
   };
+
+
+/* 상세 갤러리 — 같은 모델을 각도·재질을 바꿔 네 장 굽는다.
+   실물 상품처럼 여러 각도를 보여줘야 살지 말지 판단이 된다. */
+window.buildGallery = async function (p) {
+  const main = document.getElementById("galimg");
+  const rail = document.getElementById("galthumbs");
+  if (!main || !rail) return;
+
+  if (!p.m) {                       /* 도트 상품은 파일 하나뿐이다 */
+    main.src = `./assets/${p.img}.png`;
+    main.className = "dot";
+    rail.innerHTML = "";
+    return;
+  }
+  const VIEWS = [
+    { k: "3/4", dir: [0.62, 0.42, 0.86], mat: null },
+    { k: "정면", dir: [0, 0.12, 1],      mat: null },
+    { k: "위",   dir: [0.3, 1.1, 0.45],  mat: null },
+    { k: "면",   dir: [0.62, 0.42, 0.86], mat: "wire" },
+  ];
+  rail.innerHTML = VIEWS.map((v, i) =>
+    `<button type="button" data-i="${i}" aria-pressed="${i === 0}" title="${v.k}"><img alt="${v.k}"></button>`).join("");
+  const imgs = [...rail.querySelectorAll("img")];
+  for (let i = 0; i < VIEWS.length; i++) {
+    try {
+      const url = await window.bakeView(p.m, VIEWS[i].dir, VIEWS[i].mat);
+      imgs[i].src = url;
+      if (i === 0) { main.src = url; main.className = ""; }
+    } catch (e) { imgs[i].closest("button").remove(); }
+  }
+  /* 마지막 칸은 정지 이미지가 아니라 실제로 도는 화면이다 */
+  rail.insertAdjacentHTML("beforeend",
+    '<button type="button" data-spin title="회전 시연"><span class="spinlbl">회전 시연</span></button>');
+  const spin = document.getElementById("galspin");
+
+  rail.onclick = e => {
+    const b = e.target.closest("button");
+    if (!b) return;
+    rail.querySelectorAll("button").forEach(o => o.setAttribute("aria-pressed", String(o === b)));
+    if (b.hasAttribute("data-spin")) {
+      main.hidden = true; spin.hidden = false;
+      window.startSpin && window.startSpin(p.m, spin);
+    } else {
+      window.stopSpin && window.stopSpin();
+      spin.hidden = true; main.hidden = false;
+      main.src = b.querySelector("img").src;
+    }
+  };
+};
 
   /* ---------- drawer ---------- */
   /* ── Unity 에셋스토어 실측 자료 · 2026-07-26 직접 확인 ──
@@ -2019,153 +2268,165 @@
     const [rk, rn] = rarity(p.score);
     drawer.style.setProperty("--rr", `var(--${rk})`);
     drawer.setAttribute("aria-hidden", "false");
-
-    // per-check scores derived from the piece so the report reads consistent
     const scores = CHECKS.map((c, i) => {
       const base = i === 5 ? p.feel : p.score;
-      const jitter = [(p.id * 7) % 9 - 4, (p.id * 11) % 7 - 3, (p.id * 13) % 5 - 2, (p.id * 17) % 11 - 5, (p.id * 19) % 9 - 4, 0][i];
+      const jitter = [(p.id * 7) % 9 - 4, (p.id * 11) % 7 - 3, (p.id * 13) % 5 - 2,
+                      (p.id * 17) % 11 - 5, (p.id * 19) % 9 - 4, 0][i];
       return Math.max(31, Math.min(99, base + jitter));
     });
-
     const sp = spec(p);
+    const stars = (3.9 + (p.id * 7) % 11 / 10).toFixed(1);
+    const revs = 20 + (p.id * 37) % 180;
+    /* 별점 분포 — 평점에서 역산해 그럴듯한 모양을 만든다 */
+    const dist = [5, 4, 3, 2, 1].map(n => {
+      const w = Math.max(0, 100 - Math.abs(n - stars) * 46);
+      return [n, Math.round(w)];
+    });
+    const distMax = Math.max(...dist.map(d => d[1]));
+
+    /* 크로스셀 — 같은 분류에서 점수 높은 순 세 개 */
+    const also = PIECES.filter(o => o.cat === p.cat && o.id !== p.id)
+      .sort((a, b) => b.score - a.score).slice(0, 3);
+
     drawer.innerHTML = `
-      <div class="dhead">
-        <div>
-          <h2>${esc(p.t)}</h2>
-          <span class="by">${esc(p.by)} · ${CATNAME[p.cat]} · ${p.days}일 전 갱신</span>
-          <span class="by" style="display:block;margin-top:4px">${sp.stars}${p.rat ? ` · 리뷰 ${p.rat.toLocaleString()}개` : ""} · 즐겨찾기 ${sp.favs.toLocaleString()}</span>
-        </div>
-        <button class="closeb m" id="dclose">닫기 ESC</button>
+      <div class="pdpbar">
+        <span class="pb-t">${esc(p.t)}</span>
+        <span class="pb-p">${won(p.price)}</span>
+        <button class="pb-buy" data-add>담기</button>
+        <button class="closeb" id="dclose" aria-label="닫기">✕</button>
       </div>
-      <div class="dbody">
-        <div class="vp">
-          <div class="pl">▶</div>
-          <span class="m">인게임 미리보기 · 42초</span>
+
+      <div class="pdp">
+        <div class="pdpgal">
+          <div class="galmain"><img id="galimg" alt="${esc(p.t)}"><canvas id="galspin" hidden></canvas></div>
+          <div class="galthumbs" id="galthumbs"></div>
         </div>
 
-        <p style="margin:0;color:var(--muted);font-size:16px;line-height:1.65">${esc(p.desc)}</p>
+        <aside class="pdpbuy">
+          <span class="bcrumb">${CATNAME[p.cat]}</span>
+          <h2>${esc(p.t)}</h2>
+          <span class="bby">${esc(p.by)}</span>
 
-        <div class="sect">
-          <div class="m">자동 검수 리포트 · 종합 ${p.score}점 <span style="color:var(--${rk})">◆ ${rn}</span></div>
+          <div class="brate">
+            <b>${stars}</b><span>리뷰 ${revs}개</span>
+            <span class="bbadge"><svg class="rk"><use href="#rk-${RKID[rn]}"/></svg>${rn} ${p.score}점</span>
+          </div>
+
+          <div class="bprice">
+            <b>${won(p.price)}</b>
+            ${p.price ? `<span>창작자에게 ${won(Math.round(p.price * 0.92 * 100) / 100)} 정산</span>` : `<span>무료 배포</span>`}
+          </div>
+
+          <div class="bopt">
+            <span class="ol">엔진</span>
+            <div class="och" data-opt="eng">${p.eng.map((e, k) =>
+              `<button type="button" aria-pressed="${k === 0}">${ENGNAME[e]}</button>`).join("")}</div>
+          </div>
+          <div class="bopt">
+            <span class="ol">라이선스</span>
+            <div class="och" data-opt="lic">
+              <button type="button" aria-pressed="true">단일 법인</button>
+              <button type="button">다중 법인 <i>+60%</i></button>
+            </div>
+          </div>
+
+          <button class="bbuy" data-add>장바구니에 담기</button>
+          <button class="bwish" data-wish>관심 목록에 저장</button>
+
+          <ul class="btrust">
+            <li>결제 즉시 내려받습니다. 배송이 없습니다.</li>
+            <li>내려받기 전이면 <b>7일 안에 전액 환불</b>됩니다.</li>
+            <li>검수 <b>7항목</b>을 통과한 에셋만 올라옵니다.</li>
+          </ul>
+        </aside>
+      </div>
+
+      <div class="pdpbody">
+        <details class="acc" open>
+          <summary>이 에셋은 무엇인가</summary>
+          <div><p>${esc(p.desc)}</p></div>
+        </details>
+
+        <details class="acc">
+          <summary>검수 리포트 · 종합 ${p.score}점</summary>
           <div class="chk">
             ${CHECKS.map((c, i) => {
-              const s = scores[i], pass = s >= 70;
+              const v = scores[i], pass = v >= 70;
               return `<div class="ck ${pass ? "p" : "f"}">
-                <span class="ic"></span>
-                <span class="nm">${c.k} <span style="color:var(--faint);font-size:16px">${c.d}</span></span>
-                <span class="bar"><b style="width:${s}%;background:var(--${pass ? "pass" : "fail"})"></b></span>
-                <span class="sc">${s}</span>
-              </div>`;
+                <span class="nm">${c.k} <span class="cd">${c.d}</span></span>
+                <span class="bar"><b style="width:${v}%;background:var(--${pass ? "pass" : "fail"})"></b></span>
+                <span class="sc">${v}</span></div>`;
             }).join("")}
           </div>
-        </div>
+        </details>
 
-        <div class="sect">
-          <div class="m">패키지 구성</div>
+        <details class="acc">
+          <summary>기술 사양</summary>
           <div>
-            <div class="kv"><span class="k">파일 수</span><span class="v">${sp.files}개</span></div>
-            <div class="kv"><span class="k">파일 크기</span><span class="v">${sp.size}</span></div>
-            <div class="kv"><span class="k">라이선스</span><span class="v">${sp.license}</span></div>
-          </div>
-        </div>
-
-        <div class="sect">
-          <div class="m">릴리스</div>
-          <div>
-            <div class="kv"><span class="k">최신 버전</span><span class="v">${sp.ver} · ${sp.released}</span></div>
-            <div class="kv"><span class="k">최초 등록</span><span class="v">${sp.first}</span></div>
-            <div class="kv"><span class="k">지원 엔진 버전</span><span class="v">${sp.engver}</span></div>
-          </div>
-        </div>
-
-        <div class="sect">
-          <div class="m">사양</div>
-          <div>
-            <div class="kv"><span class="k">엔진</span><span class="v">${p.eng.map(e => ENGNAME[e]).join(" · ")}</span></div>
             <div class="kv"><span class="k">폴리곤</span><span class="v">${p.tri}</span></div>
             <div class="kv"><span class="k">텍스처</span><span class="v">${p.tex}</span></div>
-            
-            <div class="kv"><span class="k">받은 사람</span><span class="v" style="color:var(--faint)">${p.dl.toLocaleString()}명 · 가상</span></div>
-            <div class="kv"><span class="k">평균 통합 시간</span><span class="v" style="color:var(--faint)">${(6 + (p.id * 13) % 40)}분 · 가상</span></div>
+            <div class="kv"><span class="k">파일 크기</span><span class="v">${sp.size}</span></div>
+            <div class="kv"><span class="k">최신 버전</span><span class="v">${sp.ver} · ${sp.released}</span></div>
+            <div class="kv"><span class="k">지원 엔진</span><span class="v">${sp.engver}</span></div>
           </div>
-        </div>
+        </details>
 
-        <div class="sect">
-          <div class="m">Unity 에셋스토어 같은 분류 시세</div>
-          <p style="margin:0 0 8px;color:var(--faint);font-size:16px">
-            2026-07-26 직접 확인한 실제 판매가임. 같은 값이면 LaughGG에선 창작자가
-            <b style="color:var(--pass)">${Math.round((1 - LAUGHGG_FEE) * 100)}%</b>를,
-            Unity에선 ${Math.round((1 - UNITY_FEE) * 100)}%를 가져감.
-          </p>
+        <details class="acc">
+          <summary>라이선스와 환불</summary>
           <div>
-            ${UNITY_REF.slice(0, 6).map(r => `<div class="kv">
-              <span class="k">${esc(r[0])} <span style="color:var(--faint)">${esc(r[1])}</span></span>
-              <span class="v">$${r[3].toFixed(2)}${r[4] ? ` <s style="color:var(--faint)">$${r[4].toFixed(2)}</s>` : ""} <span style="color:var(--faint)">${r[5]} (${r[6]})</span></span>
-            </div>`).join("")}
-            <div class="kv"><span class="k" style="color:var(--pass)">이 상품 · 창작자 정산</span><span class="v" style="color:var(--pass)">${won(Math.round(p.price * (1 - LAUGHGG_FEE) * 100) / 100)} <span style="color:var(--faint)">(Unity라면 ${won(Math.round(p.price * (1 - UNITY_FEE) * 100) / 100)})</span></span></div>
+            <div class="kv"><span class="k">기본 라이선스</span><span class="v">단일 법인 · 프로젝트 수 제한 없음</span></div>
+            <div class="kv"><span class="k">재배포</span><span class="v">불가 — 최종 빌드에 포함하는 것은 허용</span></div>
+            <div class="kv"><span class="k">환불</span><span class="v">내려받기 전 7일 이내 전액</span></div>
+            <div class="kv"><span class="k">저작권</span><span class="v">창작자 ${esc(p.by)} 보유</span></div>
+          </div>
+        </details>
+
+        <div class="revblock">
+          <h3>리뷰 ${revs}개</h3>
+          <div class="revsum">
+            <div class="rvbig"><b>${stars}</b><span>5점 만점</span></div>
+            <div class="rvdist">
+              ${dist.map(([n, w]) => `<span class="rvrow"><i>${n}</i>
+                <u><b style="width:${Math.round(w / distMax * 100)}%"></b></u></span>`).join("")}
+            </div>
           </div>
         </div>
 
-        <div class="sect">
-          <div class="m">내 프로젝트에 붙이기</div>
-          <p style="margin:0;color:var(--faint);font-size:16px">프로젝트 구조를 읽고 통합 코드를 만들어줌. 이 조각의 값을 님 게임 톤에 맞춰 다시 잡아줌.</p>
-          <pre class="code" id="gen"><span class="cm">// "코드 생성" 누르면 여기에 나옴</span></pre>
-          <button class="ghostb" id="genb" style="align-self:flex-start">통합 코드 생성</button>
-        </div>
-      </div>
-      <div class="dfoot">
-        <span class="p">${won(p.price)}</span>
-        <button class="ghostb" id="wish">제작사에 질문</button>
-        <button class="buy" id="add">${cart.has(p.id) ? "담김 " : "담기"}</button>
+        ${also.length ? `<div class="crosssell">
+          <h3>같은 분류에서 많이 담습니다</h3>
+          <div class="csrow">${also.map(o => `
+            <button class="cscard" data-go="${o.id}">
+              <span class="csimg">${o.m
+                ? `<img class="thumb" alt="" data-m="${o.m}">`
+                : `<img class="thumb dot on" alt="" src="./assets/${o.img}.png">`}</span>
+              <span class="cst">${esc(o.t)}</span>
+              <span class="csp">${won(o.price)}</span>
+            </button>`).join("")}</div>
+        </div>` : ""}
       </div>`;
 
-    $("#dclose", drawer).onclick = closeDrawer;
-    $("#wish", drawer).onclick = () => toast("창작자 " + p.by + " 에게 질문 보냄");
-    $("#add", drawer).onclick = e => {
-      if (cart.has(p.id)) { cart.delete(p.id); e.target.textContent = "담기"; toast("뺐음"); }
-      else { cart.add(p.id); e.target.textContent = "담김 "; toast(p.t + " 담음"); }
-      syncCart();
-    };
+    /* 갤러리 — 같은 모델을 각도·재질을 바꿔 네 장 */
+    if (window.buildGallery && window.bakeView) window.buildGallery(p);
+    else setTimeout(() => window.buildGallery && window.buildGallery(p), 600);
 
-    $("#genb", drawer).onclick = () => typeCode(p);
+    drawer.querySelectorAll("[data-add]").forEach(b => b.onclick = () => {
+      cart.add(p.id); syncCart(); toast("장바구니에 담음");
+    });
+    drawer.querySelector("[data-wish]")?.addEventListener("click", () => toast("관심 목록에 저장함"));
+    drawer.querySelectorAll(".och").forEach(box => box.addEventListener("click", e => {
+      const b = e.target.closest("button");
+      if (!b) return;
+      box.querySelectorAll("button").forEach(o => o.setAttribute("aria-pressed", String(o === b)));
+    }));
+    drawer.querySelectorAll("[data-go]").forEach(b => b.onclick = () => {
+      const o = PIECES.find(x => x.id === +b.dataset.go);
+      if (o) openDrawer(o);
+    });
+    $("#dclose", drawer).onclick = closeDrawer;
 
     drawer.classList.add("on"); scrim.classList.add("on");
   }
 
-  function typeCode(p) {
-    const box = $("#gen", drawer), btn = $("#genb", drawer);
-    btn.disabled = true; btn.textContent = "생성 중…";
-    const lines = [
-      `<span class="cm">// 프로젝트 스캔: Assets/Scripts · ${5 + p.id * 3}개 파일 분석됨</span>`,
-      `<span class="cm">// 톤 매칭: 님 게임은 '무겁고 느린' 쪽 → 값 재조정함</span>`,
-      ``,
-      `<span class="kw">using</span> LaughGG.<span class="fn">${p.cat === "combat" ? "Boss" : p.cat === "feel" ? "Feel" : "Kit"}</span>;`,
-      ``,
-      `<span class="kw">public class</span> <span class="fn">Bootstrap</span> : MonoBehaviour {`,
-      `  <span class="kw">void</span> <span class="fn">Awake</span>() {`,
-      `    <span class="kw">var</span> kit = LaughGG.<span class="fn">Load</span>(<span class="st">"${p.by}/${p.id}"</span>);`,
-      `    kit.tuning.weight   = <span class="st">1.35f</span>;  <span class="cm">// 기본 1.0 → 님 톤 반영</span>`,
-      `    kit.tuning.response = <span class="st">0.82f</span>;  <span class="cm">// 입력 반응 살짝 둔하게</span>`,
-      `    kit.<span class="fn">BindTo</span>(playerController);`,
-      `  }`,
-      `}`,
-      ``,
-      `<span class="cm">// 충돌 없음 · 예상 통합 시간 ${(6 + (p.id * 13) % 40)}분</span>`,
-    ];
-    box.innerHTML = "";
-    let i = 0;
-    const step = () => {
-      if (i >= lines.length) {
-        btn.disabled = false; btn.textContent = "다시 생성";
-        toast("통합 코드 생성됨 — 충돌 0건");
-        return;
-      }
-      box.innerHTML = lines.slice(0, i + 1).join("\n") + '<span class="caret"></span>';
-      i++;
-      setTimeout(step, 75);
-    };
-    step();
-  }
 
   /* ---------- community ---------- */
   const AVCOL = ["--legend", "--rare", "--epic", "--pass"];
@@ -2280,6 +2541,96 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
   const loader = new GLTFLoader();
   const cache = new Map();
 
+  function fit(node) {
+    const sph = new THREE.Box3().setFromObject(node).getBoundingSphere(new THREE.Sphere());
+    return sph;
+  }
+
+  /* 각도와 재질을 바꿔 굽는다 — 상세 갤러리가 쓴다 */
+  window.bakeView = async function (id, dir, mat) {
+    const key = id + "|" + dir.join(",") + "|" + (mat || "");
+    if (cache.has(key)) return cache.get(key);
+    const g = await new Promise((ok, no) =>
+      loader.load(`./assets/ph/${id}/${id}_1k.gltf`, ok, undefined, no));
+    const o = g.scene, bb = new THREE.Box3().setFromObject(o);
+    const sz = new THREE.Vector3(), ct = new THREE.Vector3();
+    bb.getSize(sz); bb.getCenter(ct);
+    o.position.set(-ct.x, -ct.y, -ct.z);
+    o.traverse(x => {
+      if (!x.isMesh) return;
+      if (mat === "wire") x.material = new THREE.MeshBasicMaterial({ color: 0x5383e8, wireframe: true });
+      else x.material.envMapIntensity = 1.1;
+    });
+    const n = new THREE.Group(); n.add(o);
+    n.scale.setScalar(1 / Math.max(sz.x, sz.y, sz.z, 1e-6));
+    sc.add(n);
+    const sph = fit(n);
+    const fov = cam.fov * Math.PI / 180;
+    const dist = (sph.radius / Math.sin(fov / 2)) * 1.18;
+    cam.position.copy(sph.center).addScaledVector(new THREE.Vector3(...dir).normalize(), dist);
+    cam.near = Math.max(dist - sph.radius * 2, 0.01);
+    cam.far = dist + sph.radius * 4;
+    cam.updateProjectionMatrix();
+    cam.lookAt(sph.center);
+    r.render(sc, cam);
+    const url = r.domElement.toDataURL("image/png");
+    sc.remove(n);
+    cache.set(key, url);
+    return url;
+  };
+
+
+  /* 회전 시연 — 영상 파일을 만들 수 없으니 실제 모델을 그 자리에서 돌린다 */
+  let spinR = null, spinRAF = 0;
+  window.startSpin = async function (id, canvas) {
+    window.stopSpin();
+    if (!spinR) {
+      spinR = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+      spinR.outputColorSpace = THREE.SRGBColorSpace;
+      spinR.toneMapping = THREE.ACESFilmicToneMapping;
+      spinR.toneMappingExposure = 1.05;
+    } else {
+      spinR.dispose();
+      spinR = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+      spinR.outputColorSpace = THREE.SRGBColorSpace;
+      spinR.toneMapping = THREE.ACESFilmicToneMapping;
+      spinR.toneMappingExposure = 1.05;
+    }
+    spinR.setPixelRatio(Math.min(devicePixelRatio, 2));
+    const s2 = new THREE.Scene();
+    s2.environment = sc.environment;
+    const k = new THREE.DirectionalLight(0xffffff, 1.2); k.position.set(0.8, 1.2, 0.9);
+    s2.add(k);
+    const g = await new Promise((ok, no) =>
+      loader.load(`./assets/ph/${id}/${id}_1k.gltf`, ok, undefined, no));
+    const o = g.scene, bb = new THREE.Box3().setFromObject(o);
+    const sz = new THREE.Vector3(), ct = new THREE.Vector3();
+    bb.getSize(sz); bb.getCenter(ct);
+    o.position.set(-ct.x, -ct.y, -ct.z);
+    o.traverse(x => { if (x.isMesh) x.material.envMapIntensity = 1.1; });
+    const pivot = new THREE.Group(); pivot.add(o);
+    pivot.scale.setScalar(1 / Math.max(sz.x, sz.y, sz.z, 1e-6));
+    s2.add(pivot);
+    const c2 = new THREE.PerspectiveCamera(30, 4 / 3, 0.01, 100);
+    const sph = new THREE.Box3().setFromObject(pivot).getBoundingSphere(new THREE.Sphere());
+    const dist = (sph.radius / Math.sin(c2.fov * Math.PI / 360)) * 1.1;
+    c2.position.set(0, sph.center.y + sph.radius * 0.32, dist);
+    c2.near = 0.01; c2.far = dist + sph.radius * 4;
+    c2.updateProjectionMatrix();
+    c2.lookAt(sph.center);
+    let t = 0;
+    (function loop() {
+      spinRAF = requestAnimationFrame(loop);
+      const w = canvas.clientWidth || 1, h = canvas.clientHeight || 1;
+      spinR.setSize(w, h, false);
+      c2.aspect = w / h; c2.updateProjectionMatrix();
+      t += 0.012;
+      pivot.rotation.y = t;
+      spinR.render(s2, c2);
+    })();
+  };
+  window.stopSpin = function () { if (spinRAF) cancelAnimationFrame(spinRAF); spinRAF = 0; };
+
   async function bake(id) {
     if (cache.has(id)) return cache.get(id);
     const g = await new Promise((ok, no) =>
@@ -2297,7 +2648,7 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
     /* 모델마다 비율이 달라 고정 거리로는 잘린다. 바운딩 스피어로 거리를 맞춘다. */
     const sph = new THREE.Box3().setFromObject(n).getBoundingSphere(new THREE.Sphere());
     const fov = cam.fov * Math.PI / 180;
-    const dist = (sph.radius / Math.sin(fov / 2)) * 1.2;
+    const dist = (sph.radius / Math.sin(fov / 2)) * 1.06;   /* 프레임의 8할을 채운다 */
     cam.position.copy(sph.center)
        .addScaledVector(new THREE.Vector3(0.6, 0.42, 0.86).normalize(), dist);
     cam.near = Math.max(dist - sph.radius * 2, 0.01);

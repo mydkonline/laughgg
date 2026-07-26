@@ -174,9 +174,87 @@ h2{max-width:20ch;margin:0 auto}
     <a class="igg-cta" href="community.html">에셋 올리기</a>
   </div></div>
   <div class="igg-r2"><div class="igg-r2in">
-    <div class="igg-tabs"><a href="index.html">홈</a><a href="about.html">IR</a><a href="market.html">마켓</a><a href="community.html">게임 스택</a><a href="ai.html" aria-current="page">AI 파이프라인<sup>N</sup></a><a href="scene.html">에셋 시연</a><a href="viewer3d.html">3D 뷰어</a><a href="vlog.html">개발 브이로그<sup>N</sup></a></div>
+    <div class="igg-tabs"><a href="index.html">홈</a><a href="about.html">IR</a><a href="market.html">마켓</a><a href="community.html">게임 스택</a><span class="igg-grp"><a href="ai.html" aria-current="page">AI<sup>N</sup><i class="igg-car" aria-hidden="true">▾</i></a><span class="igg-menu"><a href="ai.html" aria-current="page">AI 파이프라인<sup>N</sup></a><a href="scene.html">AI 에셋 시연</a><a href="viewer3d.html">AI 3D 뷰어</a></span></span><a href="vlog.html">개발 브이로그</a></div>
   </div></div>
 </nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rg-chal" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFF3D2"/><stop offset=".34" stop-color="#F2C066"/>
+    <stop offset=".68" stop-color="#C68F2E"/><stop offset="1" stop-color="#7A551A"/></linearGradient>
+  <linearGradient id="rg-dia" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#F2F5FA"/><stop offset=".34" stop-color="#C3CBD8"/>
+    <stop offset=".68" stop-color="#8A94A5"/><stop offset="1" stop-color="#4E5666"/></linearGradient>
+  <linearGradient id="rg-plat" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#E4E9F0"/><stop offset=".34" stop-color="#AAB3C0"/>
+    <stop offset=".68" stop-color="#727B88"/><stop offset="1" stop-color="#3E454F"/></linearGradient>
+  <linearGradient id="rg-silv" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#D6DBE2"/><stop offset=".34" stop-color="#98A0AC"/>
+    <stop offset=".68" stop-color="#646C78"/><stop offset="1" stop-color="#353B44"/></linearGradient>
+  <linearGradient id="rg-sheen" x1="12" y1="6" x2="52" y2="34" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#fff" stop-opacity=".55"/>
+    <stop offset=".52" stop-color="#fff" stop-opacity=".08"/>
+    <stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 64 64">
+    <path d="M11.5 21.5 1 12.4l3.9 11.4-3 1.9 9.6 4.1z" fill="url(#rg-chal)" opacity=".62"/>
+    <path d="M52.5 21.5 63 12.4l-3.9 11.4 3 1.9-9.6 4.1z" fill="url(#rg-chal)" opacity=".62"/>
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-chal)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="m21.4 36.6-3.1-12.9 8 6.1L32 20l5.7 9.8 8-6.1-3.1 12.9z" fill="url(#rg-chal)"/>
+    <path d="M21.4 39.4h21.2v3.4H21.4z" fill="url(#rg-chal)"/>
+    <circle cx="32" cy="31.4" r="2.5" fill="#fff" opacity=".55"/>
+  </symbol>
+
+  <symbol id="rk-dia" viewBox="0 0 64 64">
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-dia)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="m32 19.4 11.6 9.4L32 46 20.4 28.8z" fill="url(#rg-dia)"/>
+    <path d="M20.4 28.8h23.2L32 33.2z" fill="#0A0A10" opacity=".3"/>
+    <path d="m32 19.4 5.2 9.4L32 33.2l-5.2-4.4z" fill="#fff" opacity=".42"/>
+    <path d="M14.6 24h3.2v9h-3.2zM46.2 24h3.2v9h-3.2z" fill="url(#rg-dia)" opacity=".7"/>
+  </symbol>
+
+  <symbol id="rk-plat" viewBox="0 0 64 64">
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-plat)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="m32 19.6 10.4 6v12l-10.4 6-10.4-6v-12z" fill="url(#rg-plat)"/>
+    <path d="M21.6 25.6 32 31.6l10.4-6L32 19.6z" fill="#fff" opacity=".34"/>
+    <path d="M32 31.6v12l-10.4-6v-12z" fill="#0A0A10" opacity=".22"/>
+  </symbol>
+
+  <symbol id="rk-silv" viewBox="0 0 64 64">
+    <path d="M32 3 55 11.6v18.6C55 44.6 44.8 54.9 32 61 19.2 54.9 9 44.6 9 30.2V11.6z" fill="url(#rg-silv)"/>
+    <path d="M32 3 55 11.6v3.1L32 6.4 9 14.7v-3.1z" fill="url(#rg-sheen)"/>
+    <path d="M32 8.6 49.6 15.2v14.6c0 10.9-7.6 19-17.6 23.9-10-4.9-17.6-13-17.6-23.9V15.2z" fill="#0A0A10" opacity=".38"/>
+    <path d="M22.4 26.4h19.2v5.2H22.4z" fill="url(#rg-silv)"/>
+    <path d="M22.4 26.4h19.2v2.1H22.4z" fill="#fff" opacity=".36"/>
+    <path d="M25.6 35.6h12.8v3.2H25.6z" fill="url(#rg-silv)" opacity=".8"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
   <linearGradient id="rg-chal" x1="32" y1="2" x2="32" y2="62" gradientUnits="userSpaceOnUse">
     <stop offset="0" stop-color="#FFF3D2"/><stop offset=".34" stop-color="#F2C066"/>
