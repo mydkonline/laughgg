@@ -45,7 +45,8 @@ export function Ir() {
         </ol>
         {/* 요약. IR 은 결론부터 읽는 사람이 많아 머리말 바로 아래 둔다.
             값은 전부 본문에서 가져오므로 따로 관리하지 않는다. */}
-        <dl className="mt-6 grid gap-x-10 gap-y-6 border-t border-line pt-6 sm:grid-cols-2 lg:grid-cols-4">
+        <p className="mt-8 border-t border-line pt-6 text-xs font-bold text-ink">요약</p>
+        <dl className="mt-4 grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
           {[
             ["퀄리티 검증률", "38.8%", "7항목 모두 통과"],
             ["합계 MRR", `${STREAM_TOTAL.mrr.toLocaleString("ko-KR")}만원`, "구독 95%"],

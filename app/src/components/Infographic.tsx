@@ -73,38 +73,39 @@ export function Donut({ percent, label, sub }: { percent: number; label: string;
 
   return (
     <div ref={box} className="grid gap-x-12 gap-y-8 sm:grid-cols-3">
-      <div className="flex items-center gap-5">
+      {/* 세 칸이 같은 뼈대를 쓴다 — 숫자, 제목, 조건. 첫 칸만 위에 링이 붙는다.
+         구조가 다르면 같은 크기로 써도 다르게 읽힌다. */}
+      <div>
         <svg
           viewBox="0 0 220 220"
-          className="h-24 w-24 shrink-0 -rotate-90"
+          className="mb-3 block h-14 w-14 -rotate-90"
           role="img"
           aria-label={`${percent}% ${label}`}
         >
-          <circle cx="110" cy="110" r={R} fill="none" stroke="var(--surface-2)" strokeWidth="30" />
+          <circle cx="110" cy="110" r={R} fill="none" stroke="var(--surface-2)" strokeWidth="34" />
           <circle
             cx="110"
             cy="110"
             r={R}
             fill="none"
             stroke="var(--accent)"
-            strokeWidth="30"
+            strokeWidth="34"
             strokeLinecap="butt"
             strokeDasharray={C}
             strokeDashoffset={on ? C * (1 - percent / 100) : C}
             style={{ transition: "stroke-dashoffset 1.2s cubic-bezier(.22,1,.36,1)" }}
           />
         </svg>
-        <div className="min-w-0">
-          <p className="num text-4xl leading-none text-ink">
-            <span ref={ref}>{shown}</span>
-            <span className="text-base text-muted">%</span>
-          </p>
-          <p className="mt-2 text-xs font-bold text-ink">{label}</p>
-          <p className="mt-1 text-xs text-faint">{sub}</p>
-        </div>
+        <p className="num text-4xl leading-none text-ink">
+          <span ref={ref}>{shown}</span>
+          <span className="text-base text-muted">%</span>
+        </p>
+        <p className="mt-2 text-xs font-bold text-ink">{label}</p>
+        <p className="mt-1 text-xs text-faint">{sub}</p>
       </div>
 
       <div>
+        <span className="mb-3 block h-14 w-14" aria-hidden="true" />
         <p className="num text-4xl leading-none text-ink">
           22<span className="text-base text-muted">%</span>
         </p>
@@ -113,6 +114,7 @@ export function Donut({ percent, label, sub }: { percent: number; label: string;
       </div>
 
       <div>
+        <span className="mb-3 block h-14 w-14" aria-hidden="true" />
         <p className="num text-4xl leading-none text-ink">
           11<span className="text-base text-muted">종</span>
         </p>
