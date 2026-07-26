@@ -5,6 +5,10 @@ import { Market } from "./pages/Market";
 import { Product } from "./pages/Product";
 import { Workshop } from "./pages/Workshop";
 import { Feed } from "./pages/Feed";
+import { Home } from "./pages/Home";
+import { Ir } from "./pages/Ir";
+import { Stack } from "./pages/Stack";
+import { Vlog } from "./pages/Vlog";
 import { Soon } from "./pages/Soon";
 
 /* GitHub Pages 는 /indygg/ 하위에 올라간다. 라우터 basename 을 빌드 설정과 맞춘다. */
@@ -20,13 +24,13 @@ export default function App() {
         <Route path="/market/:id" element={<Product />} />
         <Route path="/workshop" element={<Workshop />} />
         <Route path="/feed" element={<Feed />} />
-        {/* 아직 옮기는 중인 페이지들 — 옮길 때마다 여기서 바꿔 끼운다 */}
-        <Route path="/" element={<Soon title="홈" />} />
-        <Route path="/ir" element={<Soon title="IR" />} />
-        <Route path="/stack" element={<Soon title="게임 스택" />} />
+        {/* 아직 안 옮긴 화면 */}
+        <Route path="/" element={<Home />} />
+        <Route path="/ir" element={<Ir />} />
+        <Route path="/stack" element={<Stack />} />
         <Route path="/scene" element={<Soon title="AI 에셋 시연" />} />
         <Route path="/viewer" element={<Soon title="AI 3D 뷰어" />} />
-        <Route path="/vlog" element={<Soon title="개발 브이로그" />} />
+        <Route path="/vlog" element={<Vlog />} />
         <Route path="/cart" element={<Soon title="장바구니" />} />
         <Route path="/upload" element={<Soon title="에셋 올리기" />} />
         <Route path="*" element={<Navigate to="/market" replace />} />
