@@ -5,9 +5,9 @@ import { PIECES } from "../data/pieces";
 import { KNOB_LABEL, type Knobs } from "../data/concepts";
 import { Thumb } from "../components/Thumb";
 
-/* 공략집 — 게시판도 아니고 프리셋 목록도 아니다.
+/* 사례 — 게시판도 아니고 프리셋 목록도 아니다.
    숫자 아홉 개만 있으면 남이 자기 상황에 대입할 수 없다. 무엇을 하려다
-   어디서 막혔고 어떤 순서로 풀었는지가 있어야 공략이 된다.
+   어디서 막혔고 어떤 순서로 풀었는지가 있어야 사례가 된다.
 
    스튜디오에서 작업을 끝내면 그 세 칸이 자동으로 채워진다. 빈 글쓰기 칸은 없다.
    공개 지표는 적용 수 하나뿐이다 — 사람이 아니라 물건에 점수를 붙인다. */
@@ -17,7 +17,7 @@ type Sort = "new" | "forks" | "drop";
 const SORTS: [Sort, string][] = [
   ["new", "최신"],
   ["forks", "많이 따라한 순"],
-  ["drop", "실패 사례"],
+  ["drop", "효과 작은 순"],
 ];
 
 export function Feed() {
@@ -33,8 +33,8 @@ export function Feed() {
   return (
     <main className="mx-auto max-w-[840px] px-5 pb-20">
       <header className="py-8">
-        <p className="text-xs tracking-wide text-accent">작업물</p>
-        <h1 className="mt-1 text-2xl font-bold text-ink">공략집</h1>
+        <p className="text-xs tracking-wide text-accent">커뮤니티</p>
+        <h1 className="mt-1 text-2xl font-bold text-ink">사례</h1>
         <p className="mt-2 text-xs text-muted">어디서 막혔고 어떤 순서로 풀었는지, 쓴 설정까지 그대로 공개합니다.</p>
         <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-t border-line pt-4">
           <FeedSpec k="공개" v="상황, 문제, 순서, 파라미터 9개" />
