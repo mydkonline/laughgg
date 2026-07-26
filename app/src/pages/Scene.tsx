@@ -164,6 +164,7 @@ export function Scene() {
                     style={{ background: g.sw }}
                   />
                   <span className={`truncate text-xs ${g.id === game.id ? "font-bold" : ""}`}>{g.n}</span>
+                  {g.guess && <span className="shrink-0 text-[10px] text-faint">추정</span>}
                   <span className="ml-auto shrink-0 text-[10px] text-faint">{g.sub}</span>
                 </button>
               </li>
@@ -179,6 +180,11 @@ export function Scene() {
             <span className="text-xs text-faint">
               {game.cat}, {game.sub}
             </span>
+            {game.guess && (
+              <span className="rounded border border-line px-1.5 py-px text-[10px] text-faint">
+                장르에서 추정한 값
+              </span>
+            )}
             <span className="ml-auto flex overflow-hidden rounded-full border border-line">
               {[
                 [false, "원본 그대로"],

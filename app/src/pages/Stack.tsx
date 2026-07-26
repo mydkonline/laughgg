@@ -197,25 +197,44 @@ function Row({ game }: { game: Game }) {
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        className="flex w-full cursor-pointer flex-col gap-1.5 bg-transparent py-3 text-left hover:bg-surface sm:grid sm:grid-cols-[minmax(0,1fr)_136px_72px_52px] sm:items-center sm:gap-4"
+        className="flex w-full cursor-pointer flex-col gap-2 bg-transparent py-3.5 text-left hover:bg-surface"
       >
-        <span className="flex min-w-0 items-center gap-3">
-          <GameTile game={game} />
-          <span className="min-w-0">
-            <b className="block truncate text-xs font-bold text-ink">{game.n}</b>
-            <span className="block truncate text-xs text-faint">{game.dev}</span>
-          </span>
+        {/* 엔진이 서두다. 이 표를 보는 이유가 "무엇으로 만들었나" 라서
+            게임 이름보다 먼저 온다. 나머지는 라벨을 붙여 층위를 드러낸다. */}
+        <span className="flex items-center gap-2.5">
+          <EngineLogo family={mark.family} />
+          <b className="text-xs font-bold text-ink">
+            {mark.family}
+            {mark.version && <span className="ml-1 font-normal text-muted">{mark.version}</span>}
+          </b>
+          <span className="num ml-auto shrink-0 text-[10px] text-faint">{game.yr}</span>
         </span>
-        <span className="flex min-w-0 items-center gap-2 text-xs text-faint sm:contents">
-          <span className="flex min-w-0 items-center gap-2">
-            <EngineLogo family={mark.family} />
-            <span className="truncate text-xs text-muted">
-              {mark.family}
-              {mark.version && <span className="ml-1 text-faint">{mark.version}</span>}
-            </span>
+
+        <span className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+          <span className="text-xs text-muted">
+            <span className="text-faint">게임 </span>
+            {game.n}
           </span>
-          <span className="text-xs text-faint">{SCALES[game.sc] ?? game.sc}</span>
-          <span className="num text-xs text-faint sm:text-right">{game.yr}</span>
+          <span className="text-xs text-muted">
+            <span className="text-faint">개발사 </span>
+            {game.dev}
+          </span>
+          <span className="text-xs text-muted">
+            <span className="text-faint">규모 </span>
+            {SCALES[game.sc] ?? game.sc}
+          </span>
+          {game.own && (
+            <span className="text-xs text-muted">
+              <span className="text-faint">보유 </span>
+              {game.own}
+            </span>
+          )}
+          {typeof game.pos === "number" && game.pos > 0 && (
+            <span className="text-xs text-muted">
+              <span className="text-faint">긍정 </span>
+              <span className="num">{game.pos.toLocaleString("ko-KR")}</span>
+            </span>
+          )}
         </span>
       </button>
 
@@ -234,37 +253,6 @@ function Row({ game }: { game: Game }) {
         </dl>
       )}
     </div>
-  );
-}
-
-/* 게임 식별 타일.
-
-   실제 게임 아이콘은 퍼블리셔 상표이고 저장소에 상용 아트를 안 넣기로 했다.
-   대신 이름에서 만든 색과 머리글자를 쓴다 — 같은 게임은 늘 같은 타일이 나오므로
-   목록에서 눈으로 찾을 수 있다. 라이선스를 받으면 icon 필드를 열어 끼우면 된다. */
-function GameTile({ game }: { game: Game }) {
-  let h = 0;
-  for (const c of game.n) h = (h * 31 + c.charCodeAt(0)) % 360;
-  const initials = game.n
-    .replace(/[^A-Za-z가-힣0-9 ]/g, "")
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((w) => w[0])
-    .join("")
-    .toUpperCase();
-
-  return (
-    <span
-      aria-hidden="true"
-      className="grid h-8 w-8 shrink-0 place-items-center rounded-md text-[10px] font-bold"
-      style={{
-        background: `linear-gradient(140deg, hsl(${h} 42% 34%), hsl(${(h + 40) % 360} 40% 20%))`,
-        color: `hsl(${h} 60% 88%)`,
-      }}
-    >
-      {initials || game.n.slice(0, 2)}
-    </span>
   );
 }
 
