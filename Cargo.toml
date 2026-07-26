@@ -1,0 +1,31 @@
+[workspace]
+resolver = "3"
+members = ["crates/api"]
+
+[workspace.package]
+edition = "2024"
+rust-version = "1.90"
+license = "MIT"
+repository = "https://github.com/mydkonline/indygg"
+
+[workspace.dependencies]
+axum = { version = "0.8", features = ["macros"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "signal"] }
+tower-http = { version = "0.6", features = ["fs", "trace", "cors"] }
+sqlx = { version = "0.8", default-features = false, features = ["runtime-tokio", "sqlite", "macros", "migrate", "chrono"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+chrono = { version = "0.4", features = ["serde"] }
+anyhow = "1"
+thiserror = "2"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+unwrap_used = "deny"
+module_name_repetitions = "allow"
