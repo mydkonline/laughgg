@@ -6,6 +6,8 @@ import { Product } from "./pages/Product";
 import { Workshop } from "./pages/Workshop";
 import { Feed } from "./pages/Feed";
 import { Scene } from "./pages/Scene";
+import { News } from "./pages/News";
+import { Articles } from "./pages/Articles";
 import { Home } from "./pages/Home";
 import { Ir } from "./pages/Ir";
 import { Stack } from "./pages/Stack";
@@ -25,6 +27,8 @@ export default function App() {
         <Route path="/market/:id" element={<Product />} />
         <Route path="/workshop" element={<Workshop />} />
         <Route path="/feed" element={<Feed />} />
+        <Route path="/news" element={<News />} />
+        <Route path="/articles" element={<Articles />} />
         {/* 아직 안 옮긴 화면 */}
         <Route path="/" element={<Home />} />
         <Route path="/ir" element={<Ir />} />

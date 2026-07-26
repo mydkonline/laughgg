@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { PIECES, isModel, modelSrc } from "../data/pieces";
 import {
   CONCEPTS,
@@ -57,7 +57,7 @@ export function Workshop() {
   const [published, setPublished] = useState<string | null>(null);
   const [dropping, setDropping] = useState(false);
 
-  /* 피드에서 포크해 들어온 경우 — 그 프리셋를 그대로 작업대에 올린다.
+  /* 피드에서 포크해 들어온 경우 — 그 프리셋을 그대로 작업대에 올린다.
      구경이 곧 시도가 되는 지점이라 이 경로가 제일 중요하다. */
   const forkFrom = params.get("fork");
   useEffect(() => {
@@ -111,6 +111,17 @@ export function Workshop() {
     const id = publish({
       pieceId: piece.id,
       title: `${piece.t} 를 ${conceptName} 톤으로`,
+      /* 올릴 때 상황을 자동으로 채운다. 빈 칸을 내밀면 아무도 안 쓴다.
+         나중에 본인이 고칠 수 있게 두는 게 맞지만, 시작은 채워 준다. */
+      situation: `${piece.t} 를 ${conceptName} 프로젝트에 넣어야 했습니다.`,
+      problem: sprite
+        ? "원본 그대로 넣으면 팔레트가 달라 기존 화면에서 튑니다."
+        : "원본 그대로 넣으면 조명과 재질이 달라 배경과 따로 놉니다.",
+      steps: [
+        prompt.trim() ? `프롬프트로 방향을 잡는다: ${prompt.trim()}` : `컨셉을 ${conceptName} 으로 고른다`,
+        sprite ? `팔레트를 ${palette?.name ?? "자유"} 로 고정하고 도트 굵기를 ${raster.pixel} 로 둔다` : "조명과 재질을 컨셉값으로 맞춘다",
+        `검수 ${piece.score} 에서 ${after} 로 바뀐 것을 확인한다`,
+      ],
       concept: conceptName,
       prompt: prompt.trim() || "프리셋 컨셉 적용",
       knobs,
@@ -262,7 +273,7 @@ export function Workshop() {
               onClick={onPublish}
               className="mt-auto w-full cursor-pointer rounded-lg border-0 bg-accent px-4 py-3 pt-3 text-base font-bold text-white hover:bg-accent-strong"
             >
-              프리셋로 올리기
+              프리셋으로 올리기
             </button>
           )}
         </aside>
@@ -464,15 +475,6 @@ export function Workshop() {
 
         <p className="text-xs text-faint">glb, gltf, png, jpg. 파일은 브라우저에만 남습니다.</p>
       </section>
-
-      <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-6">
-        <Link to="/feed" className="text-xs text-faint no-underline hover:text-ink">
-          다른 사람 작업물 보기 →
-        </Link>
-        <p className="text-xs text-faint">
-          <b className="text-muted">데모.</b> 렌더는 실제로 바뀌고, 프롬프트 해석은 키워드 규칙입니다.
-        </p>
-      </div>
     </main>
   );
 }

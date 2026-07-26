@@ -6,7 +6,7 @@ import type { Knobs, RasterSet } from "../data/concepts";
    결과물이 쌓이고, 댓글은 그 결과물에 달린다.
 
    기여는 사람이 아니라 물건에 붙는다. 사람한테 점수를 주면 서열이 생기므로
-   드러나는 숫자는 "이 프리셋를 몇 명이 가져다 썼는가" 하나뿐이다. */
+   드러나는 숫자는 "이 프리셋을 몇 명이 가져다 썼는가" 하나뿐이다. */
 
 export type Author = {
   /** 표시 이름. 익명이 기본이다. */
@@ -25,27 +25,34 @@ export type Comment = {
 
 export type Post = {
   id: string;
-  /** 어떤 상품을 어떤 프리셋로 바꿨는가 */
+  /** 어떤 상품을 어떤 프리셋으로 바꿨는가 */
   pieceId: number;
   title: string;
+  /** 무엇을 하려던 상황인가 */
+  situation: string;
+  /** 어디서 막혔나 */
+  problem: string;
+  /** 어떻게 풀었나. 순서대로 */
+  steps: string[];
   concept: string;
   prompt: string;
   knobs: Knobs;
-  /** 2D 로 뽑은 프리셋면 팔레트·도트 설정이 같이 붙는다. 없으면 3D 프리셋다. */
+  /** 2D 로 뽑은 프리셋이면 팔레트·도트 설정이 같이 붙는다. 없으면 3D 프리셋이다. */
   raster?: RasterSet;
   /** 검수 점수가 어떻게 움직였는지. 자랑도 실패도 그대로 남긴다. */
   before: number;
   after: number;
   by: Author;
   at: number;
-  /** 이 프리셋를 가져다 쓴 횟수. 유일한 공개 지표다. */
+  /** 이 프리셋을 가져다 쓴 횟수. 유일한 공개 지표다. */
   forks: number;
   comments: Comment[];
   /** 운영자가 심은 씨앗. 빈 피드를 열지 않기 위한 것이고 숨기지 않는다. */
   seeded?: boolean;
 };
 
-const KEY = "igg-feed";
+/* 형식이 바뀌면 키를 올린다. 옛 데이터가 새 화면을 깨뜨리는 게 제일 흔한 사고다. */
+const KEY = "igg-feed-v2";
 
 /** 씨앗 글은 상대 시각으로 심는다 — 고정 날짜를 박으면 몇 달 뒤에 유물처럼 보인다. */
 const daysAgo = (d: number) => Date.now() - d * 86_400_000;
@@ -57,7 +64,15 @@ const SEED: Post[] = [
   {
     id: "s1",
     pieceId: 1,
-    title: "Gothic Statue 를 다크 판타지 톤으로",
+    title: "도트 게임에 3D 에셋을 섞어 쓰기",
+    situation: "2D 도트로 만든 던전에 3D 모델 에셋을 넣어야 했습니다.",
+    problem: "3D 모델을 그대로 놓으면 해상도와 음영이 달라 도트 타일 옆에서 혼자 튑니다.",
+    steps: [
+      "형식을 2D 스프라이트로 바꾼다",
+      "팔레트를 이끼 6색으로 고정한다",
+      "도트 굵기를 2로 두고 디더링을 34까지 올린다",
+      "면 처리를 낮춰 실루엣이 뭉개지지 않게 한다",
+    ],
     concept: "다크 판타지",
     prompt: "어둡고 축축한 지하 성당, 금속만 반사, 채도 낮게",
     knobs: { tone: 78, warm: 28, gloss: 64, facet: 8, sat: 34, line: 10 },
@@ -85,7 +100,14 @@ const SEED: Post[] = [
   {
     id: "s2",
     pieceId: 6,
-    title: "왜 실버로 떨어졌나 — 광택을 끝까지 올린 경우",
+    title: "광택을 올렸다가 점수가 18점 떨어진 경우",
+    situation: "금속 질감을 강조하려고 광택을 끝까지 올렸습니다.",
+    problem: "그림은 화려해졌는데 런타임 점수가 크게 떨어져 배지가 실버로 내려갔습니다.",
+    steps: [
+      "광택 98은 셰이더 비용을 그대로 올린다",
+      "48까지 낮춰도 눈에 보이는 차이는 거의 없다",
+      "대신 채도를 올려 화려함을 보완한다",
+    ],
     concept: "직접 조정",
     prompt: "전부 금속처럼, 최대한 번쩍이게",
     knobs: { tone: 40, warm: 60, gloss: 98, facet: 0, sat: 92, line: 0 },
@@ -107,7 +129,15 @@ const SEED: Post[] = [
   {
     id: "s3",
     pieceId: 2,
-    title: "Kite Shield 를 도트 옆에 놔도 안 튀게",
+    title: "게임보이 4색 안에서 실루엣 살리기",
+    situation: "게임보이 팔레트로 맞춘 프로젝트에 무기 에셋이 필요했습니다.",
+    problem: "색이 네 개뿐이라 형태가 뭉개져 무엇인지 안 읽힙니다.",
+    steps: [
+      "팔레트를 게임보이로 고정한다",
+      "디더링을 70까지 올려 중간색을 만든다",
+      "외곽선을 22로 세워 형태를 잡는다",
+      "도트 굵기는 6 이상으로 둔다",
+    ],
     concept: "픽셀 레트로",
     prompt: "로우폴리, 색 끊기, 픽셀 아트 옆에 세울 것",
     knobs: { tone: 44, warm: 56, gloss: 18, facet: 96, sat: 86, line: 0 },
@@ -127,7 +157,9 @@ function load(): Post[] {
     const raw = localStorage.getItem(KEY);
     if (!raw) return SEED;
     const v: unknown = JSON.parse(raw);
-    return Array.isArray(v) ? (v as Post[]) : SEED;
+    if (!Array.isArray(v)) return SEED;
+    /* 키를 올려도 다른 탭에서 옛 형식이 넘어올 수 있다. 모양을 확인하고 받는다. */
+    return (v as Post[]).filter((p) => Array.isArray(p?.steps) && typeof p?.situation === "string");
   } catch {
     return SEED;
   }

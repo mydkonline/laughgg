@@ -5,16 +5,19 @@ import { PIECES } from "../data/pieces";
 import { KNOB_LABEL, type Knobs } from "../data/concepts";
 import { Thumb } from "../components/Thumb";
 
-/* 작업물 피드 — 게시판이 아니다.
-   스튜디오에서 뭔가 끝내면 그게 게시물이 된다. 빈 글쓰기 칸은 어디에도 없다.
-   공개 지표는 포크 수 하나뿐이다 — 사람이 아니라 물건에 점수를 붙인다. */
+/* 공략집 — 게시판도 아니고 프리셋 목록도 아니다.
+   숫자 아홉 개만 있으면 남이 자기 상황에 대입할 수 없다. 무엇을 하려다
+   어디서 막혔고 어떤 순서로 풀었는지가 있어야 공략이 된다.
+
+   스튜디오에서 작업을 끝내면 그 세 칸이 자동으로 채워진다. 빈 글쓰기 칸은 없다.
+   공개 지표는 적용 수 하나뿐이다 — 사람이 아니라 물건에 점수를 붙인다. */
 
 type Sort = "new" | "forks" | "drop";
 
 const SORTS: [Sort, string][] = [
   ["new", "최신"],
-  ["forks", "많이 적용한 순"],
-  ["drop", "점수가 떨어진 것"],
+  ["forks", "많이 따라한 순"],
+  ["drop", "실패 사례"],
 ];
 
 export function Feed() {
@@ -31,11 +34,11 @@ export function Feed() {
     <main className="mx-auto max-w-[840px] px-5 pb-20">
       <header className="py-8">
         <p className="text-xs tracking-wide text-accent">작업물</p>
-        <h1 className="mt-1 text-2xl font-bold text-ink">공개된 프리셋 목록</h1>
-        <p className="mt-2 text-xs text-muted">적용하면 내 에셋에 같은 설정이 걸립니다.</p>
+        <h1 className="mt-1 text-2xl font-bold text-ink">공략집</h1>
+        <p className="mt-2 text-xs text-muted">어디서 막혔고 어떤 순서로 풀었는지, 쓴 설정까지 그대로 공개합니다.</p>
         <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-t border-line pt-4">
-          <FeedSpec k="공개" v="프롬프트, 파라미터 9개, 점수 변화" />
-          <FeedSpec k="적용" v="스튜디오로 이동" />
+          <FeedSpec k="공개" v="상황, 문제, 순서, 파라미터 9개" />
+          <FeedSpec k="따라하기" v="설정을 들고 스튜디오로 이동" />
           <FeedSpec k="댓글" v="익명, 소속만 인증" />
         </dl>
       </header>
@@ -106,12 +109,29 @@ function Card({ post }: { post: Post }) {
           <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-faint">
             <Byline by={post.by} />
             <span>{ago(post.at)}</span>
-            {post.seeded && <span className="rounded border border-line px-1.5 py-px">운영자 씨앗</span>}
+            {post.seeded && <span className="rounded border border-line px-1.5 py-px">운영자 작성</span>}
           </p>
 
-          <p className="mt-2.5 rounded-lg bg-ground px-3 py-2 font-mono text-xs leading-relaxed text-muted">
-            {post.prompt}
-          </p>
+          {/* 상황과 문제를 먼저 낸다. 남이 자기 경우인지 여기서 판단한다. */}
+          <dl className="mt-3 flex flex-col gap-1.5">
+            <div className="flex gap-2.5">
+              <dt className="w-9 shrink-0 text-xs text-faint">상황</dt>
+              <dd className="m-0 text-xs leading-relaxed text-muted">{post.situation}</dd>
+            </div>
+            <div className="flex gap-2.5">
+              <dt className="w-9 shrink-0 text-xs text-faint">문제</dt>
+              <dd className="m-0 text-xs leading-relaxed text-muted">{post.problem}</dd>
+            </div>
+          </dl>
+
+          <ol className="mt-3 flex list-none flex-col gap-1.5 p-0">
+            {(post.steps ?? []).map((st, i) => (
+              <li key={st} className="flex gap-2.5 text-xs">
+                <span className="num w-9 shrink-0 text-faint">{String(i + 1).padStart(2, "0")}</span>
+                <span className="text-muted">{st}</span>
+              </li>
+            ))}
+          </ol>
 
           <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs">
             <span className="text-faint">
@@ -121,7 +141,7 @@ function Card({ post }: { post: Post }) {
               </b>
             </span>
             <span className="text-faint">
-              <b className="tabular-nums text-ink">{post.forks}</b>명이 적용함
+              <b className="tabular-nums text-ink">{post.forks}</b>명이 따라함
             </span>
           </div>
 
@@ -130,7 +150,7 @@ function Card({ post }: { post: Post }) {
               to={`/workshop?fork=${post.id}`}
               className="rounded-lg bg-accent px-3.5 py-1.5 text-xs font-bold text-white no-underline hover:bg-accent-strong"
             >
-              이 프리셋 적용
+              이대로 따라하기
             </Link>
             <button
               type="button"
@@ -165,7 +185,7 @@ function Card({ post }: { post: Post }) {
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && send()}
-              placeholder="붙여 보고 어땠는지"
+              placeholder="따라해 보고 어땠는지"
               aria-label="댓글"
               className="min-w-0 flex-1 rounded-lg border border-line bg-ground px-3 py-2.5 text-xs text-ink placeholder:text-faint"
             />

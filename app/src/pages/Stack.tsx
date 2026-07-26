@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
-import { GAMES, GAME_CATS, SCALES, engineMark, LOGO_LICENSE, type Game } from "../data/games";
+import { GAMES, GAME_CATS, SCALES, engineMark, type Game } from "../data/games";
 
-/* 에셋 엔진 — 실제 출시작이 무엇으로 만들어졌는지.
+/* 엔진 — 실제 출시작이 무엇으로 만들어졌는지.
    에셋을 사려는 사람이 제일 먼저 확인하는 건 "내 엔진에 붙나"다. */
 
 export function Stack() {
@@ -38,38 +38,23 @@ export function Stack() {
   return (
     <main className="mx-auto max-w-[1240px] px-5 pb-20">
       <header className="py-8">
-        <p className="text-xs tracking-wide text-accent">에셋 엔진</p>
-        <h1 className="mt-1 text-2xl font-bold text-ink">게임별 엔진과 제작 도구</h1>
+        <p className="text-xs tracking-wide text-accent">엔진</p>
+        <h1 className="mt-1 text-2xl font-bold text-ink">게임별 엔진</h1>
         <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-t border-line pt-4">
           <Stat k="정리한 게임" v={`${GAMES.length}종`} />
           <Stat k="개발사 공개 확인" v={`${confirmed}종`} />
-          <Stat k="나머지" v={`업계 추정 ${GAMES.length - confirmed}종`} />
         </dl>
       </header>
 
-      <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2">
-        <input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="게임, 엔진, 개발사 검색"
-          aria-label="게임 검색"
-          className="w-full min-w-0 rounded-full border border-line bg-surface px-5 py-3 text-xs text-ink placeholder:text-faint sm:w-auto sm:flex-1"
-        />
-        <label className="flex cursor-pointer items-center gap-2 text-xs text-faint">
-          <input
-            type="checkbox"
-            checked={onlyConfirmed}
-            onChange={(e) => setOnlyConfirmed(e.target.checked)}
-            className="accent-[var(--accent)]"
-          />
-          공개 확인된 것만
-        </label>
-        <span className="text-xs text-faint">
-          <b className="text-ink">{list.length}</b> / {GAMES.length}
-        </span>
-      </div>
+      <input
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        placeholder="게임, 엔진, 개발사 검색"
+        aria-label="게임 검색"
+        className="mb-4 w-full rounded-full border border-line bg-surface px-5 py-3 text-xs text-ink placeholder:text-faint"
+      />
 
-      <div className="mb-5 flex flex-wrap gap-1.5">
+      <div className="mb-5 flex flex-wrap items-center gap-1.5">
         {GAME_CATS.map(([k, name]) => (
           <button
             key={k}
@@ -86,6 +71,19 @@ export function Stack() {
             {name}
           </button>
         ))}
+        <button
+          type="button"
+          onClick={() => setOnlyConfirmed((v) => !v)}
+          aria-pressed={onlyConfirmed}
+          className={[
+            "cursor-pointer rounded-full border px-3.5 py-1.5 text-xs",
+            onlyConfirmed
+              ? "border-transparent bg-ink font-bold text-ground"
+              : "border-line text-muted hover:border-accent hover:text-ink",
+          ].join(" ")}
+        >
+          공개 확인
+        </button>
       </div>
 
       {engines.length > 0 && (
@@ -118,11 +116,7 @@ export function Stack() {
         {list.length === 0 && (
           <p className="py-16 text-center text-base text-faint">조건에 맞는 게임이 없습니다.</p>
         )}
-      </div>
-
-      <p className="mt-6 text-xs text-faint">개발사 공개 자료로 확인된 것만 확인 표시. 나머지는 업계 추정.</p>
-      <p className="mt-2 text-xs leading-relaxed text-faint">{LOGO_LICENSE}</p>
-    </main>
+      </div>    </main>
   );
 }
 

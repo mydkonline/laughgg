@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "react-router-dom";
 import { MARKET, MARKET_SOURCE, MODEL, CHECK_WEIGHTS, REVIEWS, AI_DEV, AI_DEV_SOURCE, REVENUE_FUNNEL, FUNNEL_RESULT } from "../data/ir";
 import { PIECES } from "../data/pieces";
 import { Sprite } from "../three/Sprite";
@@ -165,11 +164,6 @@ export function Ir() {
           ))}
         </div>
         <style>{`@keyframes fade { from { opacity: 0; translate: 0 8px } to { opacity: 1; translate: 0 0 } }`}</style>
-
-        <p className="mt-4 text-xs text-faint">
-          소속만 인증하고 신원은 가립니다. 실명으로는 프로덕션에서 터진 얘기가 나오지 않습니다.
-          위 문장은 시연용으로 작성한 것이며 실제 인용이 아닙니다.
-        </p>
       </Section>
 
       <Section n="06" title="수익 모델">
@@ -217,20 +211,6 @@ export function Ir() {
         </div>
       </Section>
 
-      <div className="mt-16 flex flex-wrap gap-3 border-t border-line pt-8">
-        <Link
-          to="/workshop"
-          className="rounded-xl bg-accent px-6 py-3.5 text-base font-bold text-white no-underline hover:bg-accent-strong"
-        >
-          스튜디오 열기
-        </Link>
-        <Link
-          to="/market"
-          className="rounded-xl border border-line px-6 py-3.5 text-base font-semibold text-muted no-underline hover:border-accent hover:text-ink"
-        >
-          마켓 둘러보기
-        </Link>
-      </div>
     </main>
   );
 }

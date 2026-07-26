@@ -54,30 +54,13 @@ export function Market() {
   return (
     <main className="mx-auto max-w-[1240px] px-5 pb-16">
       <div className="sticky top-[97px] z-50 -mx-5 mb-6 bg-ground/95 px-5 py-4 backdrop-blur">
-        <div className="flex flex-wrap items-center gap-4">
-          <input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="에셋 검색 — 보스전, 인벤토리, 히트스톱…"
-            aria-label="에셋 검색"
-            className="w-full min-w-0 rounded-full border border-line bg-surface px-5 py-3 text-xs text-ink placeholder:text-faint sm:w-auto sm:flex-1"
-          />
-          <label className="flex items-center gap-3 text-xs text-faint">
-            분석 점수
-            <input
-              type="range"
-              min={0}
-              max={95}
-              value={minScore}
-              onChange={(e) => setMinScore(+e.target.value)}
-              className="w-40 accent-[var(--accent)]"
-            />
-            <b className="tabular-nums text-ink">{minScore}</b> 이상
-          </label>
-          <span className="text-xs text-faint">
-            <b className="text-ink">{list.length}</b> / {PIECES.length}
-          </span>
-        </div>
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="에셋 검색"
+          aria-label="에셋 검색"
+          className="w-full rounded-full border border-line bg-surface px-5 py-3 text-xs text-ink placeholder:text-faint"
+        />
       </div>
 
       <Row label="분류">
@@ -97,6 +80,20 @@ export function Market() {
             {ENGINE_NAME[k]}
           </Chip>
         ))}
+      </Row>
+
+      <Row label="점수">
+        <input
+          type="range"
+          min={0}
+          max={95}
+          value={minScore}
+          onChange={(e) => setMinScore(+e.target.value)}
+          className="w-40 accent-[var(--accent)]"
+        />
+        <span className="text-xs text-faint">
+          <b className="tabular-nums text-ink">{minScore}</b> 이상
+        </span>
       </Row>
 
       <Row label="정렬">

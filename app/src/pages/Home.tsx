@@ -50,7 +50,7 @@ const ICONS: Record<string, React.ReactNode> = {
 const STEPS: [keyof typeof ICONS, string, string][] = [
   ["upload", "업로드", "glb, gltf, png"],
   ["scan", "AI 정적 분석", "학습 소스 역추적, 7항목 가중 채점"],
-  ["fix", "개선 코드", "떨어진 항목만"],
+  ["fix", "프롬프트 보완", "떨어진 항목만 다시 생성"],
   ["match", "컨셉 정합", "톤과 팔레트 변경"],
 ];
 
@@ -100,7 +100,7 @@ export function Home() {
       {/* 진행 순서 */}
       <section className="border-t border-line bg-surface">
         <div className="mx-auto max-w-[1240px] px-5 py-16">
-          <h2 className="text-2xl font-bold text-ink">파이프라인</h2>
+          <h2 className="text-2xl font-bold text-ink">작동 방식</h2>
           <ol className="mt-8 grid list-none gap-px overflow-hidden rounded-xl border border-line bg-line p-0 sm:grid-cols-2 lg:grid-cols-4">
             {STEPS.map(([icon, t, d], i) => (
               <li key={t} className="flex flex-col items-start gap-3 bg-surface p-5">

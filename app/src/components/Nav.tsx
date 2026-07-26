@@ -9,7 +9,7 @@ const GROUPS: Group[] = [
   { label: "홈", to: "/" },
   { label: "IR", to: "/ir" },
   { label: "마켓", to: "/market" },
-  { label: "에셋 엔진", to: "/stack" },
+  { label: "엔진", to: "/stack" },
   {
     label: "스튜디오",
     to: "/workshop",
@@ -18,10 +18,18 @@ const GROUPS: Group[] = [
       { label: "AI 에디터", to: "/workshop", badge: "N" },
       { label: "AI 에셋", to: "/scene" },
       { label: "AI 뷰어", to: "/viewer" },
-      { label: "작업물", to: "/feed" },
     ],
   },
-  { label: "개발 브이로그", to: "/vlog" },
+  {
+    label: "커뮤니티",
+    to: "/news",
+    subs: [
+      { label: "뉴스", to: "/news" },
+      { label: "공략집", to: "/feed" },
+      { label: "브이로그", to: "/vlog" },
+      { label: "기사", to: "/articles" },
+    ],
+  },
 ];
 
 const tabClass = ({ isActive }: { isActive: boolean }) =>

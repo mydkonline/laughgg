@@ -1,12 +1,21 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
-import { SCENE_GAMES, PLACE_MODEL, type SceneGame } from "../data/scenes";
-import { PIECES, modelSrc } from "../data/pieces";
+import {
+  SCENE_GAMES,
+  PLACE_MODEL,
+  ART_CATS,
+  fitReport,
+  fitVerdict,
+  type SceneGame,
+} from "../data/scenes";
+import { useCart } from "../lib/cart";
+import { PIECES, modelSrc, type Piece } from "../data/pieces";
 import { bakeView } from "../three/baker";
 
-/* AI 에셋 — 같은 에셋을 각 게임의 조명과 색 보정 아래 놓아 본다.
-   사려는 사람이 제일 먼저 하는 판단이 "우리 게임에 놔도 되나" 이고,
-   그 판단은 글로 설명해서는 안 서고 그림으로 봐야 선다. */
+/* 산 에셋이 우리 게임에 맞는가.
+
+   에셋은 스튜디오 조명 아래 중립으로 구워져 있다. 게임이 요구하는 값과 얼마나
+   떨어져 있는지를 축마다 재서 먼저 알려 주고, 그다음 눈으로 확인시킨다.
+   숫자만 있으면 못 믿고, 그림만 있으면 어디를 고쳐야 하는지 모른다. */
 
 const rgb = (c: [number, number, number], a = 1) => `rgb(${c[0]} ${c[1]} ${c[2]} / ${a})`;
 
@@ -15,6 +24,14 @@ export function Scene() {
   const [dim, setDim] = useState<"전체" | "3D" | "2D">("전체");
   /* 맞추기 전과 후를 나란히 볼 수 있어야 이 제품이 무엇을 파는지 보인다. */
   const [fit, setFit] = useState(true);
+  const { ids: cartIds } = useCart();
+  /* 검토 대상은 산 에셋이다. 장바구니가 비면 마켓 상위를 올려 둔다. */
+  const owned = useMemo(() => {
+    const inCart = PIECES.filter((p) => cartIds.includes(p.id) && p.m);
+    return inCart.length ? inCart : PIECES.filter((p) => p.m).slice(0, 6);
+  }, [cartIds]);
+  const [pieceId, setPieceId] = useState(() => owned[0]?.id ?? 1);
+  const piece = owned.find((p) => p.id === pieceId) ?? owned[0]!;
 
   const list = useMemo(
     () => (dim === "전체" ? SCENE_GAMES : SCENE_GAMES.filter((g) => g.dim === dim)),
@@ -27,11 +44,11 @@ export function Scene() {
       <header className="py-8">
         <p className="text-xs tracking-wide text-accent">AI 에셋</p>
         <h1 className="mt-1 text-2xl font-bold text-ink">에셋 컨셉트 매핑</h1>
-        <p className="mt-2 text-xs text-muted">같은 에셋을 게임별 조명과 색 보정에 대응시킵니다.</p>
+        <p className="mt-2 text-xs text-muted">산 에셋이 우리 게임 컨셉에 맞는지 확인합니다.</p>
         <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-t border-line pt-4">
-          <Spec k="비교 게임" v={`${SCENE_GAMES.length}종`} />
-          <Spec k="적용 항목" v="조명, 색 보정, 안개, 비네팅" />
-          <Spec k="에셋" v="마켓 실제 상품" />
+          <Spec k="대조 게임" v={`${SCENE_GAMES.length}종, ${ART_CATS.length}개 분류`} />
+          <Spec k="검토 축" v="밝기, 대비, 채도, 색조, 세피아" />
+          <Spec k="판정" v="80 이상 그대로 사용" />
         </dl>
       </header>
 
@@ -57,29 +74,74 @@ export function Scene() {
         ))}
       </div>
 
-      {/* 게임 목록. 대표색을 칩에 물려 두면 고르기 전에도 톤이 짐작된다. */}
-      <div className="mb-5 flex gap-1.5 overflow-x-auto pb-2">
-        {list.map((g) => (
+      {/* 대분류로 묶어 한 화면에 다 보인다. 칩 한 줄로 17개를 늘어놓으면
+          가로 스크롤에 묻혀서 무엇이 있는지 알 수가 없다. */}
+      <div className="mb-5 grid gap-x-8 gap-y-6 sm:grid-cols-3">
+        {ART_CATS.map((cat) => {
+          const group = list.filter((g) => g.cat === cat);
+          if (!group.length) return null;
+          return (
+            <section key={cat}>
+              <p className="border-b border-line pb-2 text-xs font-bold text-ink">
+                {cat}
+                <span className="num ml-2 font-normal text-faint">{group.length}</span>
+              </p>
+              <ul className="m-0 flex list-none flex-col p-0">
+                {group.map((g) => (
+                  <li key={g.id}>
+                    <button
+                      type="button"
+                      onClick={() => setId(g.id)}
+                      aria-pressed={g.id === game.id}
+                      className={[
+                        "flex w-full cursor-pointer items-center gap-2.5 border-0 bg-transparent py-2 text-left",
+                        g.id === game.id ? "text-ink" : "text-muted hover:text-ink",
+                      ].join(" ")}
+                    >
+                      <span
+                        className={`h-2.5 w-2.5 shrink-0 rounded-full ${g.id === game.id ? "ring-2 ring-accent ring-offset-2 ring-offset-ground" : ""}`}
+                        style={{ background: g.sw }}
+                      />
+                      <span className={`truncate text-xs ${g.id === game.id ? "font-bold" : ""}`}>{g.n}</span>
+                      <span className="ml-auto shrink-0 text-[10px] text-faint">{g.sub}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          );
+        })}
+      </div>
+
+      {/* 검토 대상. 어느 에셋을 보고 있는지가 먼저다. */}
+      <div className="mb-4 flex flex-wrap items-center gap-2 border-t border-line pt-5">
+        <span className="text-xs text-faint">{cartIds.length ? "산 에셋" : "마켓 상위"}</span>
+        {owned.map((p) => (
           <button
-            key={g.id}
+            key={p.id}
             type="button"
-            onClick={() => setId(g.id)}
-            aria-pressed={g.id === game.id}
+            onClick={() => setPieceId(p.id)}
+            aria-pressed={p.id === piece.id}
             className={[
-              "flex flex-none cursor-pointer items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs whitespace-nowrap",
-              g.id === game.id
-                ? "border-accent bg-surface font-bold text-ink"
-                : "border-line text-muted hover:text-ink",
+              "cursor-pointer rounded-full border px-3 py-1 text-xs",
+              p.id === piece.id
+                ? "border-transparent bg-ink font-bold text-ground"
+                : "border-line text-muted hover:border-accent hover:text-ink",
             ].join(" ")}
           >
-            <span className="h-2.5 w-2.5 rounded-full" style={{ background: g.sw }} />
-            {g.n}
+            {p.t}
           </button>
         ))}
       </div>
 
-      <div className="mb-2 flex flex-wrap items-center gap-2">
-        <span className="text-xs text-faint">에셋 상태</span>
+      <FitPanel game={game} piece={piece} />
+
+      <div className="mt-5 mb-2 flex flex-wrap items-center gap-2">
+        <span className="text-xs font-bold text-ink">{game.n}</span>
+        <span className="text-xs text-faint">
+          {game.cat}, {game.sub}
+        </span>
+        <span className="ml-auto text-xs text-faint">에셋 상태</span>
         {[
           [false, "원본 그대로"],
           [true, "이 게임에 맞춤"],
@@ -119,17 +181,47 @@ export function Scene() {
           <Meta k="색조" v={`${game.grade.hue > 0 ? "+" : ""}${game.grade.hue}°`} />
         </dl>
       </div>
-
-      <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-6">
-        <Link to="/workshop" className="text-xs text-faint no-underline hover:text-ink">
-          이 톤으로 내 에셋 맞추기 →
-        </Link>
-        <p className="text-xs text-faint">
-          <b className="text-muted">데모.</b> 게임 화면이 아니라 각 게임의 색 보정값을 재현한 무대입니다.
-          상용 스크린샷은 저작권 때문에 쓰지 않습니다.
-        </p>
-      </div>
     </main>
+  );
+}
+
+/* 검토 결과. 숫자를 먼저 내고 무대는 그 근거로 아래에 둔다. */
+function FitPanel({ game, piece }: { game: SceneGame; piece: Piece }) {
+  const report = fitReport(game);
+  const verdict = fitVerdict(report.score);
+  const tone =
+    verdict.tone === "ok" ? "text-accent" : verdict.tone === "warn" ? "text-ink" : "text-[#FF6B7A]";
+
+  return (
+    <div className="grid gap-x-10 gap-y-5 border-b border-line pb-6 lg:grid-cols-[200px_minmax(0,1fr)]">
+      <div>
+        <p className="text-xs text-faint">
+          {piece.t} 를 {game.n} 에
+        </p>
+        <p className="num mt-1 text-6xl leading-none text-ink">{report.score}</p>
+        <p className={`mt-2 text-xs font-bold ${tone}`}>{verdict.label}</p>
+      </div>
+
+      <dl className="grid gap-x-8 gap-y-2.5 sm:grid-cols-2">
+        {report.axes.map((a) => (
+          <div key={a.label} className="flex items-center gap-3">
+            <dt className="w-11 shrink-0 text-xs text-ink">{a.label}</dt>
+            <dd className="m-0 flex min-w-0 flex-1 items-center gap-2.5">
+              <span className="block h-1.5 flex-1 overflow-hidden rounded-full bg-surface-2">
+                <b
+                  className={`block h-full ${a.gap > 0.5 ? "bg-[#FF6B7A]" : a.gap > 0.2 ? "bg-accent" : "bg-chrome-600"}`}
+                  style={{ width: `${a.gap * 100}%` }}
+                />
+              </span>
+              <span className="w-24 shrink-0 truncate text-[10px] text-faint">
+                {a.gap > 0.2 ? a.fix : "맞습니다"}
+              </span>
+              <span className="num w-9 shrink-0 text-right text-xs text-muted">{a.want}</span>
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
   );
 }
 
