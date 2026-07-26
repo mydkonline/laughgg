@@ -1,10 +1,16 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { PIECES, CATS, ENGINES, ENGINE_NAME, type CatKey, type EngineKey } from "../data/pieces";
 import { RankIcon, badgeOf } from "../components/Rank";
 import { BUNDLES, bundleItems, bundlePrice, bundleScore } from "../data/bundles";
+import { Pager } from "../components/Pager";
 import { Thumb } from "../components/Thumb";
 import { won } from "../lib/format";
+
+/* 카드 그리드는 폭에 따라 한 줄에 2~6개가 들어간다. 24는 그 전부로 나누어떨어져서
+   어느 폭에서도 마지막 줄이 어색하게 남지 않는다. 패키지는 줄이 높아 10으로 둔다. */
+const PER_CARD = 24;
+const PER_BUNDLE = 10;
 
 type Sort = "score" | "dl" | "new" | "price";
 
@@ -19,6 +25,7 @@ export function Market() {
   /* 패키지와 단품을 한 칸에 섞지 않는다. 개수도 가격도 기준이 달라
      같이 놓으면 비교가 깨진다. */
   const [kind, setKind] = useState<"단품" | "패키지">("단품");
+  const [page, setPage] = useState(1);
   const [cat, setCat] = useState<CatKey>("all");
   const [engine, setEngine] = useState<EngineKey | "any">("any");
   const [minScore, setMinScore] = useState(0);
@@ -46,6 +53,9 @@ export function Market() {
     PIECES.filter((p) => (k === "all" || p.cat === k) && (engine === "any" || p.eng.includes(engine)) && p.score >= minScore).length;
   const engCount = (k: EngineKey | "any") =>
     PIECES.filter((p) => (cat === "all" || p.cat === cat) && (k === "any" || p.eng.includes(k)) && p.score >= minScore).length;
+
+  /* 조건이 바뀌면 첫 쪽으로 돌아간다. 3쪽을 보다 필터를 걸면 빈 화면이 나온다. */
+  useEffect(() => setPage(1), [cat, engine, minScore, q, sort, kind]);
 
   const reset = () => {
     setCat("all");
@@ -131,7 +141,7 @@ export function Market() {
 
       {kind === "패키지" ? (
         <div className="mt-6 flex flex-col gap-4">
-          {BUNDLES.map((b) => {
+          {BUNDLES.slice((page - 1) * PER_BUNDLE, page * PER_BUNDLE).map((b) => {
             const items = bundleItems(b);
             const price = bundlePrice(b);
             return (
@@ -172,6 +182,7 @@ export function Market() {
               </Link>
             );
           })}
+          <Pager total={BUNDLES.length} page={page} perPage={PER_BUNDLE} onGo={setPage} />
         </div>
       ) : list.length === 0 ? (
         <p className="rounded-2xl border border-line py-20 text-center text-base text-faint">
@@ -179,7 +190,7 @@ export function Market() {
         </p>
       ) : (
         <div className="mt-6 grid grid-cols-[repeat(auto-fill,minmax(168px,1fr))] gap-3">
-          {list.map((p) => (
+          {list.slice((page - 1) * PER_CARD, page * PER_CARD).map((p) => (
             <Link
               key={p.id}
               to={`/market/${p.id}`}
@@ -205,6 +216,8 @@ export function Market() {
           ))}
         </div>
       )}
+
+      {kind === "단품" && <Pager total={list.length} page={page} perPage={PER_CARD} onGo={setPage} />}
     </main>
   );
 }
