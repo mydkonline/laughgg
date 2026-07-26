@@ -1078,115 +1078,51 @@
   </figure>
 </div></div>
 
-<section class="alt"><div class="in">
-  <div class="shead">
-    <p class="kick">제공 기능</p>
-    <h2>등록부터 정산까지<br>여기서 끝납니다</h2>
-    <p>네 가지가 한 계정에서 이어집니다. 설치할 도구도, 오갈 사이트도 없습니다.</p>
-  </div>
-  <div class="cards">
-    <div class="card">
-      <span class="who">등록 · 검수</span><h3>올리면 채점하고 배지를 붙입니다</h3>
-      <p>파일을 올리면 검사가 자동으로 시작됩니다. 3일 안에 항목별 점수와 배지가 나옵니다.</p>
-      <ul><li>Unity · Unreal · Godot</li>
-        <li>등록 비용 없음 · 재등록 무제한</li></ul>
-      <a class="go" href="community.html">등록 화면 열기 →</a>
-    </div>
-    <div class="card">
-      <span class="who">개선</span><h3>부족한 부분은 코드로 드립니다</h3>
-      <p>어느 항목이 몇 점인지 보고, 무엇을 어떻게 고칠지 코드로 받아 적용합니다.</p>
-      <ul><li>셰이더 · LOD · 아틀라스 병합</li>
-        <li>적용 후 재검수 요청</li></ul>
-      <a class="go" href="ai.html">AI 파이프라인 보기 →</a>
-    </div>
-    <div class="card">
-      <span class="who">시연</span><h3>게임 화면에 얹어 확인합니다</h3>
-      <p>등록 전이나 구매 전에, 실제 게임 화면 위에 그 에셋을 올려 어울리는지 봅니다.</p>
-      <ul><li>2D 도트 · 로우폴리 · 사실적 3D</li>
-        <li>게임 33종 스택에서 바로 적용</li></ul>
-      <a class="go" href="scene.html">시연 화면 열기 →</a>
-    </div>
-    <div class="card">
-      <span class="who">정산</span><h3>판매액의 92%를 받습니다</h3>
-      <p>판매가 발생하면 수수료 8%를 제외한 금액이 창작자에게 정산됩니다.</p>
-      <ul><li>배지와 무관하게 동일 요율</li>
-        <li>저작권은 창작자가 계속 보유</li></ul>
-      <a class="go" href="market.html">마켓 보기 →</a>
-    </div>
-  </div>
-  </div></section>
-
 <section><div class="in">
-  <div class="shead">
-    <p class="kick">진행 순서</p>
-    <h2>등록부터 판매까지</h2>
-    <p>사람이 파일을 하나씩 열어보지 않습니다. 등록된 순간부터 자동으로 처리됩니다.</p>
-  </div>
-  <div class="steps">
-    <div class="step"><div class="n"><i>1</i><u></u></div><h3>등록</h3>
-      <p>에셋 파일과 기본 정보를 입력합니다. 분류·엔진·스타일·가격을 지정합니다.</p></div>
-    <div class="step"><div class="n"><i>2</i><u></u></div><h3>검수</h3>
-      <p>일곱 가지 항목을 자동 채점합니다. 3일 안에 점수와 배지가 통보됩니다.</p></div>
-    <div class="step"><div class="n"><i>3</i><u></u></div><h3>개선 (선택)</h3>
-      <p>점수가 낮은 항목의 개선 코드를 받아 적용한 뒤 재검수를 요청합니다.</p></div>
-    <div class="step"><div class="n"><i>4</i></div><h3>판매</h3>
-      <p>카탈로그에 배지와 함께 노출됩니다. 판매가 발생하면 92%가 정산됩니다.</p></div>
+  <div class="shead"><h2>올리면, 채점하고, 팝니다</h2></div>
+  <div class="flow" id="flow">
+    <div class="fbar"><b id="fbar"></b></div>
+    <div class="fwin"><div class="ftrack" id="ftrack"></div></div>
+    <div class="fnav">
+      <div class="fdots" id="fdots"></div>
+      <button class="fb" id="fprev" type="button" aria-label="이전">←</button>
+      <button class="fb" id="fnext" type="button" aria-label="다음">→</button>
+    </div>
   </div>
 </div></section>
 
 <section class="alt"><div class="in">
-  <div class="shead">
-    <p class="kick">자동 검수</p>
-    <h2>검수 엔진이 직접 열어 봅니다</h2>
-    <p>LaughGG 검수 엔진이 업로드된 파일을 열어 메시·텍스처·셰이더·스크립트를 직접 분석하고, 테스트 씬에서 실제로 돌려 봅니다. 옆의 숫자는 종합 점수에서 각 항목이 차지하는 비중입니다.</p>
-  </div>
-  <div class="checks">
-    <div><b>22%</b><span>재료 출처<br>확인</span></div>
-    <div><b>18%</b><span>실행 성능<br>영향</span></div>
-    <div><b>15%</b><span>면 구성<br>상태</span></div>
-    <div><b>13%</b><span>텍스처<br>적용</span></div>
-    <div><b>12%</b><span>거리별<br>단계 처리</span></div>
-    <div><b>12%</b><span>프로젝트<br>통합 난이도</span></div>
-    <div><b>8%</b><span>코드<br>품질</span></div>
-  </div>
-  <p class="note">재료 출처 점수가 60점 미만이면 나머지 항목과 무관하게 실버로 분류됩니다.
-    출처가 확인되지 않은 재료는 구매자의 프로젝트 전체에 영향을 주기 때문입니다.</p>
-</div></section>
-
-<section><div class="in">
-  <div class="shead">
-    <p class="kick">배지 기준</p>
-    <h2>배지는 무엇을 뜻하나요</h2>
-    <p>배지는 검색 노출 순서를 정합니다. 수수료는 배지와 무관하게 모두 8%입니다.</p>
-  </div>
+  <div class="shead"><h2>배지 하나로 판단합니다</h2></div>
   <div class="tiers">
-    <div class="tier" style="--tc:var(--chal)"><span class="lb"><svg class="rk" style="width:2.1em;height:2.1em"><use href="#rk-chal"/></svg>챌린저</span><b class="sc tab">90+</b>
-      <span class="ds">받아서 그대로<br>넣으면 끝</span></div>
-    <div class="tier" style="--tc:var(--dia)"><span class="lb"><svg class="rk" style="width:2.1em;height:2.1em"><use href="#rk-dia"/></svg>다이아</span><b class="sc tab">80+</b>
-      <span class="ds">넣고 값만<br>맞추면 끝</span></div>
-    <div class="tier" style="--tc:var(--plat)"><span class="lb"><svg class="rk" style="width:2.1em;height:2.1em"><use href="#rk-plat"/></svg>플래티넘</span><b class="sc tab">70+</b>
-      <span class="ds">쓸 수는 있지만<br>손이 갑니다</span></div>
-    <div class="tier" style="--tc:var(--silv)"><span class="lb"><svg class="rk" style="width:2.1em;height:2.1em"><use href="#rk-silv"/></svg>실버</span><b class="sc tab">70−</b>
-      <span class="ds">사지 말고<br>참고만</span></div>
+    <div class="tier" style="--tc:var(--chal)">
+      <span class="lb"><svg class="rk" style="width:2.1em;height:2.1em"><use href="#rk-chal"/></svg>챌린저</span>
+      <b class="sc tab">90+</b><span class="ds">그대로 넣으면 끝</span></div>
+    <div class="tier" style="--tc:var(--dia)">
+      <span class="lb"><svg class="rk" style="width:2.1em;height:2.1em"><use href="#rk-dia"/></svg>다이아</span>
+      <b class="sc tab">80+</b><span class="ds">값만 맞추면 끝</span></div>
+    <div class="tier" style="--tc:var(--plat)">
+      <span class="lb"><svg class="rk" style="width:2.1em;height:2.1em"><use href="#rk-plat"/></svg>플래티넘</span>
+      <b class="sc tab">70+</b><span class="ds">손이 조금 갑니다</span></div>
+    <div class="tier" style="--tc:var(--silv)">
+      <span class="lb"><svg class="rk" style="width:2.1em;height:2.1em"><use href="#rk-silv"/></svg>실버</span>
+      <b class="sc tab">70−</b><span class="ds">참고용입니다</span></div>
+  </div>
+</div></section>
+
+<section class="alt"><div class="in">
+  <div class="shead"><h2>조건은 이게 전부입니다</h2></div>
+</div>
+  <div class="tick" id="tick" aria-label="이용 조건">
+    <div class="trow" data-dir="1"></div>
+    <div class="trow" data-dir="-1"></div>
   </div>
 </section>
 
-<section class="alt"><div class="in">
-  <div class="shead"><p class="kick">이용 조건</p><h2>요약</h2></div>
-  <div class="tgrid" id="terms"></div>
-  </div>
-</div></section>
-
-
-
-
 <div class="final"><div class="in">
-  <h2>어느 쪽으로 시작하시겠습니까</h2>
-  <p>창작자는 에셋 등록으로, 구매자는 카탈로그 열람으로 시작합니다.<br>등록 전에 시연 화면에서 먼저 확인하셔도 됩니다.</p>
+  <h2>지금 열어 보세요</h2>
   <div class="ctas">
-    <a class="btn p" href="community.html">에셋 등록하기</a>
-    <a class="btn s" href="market.html">카탈로그 보기</a>
-    <a class="btn s" href="scene.html">시연해 보기</a>
+    <a class="btn p" href="market.html">마켓 둘러보기</a>
+    <a class="btn s" href="community.html">에셋 올리기</a>
   </div>
 </div></div>
 
@@ -1421,97 +1357,140 @@ if (cv) {
 }
 </script>
 
-<style id="igg-terms">
-  .tgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-  @media(max-width:1000px){.tgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-  @media(max-width:560px){.tgrid{grid-template-columns:1fr}}
-  .tc{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface);
-    display:flex;flex-direction:column;
-    transition:transform .26s cubic-bezier(.22,1,.36,1),border-color .26s ease,box-shadow .26s ease}
-  .tc:hover{transform:translateY(-4px);border-color:var(--accent)}
-  .tcimg{position:relative;aspect-ratio:16/10;display:grid;place-items:center;
-    background:var(--surface-2)}
-  .tcimg img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .5s ease}
-  .tcimg img.on{opacity:1}
-  .tcimg .ph{position:absolute;color:var(--faint);font-size:10pt}
-  .tcb{padding:15px 16px 17px;display:flex;flex-direction:column;gap:7px;flex:1}
-  .tck{font-size:10pt;font-weight:700;letter-spacing:.06em;color:var(--faint)}
-  .tcv{font-size:16px;font-weight:750;letter-spacing:-.02em;line-height:1.32}
-  .tcv b{color:var(--accent)}
-  .tcv b.ok{color:var(--pass)}
-  .tcd{margin:0;color:var(--muted);font-size:11pt;line-height:1.6}
+<style id="igg-flow">
+  .flow { border: 1px solid var(--line); border-radius: 18px; background: var(--surface);
+    overflow: hidden; }
+  .fbar { height: 3px; background: var(--line-soft, var(--line)); }
+  .fbar b { display: block; height: 100%; width: 25%; background: var(--accent);
+    transition: width .42s cubic-bezier(.22,1,.36,1); }
+  .fwin { overflow: hidden; }
+  .ftrack { display: flex; transition: translate .46s cubic-bezier(.22,1,.36,1); }
+  .fstep { flex: 0 0 100%; padding: clamp(30px,5vw,54px) clamp(24px,4vw,48px);
+    display: grid; grid-template-columns: 84px 1fr; gap: clamp(18px,3vw,34px); align-items: center; }
+  @media (max-width: 620px) { .fstep { grid-template-columns: 1fr; gap: 16px; } }
+  .fnum { width: 84px; height: 84px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--accent-soft); color: var(--accent); font-size: 28pt; font-weight: 800;
+    letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+  .fstep h3 { margin: 0; font-size: 20pt; font-weight: 750; letter-spacing: -.035em; }
+  .fstep p { margin: 8px 0 0; color: var(--muted); font-size: 12pt; line-height: 1.6; max-width: 40ch; }
+  .fnav { display: flex; align-items: center; gap: 8px; padding: 14px 18px;
+    border-top: 1px solid var(--line); }
+  .fdots { display: flex; gap: 6px; margin-right: auto; }
+  .fdots button { width: 8px; height: 8px; border-radius: 50%; border: 0; padding: 0;
+    background: var(--line); cursor: pointer;
+    transition: background-color .2s ease, width .28s cubic-bezier(.22,1,.36,1); }
+  .fdots button[aria-current="true"] { background: var(--accent); width: 22px; border-radius: 99px; }
+  .fb { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line);
+    background: none; color: var(--muted); cursor: pointer;
+    transition: border-color .16s ease, color .16s ease, scale .16s cubic-bezier(.22,1,.36,1); }
+  .fb:hover { border-color: var(--accent); color: var(--accent); }
+  .fb:active { scale: .92; }
+  .fb[disabled] { opacity: .32; pointer-events: none; }
+  @media (prefers-reduced-motion: reduce) { .ftrack, .fbar b, .fdots button { transition: none; } }
 </style>
-<script type="module">
-import * as THREE from "three";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+<script>
+(function () {
+  /* 네 단계를 늘어놓는 대신 한 장에서 넘긴다. 화면에 남는 블록이 하나로 줄어든다. */
+  var STEPS = [
+    ["등록", "파일과 가격만 넣습니다. 분류·엔진은 목록에서 고릅니다."],
+    ["검수", "일곱 항목을 자동으로 채점합니다. 3일 안에 점수와 배지가 나옵니다."],
+    ["개선", "모자란 항목은 고칠 코드를 만들어 드립니다. 적용하면 다시 채점합니다."],
+    ["판매", "카탈로그에 배지와 함께 오릅니다. 팔리면 92%를 정산합니다."],
+  ];
+  var track = document.getElementById("ftrack"), dots = document.getElementById("fdots");
+  var bar = document.getElementById("fbar"), prev = document.getElementById("fprev"),
+      next = document.getElementById("fnext"), flow = document.getElementById("flow");
+  if (!track) return;
 
-/* 이용 조건도 글자만 나열하면 안 읽힌다. 조건마다 실제 에셋을 한 장씩 붙인다. */
-const TERMS = [
-  ["chest",        "등록 비용", '<b class="ok">없음</b>',
-   "올리는 데 돈을 받지 않습니다. 비용은 카탈로그를 쓰는 스튜디오가 냅니다."],
-  ["barrel",       "재등록", "횟수 제한 <b>없음</b>",
-   "점수가 낮으면 고쳐서 다시 냅니다. 몇 번을 다시 내도 추가 비용이 없습니다."],
-  ["stairs",       "검수 소요", "등록 후 <b>3일</b> 이내",
-   "사람이 열어보지 않습니다. 자동 채점이라 대기열이 길어져도 3일을 넘기지 않습니다."],
-  ["gate",         "판매 수수료", '<b>8%</b> 단일',
-   "Unity 30%, Epic Fab 12%는 공개 확인값입니다. 배지가 올라도 수수료는 그대로입니다."],
-  ["coin",         "창작자 정산", '판매액의 <b class="ok">92%</b>',
-   "$100에 팔면 $92가 창작자 몫입니다. 같은 값을 Unity에 올리면 $70입니다."],
-  ["banner",       "저작권", "창작자가 <b>계속 보유</b>",
-   "중개할 뿐 권리를 가져가지 않습니다. 언제든 내리고 다른 곳에 올릴 수 있습니다."],
-  ["wall-opening", "독점 계약", "<b>없음</b>",
-   "여기에만 올려야 한다는 조건이 없습니다. 다른 마켓에 있는 에셋도 그대로 등록됩니다."],
-  ["column",       "구매자 구독", "월 <b>490,000원</b>",
-   "카탈로그 접근, 검수 리포트, 시연 도구, 사용 재료 목록 발급이 포함됩니다."],
-];
+  track.innerHTML = STEPS.map(function (st, i) {
+    return '<div class="fstep"><span class="fnum">' + (i + 1) + '</span>' +
+           '<div><h3>' + st[0] + '</h3><p>' + st[1] + '</p></div></div>';
+  }).join("");
+  dots.innerHTML = STEPS.map(function (_, i) {
+    return '<button type="button" data-i="' + i + '" aria-label="' + (i + 1) + '단계"></button>';
+  }).join("");
 
-const box = document.getElementById("terms");
-if (box) {
-  box.innerHTML = TERMS.map(([m, k, v, d]) => `
-    <article class="tc" data-model="${m}">
-      <div class="tcimg"><span class="ph">렌더 중…</span><img alt=""></div>
-      <div class="tcb"><span class="tck">${k}</span><span class="tcv">${v}</span><p class="tcd">${d}</p></div>
-    </article>`).join("");
-
-  (async () => {
-    const loader = new GLTFLoader(), W = 480, H = 300;
-    const r = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
-    r.setSize(W, H); r.setPixelRatio(Math.min(devicePixelRatio, 2));
-    r.outputColorSpace = THREE.SRGBColorSpace;
-    r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = 1.3;
-    const sc = new THREE.Scene();
-    sc.add(new THREE.HemisphereLight(0xdfe9ff, 0x2a2d38, 2.1));
-    const k1 = new THREE.DirectionalLight(0xfff3e2, 2.7); k1.position.set(2.6, 4.2, 3.2);
-    const k2 = new THREE.DirectionalLight(0x5383e8, 1.9); k2.position.set(-3, 1.2, -2.6);
-    sc.add(k1, k2);
-    const cam = new THREE.PerspectiveCamera(27, W / H, .1, 60);
-    cam.position.set(1.75, 1.25, 2.4); cam.lookAt(0, 0, 0);
-
-    for (const el of box.querySelectorAll(".tc")) {
-      try {
-        const g = await new Promise((ok, no) => loader.load("./assets/dungeon/" + el.dataset.model + ".glb", ok, undefined, no));
-        const o = g.scene, bb = new THREE.Box3().setFromObject(o);
-        const sz = new THREE.Vector3(), ct = new THREE.Vector3();
-        bb.getSize(sz); bb.getCenter(ct);
-        o.position.set(-ct.x, -ct.y, -ct.z);
-        const n = new THREE.Group(); n.add(o);
-        n.scale.setScalar(1.45 / Math.max(sz.x, sz.y, sz.z, 1e-6));
-        n.rotation.y = -.62;
-        sc.add(n);
-        r.render(sc, cam);
-        const img = el.querySelector("img");
-        img.src = r.domElement.toDataURL("image/png");
-        img.classList.add("on");
-        el.querySelector(".ph")?.remove();
-        sc.remove(n);
-      } catch (e) {
-        el.querySelector(".ph").textContent = "";
-      }
-    }
-    r.dispose(); r.forceContextLoss();
-  })();
-}
+  var cur = 0;
+  function go(i) {
+    cur = Math.max(0, Math.min(STEPS.length - 1, i));
+    track.style.translate = (-cur * 100) + "% 0";
+    bar.style.width = ((cur + 1) / STEPS.length * 100) + "%";
+    dots.querySelectorAll("button").forEach(function (b, k) {
+      b.setAttribute("aria-current", String(k === cur));
+    });
+    prev.disabled = cur === 0;
+    next.disabled = cur === STEPS.length - 1;
+  }
+  prev.onclick = function () { go(cur - 1); };
+  next.onclick = function () { go(cur + 1); };
+  dots.onclick = function (e) {
+    var b = e.target.closest("button[data-i]");
+    if (b) go(+b.dataset.i);
+  };
+  flow.tabIndex = 0;
+  flow.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowLeft") { go(cur - 1); e.preventDefault(); }
+    if (e.key === "ArrowRight") { go(cur + 1); e.preventDefault(); }
+  });
+  /* 손가락으로도 넘긴다 */
+  var x0 = null;
+  flow.addEventListener("pointerdown", function (e) { x0 = e.clientX; });
+  flow.addEventListener("pointerup", function (e) {
+    if (x0 === null) return;
+    var dx = e.clientX - x0; x0 = null;
+    if (Math.abs(dx) > 42) go(cur + (dx < 0 ? 1 : -1));
+  });
+  go(0);
+})();
 </script>
 
-
+<style id="igg-tick">
+  .shead h2 { margin: 0; }
+  .shead { margin-bottom: clamp(30px,4vw,44px); }
+  .tick { display: flex; flex-direction: column; gap: 12px; overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+            mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+  .trow { display: flex; gap: 12px; width: max-content;
+    animation: tickmove var(--dur, 46s) linear infinite; }
+  .trow[data-dir="-1"] { animation-direction: reverse; }
+  .tick:hover .trow { animation-play-state: paused; }
+  @keyframes tickmove { from { translate: 0 0; } to { translate: -50% 0; } }
+  .tchip { flex: none; display: flex; align-items: baseline; gap: 10px; white-space: nowrap;
+    padding: 14px 22px; border-radius: 99px; border: 1px solid var(--line);
+    background: var(--surface); }
+  .tchip b { font-size: 10pt; font-weight: 700; letter-spacing: .04em; color: var(--faint); }
+  .tchip span { font-size: 13pt; font-weight: 750; letter-spacing: -.02em; }
+  .tchip span em { font-style: normal; color: var(--accent); }
+  .tchip span em.ok { color: var(--pass); }
+  @media (prefers-reduced-motion: reduce) {
+    .trow { animation: none; width: 100%; flex-wrap: wrap; justify-content: center; }
+    .tick { mask-image: none; -webkit-mask-image: none; }
+  }
+</style>
+<script>
+(function () {
+  /* 조건이 여덟 개라 카드로 깔면 벽이 된다. 배경에서 흘려보내고 멈춰서 읽게 한다. */
+  var TERMS = [
+    ["등록 비용", "<em class='ok'>없음</em>"],
+    ["재등록", "횟수 제한 없음"],
+    ["검수 소요", "<em>3일</em> 이내"],
+    ["판매 수수료", "<em>8%</em> 단일"],
+    ["창작자 정산", "판매액의 <em class='ok'>92%</em>"],
+    ["저작권", "창작자가 계속 보유"],
+    ["독점 계약", "<em class='ok'>없음</em>"],
+    ["스튜디오 구독", "월 <em>490,000</em>원"],
+  ];
+  var rows = document.querySelectorAll("#tick .trow");
+  if (!rows.length) return;
+  rows.forEach(function (row, r) {
+    var list = r === 0 ? TERMS : TERMS.slice().reverse();
+    var html = list.map(function (t) {
+      return '<span class="tchip"><b>' + t[0] + '</b><span>' + t[1] + '</span></span>';
+    }).join("");
+    /* 끊김 없이 돌려면 같은 줄을 두 번 이어 붙여야 한다 */
+    row.innerHTML = html + html;
+    row.style.setProperty("--dur", (r === 0 ? 46 : 58) + "s");
+  });
+})();
+</script>
 
