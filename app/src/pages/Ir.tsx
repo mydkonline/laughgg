@@ -26,8 +26,13 @@ export function Ir() {
         <AssetRail />
       </div>
 
-      <Section n="01" title="탈락률">
-        <Donut percent={61.2} label="올라온 에셋이 정적 분석에서 떨어집니다" sub="떨어뜨리는 게 상품입니다" />
+      <Section n="01" title="검증">
+        {/* 떨어지는 비율보다 통과하는 비율을 말한다. 사는 쪽이 궁금한 건 남은 쪽이다. */}
+        <Donut
+          percent={38.8}
+          label="퀄리티 검증률"
+          sub="올라온 에셋 중 7항목을 모두 통과한 비율입니다. 나머지는 마켓에 오르지 않습니다."
+        />
       </Section>
 
       <Section n="02" title="시장">

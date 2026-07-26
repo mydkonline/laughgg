@@ -15,10 +15,10 @@ const GROUPS: Group[] = [
     to: "/workshop",
     badge: "N",
     subs: [
-      { label: "에디터", to: "/workshop", badge: "N" },
+      { label: "AI 에디터", to: "/workshop", badge: "N" },
+      { label: "AI 에셋", to: "/scene" },
+      { label: "AI 뷰어", to: "/viewer" },
       { label: "작업물", to: "/feed" },
-      { label: "에셋 시연", to: "/scene" },
-      { label: "3D 뷰어", to: "/viewer" },
     ],
   },
   { label: "개발 브이로그", to: "/vlog" },
