@@ -238,16 +238,12 @@
 
 @media (prefers-reduced-motion: reduce) { .tcard, .temb, .tglow { transition: none !important; } }
 /* ── 에셋 쇼케이스 레일 — 라이엇식 풀블리드 기울임 타일. 테마와 무관하게 다크 고정 ── */
-.rail { --r-ink:#F2F3F7; --r-ink-2:#9AA1AE; --r-line:#2A2C34; --r-deep:#08080C;
+.rail { --r-ink: var(--ink); --r-ink-2: var(--ink-2); --r-line: var(--line);
   padding-left: 0; padding-right: 0; position: relative; overflow: hidden;
-  background: #0B0B10; color: var(--r-ink); }
-.rail::before { content: ""; position: absolute; inset: -30% -10%; pointer-events: none;
-  background:
-    radial-gradient(40% 44% at 14% 18%, rgba(83,131,232,.30), transparent 70%),
-    radial-gradient(36% 42% at 86% 82%, rgba(165,94,234,.24), transparent 72%); }
+  background: var(--bg-2); color: var(--ink); }
 .railtop { position: relative; max-width: 1020px; margin: 0 auto 34px; padding: 0 22px;
   display: flex; align-items: flex-end; gap: 24px; }
-.rail .kick { color: #7FA6F5; }
+.rail .kick { color: var(--accent); }
 .railh { margin: 0; font-size:clamp(32px,4.6vw,48px); font-weight: 700;
   letter-spacing: -.035em; line-height: 1.06; }
 .raillede { margin: 12px 0 0; color: var(--r-ink-2); font-size:16px; max-width: 42ch; }
@@ -255,7 +251,7 @@
 .railnav button { width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--r-line);
   color: var(--r-ink-2); font-size:16px; display: grid; place-items: center;
   transition: background-color .18s ease, color .18s ease, border-color .18s ease, scale .16s cubic-bezier(.22,1,.36,1); }
-.railnav button:hover { background: var(--r-ink); color: #0B0B10; border-color: var(--r-ink); }
+.railnav button:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .railnav button:active { scale: .92; }
 .railnav button[disabled] { opacity: .3; pointer-events: none; }
 
@@ -266,8 +262,8 @@
 
 .tile { flex: none; width: 268px; height: 404px; position: relative; scroll-snap-align: start;
   transform: skewX(-8deg); overflow: hidden; cursor: pointer; isolation: isolate;
-  background: linear-gradient(158deg, color-mix(in srgb, var(--tc) 40%, #15161D) 0%, #0D0E13 68%);
-  box-shadow: 0 12px 34px -18px #000;
+  background: linear-gradient(158deg, color-mix(in srgb, var(--tc) 30%, var(--bg-3)) 0%, var(--bg-3) 68%);
+  border: 1px solid var(--line); box-shadow: 0 12px 30px -20px rgba(0,0,0,.42);
   transition: transform .32s cubic-bezier(.22,1,.36,1), box-shadow .32s ease; }
 .tile:nth-child(even) { margin-top: 28px; }
 .tile:hover { transform: skewX(-8deg) translateY(-12px);
@@ -282,7 +278,9 @@
 .tile .art img.on { opacity: 1; }
 .tile:hover .art img { transform: translateY(-8px) scale(1.06); }
 .tile .shade { position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(transparent 34%, rgba(8,8,13,.62) 62%, rgba(8,8,13,.95) 88%); }
+  background: linear-gradient(transparent 34%,
+    color-mix(in srgb, var(--bg-3) 62%, transparent) 62%,
+    color-mix(in srgb, var(--bg-3) 96%, transparent) 88%); }
 
 .tile .meta { position: absolute; left: 0; right: 0; bottom: 0; padding: 0 26px 26px;
   transform: skewX(8deg); }
@@ -294,7 +292,7 @@
   font-size:16px; font-weight: 800; background: rgba(255,255,255,.11); color: #C6CBD6; }
 .tile .grade { position: absolute; top: 15px; right: 16px; z-index: 2; transform: skewX(8deg);
   padding: 4px 10px; border-radius: 980px; font-size:16px; font-weight: 800; letter-spacing: .03em;
-  background: var(--tc); color: #0B0B0D; }
+  background: var(--tc); color: var(--bg); }
 .tile .sc { position: absolute; top: 17px; left: 17px; z-index: 2; transform: skewX(8deg);
   font-size:16px; font-weight: 700; color: var(--r-ink-2); font-variant-numeric: tabular-nums; }
 .tile.noart .art { display: none; }
@@ -314,11 +312,8 @@
 }
 
 /* ── 글로벌 닷 글로브 ── */
-.globe { position: relative; overflow: hidden; background: #0B0B10; color: #F2F3F7;
+.globe { position: relative; overflow: hidden; background: var(--bg-2); color: var(--ink);
   padding-left: 0; padding-right: 0; }
-.globe::before { content: ""; position: absolute; inset: -25% -10%; pointer-events: none;
-  background: radial-gradient(38% 44% at 26% 46%, rgba(83,131,232,.26), transparent 70%),
-              radial-gradient(34% 40% at 82% 62%, rgba(165,94,234,.18), transparent 72%); }
 .gin { position: relative; max-width: 1020px; margin: 0 auto; padding: 0 22px;
   display: grid; grid-template-columns: 1.05fr 1fr; gap: 40px; align-items: center; }
 @media (max-width: 860px) { .gin { grid-template-columns: 1fr; gap: 26px; } }
@@ -327,31 +322,31 @@
 .gpins { position: absolute; inset: 0; pointer-events: none; }
 .gpin { position: absolute; translate: -50% -50%; display: flex; align-items: center; gap: 6px;
   padding: 3px 8px 3px 5px; border-radius: 99px; white-space: nowrap;
-  background: rgba(12,12,18,.82); border: 1px solid rgba(255,255,255,.14);
-  font-size: 10pt; color: #E6E9F0; backdrop-filter: blur(4px);
+  background: color-mix(in srgb, var(--bg) 84%, transparent); border: 1px solid var(--line);
+  font-size: 9.5pt; color: var(--ink); backdrop-filter: blur(4px);
   transition: opacity .3s ease; }
 .gpin i { width: 7px; height: 7px; border-radius: 50%; display: block; flex: none; }
 .gpin.maker i { background: #5383E8; box-shadow: 0 0 9px #5383E8; }
 .gpin.studio i { background: #F0B457; box-shadow: 0 0 9px #F0B457; }
 
 .ghint { position: absolute; left: 50%; bottom: -6px; translate: -50% 0; pointer-events: none;
-  color: #5C6474; font-size: 16px; transition: opacity .3s ease; }
+  color: var(--ink-3); font-size: 9.5pt; transition: opacity .3s ease; }
   .gwrap:hover .ghint { opacity: 0; }
-  .gtxt .kick { color: #7FA6F5; }
+  .gtxt .kick { color: var(--accent); }
 .gh { margin: 0; font-size: clamp(24px, 4vw, 48px); font-weight: 700;
   letter-spacing: -.035em; line-height: 1.1; }
-.glede { margin: 16px 0 0; color: #A2A9B6; font-size: 16px; line-height: 1.72; max-width: 40ch; }
-.glede b { color: #F2F3F7; font-weight: 650; }
+.glede { margin: 16px 0 0; color: var(--ink-2); font-size: 12pt; line-height: 1.72; max-width: 40ch; }
+.glede b { color: var(--ink); font-weight: 700; }
 .gstats { margin: 26px 0 0; display: flex; gap: 26px; flex-wrap: wrap; }
-.gstats b { display: block; font-size: 32px; font-weight: 750; letter-spacing: -.04em; color: #F2F3F7; }
-.gstats span { font-size: 16px; color: #78808F; }
+.gstats b { display: block; font-size: 32px; font-weight: 750; letter-spacing: -.04em; color: var(--ink); }
+.gstats span { font-size: 10pt; color: var(--ink-3); }
 .gcta { display: inline-block; margin-top: 26px; padding: 11px 22px; border-radius: 99px;
-  background: #5383E8; color: #fff; font-size: 16px; font-weight: 650;
+  background: var(--accent); color: #fff; font-size: 11pt; font-weight: 700;
   transition: scale .16s cubic-bezier(.22,1,.36,1), background-color .16s ease; }
-.gcta:hover { background: #6B96F0; }
+.gcta:hover { filter: brightness(1.1); }
 .gcta:active { scale: .97; }
 .gfoot { position: relative; max-width: 1020px; margin: 34px auto 0; padding: 0 22px;
-  color: #6C7382; font-size: 16px; }
+  color: var(--ink-3); font-size: 10pt; }
 
 
 /* ── 검수 계단 ── */
@@ -412,6 +407,32 @@
   color: var(--ink-3); font-size: 16px; }
 
 
+
+/* ── 100칸 인포그래픽 — 숫자보다 칸이 빨리 읽힌다 ── */
+.hund { max-width: 560px; margin: clamp(28px,4vw,44px) auto 0; }
+.hgrid { display: grid; grid-template-columns: repeat(20, 1fr); gap: 4px; }
+@media (max-width: 560px) { .hgrid { grid-template-columns: repeat(10, 1fr); } }
+.hcell { aspect-ratio: 1; border-radius: 3px; background: var(--line);
+  transform: scale(.55); opacity: 0;
+  transition: transform .42s cubic-bezier(.34,1.56,.64,1) var(--d,0s),
+              opacity .3s ease var(--d,0s), background-color .3s ease var(--d,0s); }
+.hund.on .hcell { transform: scale(1); opacity: 1; }
+.hund.on .hcell.p { background: var(--accent); }
+.hund.on .hcell.f { background: color-mix(in srgb, var(--ink) 14%, transparent); }
+.hleg { display: flex; gap: 20px; justify-content: center; margin-top: 16px;
+  font-size: 11pt; color: var(--ink-2); }
+.hl { display: inline-flex; align-items: center; gap: 7px; }
+.hl i { width: 11px; height: 11px; border-radius: 3px; display: block; }
+.hl.pass i { background: var(--accent); }
+.hl.fail i { background: color-mix(in srgb, var(--ink) 14%, transparent); }
+.hl b { font-weight: 800; color: var(--ink); }
+.hcap { margin: 14px auto 0; max-width: 46ch; text-align: center;
+  color: var(--ink-3); font-size: 10pt; line-height: 1.6; }
+.hstats { display: flex; gap: 34px; justify-content: center; flex-wrap: wrap;
+  margin: clamp(30px,4vw,44px) 0 0; }
+.hstats b { display: block; font-size: 32px; font-weight: 800; letter-spacing: -.04em; }
+.hstats span { font-size: 10pt; color: var(--ink-3); }
+
 </style>
 
 <style id="igg-nav-css">
@@ -447,6 +468,8 @@
   .igg-tabs sup { font-size: 7pt; color: #FF6B7A; font-weight: 800; }
   .igg-tabs a[aria-current="page"] sup { color: #FFD9DE; }
 
+
+
   /* 눌리는 느낌 — 전 페이지 공통. transform 이 아니라 scale 프로퍼티라 기존 transform 과 안 싸운다 */
   @media (prefers-reduced-motion: no-preference) {
     button, .btn, .igg-ghost, .igg-cta, .igg-tabs a, [role="button"] {
@@ -475,6 +498,183 @@
     <div class="igg-tabs"><a href="index.html">홈</a><a href="about.html" aria-current="page">서비스 소개</a><a href="market.html">마켓</a><a href="community.html">게임 스택</a><a href="ai.html">AI 파이프라인<sup>N</sup></a><a href="scene.html">에셋 시연</a><a href="viewer3d.html">3D 뷰어</a><a href="vlog.html">개발 브이로그<sup>N</sup></a></div>
   </div></div>
 </nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rkg-chal" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFEFC4"/><stop offset=".42" stop-color="#F0B457"/><stop offset="1" stop-color="#8E5F17"/></linearGradient>
+  <linearGradient id="rkg-dia" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EBD9FF"/><stop offset=".42" stop-color="#A55EEA"/><stop offset="1" stop-color="#54277D"/></linearGradient>
+  <linearGradient id="rkg-plat" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#CFF3EA"/><stop offset=".42" stop-color="#4E9D8D"/><stop offset="1" stop-color="#1F5148"/></linearGradient>
+  <linearGradient id="rkg-silv" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EDF1F5"/><stop offset=".42" stop-color="#8E9BA5"/><stop offset="1" stop-color="#464F58"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 48 48">
+    <path d="M9.5 15.5 1 10.6l3.4 8.8-2.2 1.2 7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M38.5 15.5 47 10.6l-3.4 8.8 2.2 1.2-7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-chal)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m16.6 27.4-2.3-9.3 5.8 4.4L24 15l3.9 7.5 5.8-4.4-2.3 9.3z" fill="url(#rkg-chal)"/>
+    <path d="M16.6 29.6h14.8v2.4H16.6z" fill="url(#rkg-chal)"/>
+  </symbol>
+  <symbol id="rk-dia" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-dia)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.4 7.4 6.6L24 32.4 16.6 21z" fill="url(#rkg-dia)"/>
+    <path d="M16.6 21h14.8L24 24.2z" fill="#0A0A10" opacity=".28"/>
+    <path d="m24 14.4 3 6.6-3 3.2-3-3.2z" fill="#fff" opacity=".34"/>
+  </symbol>
+  <symbol id="rk-plat" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-plat)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.6 6.6 3.8v7.6L24 29.8l-6.6-3.8v-7.6z" fill="url(#rkg-plat)"/>
+    <path d="M17.4 18.4 24 22.2l6.6-3.8L24 14.6z" fill="#fff" opacity=".26"/>
+  </symbol>
+  <symbol id="rk-silv" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-silv)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="M17.6 20.4h12.8v3.6H17.6z" fill="url(#rkg-silv)"/>
+    <path d="M17.6 20.4h12.8v1.6H17.6z" fill="#fff" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rkg-chal" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFEFC4"/><stop offset=".42" stop-color="#F0B457"/><stop offset="1" stop-color="#8E5F17"/></linearGradient>
+  <linearGradient id="rkg-dia" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EBD9FF"/><stop offset=".42" stop-color="#A55EEA"/><stop offset="1" stop-color="#54277D"/></linearGradient>
+  <linearGradient id="rkg-plat" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#CFF3EA"/><stop offset=".42" stop-color="#4E9D8D"/><stop offset="1" stop-color="#1F5148"/></linearGradient>
+  <linearGradient id="rkg-silv" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EDF1F5"/><stop offset=".42" stop-color="#8E9BA5"/><stop offset="1" stop-color="#464F58"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 48 48">
+    <path d="M9.5 15.5 1 10.6l3.4 8.8-2.2 1.2 7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M38.5 15.5 47 10.6l-3.4 8.8 2.2 1.2-7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-chal)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m16.6 27.4-2.3-9.3 5.8 4.4L24 15l3.9 7.5 5.8-4.4-2.3 9.3z" fill="url(#rkg-chal)"/>
+    <path d="M16.6 29.6h14.8v2.4H16.6z" fill="url(#rkg-chal)"/>
+  </symbol>
+  <symbol id="rk-dia" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-dia)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.4 7.4 6.6L24 32.4 16.6 21z" fill="url(#rkg-dia)"/>
+    <path d="M16.6 21h14.8L24 24.2z" fill="#0A0A10" opacity=".28"/>
+    <path d="m24 14.4 3 6.6-3 3.2-3-3.2z" fill="#fff" opacity=".34"/>
+  </symbol>
+  <symbol id="rk-plat" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-plat)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.6 6.6 3.8v7.6L24 29.8l-6.6-3.8v-7.6z" fill="url(#rkg-plat)"/>
+    <path d="M17.4 18.4 24 22.2l6.6-3.8L24 14.6z" fill="#fff" opacity=".26"/>
+  </symbol>
+  <symbol id="rk-silv" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-silv)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="M17.6 20.4h12.8v3.6H17.6z" fill="url(#rkg-silv)"/>
+    <path d="M17.6 20.4h12.8v1.6H17.6z" fill="#fff" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="rkg-chal" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFEFC4"/><stop offset=".42" stop-color="#F0B457"/><stop offset="1" stop-color="#8E5F17"/></linearGradient>
+  <linearGradient id="rkg-dia" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EBD9FF"/><stop offset=".42" stop-color="#A55EEA"/><stop offset="1" stop-color="#54277D"/></linearGradient>
+  <linearGradient id="rkg-plat" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#CFF3EA"/><stop offset=".42" stop-color="#4E9D8D"/><stop offset="1" stop-color="#1F5148"/></linearGradient>
+  <linearGradient id="rkg-silv" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EDF1F5"/><stop offset=".42" stop-color="#8E9BA5"/><stop offset="1" stop-color="#464F58"/></linearGradient>
+
+  <symbol id="rk-chal" viewBox="0 0 48 48">
+    <path d="M9.5 15.5 1 10.6l3.4 8.8-2.2 1.2 7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M38.5 15.5 47 10.6l-3.4 8.8 2.2 1.2-7.3 3.1z" fill="url(#rkg-chal)" opacity=".5"/>
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-chal)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m16.6 27.4-2.3-9.3 5.8 4.4L24 15l3.9 7.5 5.8-4.4-2.3 9.3z" fill="url(#rkg-chal)"/>
+    <path d="M16.6 29.6h14.8v2.4H16.6z" fill="url(#rkg-chal)"/>
+  </symbol>
+  <symbol id="rk-dia" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-dia)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.4 7.4 6.6L24 32.4 16.6 21z" fill="url(#rkg-dia)"/>
+    <path d="M16.6 21h14.8L24 24.2z" fill="#0A0A10" opacity=".28"/>
+    <path d="m24 14.4 3 6.6-3 3.2-3-3.2z" fill="#fff" opacity=".34"/>
+  </symbol>
+  <symbol id="rk-plat" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-plat)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="m24 14.6 6.6 3.8v7.6L24 29.8l-6.6-3.8v-7.6z" fill="url(#rkg-plat)"/>
+    <path d="M17.4 18.4 24 22.2l6.6-3.8L24 14.6z" fill="#fff" opacity=".26"/>
+  </symbol>
+  <symbol id="rk-silv" viewBox="0 0 48 48">
+    <path d="M24 3.2 39.6 9.4v13.4c0 8.6-7.3 14.8-15.6 19-8.3-4.2-15.6-10.4-15.6-19V9.4z" fill="url(#rkg-silv)"/>
+    <path d="M24 8.2 35 12.6v10.2c0 6.2-5.2 10.9-11 14-5.8-3.1-11-7.8-11-14V12.6z" fill="#0A0A10" opacity=".34"/>
+    <path d="M17.6 20.4h12.8v3.6H17.6z" fill="url(#rkg-silv)"/>
+    <path d="M17.6 20.4h12.8v1.6H17.6z" fill="#fff" opacity=".3"/>
+  </symbol>
+</defs></svg>
+<style id="igg-rank-css">
+  .rk { width: 1em; height: 1em; display: inline-block; vertical-align: -.16em; flex: none; }
+</style>
+
+<script>
+(function () {
+  var b = document.getElementById("theme");
+  if (!b) return;
+  b.addEventListener("click", function () {
+    var r = document.documentElement, c = r.getAttribute("data-theme");
+    var dark = c ? c === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    r.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+})();
+</script>
+
+
+
+
+
+
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
   <linearGradient id="rkg-chal" x1="24" y1="2" x2="24" y2="46" gradientUnits="userSpaceOnUse">
     <stop offset="0" stop-color="#FFEFC4"/><stop offset=".42" stop-color="#F0B457"/><stop offset="1" stop-color="#8E5F17"/></linearGradient>
@@ -1219,13 +1419,23 @@
   <div class="in">
     <p class="kick">기준</p>
     <h2>61.2%가 떨어집니다.<br>그게 상품입니다.</h2>
-    <p class="lede">떨어진 것까지 전부 공개합니다.</p>
-    <div class="figs">
-      <div class="fig"><b class="tab">61.2%</b><span>검수 탈락률</span></div>
-      <div class="fig"><b class="tab">7</b><span>자동 검사 항목</span></div>
-      <div class="fig"><b class="tab">0</b><span>사람이 열어보는 횟수</span></div>
-    </div>
-  </div>
+        <p class="lede">떨어진 것까지 전부 공개합니다.</p>
+
+        <div class="hund" id="hund" aria-label="에셋 100개 중 61개가 검수에서 떨어집니다">
+          <div class="hgrid" id="hgrid"></div>
+          <div class="hleg">
+            <span class="hl pass"><i></i>통과 <b class="tab">38.8</b>%</span>
+            <span class="hl fail"><i></i>탈락 <b class="tab">61.2</b>%</span>
+          </div>
+        </div>
+        <p class="hcap">올라온 에셋 100개를 칸으로 놓은 것입니다. 색이 남은 칸만 카탈로그에 오릅니다.</p>
+
+        <div class="hstats">
+          <div><b class="tab">7</b><span>자동 검사 항목</span></div>
+          <div><b class="tab">3</b><span>일 안에 결과</span></div>
+          <div><b class="tab">0</b><span>사람이 열어보는 횟수</span></div>
+        </div>
+      </div>
 </section>
 <!-- 에셋 쇼케이스 — 라이엇식 풀블리드 기울임 타일 -->
 <section class="sec rail" id="assets">
@@ -1241,7 +1451,6 @@
     </div>
   </div>
   <div class="railtrack" id="rtrack"></div>
-  <p class="railfoot">모델은 Kenney가 CC0로 공개한 던전 킷입니다. 이름·배지·점수는 데모용 예시입니다.</p>
 </section>
 <!-- 글로벌 — 라이엇 who-we-are 5번째 섹션 구도. 닷 글로브 + 우측 카피 -->
 <section class="sec globe" id="global">
@@ -1263,7 +1472,6 @@
       <a class="gcta" href="market.html">카탈로그 둘러보기</a>
     </div>
   </div>
-  <p class="gfoot">표시된 도시는 서비스 구상 단계의 목표 지역입니다. 실측 분포가 아닙니다.</p>
 </section>
 
 
@@ -1292,7 +1500,6 @@
           <span class="vv">플래티넘 → <b style="color:var(--chal)">챌린저</b></span></div>
       </div>
     </div>
-    <p class="note" style="max-width:46em">떨어뜨리는 검수가 아니라 고쳐 주는 도구입니다.</p>
   </div>
 </section>
 
@@ -1535,7 +1742,13 @@ if (cv) {
   /* 점으로 만든 구 — 피보나치 배치라 뭉치는 데가 없다 */
   const N = 2600, pos = new Float32Array(N * 3), col = new Float32Array(N * 3);
   const gold = Math.PI * (3 - Math.sqrt(5));
-  const cBase = new THREE.Color(0x39415a), cHi = new THREE.Color(0x5b7fc4);
+  /* 배경이 밝은지 어두운지 읽어서 점과 안쪽 구의 색을 맞춘다 */
+  const bg = getComputedStyle(document.querySelector(".globe")).backgroundColor;
+  const rgb = (bg.match(/\d+/g) || [11, 11, 16]).map(Number);
+  const lum = (rgb[0] * .299 + rgb[1] * .587 + rgb[2] * .114) / 255;
+  const dark = lum < .5;
+  const cBase = new THREE.Color(dark ? 0x39415a : 0xb2bccf);
+  const cHi = new THREE.Color(dark ? 0x5b7fc4 : 0x5383e8);
   for (let i = 0; i < N; i++) {
     const y = 1 - (i / (N - 1)) * 2, rad = Math.sqrt(Math.max(0, 1 - y * y)), th = gold * i;
     pos[i * 3] = Math.cos(th) * rad; pos[i * 3 + 1] = y; pos[i * 3 + 2] = Math.sin(th) * rad;
@@ -1551,7 +1764,7 @@ if (cv) {
   /* 안쪽을 살짝 채워서 뒤쪽 점이 비쳐 보이지 않게 */
   world.add(new THREE.Mesh(
     new THREE.SphereGeometry(R * 0.985, 48, 32),
-    new THREE.MeshBasicMaterial({ color: 0x0C0D13 })));
+    new THREE.MeshBasicMaterial({ color: dark ? 0x0C0D13 : 0xf1f3f7 })));
 
   /* 도시 표식 */
   const marks = CITIES.map(([name, lat, lon, role]) => {
@@ -1836,6 +2049,30 @@ if (box) {
     card.addEventListener("pointerleave", reset);
     card.addEventListener("blur", reset);
   });
+})();
+</script>
+
+<script>
+(function () {
+  /* 61.2% 를 칸으로 그린다. 100칸 중 61칸이 꺼진 채로 남는다. */
+  var box = document.getElementById("hund"), grid = document.getElementById("hgrid");
+  if (!box || !grid) return;
+  var FAIL = 61, reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var html = "";
+  for (var i = 0; i < 100; i++) {
+    /* 통과분을 앞쪽에 몰지 않고 고르게 흩어야 비율로 읽힌다 */
+    var pass = (i * 39) % 100 < 39;
+    html += '<span class="hcell ' + (pass ? "p" : "f") + '" style="--d:' +
+      (reduce ? 0 : (i * 0.012).toFixed(3)) + 's"></span>';
+  }
+  grid.innerHTML = html;
+  if (reduce) { box.classList.add("on"); return; }
+  var io = new IntersectionObserver(function (es) {
+    if (!es[0].isIntersecting) return;
+    io.disconnect();
+    box.classList.add("on");
+  }, { threshold: .25 });
+  io.observe(box);
 })();
 </script>
 
