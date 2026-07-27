@@ -70,6 +70,9 @@ export function PromptBuilder({
   onChange: (next: string[]) => void;
 }) {
   const [over, setOver] = useState(false);
+  /* 어느 축을 펴 둘 것인가. 첫 축을 열어 둔다 — 전부 닫아 두면 처음 온
+     사람에게는 빈 줄만 보이고, 무엇을 고를 수 있는지가 안 드러난다. */
+  const [openAxis, setAxis] = useState(BLOCK_GROUPS[0]?.[0] ?? "");
 
   const add = (id: string) => {
     if (!picked.includes(id)) onChange([...picked, id]);
@@ -120,39 +123,63 @@ export function PromptBuilder({
         })}
       </div>
 
-      {/* 재료. 축마다 묶어 두면 무엇을 고를 수 있는지가 한눈에 들어온다.
+      {/* 재료.
 
-         라벨 칸을 넉넉히 잡는다. 한국어("색온도")에 맞춰 48px 로 뒀더니
-         영어("Temperature")가 넘쳐서 칩 위로 겹쳤다. 폭을 말에 맞춰 재면
-         언어가 늘 때마다 다시 깨진다 — 제일 긴 말이 들어갈 만큼 둔다. */}
-      <div className="mt-3 flex flex-col gap-2.5">
-        {BLOCK_GROUPS.map(([axis, blocks]) => (
-          <div key={axis} className="flex flex-wrap items-center gap-1.5">
-            <span className="w-20 shrink-0 text-xs text-faint">{t(axis)}</span>
-            {blocks.map((b) => {
-              const on = picked.includes(b.id);
-              return (
-                <button
-                  key={b.id}
-                  type="button"
-                  draggable
-                  onDragStart={(e) => e.dataTransfer.setData("text/plain", b.id)}
-                  onClick={() => (on ? remove(b.id) : add(b.id))}
-                  aria-pressed={on}
-title={t(b.word)}
-                  className={[
-                    "cursor-grab rounded-full border px-3 py-1 text-xs active:cursor-grabbing",
-                    on
-                      ? "border-accent text-accent"
-                      : "border-line text-muted hover:border-accent hover:text-ink",
-                  ].join(" ")}
-                >
-                  {t(b.label)}
-                </button>
-              );
-            })}
-          </div>
-        ))}
+         일곱 축을 전부 펼쳐 두니 이 상자만 541px 이 됐다 — 뷰포트의 75%다.
+         오른쪽 칼럼 전체가 1,416px 이라 결과를 보려면 매번 스크롤해야 했다.
+
+         축을 탭으로 접는다. 한 번에 한 축의 칩만 보이므로 일곱 줄이 두 줄이
+         된다. 고른 게 있는 축에는 점을 찍어 둔다 — 접어 두면 어디에 뭘
+         골랐는지 안 보이는 게 접기의 대가라서, 그것만 돌려준다.
+
+         팔레트를 팝오버로 숨기는 방법도 있었는데 안 썼다. 여기는 끌어다
+         놓는 자리고, 팝오버가 열린 채로 드래그를 시작할 수가 없다. */}
+      <div className="mt-3 flex flex-wrap gap-1">
+        {BLOCK_GROUPS.map(([axis, blocks]) => {
+          const n = blocks.filter((b) => picked.includes(b.id)).length;
+          return (
+            <button
+              key={axis}
+              type="button"
+              onClick={() => setAxis(axis)}
+              aria-pressed={axis === openAxis}
+              className={[
+                "flex cursor-pointer items-center gap-1 rounded-lg border-0 px-2.5 py-1 text-xs",
+                axis === openAxis
+                  ? "bg-chrome-700 font-bold text-ink"
+                  : "bg-transparent text-faint hover:text-ink",
+              ].join(" ")}
+            >
+              {t(axis)}
+              {n > 0 && <b className="h-1.5 w-1.5 rounded-full bg-accent" />}
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="mt-2 flex min-h-[34px] flex-wrap gap-1.5">
+        {(BLOCK_GROUPS.find(([a]) => a === openAxis)?.[1] ?? []).map((b) => {
+          const on = picked.includes(b.id);
+          return (
+            <button
+              key={b.id}
+              type="button"
+              draggable
+              onDragStart={(e) => e.dataTransfer.setData("text/plain", b.id)}
+              onClick={() => (on ? remove(b.id) : add(b.id))}
+              aria-pressed={on}
+              title={t(b.word)}
+              className={[
+                "cursor-grab rounded-full border px-3 py-1 text-xs active:cursor-grabbing",
+                on
+                  ? "border-accent text-accent"
+                  : "border-line text-muted hover:border-accent hover:text-ink",
+              ].join(" ")}
+            >
+              {t(b.label)}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

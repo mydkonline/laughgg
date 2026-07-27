@@ -51,6 +51,11 @@ const AXIS_LABEL: Record<string, string> = {
   line: "외곽선",
 };
 
+/* 참조 그림은 세 장까지. 도구마다 다르지만 어디든 상한이 있다. 여기서는
+   마지막 한 장이 팔레트를 정하므로 많이 받을 이유가 없고, 받을수록 입력
+   상자만 길어진다. */
+const MAX_REFS = 3;
+
 export function Workshop() {
   const [params, setParams] = useSearchParams();
   const navigate = useNavigate();
@@ -111,14 +116,19 @@ export function Workshop() {
   );
 
   const addRefs = (files: FileList) => {
-    for (const f of Array.from(files).slice(0, 3)) {
+    for (const f of Array.from(files).slice(0, MAX_REFS)) {
       if (!f.type.startsWith("image/")) continue;
       const url = URL.createObjectURL(f);
       const img = new Image();
       img.onload = () => {
         const colors = extractPalette(img);
         setRefs((prev) => {
-          const next = [...prev.filter((r) => r.url !== url), { url, name: f.name, colors }];
+          /* 총량을 막는다. 한 번에 세 장씩은 걸렀는데 여러 번 떨구면 계속
+             쌓였다 — 썸네일이 줄을 넘길수록 컴포저가 그만큼 길어진다.
+             오래된 것부터 뺀다. 마지막에 올린 것이 색을 정하므로 그게 맞다. */
+          const kept = [...prev.filter((r) => r.url !== url), { url, name: f.name, colors }];
+          for (const gone of kept.slice(0, -MAX_REFS)) URL.revokeObjectURL(gone.url);
+          const next = kept.slice(-MAX_REFS);
           // 마지막에 올린 것이 팔레트를 정한다. 여러 장을 섞으면 어느 색인지 모른다.
           if (colors.length > 0) {
             setRefPalette(colors, f.name);
@@ -381,8 +391,19 @@ export function Workshop() {
         </div>
 
         {/* 조작 패널. 그림 옆에 둔다 — 프롬프트가 이 제품이 파는 것이라
-            스크롤을 내려야 보이면 안 된다. */}
-        <aside className="flex flex-col gap-5 lg:sticky lg:top-[100px] lg:self-start">
+            스크롤을 내려야 보이면 안 된다.
+
+            **뷰포트보다 크면 sticky 가 sticky 가 아니다.** 이 패널은 1,184px
+            이었고 화면은 723px 이었다. 붙박이로 세워 두면 아래 461px 이
+            화면 밖에 고정돼서, 페이지를 아무리 굴려도 점수 패널이 안 올라온다.
+
+            그림 편집 도구들의 인스펙터가 하는 대로 한다 — 패널을 화면 높이에
+            맞추고 그 안에서만 굴린다. 그러면 왼쪽 그림이 안 움직인다. 조작과
+            결과를 같이 보는 게 이 화면의 전부라, 둘 중 하나가 밀려나면 안 된다.
+
+            가로는 안 자른다. 안쪽 칩은 전부 줄바꿈이라 넘칠 일이 없고,
+            자르면 포커스 테두리가 잘린다. */}
+        <aside className="flex flex-col gap-5 lg:sticky lg:top-[100px] lg:max-h-[calc(100vh-120px)] lg:self-start lg:overflow-y-auto lg:pr-1">
           {/* 컨셉이 먼저다. 대부분은 이것만 눌러 보고 끝낸다. */}
           <div>
             <div className="mb-2.5 flex flex-wrap items-baseline gap-3">
