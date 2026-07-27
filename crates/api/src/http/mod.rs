@@ -18,7 +18,7 @@ mod sale;
 use axum::{
     Router,
     extract::State,
-    http::StatusCode,
+    http::{HeaderValue, Method, StatusCode},
     routing::{get, post},
 };
 use sqlx::PgPool;
@@ -34,6 +34,8 @@ pub struct AppState {
     pub secure_cookies: bool,
     pub google: Option<crate::http::oauth::google::GoogleConfig>,
     pub stripe: Option<crate::http::payment::StripeConfig>,
+    /// 쿠키를 실어 보낼 수 있는 오리진. 비면 CORS 를 안 연다.
+    pub cors_origins: Vec<String>,
 }
 
 impl AppState {
@@ -48,12 +50,35 @@ impl AppState {
             secure_cookies: false,
             google: None,
             stripe: None,
+            cors_origins: Vec::new(),
         }
     }
 }
 
+/* CORS.
+
+permissive 로는 쿠키가 안 실린다. 브라우저가 credentials 를 붙이려면
+서버가 정확한 오리진을 되돌려 줘야 하고, 와일드카드는 그 자리에서 거절된다 —
+아무 사이트나 남의 세션으로 우리 API 를 부를 수 있게 되기 때문이다.
+
+허용 목록이 비어 있으면 CORS 를 안 연다. 프런트와 API 가 같은 도메인이면
+애초에 필요 없고, 필요 없는데 열어 두면 그게 구멍이다. */
+fn cors(origins: &[String]) -> CorsLayer {
+    if origins.is_empty() {
+        return CorsLayer::new();
+    }
+    let allowed: Vec<HeaderValue> = origins.iter().filter_map(|o| o.parse().ok()).collect();
+
+    CorsLayer::new()
+        .allow_origin(allowed)
+        .allow_credentials(true)
+        .allow_methods([Method::GET, Method::POST, Method::DELETE, Method::OPTIONS])
+        .allow_headers([axum::http::header::CONTENT_TYPE])
+}
+
 /// API 라우터와 정적 파일 서빙을 조립한다.
 pub fn router(state: AppState) -> Router {
+    let origins = state.cors_origins.clone();
     let api = Router::new()
         .route("/health", get(health))
         .route("/auth/signup", post(auth::sign_up))
@@ -89,7 +114,7 @@ pub fn router(state: AppState) -> Router {
     Router::new()
         .nest("/api", api)
         .fallback_service(ServeDir::new("web").append_index_html_on_directories(true))
-        .layer(CorsLayer::permissive())
+        .layer(cors(&origins))
         .layer(TraceLayer::new_for_http())
 }
 

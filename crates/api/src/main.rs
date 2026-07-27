@@ -55,6 +55,22 @@ async fn main() -> Result<()> {
     빠뜨렸을 때 안전한 쪽으로 틀리는 게 낫다. */
     let secure_cookies = std::env::var("INSECURE_COOKIES").is_err();
 
+    /* 프런트가 다른 도메인에 있으면 그 주소를 적어 줘야 쿠키가 실린다.
+    쉼표로 여럿. 안 적으면 CORS 를 안 연다 — 같은 도메인이면 필요 없고,
+    필요 없는데 열어 두면 그게 구멍이다. */
+    let cors_origins: Vec<String> = std::env::var("CORS_ORIGINS")
+        .unwrap_or_default()
+        .split(',')
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+        .map(str::to_owned)
+        .collect();
+    if cors_origins.is_empty() {
+        tracing::info!("CORS is closed; set CORS_ORIGINS if the front end is on another domain");
+    } else {
+        tracing::info!(?cors_origins, "CORS open for these origins");
+    }
+
     // 만료된 세션은 부팅할 때 한 번 치운다. 안 치우면 테이블이 영원히 자란다.
     match repo::purge_expired_sessions(&pool).await {
         Ok(n) if n > 0 => tracing::info!(purged = n, "expired sessions removed"),
@@ -75,6 +91,7 @@ async fn main() -> Result<()> {
             secure_cookies,
             google,
             stripe,
+            cors_origins,
         }),
     )
     .with_graceful_shutdown(shutdown_signal())

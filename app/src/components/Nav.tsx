@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { NavLink, Link, useLocation } from "react-router-dom";
 import { useCart } from "../lib/cart";
 import { useTheme } from "../lib/theme";
+import { logOut, useAccount } from "../lib/account";
 
 /* 대분류는 다섯이다. 서브가 있는 것만 드롭다운을 연다. */
 type Group = { label: string; to: string; badge?: string; subs?: { label: string; to: string; badge?: string }[] };
@@ -121,6 +122,48 @@ const tabClass = ({ isActive }: { isActive: boolean }) =>
       : "text-chrome-300 hover:bg-white/7 hover:text-white",
   ].join(" ");
 
+/* 계정 단추.
+
+   상태 셋을 구분한다. 아직 안 물어본 동안 "로그인" 을 띄우면 새로고침마다
+   그게 깜빡였다가 이름으로 바뀐다 — 로그인이 풀린 것처럼 보인다. */
+function AccountButton() {
+  const auth = useAccount();
+
+  if (auth.status === "loading") {
+    // 자리만 잡는다. 폭이 바뀌면 옆 단추들이 밀린다.
+    return <span className="px-3 py-1 text-[length:var(--text-nav)] text-chrome-600">…</span>;
+  }
+
+  if (auth.status === "anon") {
+    return (
+      <Link
+        to="/join?mode=login"
+        className="rounded bg-chrome-800 px-3 py-1 text-[length:var(--text-nav)] text-gray-350 no-underline hover:bg-chrome-700 hover:text-white"
+      >
+        로그인
+      </Link>
+    );
+  }
+
+  return (
+    <span className="flex items-center gap-1.5">
+      <Link
+        to="/me"
+        className="rounded bg-chrome-800 px-3 py-1 text-[length:var(--text-nav)] text-white no-underline hover:bg-chrome-700"
+      >
+        {auth.account.display_name}
+      </Link>
+      <button
+        type="button"
+        onClick={() => void logOut()}
+        className="cursor-pointer rounded border-0 bg-chrome-800 px-3 py-1 text-[length:var(--text-nav)] text-gray-350 hover:bg-chrome-700 hover:text-white"
+      >
+        나가기
+      </button>
+    </span>
+  );
+}
+
 export function Nav() {
   const { count } = useCart();
   const { toggle } = useTheme();
@@ -141,9 +184,7 @@ export function Nav() {
             <Link to="/cart" className="rounded bg-chrome-800 px-3 py-1 text-[length:var(--text-nav)] text-gray-350 no-underline hover:bg-chrome-700 hover:text-white">
               장바구니 <b className="ml-0.5 font-extrabold text-accent">{count}</b>
             </Link>
-            <button type="button" className="cursor-pointer rounded border-0 bg-chrome-800 px-3 py-1 text-[length:var(--text-nav)] text-gray-350 hover:bg-chrome-700 hover:text-white">
-              로그인
-            </button>
+            <AccountButton />
             <button type="button" onClick={toggle} className="cursor-pointer rounded border-0 bg-chrome-800 px-3 py-1 text-[length:var(--text-nav)] text-gray-350 hover:bg-chrome-700 hover:text-white">
               테마
             </button>
