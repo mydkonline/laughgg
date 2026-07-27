@@ -114,6 +114,21 @@ pub async fn my_orders(
     Ok(Json(json!({ "count": orders.len(), "orders": orders })))
 }
 
+/* 내 라이브러리.
+
+주문 목록과 다르다. 주문은 결제 내역이고 라이브러리는 소유 목록이라,
+같은 에셋을 두 번 사도 한 줄이다. */
+///
+/// # Errors
+/// 조회에 실패하면 오류를 반환한다.
+pub async fn my_library(
+    State(st): State<AppState>,
+    CurrentAccount(account): CurrentAccount,
+) -> ApiResult<Json<serde_json::Value>> {
+    let owned = repo::my_library(&st.pool, account.id).await?;
+    Ok(Json(json!({ "count": owned.len(), "assets": owned })))
+}
+
 #[derive(Deserialize)]
 struct Event {
     #[serde(rename = "type")]

@@ -80,6 +80,47 @@ fn scores(v: u8) -> ReviewScores {
     }
 }
 
+fn an_asset(title: &str) -> NewAsset {
+    NewAsset {
+        title: title.into(),
+        category: "prop".into(),
+        engine: "unity".into(),
+        art_style: "realistic".into(),
+        price_usd: 30.0,
+        scores: scores(90),
+    }
+}
+
+/// 살 사람과 팔 에셋 하나.
+async fn a_buyer_and_asset(pool: &PgPool) -> (i64, i64) {
+    let buyer = repo::sign_up(
+        pool,
+        &laughgg_api::domain::Credentials {
+            email: "buyer@op.gg".into(),
+            password: "goodpassword".into(),
+            display_name: None,
+        },
+    )
+    .await
+    .expect("구매자")
+    .id;
+    let maker = repo::sign_up(
+        pool,
+        &laughgg_api::domain::Credentials {
+            email: "maker@op.gg".into(),
+            password: "goodpassword".into(),
+            display_name: None,
+        },
+    )
+    .await
+    .expect("창작자")
+    .id;
+    let asset = repo::create_asset(pool, maker, &an_asset("Gothic Statue"))
+        .await
+        .expect("에셋");
+    (buyer, asset.asset_id)
+}
+
 /// 결제 대상이 될 계정과 주문 하나를 만든다.
 async fn an_order(pool: &PgPool, session_id: &str) -> i64 {
     let account = repo::sign_up(
@@ -261,5 +302,135 @@ async fn a_silver_asset_cannot_be_ordered(pool: PgPool) {
     assert!(
         matches!(err, repo::RepoError::AssetNotSellable { .. }),
         "{err:?}"
+    );
+}
+
+/* 라이브러리는 소유 목록이지 결제 내역이 아니다. */
+#[sqlx::test]
+async fn the_library_lists_only_paid_assets(pool: PgPool) {
+    let account = repo::sign_up(
+        &pool,
+        &laughgg_api::domain::Credentials {
+            email: "buyer@op.gg".into(),
+            password: "goodpassword".into(),
+            display_name: None,
+        },
+    )
+    .await
+    .expect("가입");
+    let maker = repo::sign_up(
+        &pool,
+        &laughgg_api::domain::Credentials {
+            email: "maker@op.gg".into(),
+            password: "goodpassword".into(),
+            display_name: None,
+        },
+    )
+    .await
+    .expect("창작자");
+
+    let bought = repo::create_asset(&pool, maker.id, &an_asset("Bought"))
+        .await
+        .expect("에셋 1");
+    let browsed = repo::create_asset(&pool, maker.id, &an_asset("Only Browsed"))
+        .await
+        .expect("에셋 2");
+
+    // 하나는 결제까지, 하나는 주문만 열어 둔다.
+    let order = repo::open_order(&pool, account.id, bought.asset_id)
+        .await
+        .expect("주문");
+    repo::attach_provider_ref(&pool, order.id, "cs_lib")
+        .await
+        .expect("세션 id");
+    repo::mark_paid(&pool, "cs_lib").await.expect("결제 확정");
+
+    repo::open_order(&pool, account.id, browsed.asset_id)
+        .await
+        .expect("결제 안 한 주문");
+
+    let library = repo::my_library(&pool, account.id)
+        .await
+        .expect("라이브러리");
+    assert_eq!(library.len(), 1, "결제 안 한 건 라이브러리에 없어야 한다");
+    assert_eq!(library[0].title, "Bought");
+    assert!((library[0].paid_usd - 30.0).abs() < 1e-9);
+}
+
+/// 같은 에셋을 두 번 사도 라이브러리에는 한 줄이다.
+#[sqlx::test]
+async fn buying_twice_shows_one_entry(pool: PgPool) {
+    let (account, asset_id) = a_buyer_and_asset(&pool).await;
+
+    for reference in ["cs_a", "cs_b"] {
+        let order = repo::open_order(&pool, account, asset_id)
+            .await
+            .expect("주문");
+        repo::attach_provider_ref(&pool, order.id, reference)
+            .await
+            .expect("세션 id");
+        repo::mark_paid(&pool, reference).await.expect("결제");
+    }
+
+    let library = repo::my_library(&pool, account).await.expect("라이브러리");
+    assert_eq!(library.len(), 1, "소유 목록은 산 횟수를 세지 않는다");
+
+    let orders = repo::list_orders(&pool, account).await.expect("주문 목록");
+    assert_eq!(orders.len(), 2, "주문 내역은 두 건이어야 한다");
+}
+
+#[sqlx::test]
+async fn the_library_needs_a_session(pool: PgPool) {
+    let res = router(state(pool.clone()))
+        .oneshot(
+            Request::builder()
+                .method("GET")
+                .uri("/api/me/library")
+                .body(Body::empty())
+                .expect("요청"),
+        )
+        .await
+        .expect("라우터");
+    assert_eq!(res.status(), StatusCode::UNAUTHORIZED);
+}
+
+/// 산 사람과 만든 사람이 쓸 수 있다. 만든 사람을 빼면 자기 것을 자기가 못 받는다.
+#[sqlx::test]
+async fn ownership_covers_buyers_and_the_creator(pool: PgPool) {
+    let (buyer, asset_id) = a_buyer_and_asset(&pool).await;
+    let maker: i64 = sqlx::query_scalar(
+        "SELECT c.account_id FROM assets a JOIN creators c ON c.id = a.creator_id WHERE a.id = $1",
+    )
+    .bind(asset_id)
+    .fetch_one(&pool)
+    .await
+    .expect("창작자 계정");
+
+    assert!(
+        repo::owns_asset(&pool, maker, asset_id)
+            .await
+            .expect("확인"),
+        "만든 사람은 언제나 쓸 수 있어야 한다"
+    );
+    assert!(
+        !repo::owns_asset(&pool, buyer, asset_id)
+            .await
+            .expect("확인"),
+        "아직 안 샀으면 못 쓴다"
+    );
+
+    let order = repo::open_order(&pool, buyer, asset_id)
+        .await
+        .expect("주문");
+    repo::attach_provider_ref(&pool, order.id, "cs_own")
+        .await
+        .expect("세션 id");
+    repo::mark_paid(&pool, "cs_own").await.expect("결제");
+
+    assert!(
+        repo::owns_asset(&pool, buyer, asset_id)
+            .await
+            .expect("확인"),
+        "결제하면 쓸 수 있어야 한다"
     );
 }

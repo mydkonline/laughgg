@@ -103,7 +103,8 @@ cargo run -p laughgg-api
 | 메서드 | 경로 | 설명 |
 |---|---|---|
 | `POST` | `/api/assets/{id}/checkout` | 주문 생성 + Stripe 결제창 주소 반환 |
-| `GET` | `/api/orders` | 내 주문 목록 |
+| `GET` | `/api/orders` | 내 주문 목록 (결제 내역) |
+| `GET` | `/api/me/library` | 내 라이브러리 (소유 목록). 같은 걸 두 번 사도 한 줄 |
 | `POST` | `/api/payments/webhook` | Stripe 승인 통보. 서명을 검증한다 |
 
 **카드 번호는 이 서버를 지나가지 않는다.** 결제창은 Stripe가 자기 도메인에서

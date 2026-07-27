@@ -29,7 +29,10 @@ pub use asset::{
 pub use error::{RepoError, RepoResult};
 pub use game::{Facet, Facets, GamePage, GameQuery, GameRow, game_facets, list_games};
 pub use metrics::{Metrics, metrics};
-pub use order::{Order, PaidOrder, attach_provider_ref, list_orders, mark_paid, open_order};
+pub use order::{
+    Order, OwnedAsset, PaidOrder, attach_provider_ref, list_orders, mark_paid, my_library,
+    open_order, owns_asset,
+};
 pub use sale::{NewSale, SaleResult, record_sale};
 
 /// 커넥션 풀을 열고 마이그레이션을 적용한다.

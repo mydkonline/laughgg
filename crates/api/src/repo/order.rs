@@ -210,3 +210,108 @@ pub async fn list_orders(pool: &PgPool, account_id: i64) -> RepoResult<Vec<Order
         })
         .collect())
 }
+
+/// 내 라이브러리 한 줄. 산 에셋과 언제 샀는지.
+#[derive(Debug, Serialize)]
+pub struct OwnedAsset {
+    pub asset_id: i64,
+    pub title: String,
+    pub creator: String,
+    pub category: String,
+    pub engine: String,
+    pub art_style: String,
+    pub badge: Option<String>,
+    /// 산 값. 지금 가격이 아니라 그때 낸 값이다.
+    pub paid_usd: f64,
+    pub paid_at: chrono::DateTime<chrono::Utc>,
+}
+
+/* 내가 가진 에셋.
+
+결제가 끝난 주문만 센다. pending 은 결제창을 열어 두고 안 낸 상태라
+라이브러리에 뜨면 안 된다.
+
+같은 에셋을 두 번 사면 두 줄이 아니라 한 줄이어야 한다. 처음 산 날을
+기준으로 묶는다 — 라이브러리는 소유 목록이지 결제 내역이 아니다. */
+///
+/// # Errors
+/// 조회에 실패하면 오류를 반환한다.
+pub async fn my_library(pool: &PgPool, account_id: i64) -> RepoResult<Vec<OwnedAsset>> {
+    let rows = sqlx::query_as::<
+        _,
+        (
+            i64,
+            String,
+            String,
+            String,
+            String,
+            String,
+            Option<String>,
+            f64,
+            chrono::DateTime<chrono::Utc>,
+        ),
+    >(
+        r"SELECT a.id, a.title, c.display_name, a.category, a.engine, a.art_style,
+                 r.badge,
+                 (MIN(o.amount_cents)::double precision) / 100.0,
+                 MIN(o.paid_at)
+          FROM orders o
+          JOIN assets a   ON a.id = o.asset_id
+          JOIN creators c ON c.id = a.creator_id
+          LEFT JOIN LATERAL (
+              SELECT badge FROM reviews rv WHERE rv.asset_id = a.id
+              ORDER BY rv.reviewed_at DESC, rv.id DESC LIMIT 1
+          ) r ON TRUE
+          WHERE o.account_id = $1 AND o.status = 'paid'
+          GROUP BY a.id, a.title, c.display_name, a.category, a.engine, a.art_style, r.badge
+          ORDER BY MIN(o.paid_at) DESC",
+    )
+    .bind(account_id)
+    .fetch_all(pool)
+    .await
+    .context("listing library")?;
+
+    Ok(rows
+        .into_iter()
+        .map(
+            |(asset_id, title, creator, category, engine, art_style, badge, paid_usd, paid_at)| {
+                OwnedAsset {
+                    asset_id,
+                    title,
+                    creator,
+                    category,
+                    engine,
+                    art_style,
+                    badge,
+                    paid_usd,
+                    paid_at,
+                }
+            },
+        )
+        .collect())
+}
+
+/* 이 계정이 이 에셋을 쓸 수 있는가.
+
+산 사람과 만든 사람이다. 만든 사람을 빼면 자기가 올린 걸 자기가 못 받는
+상황이 되는데, 그건 규칙이 아니라 사고다. */
+///
+/// # Errors
+/// 조회에 실패하면 오류를 반환한다.
+pub async fn owns_asset(pool: &PgPool, account_id: i64, asset_id: i64) -> RepoResult<bool> {
+    let owns: bool = sqlx::query_scalar(
+        r"SELECT EXISTS (
+              SELECT 1 FROM orders
+              WHERE account_id = $1 AND asset_id = $2 AND status = 'paid'
+          ) OR EXISTS (
+              SELECT 1 FROM assets a JOIN creators c ON c.id = a.creator_id
+              WHERE a.id = $2 AND c.account_id = $1
+          )",
+    )
+    .bind(account_id)
+    .bind(asset_id)
+    .fetch_one(pool)
+    .await
+    .context("checking ownership")?;
+    Ok(owns)
+}

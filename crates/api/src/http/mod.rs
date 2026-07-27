@@ -63,6 +63,7 @@ pub fn router(state: AppState) -> Router {
         // 결제창은 Stripe 가 띄운다. 여기로는 카드 정보가 오지 않는다.
         .route("/assets/{id}/checkout", post(payment::checkout))
         .route("/orders", get(payment::my_orders))
+        .route("/me/library", get(payment::my_library))
         // webhook 은 로그인 없이 열려 있다. 대신 서명을 검증한다.
         .route("/payments/webhook", post(payment::webhook))
         .route("/assets", get(asset::list).post(asset::create))
