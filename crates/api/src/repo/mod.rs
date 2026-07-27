@@ -27,7 +27,7 @@ pub use account::{
 };
 pub use asset::{
     AssetDetail, AssetFacets, AssetFile, AssetPage, AssetQuery, AssetRow, FileError, NewAsset,
-    ReviewResult, asset_facets, create_asset, get_asset, list_assets, review_asset,
+    ReviewResult, asset_facets, create_asset, get_asset, list_assets, record_analysis,
 };
 pub use download::{FileRef, Grant, grant_download, purge_expired_grants, redeem_download};
 pub use error::{RepoError, RepoResult};
@@ -38,8 +38,8 @@ pub use job::{
 };
 pub use metrics::{Metrics, metrics};
 pub use order::{
-    Order, OwnedAsset, PaidOrder, attach_provider_ref, list_orders, mark_paid, my_library,
-    open_order, owns_asset,
+    Order, OrderItem, OwnedAsset, PaidOrder, Rejected, attach_provider_ref, check_cart,
+    list_orders, mark_paid, my_library, open_order, owns_asset,
 };
 pub use post::{
     NewPost, Post, PostError, PostKind, PostPage, PostQuery, create_post, delete_post, get_post,

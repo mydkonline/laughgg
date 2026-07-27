@@ -1,3 +1,4 @@
+import { t } from "../lib/locale";
 /* 쪽 번호.
 
    무한 스크롤 대신 쪽을 쓴다. 목록이 길어지면 "어디쯤 왔는지" 와 "돌아갈 수
@@ -23,14 +24,14 @@ export function Pager({
   );
 
   return (
-    <nav className="mt-6 flex flex-wrap items-center justify-center gap-1" aria-label="쪽 넘기기">
+    <nav className="mt-6 flex flex-wrap items-center justify-center gap-1" aria-label={t("쪽 넘기기")}>
       <button
         type="button"
         disabled={page === 1}
         onClick={() => onGo(page - 1)}
         className="cursor-pointer rounded border-0 bg-transparent px-2 py-1 text-xs text-faint hover:text-ink disabled:cursor-not-allowed disabled:opacity-30"
       >
-        이전
+        {t("이전")}
       </button>
 
       {nums.map((p, i) => (
@@ -56,7 +57,7 @@ export function Pager({
         onClick={() => onGo(page + 1)}
         className="cursor-pointer rounded border-0 bg-transparent px-2 py-1 text-xs text-faint hover:text-ink disabled:cursor-not-allowed disabled:opacity-30"
       >
-        다음
+        {t("다음")}
       </button>
     </nav>
   );

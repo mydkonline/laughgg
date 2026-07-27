@@ -4,6 +4,7 @@ import { useFeed, ago, type Post, type Author } from "../lib/feed";
 import { PIECES } from "../data/pieces";
 import { KNOB_LABEL, type Knobs } from "../data/concepts";
 import { Thumb } from "../components/Thumb";
+import { t } from "../lib/locale";
 
 /* 사례 — 게시판도 아니고 프리셋 목록도 아니다.
    숫자 아홉 개만 있으면 남이 자기 상황에 대입할 수 없다. 무엇을 하려다
@@ -33,9 +34,9 @@ export function Feed() {
   return (
     <main className="mx-auto max-w-[840px] px-5 pb-20">
       <header className="py-8">
-        <p className="text-xs tracking-wide text-accent">커뮤니티</p>
-        <h1 className="mt-1 text-2xl font-bold text-ink">사례</h1>
-        <p className="mt-2 text-xs text-muted">어디서 막혔고 어떤 순서로 풀었는지, 쓴 설정까지 그대로 공개합니다.</p>
+        <p className="text-xs tracking-wide text-accent">{t("커뮤니티")}</p>
+        <h1 className="mt-1 text-2xl font-bold text-ink">{t("사례")}</h1>
+        <p className="mt-2 text-xs text-muted">{t("어디서 막혔고 어떤 순서로 풀었는지, 쓴 설정까지 그대로 공개합니다.")}</p>
         <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-t border-line pt-4">
           <FeedSpec k="공개" v="상황, 문제, 순서, 파라미터 9개" />
           <FeedSpec k="따라하기" v="설정을 들고 스튜디오로 이동" />
@@ -64,7 +65,7 @@ export function Feed() {
           to="/workshop"
           className="ml-auto rounded-lg bg-accent px-3.5 py-1.5 text-xs font-bold text-white no-underline hover:bg-accent-strong"
         >
-          스튜디오에서 만들기
+          {t("스튜디오에서 만들기")}
         </Link>
       </div>
 
@@ -103,24 +104,24 @@ function Card({ post }: { post: Post }) {
         <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-faint">
           <Byline by={post.by} />
           <span>{ago(post.at)}</span>
-          {post.seeded && <span className="rounded border border-line px-1.5 py-px">운영자 작성</span>}
+          {post.seeded && <span className="rounded border border-line px-1.5 py-px">{t("운영자 작성")}</span>}
         </p>
       </header>
 
       <div className="mt-5 grid gap-x-8 gap-y-5 sm:grid-cols-[minmax(0,1fr)_160px]">
         <div className="min-w-0">
           <section>
-            <h3 className="text-xs font-bold text-ink">상황</h3>
+            <h3 className="text-xs font-bold text-ink">{t("상황")}</h3>
             <p className="mt-1.5 text-xs leading-relaxed text-muted">{post.situation}</p>
           </section>
 
           <section className="mt-4">
-            <h3 className="text-xs font-bold text-ink">문제</h3>
+            <h3 className="text-xs font-bold text-ink">{t("문제")}</h3>
             <p className="mt-1.5 text-xs leading-relaxed text-muted">{post.problem}</p>
           </section>
 
           <section className="mt-4">
-            <h3 className="text-xs font-bold text-ink">해결</h3>
+            <h3 className="text-xs font-bold text-ink">{t("해결")}</h3>
             <ol className="mt-1.5 flex list-none flex-col gap-1.5 p-0">
               {(post.steps ?? []).map((st, i) => (
                 <li key={st} className="flex gap-2.5 text-xs">
@@ -139,7 +140,7 @@ function Card({ post }: { post: Post }) {
               <Thumb piece={piece} pad="10%" />
             </Link>
           )}
-          <p className="mt-3 text-xs text-faint">분석</p>
+          <p className="mt-3 text-xs text-faint">{t("분석")}</p>
           <p className="mt-0.5 flex items-baseline gap-1.5">
             <b className="num text-base text-faint line-through">{post.before}</b>
             <b className={`num text-2xl ${diff >= 0 ? "text-accent" : "text-[#FF6B7A]"}`}>{post.after}</b>
@@ -152,7 +153,7 @@ function Card({ post }: { post: Post }) {
 
       <footer className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
         <span className="text-faint">
-          <b className="num text-ink">{post.forks}</b>명이 따라함
+          <b className="num text-ink">{post.forks}</b>{t("명이 따라함")}
         </span>
         <button
           type="button"
@@ -166,7 +167,7 @@ function Card({ post }: { post: Post }) {
           to={`/workshop?fork=${post.id}`}
           className="ml-auto text-xs text-faint no-underline hover:text-accent"
         >
-          설정 열기 →
+          {t("설정 열기 →")}
         </Link>
       </footer>
 
@@ -184,7 +185,7 @@ function Card({ post }: { post: Post }) {
                 <p className="mt-1 text-xs leading-relaxed text-muted">{c.body}</p>
               </div>
             ))}
-            {post.comments.length === 0 && <p className="text-xs text-faint">아직 댓글이 없습니다.</p>}
+            {post.comments.length === 0 && <p className="text-xs text-faint">{t("아직 댓글이 없습니다.")}</p>}
           </div>
 
           <div className="mt-4 flex gap-2">
@@ -192,8 +193,8 @@ function Card({ post }: { post: Post }) {
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && send()}
-              placeholder="따라해 보고 어땠는지"
-              aria-label="댓글"
+              placeholder={t("따라해 보고 어땠는지")}
+              aria-label={t("댓글")}
               className="min-w-0 flex-1 rounded-lg border border-line bg-ground px-3 py-2.5 text-xs text-ink placeholder:text-faint"
             />
             <button
@@ -201,7 +202,7 @@ function Card({ post }: { post: Post }) {
               onClick={send}
               className="cursor-pointer rounded-lg border-0 bg-accent px-4 py-2.5 text-xs font-bold text-white"
             >
-              남기기
+              {t("남기기")}
             </button>
           </div>
           {/* 실명으로는 실무 얘기가 안 나온다. 소속만 인증하고 신원은 가린다. */}
@@ -212,7 +213,7 @@ function Card({ post }: { post: Post }) {
               onChange={(e) => setAnon(!e.target.checked)}
               className="accent-[var(--accent)]"
             />
-            소속만 밝히기
+            {t("소속만 밝히기")}
           </label>
         </div>
       )}

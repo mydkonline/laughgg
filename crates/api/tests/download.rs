@@ -3,22 +3,10 @@
 //! 파는 물건에 실제로 파일이 붙는가, 그리고 안 산 사람이 못 받는가.
 
 use laughgg_api::{
-    domain::{Credentials, ReviewScores},
+    domain::{Credentials, Facts, Origin},
     repo::{self, AssetFile, FileError, NewAsset, RepoError},
 };
 use sqlx::PgPool;
-
-fn scores(v: u8) -> ReviewScores {
-    ReviewScores {
-        mesh_integrity: v,
-        texture_quality: v,
-        lod_setup: v,
-        runtime_cost: v,
-        license_clean: v,
-        code_quality: v,
-        integration: v,
-    }
-}
 
 fn a_file() -> AssetFile {
     AssetFile {
@@ -35,9 +23,28 @@ fn an_asset(title: &str, file: Option<AssetFile>) -> NewAsset {
         engine: "unity".into(),
         art_style: "realistic".into(),
         price_usd: 30.0,
-        scores: scores(90),
+        origin: "self_made".into(),
         file,
     }
+}
+
+/* 검수를 붙인다.
+
+등록만으로는 못 판다. 파일을 뜯어야 채점이 되고, 채점 전에는 배지가 없다 —
+배지가 없으면 팔리지도 않는다. 테스트도 그 순서를 따라야 한다. */
+async fn review(pool: &PgPool, asset_id: i64, origin: Origin) {
+    let facts = Facts {
+        triangles: 8_000,
+        materials: 1,
+        meshes: 1,
+        primitives: 1,
+        texture_sides: vec![2048],
+        ..Facts::default()
+    };
+    let analysis = laughgg_api::domain::analyze(&facts, origin);
+    repo::record_analysis(pool, asset_id, &analysis, &serde_json::json!({}))
+        .await
+        .expect("분석");
 }
 
 async fn an_account(pool: &PgPool, email: &str) -> i64 {
@@ -115,10 +122,19 @@ async fn a_bad_file_key_fails_the_upload(pool: PgPool) {
         .expect_err("거절해야 한다");
     assert!(matches!(err, RepoError::File(_)), "{err:?}");
 
-    let count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM assets")
-        .fetch_one(&pool)
-        .await
-        .expect("개수");
+    /* 이 계정 앞으로 남은 게 없어야 한다.
+
+    한때 `COUNT(*) = 0` 으로 봤는데, 마이그레이션이 카탈로그를 시드하면서
+    27 이 나왔다. 전체를 세면 시드가 늘 때마다 이 테스트가 깨진다 — 봐야
+    할 건 거절된 등록이 행을 남겼는지지 테이블이 비었는지가 아니다. */
+    let count: i64 = sqlx::query_scalar(
+        "SELECT COUNT(*) FROM assets a JOIN creators c ON c.id = a.creator_id
+         WHERE c.account_id = $1",
+    )
+    .bind(who)
+    .fetch_one(&pool)
+    .await
+    .expect("개수");
     assert_eq!(count, 0, "거절된 업로드가 행을 남기면 안 된다");
 }
 
@@ -133,7 +149,7 @@ async fn an_asset_without_a_file_cannot_be_downloaded(pool: PgPool) {
         .expect("등록");
 
     // 만든 사람인데도 받을 게 없다.
-    let err = repo::grant_download(&pool, who, asset.asset_id)
+    let err = repo::grant_download(&pool, who, asset)
         .await
         .expect_err("파일이 없다");
     assert!(matches!(err, RepoError::NoFile(_)), "{err:?}");
@@ -147,17 +163,13 @@ async fn a_stranger_cannot_get_a_download_grant(pool: PgPool) {
         .await
         .expect("등록");
 
-    let err = repo::grant_download(&pool, stranger, asset.asset_id)
+    let err = repo::grant_download(&pool, stranger, asset)
         .await
         .expect_err("안 산 사람은 못 받는다");
     assert!(matches!(err, RepoError::Forbidden), "{err:?}");
 
     // 만든 사람은 받을 수 있다.
-    assert!(
-        repo::grant_download(&pool, maker, asset.asset_id)
-            .await
-            .is_ok()
-    );
+    assert!(repo::grant_download(&pool, maker, asset).await.is_ok());
 }
 
 #[sqlx::test]
@@ -169,13 +181,12 @@ async fn buying_opens_the_download(pool: PgPool) {
         .expect("등록");
 
     assert!(
-        repo::grant_download(&pool, buyer, asset.asset_id)
-            .await
-            .is_err(),
+        repo::grant_download(&pool, buyer, asset).await.is_err(),
         "사기 전에는 못 받는다"
     );
 
-    let order = repo::open_order(&pool, buyer, asset.asset_id)
+    review(&pool, asset, Origin::PublicDomain).await;
+    let order = repo::open_order(&pool, buyer, &[asset])
         .await
         .expect("주문");
     repo::attach_provider_ref(&pool, order.id, "cs_dl")
@@ -183,7 +194,7 @@ async fn buying_opens_the_download(pool: PgPool) {
         .expect("세션 id");
     repo::mark_paid(&pool, "cs_dl").await.expect("결제");
 
-    let grant = repo::grant_download(&pool, buyer, asset.asset_id)
+    let grant = repo::grant_download(&pool, buyer, asset)
         .await
         .expect("결제했으면 받을 수 있다");
     let file = repo::redeem_download(&pool, &grant.token)
@@ -200,9 +211,7 @@ async fn only_the_hash_of_the_grant_is_stored(pool: PgPool) {
     let asset = repo::create_asset(&pool, who, &an_asset("Gothic Statue", Some(a_file())))
         .await
         .expect("등록");
-    let grant = repo::grant_download(&pool, who, asset.asset_id)
-        .await
-        .expect("허가");
+    let grant = repo::grant_download(&pool, who, asset).await.expect("허가");
 
     let hit: Option<String> =
         sqlx::query_scalar("SELECT token_hash FROM download_grants WHERE token_hash = $1")
@@ -225,9 +234,7 @@ async fn a_forged_or_expired_token_is_refused(pool: PgPool) {
     let asset = repo::create_asset(&pool, who, &an_asset("Gothic Statue", Some(a_file())))
         .await
         .expect("등록");
-    let grant = repo::grant_download(&pool, who, asset.asset_id)
-        .await
-        .expect("허가");
+    let grant = repo::grant_download(&pool, who, asset).await.expect("허가");
 
     sqlx::query("UPDATE download_grants SET expires_at = now() - interval '1 minute'")
         .execute(&pool)
@@ -252,7 +259,8 @@ async fn a_grant_stops_working_when_ownership_goes_away(pool: PgPool) {
         .await
         .expect("등록");
 
-    let order = repo::open_order(&pool, buyer, asset.asset_id)
+    review(&pool, asset, Origin::PublicDomain).await;
+    let order = repo::open_order(&pool, buyer, &[asset])
         .await
         .expect("주문");
     repo::attach_provider_ref(&pool, order.id, "cs_refund")
@@ -260,7 +268,7 @@ async fn a_grant_stops_working_when_ownership_goes_away(pool: PgPool) {
         .expect("세션 id");
     repo::mark_paid(&pool, "cs_refund").await.expect("결제");
 
-    let grant = repo::grant_download(&pool, buyer, asset.asset_id)
+    let grant = repo::grant_download(&pool, buyer, asset)
         .await
         .expect("허가");
 

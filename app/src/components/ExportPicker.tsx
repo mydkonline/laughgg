@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { TARGETS, FORMATS, formatOf, estimateSize, type FileKind } from "../data/formats";
+import { t } from "../lib/locale";
 
 /* 내보내기 고르기.
 
@@ -42,13 +43,13 @@ export function ExportPicker({
   return (
     <div className="rounded-xl border border-line bg-surface p-4">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <h2 className="text-xs font-bold text-ink">내보내기</h2>
-        <span className="text-xs text-faint">엔진을 고르면 형식이 정해집니다</span>
+        <h2 className="text-xs font-bold text-ink">{t("내보내기")}</h2>
+        <span className="text-xs text-faint">{t("엔진을 고르면 형식이 정해집니다")}</span>
       </div>
 
       {/* 라벨이 먼저다. 칩만 늘어놓으면 이게 무엇을 고르는 줄인지 모른다. */}
       <div className="mt-3 flex flex-wrap items-center gap-1.5">
-        <span className="mr-1 shrink-0 text-xs text-faint">엔진</span>
+        <span className="mr-1 shrink-0 text-xs text-faint">{t("엔진")}</span>
         {TARGETS.map((t) => (
           <button
             key={t.id}
@@ -84,11 +85,11 @@ export function ExportPicker({
             </li>
           );
         })}
-        {picks.length === 0 && <li className="text-xs text-faint">고른 형식이 없습니다.</li>}
+        {picks.length === 0 && <li className="text-xs text-faint">{t("고른 형식이 없습니다.")}</li>}
       </ul>
 
       <p className="mt-3 flex items-baseline gap-2 text-xs text-faint">
-        받는 용량
+        {t("받는 용량")}
         <b className="num text-base text-ink">{estimateSize(picks, tex)}</b>
       </p>
 

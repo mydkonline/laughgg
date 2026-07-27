@@ -2,3 +2,6 @@ node_modules
 dist
 public/assets
 .env.local
+
+# tsc 증분 빌드 캐시. 빌드할 때마다 바뀌어서 커밋에 섞인다.
+*.tsbuildinfo

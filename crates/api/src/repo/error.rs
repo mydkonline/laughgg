@@ -4,7 +4,7 @@
 //! 곧 타입이 있어야 한다는 뜻이라, 여기서는 `anyhow` 를 그대로 흘리지 않는다.
 //! 분기할 필요가 없는 나머지는 전부 [`RepoError::Other`] 로 삼킨다.
 
-use crate::domain::{CredentialError, ScoreError};
+use crate::domain::CredentialError;
 
 #[derive(Debug, thiserror::Error)]
 pub enum RepoError {
@@ -23,6 +23,24 @@ pub enum RepoError {
     /// 검수는 받았지만 판매 가능 등급이 아니다.
     #[error("asset {asset_id} is not sellable: badge {badge}")]
     AssetNotSellable { asset_id: i64, badge: String },
+
+    /* 이미 가진 것을 또 사려 한다.
+
+    받는 것이 파일이라 두 번 사도 얻는 게 없다. 막지 않으면 장바구니에
+    남아 있던 줄 때문에 같은 값을 두 번 내게 된다. */
+    #[error("asset {0} is already in your library")]
+    AlreadyOwned(i64),
+
+    /// 빈 장바구니로 결제를 눌렀다.
+    #[error("the cart is empty")]
+    EmptyCart,
+
+    /* 값이 0 이라 결제할 게 없다.
+
+    무료 배포는 판매가 아니다. 결제창에 0원짜리 줄을 세우면 결제사가
+    거절하고, 그 거절이 왜 났는지는 화면에서 알 수가 없다. */
+    #[error("asset {0} is free and is not sold")]
+    NotForSale(i64),
 
     /// 이메일이 이미 쓰이고 있다. 가입 화면에서는 알려 줘야 한다.
     #[error("email {0:?} is already registered")]
@@ -74,10 +92,6 @@ pub enum RepoError {
     /// 올린 파일이 규칙을 어겼다.
     #[error(transparent)]
     File(#[from] crate::repo::FileError),
-
-    /// 입력이 규칙을 어겼다.
-    #[error(transparent)]
-    Score(#[from] ScoreError),
 
     /// 나머지 — 연결 끊김, 제약 위반, 그 밖의 사고.
     #[error(transparent)]

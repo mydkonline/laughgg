@@ -25,6 +25,7 @@ import { Preview } from "../three/Preview";
 import { Sprite } from "../three/Sprite";
 import { Thumb } from "../components/Thumb";
 import { RankIcon, badgeOf, BADGE_LABEL } from "../components/Rank";
+import { t } from "../lib/locale";
 
 /* 스튜디오 — 가진 에셋을 이 게임의 느낌으로 가져오는 자리.
 
@@ -106,7 +107,7 @@ export function Workshop() {
   };
 
   if (!piece) {
-    return <p className="mx-auto max-w-[760px] px-5 py-24 text-base text-muted">불러올 에셋이 없습니다.</p>;
+    return <p className="mx-auto max-w-[760px] px-5 py-24 text-base text-muted">{t("불러올 에셋이 없습니다.")}</p>;
   }
 
   const spriteOnly = !isModel(piece);
@@ -145,9 +146,9 @@ export function Workshop() {
   return (
     <main className="mx-auto max-w-[1240px] px-5 pb-20">
       <header className="py-8">
-        <p className="text-xs tracking-wide text-accent">스튜디오</p>
-        <h1 className="mt-1 text-2xl font-bold text-ink">에셋 컨셉 변환</h1>
-        <p className="mt-2 text-xs text-muted">3D 는 조명과 재질, 2D 는 팔레트와 도트를 바꿉니다.</p>
+        <p className="text-xs tracking-wide text-accent">{t("스튜디오")}</p>
+        <h1 className="mt-1 text-2xl font-bold text-ink">{t("에셋 컨셉 변환")}</h1>
+        <p className="mt-2 text-xs text-muted">{t("3D 는 조명과 재질, 2D 는 팔레트와 도트를 바꿉니다.")}</p>
       </header>
 
       {/* 1 — 무엇을 만질지 고른다 */}
@@ -169,16 +170,16 @@ export function Workshop() {
         }}
       >
         <div className="mb-2.5 flex flex-wrap items-center gap-3">
-          <span className="text-xs font-bold text-ink">내 라이브러리</span>
+          <span className="text-xs font-bold text-ink">{t("내 라이브러리")}</span>
           <span className="text-xs text-faint">
             {mine.length
               ? `올린 파일 ${mine.length}개`
               : cartIds.length
-                ? `산 에셋 ${cartIds.length}개`
+                ? t("산 에셋 {n}개", { n: cartIds.length })
                 : "아직 비어 있어 마켓 상위를 올려 뒀습니다"}
           </span>
           <label className="ml-auto cursor-pointer rounded-lg border border-line px-3 py-1.5 text-xs text-muted hover:border-accent hover:text-ink">
-            파일 올리기
+            {t("파일 올리기")}
             <input
               type="file"
               multiple
@@ -227,7 +228,7 @@ export function Workshop() {
           ))}
         </div>
 
-        <p className="text-xs text-faint">glb, gltf, png, jpg. 파일은 브라우저에만 남습니다.</p>
+        <p className="text-xs text-faint">{t("glb, gltf, png, jpg. 파일은 브라우저에만 남습니다.")}</p>
       </section>
       {/* 2 — 결과. 조작을 그림 위에 두면 보면서 못 만진다. 그림이 먼저고,
           원본과 나란히 두지 않으면 무엇이 달라졌는지 안 보인다. */}
@@ -235,7 +236,7 @@ export function Workshop() {
         <div className="min-w-0">
           {/* 좁은 화면에서도 2단으로 둔다. 세로로 쌓으면 프롬프트가 화면 두 개 아래로 밀린다. */}
           <div className="grid grid-cols-2 gap-2 sm:gap-3">
-          <Frame label="원본">
+          <Frame label={t("원본")}>
             {sprite ? (
               <Sprite piece={piece} knobs={NEUTRAL} raster={NEUTRAL_RASTER} />
             ) : (
@@ -255,7 +256,7 @@ export function Workshop() {
               마음에 드는 걸 고르게 한다. 전부 정지 그림이라 굽는 렌더러 하나를
               돌려 쓴다 — 라이브 렌더러를 열한 개 만들 수는 없다. */}
           <div className="mt-5">
-            <p className="mb-2.5 text-xs text-faint">컨셉별로 미리 보기</p>
+            <p className="mb-2.5 text-xs text-faint">{t("컨셉별로 미리 보기")}</p>
             <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-5">
               {CONCEPTS.map((c) => (
                 <button
@@ -279,7 +280,7 @@ export function Workshop() {
                       conceptId === c.id ? "font-bold text-ink" : "text-faint",
                     ].join(" ")}
                   >
-                    {c.name}
+                    {t(c.name)}
                   </span>
                 </button>
               ))}
@@ -293,9 +294,9 @@ export function Workshop() {
           {/* 컨셉이 먼저다. 대부분은 이것만 눌러 보고 끝낸다. */}
           <div>
             <div className="mb-2.5 flex flex-wrap items-baseline gap-3">
-              <h2 className="text-xs font-bold text-ink">게임 컨셉</h2>
+              <h2 className="text-xs font-bold text-ink">{t("게임 컨셉")}</h2>
               <p className="text-xs text-faint">
-                {CONCEPTS.find((c) => c.id === conceptId)?.note ?? "파라미터를 직접 조정한 상태입니다."}
+                {t(CONCEPTS.find((c) => c.id === conceptId)?.note ?? "파라미터를 직접 조정한 상태입니다.")}
               </p>
             </div>
             <div className="flex flex-wrap gap-1.5">
@@ -312,7 +313,7 @@ export function Workshop() {
                       : "border-line text-muted hover:border-accent hover:text-ink",
                   ].join(" ")}
                 >
-                  {c.name}
+                  {t(c.name)}
                 </button>
               ))}
             </div>
@@ -320,11 +321,11 @@ export function Workshop() {
 
           <div>
         <div className="mb-3 flex flex-wrap items-center gap-3">
-          <h2 className="text-xs font-bold text-ink">프롬프트</h2>
+          <h2 className="text-xs font-bold text-ink">{t("프롬프트")}</h2>
           <span className="flex overflow-hidden rounded-full border border-line">
             {[
-              [false, "블록"],
-              [true, "직접 입력"],
+              [false, t("블록")],
+              [true, t("직접 입력")],
             ].map(([v, label]) => (
               <button
                 key={String(v)}
@@ -343,7 +344,7 @@ export function Workshop() {
           {/* 무료 횟수를 넘긴 요청만 과금하는 게 수익 구조라 화면에서도 그렇게 보여야 한다. */}
           <span className="flex w-full items-center gap-2 text-xs">
             <span className="text-faint">
-              크레딧 <b className="num text-ink">{remaining}</b> / {free}
+              {t("크레딧")} <b className="num text-ink">{remaining}</b> / {free}
             </span>
             <button
               type="button"
@@ -351,7 +352,7 @@ export function Workshop() {
               disabled={remaining < 1 || !prompt.trim()}
               className="ml-auto cursor-pointer rounded-lg border-0 bg-accent px-5 py-2 text-xs font-bold text-white hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-40"
             >
-              적용 <span className="opacity-70">1 크레딧</span>
+              {t("적용")} <span className="opacity-70">{t("1 크레딧")}</span>
             </button>
           </span>
         </div>
@@ -361,8 +362,8 @@ export function Workshop() {
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && applyPrompt()}
-            placeholder="어둡고 축축한 던전, 게임보이 초록 4색, 굵은 도트"
-            aria-label="변형 프롬프트"
+            placeholder={t("어둡고 축축한 던전, 게임보이 초록 4색, 굵은 도트")}
+            aria-label={t("변형 프롬프트")}
             className="w-full rounded-lg border border-line bg-surface px-4 py-3 text-xs text-ink placeholder:text-faint"
           />
         ) : (
@@ -379,11 +380,11 @@ export function Workshop() {
           <p className="mt-2.5 rounded-lg bg-surface px-3 py-2 font-mono text-xs text-muted">{prompt}</p>
         )}
         {remaining < 1 && (
-          <p className="mt-2 text-xs text-[#FF6B7A]">무료 크레딧을 다 썼습니다. 컨셉 프리셋과 직접 조정은 계속 무료입니다.</p>
+          <p className="mt-2 text-xs text-[#FF6B7A]">{t("무료 크레딧을 다 썼습니다. 컨셉 프리셋과 직접 조정은 계속 무료입니다.")}</p>
         )}
           </div>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3 rounded-xl border border-line bg-surface px-4 py-3.5">
-        <Field label="출력 형식">
+        <Field label={t("출력 형식")}>
           <div className="flex gap-1.5">
             {([false, true] as const).map((v) => (
               <button
@@ -407,7 +408,7 @@ export function Workshop() {
 
         {sprite && (
           <>
-            <Field label="팔레트" hint={palette?.from}>
+            <Field label={t("팔레트")} hint={palette?.from}>
               <select
                 value={raster.palette}
                 onChange={(e) => {
@@ -418,14 +419,14 @@ export function Workshop() {
               >
                 {PALETTES.map((p) => (
                   <option key={p.id} value={p.id}>
-                    {p.name}
+                    {t(p.name)}
                   </option>
                 ))}
               </select>
             </Field>
 
             {palette && palette.colors.length > 0 && (
-              <Field label="쓰는 색">
+              <Field label={t("쓰는 색")}>
                 <div className="flex gap-1">
                   {palette.colors.map((c) => (
                     <span
@@ -439,7 +440,7 @@ export function Workshop() {
               </Field>
             )}
 
-            <Field label="도트 굵기" hint={raster.pixel === 1 ? "원본 해상도" : `${raster.pixel}px 한 칸`}>
+            <Field label={t("도트 굵기")} hint={raster.pixel === 1 ? "원본 해상도" : `${raster.pixel}px 한 칸`}>
               <input
                 type="range"
                 min={1}
@@ -453,7 +454,7 @@ export function Workshop() {
               />
             </Field>
 
-            <Field label="디더링" hint={raster.dither === 0 ? "없음" : `${raster.dither}`}>
+            <Field label={t("디더링")} hint={raster.dither === 0 ? "없음" : `${raster.dither}`}>
               <input
                 type="range"
                 min={0}
@@ -488,7 +489,7 @@ export function Workshop() {
 
           <div className="flex flex-col rounded-xl border border-line bg-surface p-4">
           <div className="flex items-baseline gap-2.5">
-            <span className="text-xs text-faint">분석</span>
+            <span className="text-xs text-faint">{t("분석")}</span>
             <b className="text-base tabular-nums text-faint line-through">{piece.score}</b>
             <b className="num text-4xl text-ink">{after}</b>
           </div>
@@ -515,14 +516,14 @@ export function Workshop() {
                 onClick={() => navigate("/feed")}
                 className="flex-1 cursor-pointer rounded-lg border-0 bg-accent px-3 py-2.5 text-xs font-bold text-white"
               >
-                피드에서 보기
+                {t("피드에서 보기")}
               </button>
               <button
                 type="button"
                 onClick={() => setPublished(null)}
                 className="cursor-pointer rounded-lg border border-line bg-transparent px-3 py-2.5 text-xs text-muted"
               >
-                더 만지기
+                {t("더 만지기")}
               </button>
             </div>
           ) : (
@@ -532,7 +533,7 @@ export function Workshop() {
                 onClick={onPublish}
                 className="w-full cursor-pointer rounded-lg border-0 bg-accent px-4 py-3 text-xs font-bold text-white hover:bg-accent-strong"
               >
-                프리셋 저장
+                {t("프리셋 저장")}
               </button>
             </div>
           )}

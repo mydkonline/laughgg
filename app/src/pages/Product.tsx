@@ -8,6 +8,7 @@ import { bakeView, type Dir, type Material } from "../three/baker";
 import { packageTree, bytes, type Entry } from "../data/contents";
 import { useCart } from "../lib/cart";
 import { won, num } from "../lib/format";
+import { t } from "../lib/locale";
 
 /* 상품 상세는 사이드 패널이 아니라 제 주소를 가진 페이지다.
    나이키도 아마존도 PDP 는 별도 페이지다 — 링크가 공유되고 뒤로가기가 맞는다. */
@@ -53,7 +54,7 @@ function Detail({ p }: { p: Piece }) {
   return (
     <main className="mx-auto max-w-[1180px] px-5 pb-20">
       <Link to="/market" className="inline-block py-4 text-xs text-faint no-underline hover:text-ink">
-        ← 마켓
+        {t("← 마켓")}
       </Link>
 
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px]">
@@ -85,7 +86,7 @@ function Detail({ p }: { p: Piece }) {
                       : "border-line text-faint hover:text-ink",
                   ].join(" ")}
                 >
-                  {v.label}
+                  {t(v.label)}
                 </button>
               ))}
             {modelSrc(p) && (
@@ -98,7 +99,7 @@ function Detail({ p }: { p: Piece }) {
                   spinning ? "border-accent text-ink" : "border-line text-faint hover:text-ink",
                 ].join(" ")}
               >
-                회전 시연
+                {t("회전 시연")}
               </button>
             )}
           </div>
@@ -106,23 +107,25 @@ function Detail({ p }: { p: Piece }) {
 
         {/* 구매 패널 */}
         <aside className="lg:sticky lg:top-[120px] lg:self-start">
-          <span className="text-xs text-faint">{CAT_NAME[p.cat]}</span>
+          <span className="text-xs text-faint">{t(CAT_NAME[p.cat])}</span>
           <h1 className="mt-1 text-base font-bold text-ink">{p.t}</h1>
           <p className="mt-1 text-xs text-faint">{p.by}</p>
 
           <div className="mt-4 flex items-center gap-3">
             <b className="text-base text-ink">{stars}</b>
-            <span className="text-xs text-faint">리뷰 {reviews}개</span>
+            <span className="text-xs text-faint">{t("리뷰 {n}개", { n: reviews })}</span>
             <span className="ml-auto flex items-center gap-1.5 rounded-full bg-accent-soft px-2.5 py-1 text-xs font-extrabold text-accent">
               <RankIcon badge={badge} size={14} />
-              {BADGE_LABEL[badge]}
+              {t(BADGE_LABEL[badge])}
             </span>
           </div>
 
           <div className="mt-5 flex items-baseline gap-3 border-t border-line pt-5">
             <b className="text-2xl font-bold text-ink">{won(p.price)}</b>
             <span className="text-xs text-faint">
-              {p.price ? `창작자에게 ${won(Math.round(p.price * 0.92 * 100) / 100)} 정산` : "무료 배포"}
+              {p.price
+                ? t("창작자에게 {take} 정산", { take: won(Math.round(p.price * 0.92 * 100) / 100) })
+                : t("무료 배포")}
             </span>
           </div>
 
@@ -131,13 +134,13 @@ function Detail({ p }: { p: Piece }) {
             onClick={() => add(p.id)}
             className="mt-5 w-full cursor-pointer rounded-xl border-0 bg-accent px-4 py-3.5 text-base font-bold text-white hover:bg-accent-strong"
           >
-            {has(p.id) ? "장바구니에 있음" : "장바구니에 담기"}
+            {t(has(p.id) ? "장바구니에 있음" : "장바구니에 담기")}
           </button>
 
           <ul className="mt-4 flex list-none flex-col gap-2 border-t border-line pt-4 pl-0 text-xs text-muted">
-            <li>결제 즉시 내려받습니다. 배송이 없습니다.</li>
-            <li>내려받기 전이면 <b className="text-ink">7일 안에 전액 환불</b>됩니다.</li>
-            <li>분석 <b className="text-ink">7항목</b>을 통과한 에셋만 올라옵니다.</li>
+            <li>{t("결제 즉시 내려받습니다. 배송이 없습니다.")}</li>
+            <li>{t("내려받기 전이면 7일 안에 전액 환불됩니다.")}</li>
+            <li>{t("분석 7항목을 통과한 에셋만 올라옵니다.")}</li>
           </ul>
 
           {/* 결제 수단 — 아이콘 없이 워드마크 텍스트로만 */}
@@ -151,8 +154,9 @@ function Detail({ p }: { p: Piece }) {
               ))}
             </div>
             <p className="mt-2 text-xs leading-relaxed text-faint">
-              국내 결제는 <b className="text-ink">토스페이먼츠</b>, 해외 결제는 <b className="text-ink">Stripe</b>가
-              처리합니다. 카드 정보는 PG사 서버에만 저장되며 LaughGG는 보관하지 않습니다.
+              {t(
+                "국내 결제는 토스페이먼츠, 해외 결제는 Stripe 가 처리합니다. 카드 정보는 PG사 서버에만 저장되며 LaughGG는 보관하지 않습니다.",
+              )}
             </p>
           </div>
         </aside>
@@ -160,11 +164,11 @@ function Detail({ p }: { p: Piece }) {
 
       {/* 본문 */}
       <div className="mt-12 max-w-[760px]">
-        <Acc title="상품 설명" open>
-          <p className="text-xs leading-relaxed text-muted">{p.desc}</p>
+        <Acc title={t("상품 설명")} open>
+          <p className="text-xs leading-relaxed text-muted">{t(p.desc)}</p>
         </Acc>
 
-        <Acc title={`분석 리포트 (종합 ${p.score}점)`}>
+        <Acc title={t("분석 리포트 (종합 {n}점)", { n: p.score })}>
           <div className="flex flex-col gap-2.5">
             {CHECKS.map((c, i) => {
               const v = scores[i] ?? 0;
@@ -189,18 +193,18 @@ function Detail({ p }: { p: Piece }) {
           </div>
         </Acc>
 
-        <Acc title={`패키지 콘텐츠 (${tree.files}개 파일, ${bytes(tree.bytes)})`}>
+        <Acc title={t("패키지 콘텐츠 ({n}개 파일, {size})", { n: tree.files, size: bytes(tree.bytes) })}>
           <ul className="m-0 flex list-none flex-col gap-1 p-0">
             {tree.folders.map((f) => (
               <Folder key={f.name} entry={f} defaultOpen={f.name === "Meshes" || f.name === "Sprites"} />
             ))}
           </ul>
           <p className="mt-4 text-xs leading-relaxed text-faint">
-            내려받으면 이 구조 그대로 들어옵니다. Documentation 폴더에 재료 출처가 파일별로 적혀 있습니다.
+            {t("내려받으면 이 구조 그대로 들어옵니다. Documentation 폴더에 재료 출처가 파일별로 적혀 있습니다.")}
           </p>
         </Acc>
 
-        <Acc title="기술 사양">
+        <Acc title={t("기술 사양")}>
           <dl className="m-0 flex flex-col">
             <Kv k="폴리곤" v={p.tri} />
             <Kv k="텍스처" v={p.tex} />
@@ -213,7 +217,7 @@ function Detail({ p }: { p: Piece }) {
 
       {also.length > 0 && (
         <section className="mt-12">
-          <h2 className="mb-4 text-2xl font-bold text-ink">같은 분류 상위</h2>
+          <h2 className="mb-4 text-2xl font-bold text-ink">{t("같은 분류 상위")}</h2>
           <div className="grid grid-cols-[repeat(auto-fill,minmax(168px,1fr))] gap-3">
             {also.map((o) => (
               <Link
@@ -298,7 +302,7 @@ function Folder({ entry, defaultOpen }: { entry: Entry; defaultOpen?: boolean })
               className="grid grid-cols-[minmax(0,1fr)_auto_56px_72px] items-center gap-3 border-b border-line-soft px-2 py-1.5 last:border-b-0"
             >
               <span className="min-w-0 truncate text-base text-muted">
-                {k.name}
+                {t(k.name)}
                 <span className="text-faint">.{k.ext}</span>
               </span>
               <span className="text-xs text-faint">{k.note ?? ""}</span>

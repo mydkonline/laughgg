@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::{PgPool, Postgres, Transaction};
 
 use super::{RepoError, RepoResult};
-use crate::domain::{Badge, DEFAULT_FEE_RATE, ReviewScores, Settlement};
+use crate::domain::{Analysis, Badge, DEFAULT_FEE_RATE, Origin, Settlement};
 
 #[derive(Debug, Serialize)]
 pub struct AssetRow {
@@ -15,6 +15,9 @@ pub struct AssetRow {
     pub category: String,
     pub engine: String,
     pub art_style: String,
+    /* 실제로 쓸 수 있는 엔진들. `engine` 은 필터가 쓰는 대표값이라
+    두세 개를 지원해도 하나만 적혀 있다 — 사는 사람에게는 목록이 필요하다. */
+    pub engines: Vec<String>,
     pub price_usd: f64,
     pub total: Option<i16>,
     pub badge: Option<String>,
@@ -29,8 +32,26 @@ pub struct AssetQuery {
     pub art_style: Option<String>,
     pub badge: Option<String>,
     pub min_score: Option<i64>,
+    /* 특정 에셋들만. "1,2,3" 꼴로 온다.
+
+    장바구니가 쓴다. 담긴 것이 열 점이면 상세를 열 번 부르는 대신
+    한 번에 가져온다 — 열 번 부르면 화면이 열 번 나눠 그려진다. */
+    pub ids: Option<String>,
     pub limit: Option<i64>,
     pub offset: Option<i64>,
+}
+
+impl AssetQuery {
+    /// 쉼표로 나눈 id. 숫자가 아닌 건 버린다 — 거르지 않으면 SQL 이
+    /// 통째로 실패해서 멀쩡한 줄까지 안 나온다.
+    fn id_list(&self) -> Option<Vec<i64>> {
+        let raw = self.ids.as_deref()?;
+        let v: Vec<i64> = raw
+            .split(',')
+            .filter_map(|s| s.trim().parse().ok())
+            .collect();
+        if v.is_empty() { None } else { Some(v) }
+    }
 }
 
 /* 조건절을 한 곳에서만 쓴다.
@@ -38,7 +59,7 @@ pub struct AssetQuery {
 목록과 패싯이 다른 조건으로 돌면 "37개" 라고 써 놓고 12줄만 나온다.
 게임 쪽에서 이미 같은 이유로 묶어 뒀다.
 
-$1 검색어  $2 분류  $3 엔진  $4 화풍  $5 배지  $6 최소 점수 */
+$1 검색어  $2 분류  $3 엔진  $4 화풍  $5 배지  $6 최소 점수  $7 id 목록 */
 const FROM_WHERE: &str = r"
     FROM assets a
     JOIN creators c ON c.id = a.creator_id
@@ -54,6 +75,7 @@ const FROM_WHERE: &str = r"
       AND ($4::text IS NULL OR a.art_style = $4)
       AND ($5::text IS NULL OR r.badge = $5)
       AND COALESCE(r.total, 0) >= $6
+      AND ($7::bigint[] IS NULL OR a.id = ANY($7))
 ";
 
 /// DB 에서 오는 목록 행.
@@ -64,6 +86,7 @@ type ListRow = (
     String,
     String,
     String,
+    Vec<String>,
     f64,
     Option<i16>,
     Option<String>,
@@ -89,6 +112,7 @@ pub async fn list_assets(pool: &PgPool, q: &AssetQuery) -> RepoResult<AssetPage>
     let offset = q.offset.unwrap_or(0).max(0);
     let min_score = i16::try_from(q.min_score.unwrap_or(0).clamp(0, 100)).unwrap_or(0);
 
+    let ids = q.id_list();
     let total: i64 = sqlx::query_scalar(&format!("SELECT COUNT(*) {FROM_WHERE}"))
         .bind(q.q.as_deref())
         .bind(q.category.as_deref())
@@ -96,6 +120,7 @@ pub async fn list_assets(pool: &PgPool, q: &AssetQuery) -> RepoResult<AssetPage>
         .bind(q.art_style.as_deref())
         .bind(q.badge.as_deref())
         .bind(min_score)
+        .bind(ids.as_deref())
         .fetch_one(pool)
         .await
         .context("counting assets")?;
@@ -104,7 +129,7 @@ pub async fn list_assets(pool: &PgPool, q: &AssetQuery) -> RepoResult<AssetPage>
     // 가중치를 SQL 안에 두면 쪽을 넘겨도 순서가 유지된다.
     let rows = sqlx::query_as::<_, ListRow>(&format!(
         r"SELECT a.id, a.title, c.display_name, a.category, a.engine, a.art_style,
-                 a.price_usd::double precision, r.total, r.badge
+                 a.engines, a.price_usd::double precision, r.total, r.badge
           {FROM_WHERE}
           ORDER BY CASE r.badge
                      WHEN 'challenger' THEN 8
@@ -114,7 +139,7 @@ pub async fn list_assets(pool: &PgPool, q: &AssetQuery) -> RepoResult<AssetPage>
                      ELSE 0
                    END DESC,
                    COALESCE(r.total, 0) DESC, a.id DESC
-          LIMIT $7 OFFSET $8"
+          LIMIT $8 OFFSET $9"
     ))
     .bind(q.q.as_deref())
     .bind(q.category.as_deref())
@@ -122,6 +147,7 @@ pub async fn list_assets(pool: &PgPool, q: &AssetQuery) -> RepoResult<AssetPage>
     .bind(q.art_style.as_deref())
     .bind(q.badge.as_deref())
     .bind(min_score)
+    .bind(ids.as_deref())
     .bind(limit)
     .bind(offset)
     .fetch_all(pool)
@@ -131,16 +157,30 @@ pub async fn list_assets(pool: &PgPool, q: &AssetQuery) -> RepoResult<AssetPage>
     let assets = rows
         .into_iter()
         .map(
-            |(id, title, creator, category, engine, art_style, price_usd, total, badge)| AssetRow {
+            |(
                 id,
                 title,
                 creator,
                 category,
                 engine,
                 art_style,
+                engines,
                 price_usd,
                 total,
                 badge,
+            )| {
+                AssetRow {
+                    id,
+                    title,
+                    creator,
+                    category,
+                    engine,
+                    art_style,
+                    engines,
+                    price_usd,
+                    total,
+                    badge,
+                }
             },
         )
         .collect();
@@ -155,7 +195,7 @@ pub async fn list_assets(pool: &PgPool, q: &AssetQuery) -> RepoResult<AssetPage>
 pub async fn get_asset(pool: &PgPool, asset_id: i64) -> RepoResult<AssetDetail> {
     let row: Option<DetailRow> = sqlx::query_as(
         r"SELECT a.id, a.title, c.display_name, a.category, a.engine, a.art_style,
-                 a.price_usd::double precision, r.total, r.badge,
+                 a.engines, a.price_usd::double precision, r.total, r.badge,
                  CASE WHEN r.total IS NULL THEN NULL ELSE jsonb_build_object(
                    'mesh_integrity',  r.mesh_integrity,
                    'texture_quality', r.texture_quality,
@@ -179,8 +219,20 @@ pub async fn get_asset(pool: &PgPool, asset_id: i64) -> RepoResult<AssetDetail> 
     .await
     .context("loading asset")?;
 
-    let (id, title, creator, category, engine, art_style, price_usd, total, badge, scores, sold) =
-        row.ok_or(RepoError::AssetNotFound(asset_id))?;
+    let (
+        id,
+        title,
+        creator,
+        category,
+        engine,
+        art_style,
+        engines,
+        price_usd,
+        total,
+        badge,
+        scores,
+        sold,
+    ) = row.ok_or(RepoError::AssetNotFound(asset_id))?;
 
     Ok(AssetDetail {
         row: AssetRow {
@@ -190,6 +242,7 @@ pub async fn get_asset(pool: &PgPool, asset_id: i64) -> RepoResult<AssetDetail> 
             category,
             engine,
             art_style,
+            engines,
             price_usd,
             total,
             badge,
@@ -210,6 +263,7 @@ type DetailRow = (
     String,
     String,
     String,
+    Vec<String>,
     f64,
     Option<i16>,
     Option<String>,
@@ -262,6 +316,7 @@ async fn asset_facet(
     .bind(pick("art_style", skip, q.art_style.as_deref()))
     .bind(pick("badge", skip, q.badge.as_deref()))
     .bind(min_score)
+    .bind(q.id_list().as_deref())
     .fetch_all(pool)
     .await
     .with_context(|| format!("counting asset facet {column}"))?;
@@ -307,10 +362,20 @@ pub struct NewAsset {
     pub engine: String,
     pub art_style: String,
     pub price_usd: f64,
-    pub scores: ReviewScores,
-    /// 올린 파일. 없으면 초안이고 팔 수 없다.
+    /* 점수를 안 받는다.
+
+    올리는 사람이 정하면 다들 100 을 놓고 챌린저를 받는다. 파일을 뜯어
+    서버가 매긴다. 받는 건 출처 신고 하나인데, 그건 점수가 아니라
+    나중에 감사할 수 있는 기록이다. */
+    #[serde(default = "unknown_origin")]
+    pub origin: String,
+    /// 올린 파일. 없으면 초안이고 검수도 못 받는다.
     #[serde(default, flatten)]
     pub file: Option<AssetFile>,
+}
+
+fn unknown_origin() -> String {
+    "unknown".to_owned()
 }
 
 /// 스토리지에 올라간 파일.
@@ -385,14 +450,15 @@ pub struct ReviewResult {
 
 /// 에셋을 등록하고 즉시 검수 결과를 기록한다.
 ///
+/* 에셋을 등록한다. 배지는 아직 없다.
+
+파일을 뜯어야 채점이 되는데 파일은 스토리지에 있다. 등록과 분석을 나누고,
+분석 전까지는 배지가 없다 — 배지가 없으면 팔리지도 않는다. */
+///
 /// # Errors
-/// 점수 범위가 잘못됐거나 DB 쓰기에 실패하면 오류를 반환한다.
-pub async fn create_asset(
-    pool: &PgPool,
-    account_id: i64,
-    input: &NewAsset,
-) -> RepoResult<ReviewResult> {
-    input.scores.validate()?;
+/// 파일이나 출처가 규칙을 어겼거나 DB 쓰기에 실패하면 오류를 반환한다.
+pub async fn create_asset(pool: &PgPool, account_id: i64, input: &NewAsset) -> RepoResult<i64> {
+    let origin = Origin::from_label(&input.origin).unwrap_or(Origin::Unknown);
     if let Some(file) = &input.file {
         file.validate()?;
     }
@@ -409,8 +475,8 @@ pub async fn create_asset(
     let asset_id: i64 = sqlx::query_scalar(
         r"INSERT INTO assets
             (creator_id, title, category, engine, price_usd, art_style,
-             file_key, file_bytes, file_sha256)
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+             file_key, file_bytes, file_sha256, origin)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
           RETURNING id",
     )
     .bind(creator_id)
@@ -422,29 +488,34 @@ pub async fn create_asset(
     .bind(input.file.as_ref().map(|f| f.file_key.trim()))
     .bind(input.file.as_ref().map(|f| f.file_bytes))
     .bind(input.file.as_ref().map(|f| f.file_sha256.to_lowercase()))
+    .bind(origin.as_str())
     .fetch_one(&mut *tx)
     .await
     .context("inserting asset")?;
 
-    let result = record_review(&mut tx, asset_id, input.scores, input.price_usd).await?;
     tx.commit().await.context("committing asset creation")?;
-    Ok(result)
+
+    /* 검수는 여기서 안 한다.
+
+    파일을 뜯어야 채점이 되는데 파일은 스토리지에 있다. 등록은 끝내고
+    분석은 따로 붙인다 — 그 전까지 이 에셋은 배지가 없고, 배지가 없으면
+    팔리지도 않는다. 그게 맞다. 안 재고 배지를 주는 게 문제였다. */
+    Ok(asset_id)
 }
 
-/// 이미 등록된 에셋을 다시 채점한다.
-///
-/// 등록과 검수는 다른 일이다. 한때 두 경로가 같은 핸들러를 가리켜서 재검수를
-/// 부르면 에셋이 하나 더 생겼다. 여기서는 존재하는 에셋에만 검수를 붙인다.
+/* 분석 결과를 검수로 기록한다.
+
+점수를 만드는 건 여기가 아니라 analyzer 다. 이 함수는 그 결과를 옮기기만
+한다 — 옮기는 김에 고치면 화면에 뜬 점수와 저장된 점수가 갈린다. */
 ///
 /// # Errors
-/// 에셋이 없거나 점수 범위가 잘못됐거나 DB 쓰기에 실패하면 오류를 반환한다.
-pub async fn review_asset(
+/// 에셋이 없거나 쓰기에 실패하면 오류를 반환한다.
+pub async fn record_analysis(
     pool: &PgPool,
     asset_id: i64,
-    scores: ReviewScores,
+    analysis: &Analysis,
+    facts: &serde_json::Value,
 ) -> RepoResult<ReviewResult> {
-    scores.validate()?;
-
     let mut tx = pool.begin().await.context("starting transaction")?;
 
     let price_usd: f64 =
@@ -452,53 +523,55 @@ pub async fn review_asset(
             .bind(asset_id)
             .fetch_optional(&mut *tx)
             .await
-            .context("loading asset for review")?
+            .context("loading asset")?
             .ok_or(RepoError::AssetNotFound(asset_id))?;
 
-    let result = record_review(&mut tx, asset_id, scores, price_usd).await?;
-    tx.commit().await.context("committing review")?;
-    Ok(result)
-}
-
-/// 검수 한 건을 기록하고 판정을 돌려준다. 등록과 재검수가 같은 경로를 쓴다.
-async fn record_review(
-    tx: &mut Transaction<'_, Postgres>,
-    asset_id: i64,
-    scores: ReviewScores,
-    price_usd: f64,
-) -> RepoResult<ReviewResult> {
-    let total = scores.total();
-    let badge = scores.badge();
+    let badge = if analysis.license_clean < 60 {
+        Badge::Silver
+    } else {
+        Badge::from_score(analysis.total)
+    };
 
     sqlx::query(
         r"INSERT INTO reviews
           (asset_id, mesh_integrity, texture_quality, lod_setup, runtime_cost,
-           license_clean, code_quality, integration, total, badge)
-          VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)",
+           license_clean, code_quality, integration, total, badge, facts, notes)
+          VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)",
     )
     .bind(asset_id)
-    .bind(i16::from(scores.mesh_integrity))
-    .bind(i16::from(scores.texture_quality))
-    .bind(i16::from(scores.lod_setup))
-    .bind(i16::from(scores.runtime_cost))
-    .bind(i16::from(scores.license_clean))
-    .bind(i16::from(scores.code_quality))
-    .bind(i16::from(scores.integration))
-    .bind(i16::from(total))
+    .bind(i16::from(analysis.mesh_integrity))
+    .bind(i16::from(analysis.texture_quality))
+    .bind(i16::from(analysis.lod_setup))
+    .bind(i16::from(analysis.runtime_cost))
+    .bind(i16::from(analysis.license_clean))
+    .bind(analysis.code_quality.map(i16::from))
+    .bind(i16::from(analysis.integration))
+    .bind(i16::from(analysis.total))
     .bind(badge.as_str())
-    .execute(&mut **tx)
+    .bind(facts)
+    .bind(serde_json::json!(analysis.notes))
+    .execute(&mut *tx)
     .await
-    .context("inserting review")?;
+    .context("recording analysis")?;
+
+    tx.commit().await.context("committing analysis")?;
 
     Ok(ReviewResult {
         asset_id,
-        total,
+        total: analysis.total,
         badge,
         production_ready: badge.production_ready(),
-        license_blocked: scores.license_blocked(),
+        license_blocked: analysis.license_clean < 60,
         settlement_preview: Settlement::new(price_usd, DEFAULT_FEE_RATE),
     })
 }
+
+/* 점수를 인자로 받는 검수 함수는 없다.
+
+`review_asset(pool, id, scores)` 가 있었다. 등록에서 점수를 뺀 뒤에도 이
+함수와 그 HTTP 경로가 남아 있어서, 결국 같은 자리로 들어올 수 있었다.
+검수를 만드는 길은 [`record_analysis`] 하나다 — 그리고 그건 analyzer 가
+잰 값만 받는다. */
 
 /* 계정의 창작자 프로필을 찾거나 만든다.
 

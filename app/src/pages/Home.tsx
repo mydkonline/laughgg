@@ -7,6 +7,7 @@ import { Spin } from "../three/Spin";
 import { modelSrc } from "../data/pieces";
 import { RankIcon, BADGE_LABEL, type BadgeKey } from "../components/Rank";
 import { HomeStage } from "../components/HomeStage";
+import { t } from "../lib/locale";
 
 /* 홈 — 무엇을 파는 곳인지 한 화면에서 끝난다.
    에셋을 파는 게 아니라 "쓸 만한지 보증"을 판다는 게 요지고, 그건 글보다
@@ -77,30 +78,31 @@ export function Home() {
       {/* 히어로 */}
       <section className="mx-auto grid max-w-[1240px] items-center gap-10 px-5 py-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
         <div>
-          <h1 className="text-4xl leading-[1.2] font-bold text-ink">검증된 게임 에셋 마켓</h1>
+          <h1 className="text-4xl leading-[1.2] font-bold text-ink">{t("검증된 게임 에셋 마켓")}</h1>
           <p className="mt-3 max-w-[52ch] text-xs text-muted">
-            올라온 에셋을 7항목으로 채점해 배지를 매깁니다. 구매한 에셋은 에디터에서
-            게임 컨셉에 맞춰 변환해 내려받습니다.
+            {t(
+              "올라온 에셋을 7항목으로 채점해 배지를 매깁니다. 구매한 에셋은 에디터에서 게임 컨셉에 맞춰 변환해 내려받습니다.",
+            )}
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Link
               to="/market"
               className="rounded-xl bg-accent px-6 py-3.5 text-base font-bold text-white no-underline hover:bg-accent-strong"
             >
-              마켓 둘러보기
+              {t("마켓 둘러보기")}
             </Link>
             <Link
               to="/workshop"
               className="rounded-xl border border-line px-6 py-3.5 text-base font-semibold text-muted no-underline hover:border-accent hover:text-ink"
             >
-              에셋 프롬프트 조정
+              {t("에셋 프롬프트 조정")}
             </Link>
           </div>
 
           <dl className="mt-10 flex flex-wrap gap-x-12 gap-y-4 border-t border-line pt-6">
-            <Stat k="등록된 에셋" v={`${PIECES.length}종`} />
-            <Stat k="맞출 수 있는 컨셉" v={`${CONCEPTS.length}종`} />
-            <Stat k="고정 팔레트" v={`${PALETTES.length - 1}종`} />
+            <Stat k={t("등록된 에셋")} v={t("{n}종", { n: PIECES.length })} />
+            <Stat k={t("맞출 수 있는 컨셉")} v={t("{n}종", { n: CONCEPTS.length })} />
+            <Stat k={t("고정 팔레트")} v={t("{n}종", { n: PALETTES.length - 1 })} />
           </dl>
         </div>
 
@@ -114,11 +116,11 @@ export function Home() {
       {/* 진행 순서 */}
       <section className="border-t border-line bg-surface">
         <div className="mx-auto max-w-[1240px] px-5 py-16">
-          <h2 className="text-2xl font-bold text-ink">방식</h2>
-          <p className="mt-2 text-xs text-muted">올린 파일이 배지를 받기까지 네 단계.</p>
+          <h2 className="text-2xl font-bold text-ink">{t("방식")}</h2>
+          <p className="mt-2 text-xs text-muted">{t("올린 파일이 배지를 받기까지 네 단계.")}</p>
           <ol className="mt-8 grid list-none gap-px overflow-hidden rounded-xl border border-line bg-line p-0 sm:grid-cols-2 lg:grid-cols-4">
-            {STEPS.map(([icon, t, d], i) => (
-              <li key={t} className="flex flex-col items-start gap-4 bg-surface p-6">
+            {STEPS.map(([icon, step, detail], i) => (
+              <li key={step} className="flex flex-col items-start gap-4 bg-surface p-6">
                 <span className="flex w-full items-start justify-between">
                   <svg
                     viewBox="0 0 24 24"
@@ -134,8 +136,8 @@ export function Home() {
                   </svg>
                   <b className="num text-xs text-faint">{String(i + 1).padStart(2, "0")}</b>
                 </span>
-                <p className="text-base font-bold text-ink">{t}</p>
-                <p className="text-xs text-faint">{d}</p>
+                <p className="text-base font-bold text-ink">{t(step)}</p>
+                <p className="text-xs text-faint">{t(detail)}</p>
               </li>
             ))}
           </ol>
@@ -144,15 +146,15 @@ export function Home() {
 
       {/* 배지 */}
       <section className="mx-auto max-w-[1240px] px-5 py-16">
-        <h2 className="text-2xl font-bold text-ink">배지</h2>
-        <p className="mt-2 text-xs text-muted">수수료가 아니라 노출 순위를 정합니다.</p>
+        <h2 className="text-2xl font-bold text-ink">{t("배지")}</h2>
+        <p className="mt-2 text-xs text-muted">{t("수수료가 아니라 노출 순위를 정합니다.")}</p>
         <div className="mt-8 grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
-          {TIERS.map((t) => (
-            <div key={t.badge} className="flex flex-col items-start gap-4 bg-surface p-7">
-              <RankIcon badge={t.badge} size={48} />
-              <p className="text-2xl font-bold text-ink">{BADGE_LABEL[t.badge]}</p>
-              <p className="text-xs tabular-nums text-faint">{t.range}</p>
-              <p className="text-xs text-faint">{t.note}</p>
+          {TIERS.map((tier) => (
+            <div key={tier.badge} className="flex flex-col items-start gap-4 bg-surface p-7">
+              <RankIcon badge={tier.badge} size={48} />
+              <p className="text-2xl font-bold text-ink">{t(BADGE_LABEL[tier.badge])}</p>
+              <p className="text-xs tabular-nums text-faint">{t(tier.range)}</p>
+              <p className="text-xs text-faint">{t(tier.note)}</p>
             </div>
           ))}
         </div>
@@ -162,8 +164,8 @@ export function Home() {
           게임에서 익숙한 전리품 분배 막대로 보여 준다. */}
       <section className="border-t border-line bg-surface">
         <div className="mx-auto max-w-[1240px] px-5 py-16">
-          <h2 className="text-2xl font-bold text-ink">정산</h2>
-          <p className="mt-2 text-xs text-muted">에셋 하나가 팔릴 때 어디로 얼마가 가는지.</p>
+          <h2 className="text-2xl font-bold text-ink">{t("정산")}</h2>
+          <p className="mt-2 text-xs text-muted">{t("에셋 하나가 팔릴 때 어디로 얼마가 가는지.")}</p>
 
           <div className="mt-8 flex h-16 overflow-hidden rounded-lg border border-line">
             <span className="flex items-center justify-center bg-accent" style={{ flexGrow: 92 }}>
@@ -177,13 +179,13 @@ export function Home() {
           <dl className="mt-4 grid gap-x-10 gap-y-4 sm:grid-cols-2">
             <div className="flex items-baseline gap-2.5">
               <span className="h-2.5 w-2.5 shrink-0 translate-y-[-1px] rounded-sm bg-accent" />
-              <dt className="text-xs font-bold text-ink">창작자</dt>
-              <dd className="m-0 text-xs text-faint">만든 사람 몫</dd>
+              <dt className="text-xs font-bold text-ink">{t("창작자")}</dt>
+              <dd className="m-0 text-xs text-faint">{t("만든 사람 몫")}</dd>
             </div>
             <div className="flex items-baseline gap-2.5">
               <span className="h-2.5 w-2.5 shrink-0 translate-y-[-1px] rounded-sm bg-chrome-700" />
               <dt className="text-xs font-bold text-ink">LaughGG</dt>
-              <dd className="m-0 text-xs text-faint">거래 수수료</dd>
+              <dd className="m-0 text-xs text-faint">{t("거래 수수료")}</dd>
             </div>
           </dl>
 
@@ -214,13 +216,13 @@ export function Home() {
       </section>
 
       <section className="mx-auto max-w-[1240px] px-5 py-20 text-center">
-        <h2 className="text-2xl font-bold text-ink">스튜디오</h2>
-        <p className="mt-2 text-xs text-muted">3D 와 2D 를 게임 컨셉에 맞춰 변환합니다.</p>
+        <h2 className="text-2xl font-bold text-ink">{t("스튜디오")}</h2>
+        <p className="mt-2 text-xs text-muted">{t("3D 와 2D 를 게임 컨셉에 맞춰 변환합니다.")}</p>
         <Link
           to="/workshop"
           className="mt-6 inline-block rounded-xl bg-accent px-8 py-4 text-base font-bold text-white no-underline hover:bg-accent-strong"
         >
-          스튜디오 열기
+          {t("스튜디오 열기")}
         </Link>
       </section>
     </main>
@@ -264,7 +266,7 @@ function HeroShot() {
           style={{ transitionDelay: `${300 + i * 220}ms` }}
         >
           <div className="flex items-baseline gap-2 border-b border-dashed border-line pb-1">
-            <span className="text-xs text-faint">{label}</span>
+            <span className="text-xs text-faint">{t(label)}</span>
             <b className="num text-2xl text-ink">{score}</b>
           </div>
         </div>
@@ -278,7 +280,7 @@ function HeroShot() {
         style={{ transitionDelay: "960ms" }}
       >
         <RankIcon badge="chal" size={18} />
-        <b className="text-base font-extrabold text-accent">챌린저 94</b>
+        <b className="text-base font-extrabold text-accent">{t("챌린저")} 94</b>
       </div>
     </div>
   );

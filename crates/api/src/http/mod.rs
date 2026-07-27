@@ -94,7 +94,12 @@ pub fn router(state: AppState) -> Router {
         .route("/auth/google", get(oauth::google::start))
         .route("/auth/google/callback", get(oauth::google::callback))
         // 결제창은 Stripe 가 띄운다. 여기로는 카드 정보가 오지 않는다.
-        .route("/assets/{id}/checkout", post(payment::checkout))
+        .route("/assets/{id}/checkout", post(payment::checkout_one))
+        // 장바구니를 통째로. 담긴 것이 여럿이면 주문 하나에 줄이 여럿이다.
+        .route("/cart/checkout", post(payment::checkout_cart))
+        // 결제를 누르기 전에 무엇이 막혔는지 본다. 장바구니는 브라우저에
+        // 있어서 며칠 전 상태가 그대로 남아 있다.
+        .route("/cart/review", post(payment::review_cart))
         // 허가를 먼저 내고 그 토큰으로만 받는다. 에셋 id 로 바로 받게 하면
         // 산 사람이 링크를 넘기는 순간 아무나 받는다.
         .route("/assets/{id}/download", post(download::grant))
@@ -108,9 +113,9 @@ pub fn router(state: AppState) -> Router {
         // 파일은 서버를 안 지나간다. 어디에 올릴지만 정해 준다.
         .route("/uploads", post(upload::intent))
         .route("/assets/{id}", get(asset::get))
-        // 등록과 재검수는 다른 일이라 경로도 다르다. 한때 둘이 같은 핸들러를
-        // 가리켜서 재검수를 부르면 에셋이 하나 더 생겼다.
-        .route("/assets/{id}/review", post(asset::review))
+        // 점수는 서버가 매긴다. 파일을 보내면 뜯어서 채점한다.
+        // 손으로 점수를 넣는 경로는 없다 — 있으면 그 문으로 다 들어온다.
+        .route("/assets/{id}/analyze", post(asset::analyze))
         .route("/assets/{id}/sales", post(sale::create))
         .route("/games", get(game::list))
         .route("/games/facets", get(game::facets))

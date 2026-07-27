@@ -4,6 +4,7 @@ import { Thumb } from "./Thumb";
 import { Sprite } from "../three/Sprite";
 import { CONCEPTS, NEUTRAL_RASTER } from "../data/concepts";
 import { CHECK_WEIGHTS } from "../data/ir";
+import { t } from "../lib/locale";
 
 /* 화면에서 제일 먼저 보이는 건 글이 아니라 그림이어야 한다.
    여기 있는 것들이 각 섹션의 본문이고, 글은 그 밑에 붙는 설명이다. */
@@ -166,8 +167,8 @@ export function Donut({ percent, label, sub }: { percent: number; label: string;
         <p className="num text-4xl leading-none text-ink">
           22<span className="text-base text-muted">%</span>
         </p>
-        <p className="mt-2 text-xs font-bold text-ink">최고 가중치 항목</p>
-        <p className="mt-1 text-xs text-faint">라이선스 출처, 60점 미만 단독 탈락</p>
+        <p className="mt-2 text-xs font-bold text-ink">{t("최고 가중치 항목")}</p>
+        <p className="mt-1 text-xs text-faint">{t("라이선스 출처, 60점 미만 단독 탈락")}</p>
       </div>
 
       <div>
@@ -175,10 +176,10 @@ export function Donut({ percent, label, sub }: { percent: number; label: string;
             실제 노브 값에서 뽑는다 — 임의로 칠하면 그림이 자료가 아니게 된다. */}
         <ConceptDots on={on} />
         <p className="num text-4xl leading-none text-ink">
-          11<span className="text-base text-muted">종</span>
+          11<span className="text-base text-muted">{t("종")}</span>
         </p>
-        <p className="mt-2 text-xs font-bold text-ink">변환 컨셉</p>
-        <p className="mt-1 text-xs text-faint">통과 에셋에 적용 가능, 팔레트 9종 별도</p>
+        <p className="mt-2 text-xs font-bold text-ink">{t("변환 컨셉")}</p>
+        <p className="mt-1 text-xs text-faint">{t("통과 에셋에 적용 가능, 팔레트 9종 별도")}</p>
       </div>
     </div>
   );
@@ -310,7 +311,7 @@ function WeightSpark({ on }: { on: boolean }) {
    "열한 개가 서로 다르다" 는 말은 그대로 전달된다. */
 function ConceptDots({ on }: { on: boolean }) {
   return (
-    <span className="mb-3 grid h-14 w-14 grid-cols-4 gap-[3px]" role="img" aria-label="변환 컨셉 11종">
+    <span className="mb-3 grid h-14 w-14 grid-cols-4 gap-[3px]" role="img" aria-label={t("변환 컨셉 11종")}>
       {CONCEPTS.slice(0, 11).map((c, i) => (
         <span
           key={c.id}

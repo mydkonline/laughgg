@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { GAMES, GAME_CATS, SCALES, engineMark, type Game } from "../data/games";
 import { Pager } from "../components/Pager";
+import { t } from "../lib/locale";
 
 /* 게임별 엔진.
 
@@ -98,15 +99,15 @@ export function Stack() {
   return (
     <main className="mx-auto max-w-[1240px] px-5 pb-20">
       <header className="py-8">
-        <p className="text-xs tracking-wide text-accent">엔진</p>
-        <h1 className="mt-1 text-2xl font-bold text-ink">게임별 엔진</h1>
+        <p className="text-xs tracking-wide text-accent">{t("엔진")}</p>
+        <h1 className="mt-1 text-2xl font-bold text-ink">{t("게임별 엔진")}</h1>
       </header>
 
       <input
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        placeholder="게임, 엔진, 개발사 검색"
-        aria-label="게임 검색"
+        placeholder={t("게임, 엔진, 개발사 검색")}
+        aria-label={t("게임 검색")}
         className="mb-6 w-full rounded-full border border-line bg-surface px-5 py-3 text-xs text-ink placeholder:text-faint"
       />
 
@@ -160,7 +161,7 @@ export function Stack() {
               <button
                 type="button"
                 onClick={() => setPicked({})}
-                aria-label="필터 전체 해제"
+                aria-label={t("필터 전체 해제")}
                 className="flex cursor-pointer items-center gap-1.5 rounded-full border-0 bg-accent px-2.5 py-1 text-xs text-white"
               >
                 {active.map(([, v]) => v).join(", ")}
@@ -170,7 +171,7 @@ export function Stack() {
           </div>
 
           {list.length === 0 ? (
-            <p className="py-20 text-center text-xs text-faint">조건에 맞는 게임이 없습니다.</p>
+            <p className="py-20 text-center text-xs text-faint">{t("조건에 맞는 게임이 없습니다.")}</p>
           ) : (
             <>
               {list.slice((page - 1) * PAGE, page * PAGE).map((g) => (
@@ -215,22 +216,22 @@ function Row({ game }: { game: Game }) {
             </span>
           </span>
           <span className="text-xs text-muted">
-            <span className="text-faint">개발사 </span>
+            <span className="text-faint">{t("개발사")} </span>
             {game.dev}
           </span>
           <span className="text-xs text-muted">
-            <span className="text-faint">규모 </span>
+            <span className="text-faint">{t("규모")} </span>
             {SCALES[game.sc] ?? game.sc}
           </span>
           {game.own && (
             <span className="text-xs text-muted">
-              <span className="text-faint">보유 </span>
+              <span className="text-faint">{t("보유")} </span>
               {game.own}
             </span>
           )}
           {typeof game.pos === "number" && game.pos > 0 && (
             <span className="text-xs text-muted">
-              <span className="text-faint">긍정 </span>
+              <span className="text-faint">{t("긍정")} </span>
               <span className="num">{game.pos.toLocaleString("ko-KR")}</span>
             </span>
           )}

@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { NEWS, type News as Item } from "../data/news";
 import { ago } from "../lib/feed";
+import { t } from "../lib/locale";
 
 /* 뉴스 — 출처가 있는 것만 싣는다. 요약은 우리가 쓰되 숫자는 원문 그대로 옮기고
    원문 링크를 같이 낸다. 출처 없는 업계 소식은 소문이지 뉴스가 아니다. */
@@ -17,9 +18,9 @@ export function News() {
   return (
     <main className="mx-auto max-w-[840px] px-5 pb-20">
       <header className="py-8">
-        <p className="text-xs tracking-wide text-accent">커뮤니티</p>
-        <h1 className="mt-1 text-2xl font-bold text-ink">업계 뉴스</h1>
-        <p className="mt-2 text-xs text-muted">출처가 확인된 소식만 싣고 원문을 함께 답니다.</p>
+        <p className="text-xs tracking-wide text-accent">{t("커뮤니티")}</p>
+        <h1 className="mt-1 text-2xl font-bold text-ink">{t("업계 뉴스")}</h1>
+        <p className="mt-2 text-xs text-muted">{t("출처가 확인된 소식만 싣고 원문을 함께 답니다.")}</p>
       </header>
 
       <div className="mb-5 flex flex-wrap gap-1.5 border-b border-line pb-4">

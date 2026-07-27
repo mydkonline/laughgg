@@ -4,6 +4,7 @@ import { Link, Navigate } from "react-router-dom";
 import { ApiError, api, type GenJob } from "../lib/api";
 import { CREDIT_COST } from "../data/plans";
 import { useAccount } from "../lib/account";
+import { t } from "../lib/locale";
 
 /* AI 에셋 생성.
 
@@ -65,7 +66,7 @@ export function Generate() {
   }, [auth.status]);
 
   if (auth.status === "loading") {
-    return <main className="mx-auto max-w-[720px] px-5 py-16 text-xs text-faint">불러오는 중</main>;
+    return <main className="mx-auto max-w-[720px] px-5 py-16 text-xs text-faint">{t("불러오는 중")}</main>;
   }
   if (auth.status === "anon") return <Navigate to="/join?mode=login" replace />;
 
@@ -91,9 +92,9 @@ export function Generate() {
       }, POLL_MS);
     } catch (err) {
       if (err instanceof ApiError && err.status === 402) {
-        setError("크레딧이 모자랍니다. 충전하거나 품질을 낮춰 주세요.");
+        setError(t("크레딧이 모자랍니다. 충전하거나 품질을 낮춰 주세요."));
       } else if (err instanceof ApiError && err.status === 400) {
-        setError("프롬프트를 확인해 주세요.");
+        setError(t("프롬프트를 확인해 주세요."));
       } else if (err instanceof ApiError && err.status === 503) {
         setError("생성 기능이 아직 켜져 있지 않습니다.");
       } else {
@@ -108,22 +109,22 @@ export function Generate() {
     <main className="mx-auto max-w-[720px] px-5 py-12">
       <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2">
         <div>
-          <p className="text-xs tracking-wide text-accent">AI 에셋</p>
-          <h1 className="mt-1 text-2xl font-bold text-ink">만들기</h1>
+          <p className="text-xs tracking-wide text-accent">{t("AI 에셋")}</p>
+          <h1 className="mt-1 text-2xl font-bold text-ink">{t("만들기")}</h1>
         </div>
         {credits !== null && (
           <Link
             to="/billing"
             className="ml-auto rounded-full border border-line px-3.5 py-1.5 text-xs text-muted no-underline hover:border-accent hover:text-ink"
           >
-            크레딧 <b className="num ml-1 text-ink">{credits}</b>
+            {t("크레딧")} <b className="num ml-1 text-ink">{credits}</b>
           </Link>
         )}
       </div>
 
       <form onSubmit={submit} className="mt-8 flex flex-col gap-4">
         <label className="flex flex-col gap-1.5">
-          <span className="text-xs text-faint">무엇을 만들까요</span>
+          <span className="text-xs text-faint">{t("무엇을 만들까요")}</span>
           <textarea
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
@@ -131,15 +132,15 @@ export function Generate() {
             maxLength={500}
             rows={3}
             className="resize-y rounded-xl border border-line bg-surface px-4 py-3 text-xs leading-relaxed text-ink placeholder:text-faint focus:border-accent"
-            placeholder="이끼 낀 고딕 석상, 한쪽 팔이 부서진"
+            placeholder={t("이끼 낀 고딕 석상, 한쪽 팔이 부서진")}
           />
           <span className="num self-end text-[10px] text-faint">{prompt.length} / 500</span>
         </label>
 
-        <Chips label="화풍" value={style} onPick={setStyle} options={STYLES} />
+        <Chips label={t("화풍")} value={style} onPick={setStyle} options={STYLES} />
 
         <div className="flex flex-wrap items-center gap-2">
-          <span className="w-10 shrink-0 text-xs text-faint">품질</span>
+          <span className="w-10 shrink-0 text-xs text-faint">{t("품질")}</span>
           {CREDIT_COST.map(([id, label, c, note]) => (
             <button
               key={id}
@@ -179,7 +180,7 @@ export function Generate() {
           <p className="text-center text-[10px] text-faint">
             크레딧이 모자랍니다.{" "}
             <Link to="/billing" className="text-accent underline">
-              충전하기
+              {t("충전하기")}
             </Link>
           </p>
         )}
@@ -187,7 +188,7 @@ export function Generate() {
 
       {jobs.length > 0 && (
         <section className="mt-12 border-t border-line pt-8">
-          <h2 className="text-base font-bold text-ink">요청한 것</h2>
+          <h2 className="text-base font-bold text-ink">{t("요청한 것")}</h2>
           <ul className="m-0 mt-4 flex list-none flex-col p-0">
             {jobs.map((j) => (
               <li
@@ -206,8 +207,7 @@ export function Generate() {
             ))}
           </ul>
           <p className="mt-4 text-[10px] leading-relaxed text-faint">
-            만들다 실패하면 크레딧을 돌려드립니다. 우리 쪽이나 생성 서비스 쪽 문제로
-            실패한 것을 쓰신 분이 물 이유가 없습니다.
+            {t("만들다 실패하면 크레딧을 돌려드립니다. 우리 쪽이나 생성 서비스 쪽 문제로 실패한 것을 쓰신 분이 물 이유가 없습니다.")}
           </p>
         </section>
       )}
@@ -259,7 +259,7 @@ function Chips({
               : "border-line text-muted hover:border-accent hover:text-ink",
           ].join(" ")}
         >
-          {name}
+          {t(name)}
         </button>
       ))}
     </div>

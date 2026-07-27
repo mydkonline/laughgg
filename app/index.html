@@ -11,6 +11,18 @@
         try { saved = localStorage.getItem("igg-theme"); } catch (e) {}
         document.documentElement.dataset.theme = saved === "light" ? "light" : "dark";
       })();
+
+      /* lang 도 첫 페인트 전에 맞춘다.
+
+         읽어 주는 프로그램과 검색 로봇이 이 값을 보고 어느 말인지 정한다.
+         "ko" 로 둔 채 영어를 띄우면 한국어 발음으로 영어를 읽는다.
+         언어는 주소 첫 칸이 정한다 — lib/locale 과 같은 규칙이고,
+         기본 언어(한국어)는 주소에 안 붙어서 여기 안 걸린다. */
+      (function () {
+        var head = location.pathname.split("/").filter(Boolean)[0];
+        if (head === "laughgg") head = location.pathname.split("/").filter(Boolean)[1];
+        if (head === "en") document.documentElement.lang = "en";
+      })();
     </script>
   </head>
   <body>

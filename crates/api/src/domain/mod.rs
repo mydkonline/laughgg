@@ -6,15 +6,15 @@
 //! `domain` 은 아무것도 모른다.
 
 mod account;
+mod analysis;
 mod badge;
 mod generation;
-mod score;
 mod settlement;
 
 pub use account::{CredentialError, Credentials, is_email_shaped};
+pub use analysis::{Analysis, Facts, Origin, score as analyze};
 pub use badge::Badge;
 pub use generation::{
     ArtStyle, GenError, GenRequest, GenSpec, MAX_ATTEMPTS, Quality, backoff_seconds,
 };
-pub use score::{ReviewScores, ScoreError};
 pub use settlement::{DEFAULT_FEE_RATE, Settlement};

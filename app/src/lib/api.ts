@@ -8,6 +8,8 @@
    도메인이 달라서, 다르면 서버 쪽 CORS 가 credentials 를 허용해야 한다.
    비워 두면 같은 도메인으로 본다. */
 
+import type { CheckKey } from "../data/checks";
+
 const BASE = (import.meta.env.VITE_API_URL ?? "").replace(/\/$/, "");
 
 /** 서버가 준 오류. 상태 코드로 갈라 보려면 종류가 남아 있어야 한다. */
@@ -39,7 +41,9 @@ async function call<T>(path: string, init?: RequestInit): Promise<T> {
       // 쿠키를 싣는다. 이게 없으면 세션이 매 요청 사라진다.
       credentials: "include",
       headers: {
-        ...(init?.body ? { "content-type": "application/json" } : {}),
+        /* 문자열 몸통일 때만 JSON 이다. 파일을 그대로 보내는 요청이 있어서,
+           몸통이 있으면 무조건 붙이면 GLB 에 application/json 이 달린다. */
+        ...(typeof init?.body === "string" ? { "content-type": "application/json" } : {}),
         ...init?.headers,
       },
     });
@@ -95,11 +99,42 @@ export const api = {
       body: JSON.stringify({ filename, bytes, sha256 }),
     }),
 
+  /* 등록은 배지를 안 준다. 파일을 뜯어야 채점이 되기 때문이다.
+     여기서 배지를 받던 시절에는 화면이 점수를 보내고 그대로 돌려받았다. */
   createAsset: (input: NewAsset) =>
-    call<ReviewResult>("/assets", { method: "POST", body: JSON.stringify(input) }),
+    call<CreatedAsset>("/assets", { method: "POST", body: JSON.stringify(input) }),
+
+  /* 파일을 서버에 보내 채점받는다.
+
+     점수를 안 보낸다 — 보낼 자리가 없다. 몸통이 파일 그 자체라 JSON 이
+     아니고, 그래서 content-type 도 안 붙인다. */
+  analyzeAsset: (id: number, file: File) =>
+    call<AnalysisResult>(`/assets/${id}/analyze`, { method: "POST", body: file }),
 
   /** 내 소유 목록. 같은 걸 두 번 사도 한 줄이다. */
   library: () => call<{ count: number; assets: OwnedAsset[] }>("/me/library"),
+
+  /* 담긴 것들을 한 번에 가져온다. 상세를 열 번 부르면 화면이 열 번
+     나눠 그려지고, 그중 하나가 느리면 그 줄만 늦게 뜬다. */
+  assetsByIds: (ids: number[]) =>
+    call<{ total: number; assets: MarketAsset[] }>(
+      `/assets?ids=${ids.join(",")}&limit=${Math.max(ids.length, 1)}`,
+    ),
+
+  /* 결제를 누르기 전에 무엇이 막혔는지 본다. 장바구니는 브라우저에 있어서
+     며칠 전 상태가 그대로 남아 있다 — 그새 내려갔거나 이미 샀을 수 있다. */
+  reviewCart: (ids: number[]) =>
+    call<{ blocked: Blocked[] }>("/cart/review", {
+      method: "POST",
+      body: JSON.stringify({ asset_ids: ids }),
+    }),
+
+  /** 담긴 것을 통째로 결제한다. 하나라도 막히면 주문이 안 열린다. */
+  checkoutCart: (ids: number[]) =>
+    call<CheckoutSession>("/cart/checkout", {
+      method: "POST",
+      body: JSON.stringify({ asset_ids: ids }),
+    }),
 
   /** 내 생성 작업과 잔액. */
   generations: () => call<{ credits: number; jobs: GenJob[] }>("/generate"),
@@ -113,6 +148,31 @@ export const api = {
     }),
 
   generation: (id: number) => call<GenJob>(`/generate/${id}`),
+};
+
+/** 마켓 목록 한 줄. 장바구니도 이 값으로 그린다. */
+export type MarketAsset = {
+  id: number;
+  title: string;
+  creator: string;
+  category: string;
+  engine: string;
+  art_style: string;
+  price_usd: number;
+  total: number | null;
+  badge: string | null;
+};
+
+/** 담겼는데 못 사는 줄. 이유는 서버가 준 말을 그대로 띄운다. */
+export type Blocked = {
+  asset_id: number;
+  reason: string;
+};
+
+export type CheckoutSession = {
+  order_id: number;
+  amount_cents: number;
+  checkout_url: string;
 };
 
 export type OwnedAsset = {
@@ -147,32 +207,40 @@ export type UploadTarget = {
   public_url: string;
 };
 
-export type Scores = {
-  mesh_integrity: number;
-  texture_quality: number;
-  lod_setup: number;
-  runtime_cost: number;
-  license_clean: number;
-  code_quality: number;
-  integration: number;
-};
+/* 등록에 점수가 없다.
 
+   한때 여기에 `scores` 가 있었다. 올리는 사람이 일곱 항목을 직접 정해서
+   보냈고, 다들 100 을 놓고 챌린저를 받았다 — 배지가 아무 의미가 없었다.
+   지금 화면이 보내는 건 파일과 **출처 신고** 뿐이고, 점수는 서버가 파일을
+   뜯어 매긴다. */
 export type NewAsset = {
   title: string;
   category: string;
   engine: string;
   art_style: string;
   price_usd: number;
-  scores: Scores;
+  /** self_made | public_domain | licensed | ai_generated | unknown */
+  origin: string;
   file_key?: string;
   file_bytes?: number;
   file_sha256?: string;
 };
 
-export type ReviewResult = {
+/** 등록 직후. 배지는 아직 없다 — 파일을 안 뜯었기 때문이다. */
+export type CreatedAsset = {
+  asset_id: number;
+  status: "pending_analysis";
+};
+
+/** 채점 결과. 이 값들은 전부 서버가 파일에서 만든 것이다. */
+export type AnalysisResult = {
   asset_id: number;
   total: number;
   badge: string;
   production_ready: boolean;
   license_blocked: boolean;
+  /** 코드 품질은 메시 에셋에 해당이 없어 null 이다. 0 이 아니다. */
+  scores: Record<CheckKey, number | null>;
+  /** 왜 그 점수인지. 점수만 주면 무엇을 고쳐야 할지 모른다. */
+  notes: string[];
 };

@@ -6,6 +6,7 @@ import { PIECES, modelSrc, imageSrc, isModel, type Piece } from "../data/pieces"
 import { loadNormalized, frame } from "../three/baker";
 import { useCart } from "../lib/cart";
 import { Thumb } from "../components/Thumb";
+import { t } from "../lib/locale";
 
 /* 뷰어. 산 에셋을 뜯어보는 자리다.
 
@@ -41,9 +42,9 @@ export function Viewer() {
   return (
     <main className="mx-auto max-w-[1240px] px-5 pb-20">
       <header className="py-8">
-        <p className="text-xs tracking-wide text-accent">AI 뷰어</p>
-        <h1 className="mt-1 text-2xl font-bold text-ink">에셋 뜯어보기</h1>
-        <p className="mt-2 text-xs text-muted">각도와 재질을 직접 만져 보고 삽니다.</p>
+        <p className="text-xs tracking-wide text-accent">{t("AI 뷰어")}</p>
+        <h1 className="mt-1 text-2xl font-bold text-ink">{t("에셋 뜯어보기")}</h1>
+        <p className="mt-2 text-xs text-muted">{t("각도와 재질을 직접 만져 보고 삽니다.")}</p>
       </header>
 
       {/* 무엇을 볼지 */}
@@ -242,19 +243,19 @@ function Viewer3D({ piece }: { piece: Piece }) {
             spin ? "border-accent text-ink" : "border-line text-faint hover:text-ink",
           ].join(" ")}
         >
-          자동 회전
+          {t("자동 회전")}
         </button>
 
         {stat && (
           <span className="ml-auto text-xs text-faint">
-            삼각면 <b className="num text-ink">{stat.tri.toLocaleString("ko-KR")}</b>
+            {t("삼각면")} <b className="num text-ink">{stat.tri.toLocaleString("ko-KR")}</b>
             <span className="mx-2">·</span>
-            머티리얼 <b className="num text-ink">{stat.mat}</b>
+            {t("머티리얼")} <b className="num text-ink">{stat.mat}</b>
           </span>
         )}
       </div>
 
-      <p className="mt-2 text-xs text-faint">끌어서 돌리고 휠로 확대합니다.</p>
+      <p className="mt-2 text-xs text-faint">{t("끌어서 돌리고 휠로 확대합니다.")}</p>
     </div>
   );
 }
@@ -325,7 +326,7 @@ function Viewer2D({ piece }: { piece: Piece }) {
 
       <div className="mt-3 flex flex-wrap items-center gap-3">
         <label className="flex items-center gap-2.5 text-xs text-faint">
-          배율
+          {t("배율")}
           <input
             type="range"
             min={1}
@@ -357,12 +358,12 @@ function Viewer2D({ piece }: { piece: Piece }) {
 
         {size && (
           <span className="ml-auto text-xs text-faint">
-            원본 <b className="num text-ink">{size.w}×{size.h}</b>
+            {t("원본")} <b className="num text-ink">{size.w}×{size.h}</b>
           </span>
         )}
       </div>
 
-      <p className="mt-2 text-xs text-faint">배율을 올리면 픽셀 경계가 그대로 드러납니다.</p>
+      <p className="mt-2 text-xs text-faint">{t("배율을 올리면 픽셀 경계가 그대로 드러납니다.")}</p>
     </div>
   );
 }

@@ -9,6 +9,7 @@
 //! 가져다 쓸 수가 없어서 SQL 과 라우팅에 테스트를 못 붙인다. 실제로 붙였던
 //! 결함 셋(중복 행, 잘못된 경로, 전부 500)이 전부 그 두 층에 있었다.
 
+pub mod analyzer;
 pub mod domain;
 pub mod http;
 pub mod metrics;

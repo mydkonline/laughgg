@@ -3,6 +3,7 @@ import { Link, Navigate, useSearchParams } from "react-router-dom";
 
 import { ApiError, api } from "../lib/api";
 import { useAccount } from "../lib/account";
+import { t } from "../lib/locale";
 
 /* 내 라이브러리.
 
@@ -62,8 +63,8 @@ export function Library() {
       if (lib.status === "rejected" && gen.status === "rejected") {
         setError(
           lib.reason instanceof ApiError && lib.reason.status === 0
-            ? "서버에 닿지 못했습니다."
-            : "불러오지 못했습니다.",
+            ? t("서버에 닿지 못했습니다.")
+            : t("불러오지 못했습니다."),
         );
       }
     });
@@ -73,7 +74,7 @@ export function Library() {
   }, [auth.status]);
 
   if (auth.status === "loading") {
-    return <main className="mx-auto max-w-[840px] px-5 py-16 text-xs text-faint">불러오는 중</main>;
+    return <main className="mx-auto max-w-[840px] px-5 py-16 text-xs text-faint">{t("불러오는 중")}</main>;
   }
   if (auth.status === "anon") return <Navigate to="/join?mode=login" replace />;
 
@@ -82,7 +83,7 @@ export function Library() {
       <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2">
         <div>
           <p className="text-xs tracking-wide text-accent">{auth.account.display_name}</p>
-          <h1 className="mt-1 text-2xl font-bold text-ink">내 라이브러리</h1>
+          <h1 className="mt-1 text-2xl font-bold text-ink">{t("내 라이브러리")}</h1>
         </div>
 
         {/* 올리기가 여기 산다. 네비 최상단이 아니라 라이브러리 안이다. */}
@@ -92,20 +93,20 @@ export function Library() {
               to="/billing"
               className="rounded-full border border-line px-3.5 py-1.5 text-xs text-muted no-underline hover:border-accent hover:text-ink"
             >
-              크레딧 <b className="num ml-1 text-ink">{credits}</b>
+              {t("크레딧")} <b className="num ml-1 text-ink">{credits}</b>
             </Link>
           )}
           <Link
             to="/generate"
             className="rounded-xl border border-line px-4 py-2.5 text-xs font-semibold text-muted no-underline hover:border-accent hover:text-ink"
           >
-            AI로 만들기
+            {t("AI로 만들기")}
           </Link>
           <Link
             to="/upload"
             className="rounded-xl bg-accent px-4 py-2.5 text-xs font-bold text-white no-underline hover:bg-accent-strong"
           >
-            에셋 올리기
+            {t("에셋 올리기")}
           </Link>
         </div>
       </div>
@@ -124,7 +125,7 @@ export function Library() {
                 : "border-line text-muted hover:border-accent hover:text-ink",
             ].join(" ")}
           >
-            {label}
+            {t(label)}
             <span className={tab === key ? "ml-1.5 opacity-60" : "ml-1.5 text-faint"}>
               {key === "owned" ? (owned?.length ?? 0) : key === "generated" ? (jobs?.length ?? 0) : 0}
             </span>
@@ -150,9 +151,9 @@ function Owned({ rows }: { rows: Owned[] | null }) {
   if (rows.length === 0) {
     return (
       <Empty
-        what="아직 산 에셋이 없습니다."
+        what={t("아직 산 에셋이 없습니다.")}
         to="/market"
-        cta="마켓 둘러보기"
+        cta={t("마켓 둘러보기")}
       />
     );
   }
@@ -182,13 +183,13 @@ function Owned({ rows }: { rows: Owned[] | null }) {
 function Mine() {
   return (
     <div className="mt-8 rounded-2xl border border-line bg-surface p-8 text-center">
-      <p className="text-xs text-muted">올린 에셋 목록은 아직 준비 중입니다.</p>
-      <p className="mt-1 text-[10px] text-faint">창작자별 조회를 붙이면 여기에 뜹니다.</p>
+      <p className="text-xs text-muted">{t("올린 에셋 목록은 아직 준비 중입니다.")}</p>
+      <p className="mt-1 text-[10px] text-faint">{t("창작자별 조회를 붙이면 여기에 뜹니다.")}</p>
       <Link
         to="/upload"
         className="mt-5 inline-block rounded-xl bg-accent px-5 py-2.5 text-xs font-bold text-white no-underline hover:bg-accent-strong"
       >
-        에셋 올리기
+        {t("에셋 올리기")}
       </Link>
     </div>
   );
@@ -197,7 +198,7 @@ function Mine() {
 function Generated({ rows }: { rows: Job[] | null }) {
   if (rows === null) return <Loading />;
   if (rows.length === 0) {
-    return <Empty what="아직 만든 것이 없습니다." to="/generate" cta="AI로 만들기" />;
+    return <Empty what={t("아직 만든 것이 없습니다.")} to="/generate" cta={t("AI로 만들기")} />;
   }
   return (
     <ul className="m-0 mt-6 flex list-none flex-col p-0">
@@ -230,7 +231,7 @@ const STATUS_KO: Record<string, string> = {
 };
 
 function Loading() {
-  return <p className="mt-8 text-xs text-faint">불러오는 중</p>;
+  return <p className="mt-8 text-xs text-faint">{t("불러오는 중")}</p>;
 }
 
 function Empty({ what, to, cta }: { what: string; to: string; cta: string }) {

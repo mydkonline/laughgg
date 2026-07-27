@@ -54,39 +54,98 @@ struct CheckoutSession {
     url: String,
 }
 
+#[derive(Deserialize)]
+pub struct CartInput {
+    pub asset_ids: Vec<i64>,
+}
+
+/// 상세 페이지에서 한 점만 바로 사는 길. 장바구니와 같은 함수를 쓴다.
+///
+/// # Errors
+/// 결제가 꺼져 있거나 못 파는 에셋이거나 Stripe 호출이 실패하면 오류를 반환한다.
+pub async fn checkout_one(
+    State(st): State<AppState>,
+    account: CurrentAccount,
+    Path(asset_id): Path<i64>,
+) -> ApiResult<(StatusCode, Json<serde_json::Value>)> {
+    open_session(&st, account, &[asset_id]).await
+}
+
+/* 장바구니를 통째로 결제한다.
+
+담긴 것 중 하나라도 못 사면 주문을 안 연다. 빼고 진행하면 셋을 담고
+눌렀는데 둘만 결제되는 일이 생기고, 그건 되돌리기 어렵다. */
+///
+/// # Errors
+/// 비어 있거나 못 사는 것이 섞였거나 Stripe 호출이 실패하면 오류를 반환한다.
+pub async fn checkout_cart(
+    State(st): State<AppState>,
+    account: CurrentAccount,
+    Json(input): Json<CartInput>,
+) -> ApiResult<(StatusCode, Json<serde_json::Value>)> {
+    open_session(&st, account, &input.asset_ids).await
+}
+
+/* 결제를 누르기 전에 장바구니를 확인한다.
+
+장바구니는 브라우저에 있어서 며칠 전 상태가 그대로 남아 있다. 그 사이에
+누가 내렸을 수도 있고, 내가 이미 샀을 수도 있다. */
+///
+/// # Errors
+/// 조회에 실패하면 오류를 반환한다.
+pub async fn review_cart(
+    State(st): State<AppState>,
+    CurrentAccount(account): CurrentAccount,
+    Json(input): Json<CartInput>,
+) -> ApiResult<Json<serde_json::Value>> {
+    let blocked = repo::check_cart(&st.pool, account.id, &input.asset_ids).await?;
+    Ok(Json(json!({ "blocked": blocked })))
+}
+
 /* 주문을 만들고 결제창 주소를 돌려준다.
 
 주문을 먼저 만든 뒤 Stripe 세션을 연다. 순서가 반대면 결제는 됐는데
-우리 쪽에 주문이 없는 상태가 생길 수 있다. */
-/// # Errors
-/// 결제가 꺼져 있거나 못 파는 에셋이거나 Stripe 호출이 실패하면 오류를 반환한다.
-pub async fn checkout(
-    State(st): State<AppState>,
-    CurrentAccount(account): CurrentAccount,
-    Path(asset_id): Path<i64>,
-) -> ApiResult<(StatusCode, Json<serde_json::Value>)> {
-    let cfg = config(&st)?;
-    let order = repo::open_order(&st.pool, account.id, asset_id).await?;
+우리 쪽에 주문이 없는 상태가 생길 수 있다.
 
-    let amount = order.amount_cents.to_string();
-    let order_id = order.id.to_string();
+품목마다 줄을 세운다. 합계 한 줄로 보내면 결제창에 "LaughGG asset $74"
+라고만 떠서, 무엇을 사는지 마지막 화면에서 확인할 수가 없다. */
+async fn open_session(
+    st: &AppState,
+    CurrentAccount(account): CurrentAccount,
+    asset_ids: &[i64],
+) -> ApiResult<(StatusCode, Json<serde_json::Value>)> {
+    let cfg = config(st)?;
+    let order = repo::open_order(&st.pool, account.id, asset_ids).await?;
+
+    /* Stripe 는 폼 인코딩이라 `line_items[0][...]` 처럼 키에 번호가 들어간다.
+    키를 만들어 두고 빌려 줘야 해서 문자열을 먼저 모은다. */
+    let mut form: Vec<(String, String)> = vec![
+        ("mode".into(), "payment".into()),
+        ("success_url".into(), cfg.success_url.clone()),
+        ("cancel_url".into(), cfg.cancel_url.clone()),
+        ("client_reference_id".into(), order.id.to_string()),
+        ("customer_email".into(), account.email.clone()),
+    ];
+    for (n, item) in order.items.iter().enumerate() {
+        form.push((format!("line_items[{n}][quantity]"), "1".into()));
+        form.push((
+            format!("line_items[{n}][price_data][currency]"),
+            "usd".into(),
+        ));
+        form.push((
+            format!("line_items[{n}][price_data][unit_amount]"),
+            item.amount_cents.to_string(),
+        ));
+        form.push((
+            format!("line_items[{n}][price_data][product_data][name]"),
+            item.title.clone(),
+        ));
+    }
+
     let session: CheckoutSession = reqwest::Client::new()
         .post("https://api.stripe.com/v1/checkout/sessions")
         .bearer_auth(&cfg.secret_key)
-        .form(&[
-            ("mode", "payment"),
-            ("success_url", cfg.success_url.as_str()),
-            ("cancel_url", cfg.cancel_url.as_str()),
-            ("client_reference_id", order_id.as_str()),
-            ("customer_email", account.email.as_str()),
-            ("line_items[0][quantity]", "1"),
-            ("line_items[0][price_data][currency]", "usd"),
-            ("line_items[0][price_data][unit_amount]", amount.as_str()),
-            (
-                "line_items[0][price_data][product_data][name]",
-                "LaughGG asset",
-            ),
-        ])
+        .form(&form)
         .send()
         .await
         .map_err(|e| ApiError::bad_gateway(format!("stripe request failed: {e}")))?
@@ -100,7 +159,11 @@ pub async fn checkout(
 
     Ok((
         StatusCode::CREATED,
-        Json(json!({ "order_id": order.id, "checkout_url": session.url })),
+        Json(json!({
+            "order_id": order.id,
+            "amount_cents": order.amount_cents,
+            "checkout_url": session.url,
+        })),
     ))
 }
 

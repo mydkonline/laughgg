@@ -5,6 +5,7 @@ import { Sprite } from "../three/Sprite";
 import { CONCEPTS } from "../data/concepts";
 import { Donut, CheckWeights, AssetRail, ConceptGrid, CompareBars, useCountUp, useSeen, Key, Bullet, Share } from "../components/Infographic";
 import { Globe } from "../components/Globe";
+import { t } from "../lib/locale";
 
 /* IR — 얼마나 큰 시장이고, 누가 쓰고, 어떻게 버는가.
    인용값과 우리 가정을 절대 같은 줄에 놓지 않는다. 섞이면 자료가 아니다. */
@@ -28,14 +29,14 @@ export function Ir() {
         <div>
         {/* IR 은 정적 문서다. 무엇을 하는 회사인지 사실만 적는다. */}
         <h1 className="text-4xl leading-[1.2] font-bold text-ink">
-          게임 에셋 검증 및 컨셉 정합 플랫폼
+          {t("게임 에셋 검증 및 컨셉 정합 플랫폼")}
         </h1>
         {/* 요약. IR 은 결론부터 읽는 사람이 많아 머리말 바로 아래 둔다.
             값은 전부 본문에서 가져오므로 따로 관리하지 않는다. */}
         </div>
 
         {/* 요약. IR 레일 바로 아래 붙어야 문서의 첫 단락으로 읽힌다. */}
-        <h2 className="mt-6 text-2xl leading-snug font-bold text-ink">요약</h2>
+        <h2 className="mt-6 text-2xl leading-snug font-bold text-ink">{t("요약")}</h2>
         {/* 넷 중 합계 MRR 하나만 강조한다. 이 문서를 여는 사람이
             제일 먼저 찾는 숫자라 나머지 셋은 그 옆에 서 있는 값이 된다. */}
         <dl className="mt-6 grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -52,18 +53,18 @@ export function Ir() {
                 key ? "bg-key-soft" : "hover:bg-surface",
               ].join(" ")}
             >
-              <dt className={`text-xs ${key ? "font-bold text-key" : "text-faint"}`}>{k as string}</dt>
+              <dt className={`text-xs ${key ? "font-bold text-key" : "text-faint"}`}>{t(k as string)}</dt>
               <dd className="m-0 mt-1">
                 {key ? (
                   <span className="num inline-flex items-baseline text-4xl leading-none text-key">
                     <SummaryMrr />
-                    <span className="text-base font-normal">만원</span>
+                    <span className="text-base font-normal">{t("만원")}</span>
                   </span>
                 ) : (
-                  <span className="num text-4xl leading-none text-ink">{v as string}</span>
+                  <span className="num text-4xl leading-none text-ink">{t(v as string)}</span>
                 )}
               </dd>
-              <dd className="m-0 mt-1.5 text-xs text-faint">{note as string}</dd>
+              <dd className="m-0 mt-1.5 text-xs text-faint">{t(note as string)}</dd>
             </div>
           ))}
         </dl>
@@ -77,8 +78,8 @@ export function Ir() {
           ].map(([who, what], i) => (
             <li key={who}>
               <span className="num text-xs text-faint">{String(i + 1).padStart(2, "0")}</span>
-              <p className="mt-1 text-xs font-bold text-ink">{who}</p>
-              <p className="mt-0.5 text-xs text-faint">{what}</p>
+              <p className="mt-1 text-xs font-bold text-ink">{t(who ?? "")}</p>
+              <p className="mt-0.5 text-xs text-faint">{t(what ?? "")}</p>
             </li>
           ))}
         </ol>
@@ -88,25 +89,25 @@ export function Ir() {
         <AssetRail />
       </div>
 
-      <Section n="01" title="검증">
+      <Section n="01" title={t("검증")}>
         {/* 떨어지는 비율보다 통과하는 비율을 말한다. 사는 쪽이 궁금한 건 남은 쪽이다. */}
         <Donut
           percent={38.8}
-          label="퀄리티 검증률"
+          label={t("퀄리티 검증률")}
           sub="7항목 가중 합산 70점 이상"
         />
       </Section>
 
-      <Section n="02" title="시장">
+      <Section n="02" title={t("시장")}>
         <div className="grid gap-x-12 gap-y-8 sm:grid-cols-3">
           {MARKET.map((f) => (
             <div key={f.label}>
-              <p className="text-xs text-faint">{f.label}</p>
+              <p className="text-xs text-faint">{t(f.label)}</p>
               <p className="num mt-4 text-4xl leading-none text-ink">
                 {f.value}
                 <span className="ml-1 text-base text-muted">{f.unit}</span>
               </p>
-              <p className="mt-3 text-xs text-muted">{f.note}</p>
+              <p className="mt-3 text-xs text-muted">{t(f.note)}</p>
               {typeof f.fill === "number" && (
                 <Bullet fill={f.fill} mark={f.mark} markLabel={f.markLabel} />
               )}
@@ -118,20 +119,20 @@ export function Ir() {
       {/* 분석과 에디터는 따로 팔지 않는다. 걸러 낸 에셋을 그 자리에서
           컨셉에 맞추는 한 흐름이라, 섹션을 나누면 두 제품처럼 읽힌다.
           안에서만 들어오는 것과 나가는 것으로 가른다. */}
-      <Section n="03" title="기술">
+      <Section n="03" title={t("기술")}>
         <div className="flex flex-col gap-12">
           <div>
             <p className="mb-5 flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-line pb-3">
-              <b className="text-base font-bold text-ink">분석</b>
-              <span className="text-xs text-faint">학습 소스 역추적 채점, 7항목 가중 합산</span>
+              <b className="text-base font-bold text-ink">{t("분석")}</b>
+              <span className="text-xs text-faint">{t("학습 소스 역추적 채점, 7항목 가중 합산")}</span>
             </p>
             <CheckWeights items={CHECK_WEIGHTS} />
           </div>
 
           <div>
             <p className="mb-5 flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-line pb-3">
-              <b className="text-base font-bold text-ink">에디터</b>
-              <span className="text-xs text-faint">통과한 에셋을 게임 컨셉으로 변환</span>
+              <b className="text-base font-bold text-ink">{t("에디터")}</b>
+              <span className="text-xs text-faint">{t("통과한 에셋을 게임 컨셉으로 변환")}</span>
             </p>
             <ConceptGrid ids={["real", "dark", "high", "toon"]} />
             {/* 위 3D 그리드와 같은 열 수를 쓴다. 두 줄이 어긋나면 8종이
@@ -147,7 +148,7 @@ export function Ir() {
                       <Sprite piece={piece} knobs={c.knobs} raster={c.raster} />
                     </div>
                     <figcaption className="pt-2 text-xs text-faint">
-                      {c.name} <span className="text-faint">2D</span>
+                      {t(c.name)} <span className="text-faint">2D</span>
                     </figcaption>
                   </figure>
                 );
@@ -157,17 +158,17 @@ export function Ir() {
         </div>
       </Section>
 
-      <Section n="04" title="수요">
+      <Section n="04" title={t("수요")}>
         {/* 추정치는 한 줄로 접어 두고 실제로 쓴 사람의 말을 본문에 세운다.
             숫자는 시장이 있다는 말이고, 리뷰는 그 시장이 이걸 쓴다는 말이다. */}
         <div className="mb-6 grid gap-x-12 gap-y-8 sm:grid-cols-3">
           {AI_DEV.map((f) => (
             <CountStat
               key={f.label}
-              label={f.label}
+              label={t(f.label)}
               value={f.value}
               unit={f.unit ?? ""}
-              note={f.note}
+              note={t(f.note)}
               fill={f.fill}
               mark={f.mark}
               markLabel={f.markLabel}
@@ -213,7 +214,7 @@ export function Ir() {
                   {r.initials}
                 </span>
                 <span className="min-w-0">
-                  <b className="block truncate text-xs font-semibold text-ink">{r.role}</b>
+                  <b className="block truncate text-xs font-semibold text-ink">{t(r.role)}</b>
                   <span className="block truncate text-xs text-faint">
                     {r.org} {r.size} 인증
                   </span>
@@ -225,7 +226,7 @@ export function Ir() {
         <style>{`@keyframes fade { from { opacity: 0; translate: 0 8px } to { opacity: 1; translate: 0 0 } }`}</style>
       </Section>
 
-      <Section n="05" title="수익 모델">
+      <Section n="05" title={t("수익 모델")}>
         <Streams />
         <RevenueFunnel />
 
@@ -255,15 +256,15 @@ export function Ir() {
         </div>
       </Section>
 
-      <Section n="06" title="기업가치" lead="sBG 잔존 + DCF, 몬테카를로 3,000회">
+      <Section n="06" title={t("기업가치")} lead="sBG 잔존 + DCF, 몬테카를로 3,000회">
         <Valuation />
       </Section>
 
-      <Section n="07" title="공급 지역" lead="공급 먼저, 수요 나중">
+      <Section n="07" title={t("공급 지역")} lead="공급 먼저, 수요 나중">
         <Rollout />
       </Section>
 
-      <Section n="08" title="수수료" lead="배지와 무관">
+      <Section n="08" title={t("수수료")} lead="배지와 무관">
         <div>
           <CompareBars
             rows={[
@@ -277,7 +278,7 @@ export function Ir() {
 
       {/* 반영하지 않은 값이라 맨 뒤에 온다. 앞에 두면 앞의 숫자들이
           이것까지 포함한 값으로 읽힌다. */}
-      <Section n="09" title="기대효과" lead="밸류에이션 미반영">
+      <Section n="09" title={t("기대효과")} lead="밸류에이션 미반영">
         <Upside />
       </Section>
 
@@ -285,15 +286,15 @@ export function Ir() {
           검증할 사람은 여기 한 번만 오면 된다. */}
       <section className="grid gap-x-12 gap-y-6 border-t border-line pt-12 pb-16 lg:grid-cols-[184px_minmax(0,1fr)]">
         <div>
-          <span className="num block text-xs text-faint">부록</span>
-          <h2 className="mt-1 text-2xl leading-snug font-bold text-ink">출처</h2>
+          <span className="num block text-xs text-faint">{t("부록")}</span>
+          <h2 className="mt-1 text-2xl leading-snug font-bold text-ink">{t("출처")}</h2>
         </div>
 
         <dl className="min-w-0 lg:pr-8">
           {[
             ["시장", MARKET_SOURCE],
             ["수요", AI_DEV_SOURCE],
-            ["수익 모델", REVENUE_FUNNEL.map((f) => `${f.label} ${f.note}`).join(" · ")],
+            [t("수익 모델"), REVENUE_FUNNEL.map((f) => `${t(f.label)} ${t(f.note)}`).join(", ")],
             ["공급 지역", ROLLOUT_SOURCE],
           ].map(([k, v]) => (
             <div key={k} className="grid grid-cols-[72px_minmax(0,1fr)] gap-4 border-b border-line py-3">
@@ -302,16 +303,15 @@ export function Ir() {
             </div>
           ))}
           <div className="grid grid-cols-[72px_minmax(0,1fr)] gap-4 border-b border-line py-3">
-            <dt className="text-xs font-semibold text-ink">표기</dt>
+            <dt className="text-xs font-semibold text-ink">{t("표기")}</dt>
             <dd className="m-0 text-xs leading-relaxed text-faint">
-              인용은 출처가 있는 값이고, 가정은 우리가 세운 값입니다. 수익 모델 퍼널의 앞 세 단계가
-              인용이고 뒤 두 단계가 가정입니다.
+              {t("인용은 출처가 있는 값이고, 가정은 우리가 세운 값입니다. 수익 모델 퍼널의 앞 세 단계가 인용이고 뒤 두 단계가 가정입니다.")}
             </dd>
           </div>
           <div className="grid grid-cols-[72px_minmax(0,1fr)] gap-4 py-3">
-            <dt className="text-xs font-semibold text-ink">리뷰</dt>
+            <dt className="text-xs font-semibold text-ink">{t("리뷰")}</dt>
             <dd className="m-0 text-xs leading-relaxed text-faint">
-              소속만 인증하고 신원은 가립니다. 본문 인용구는 시연용으로 작성한 것이며 실제 인용이 아닙니다.
+              {t("소속만 인증하고 신원은 가립니다. 본문 인용구는 시연용으로 작성한 것이며 실제 인용이 아닙니다.")}
             </dd>
           </div>
         </dl>
@@ -363,7 +363,7 @@ function Rollout() {
                         r.role === "공급" ? "border-accent text-accent" : "border-line text-muted",
                       ].join(" ")}
                     >
-                      {r.role}
+                      {t(r.role)}
                     </span>
                     <span className="text-[10px] text-faint">{r.cited ? "인용" : "가정"}</span>
                   </span>
@@ -394,12 +394,12 @@ function Upside() {
           >
             <span className="flex items-baseline gap-2.5">
               <span className="num text-xs text-faint">{String(u.no).padStart(2, "0")}</span>
-              <b className="text-base font-bold text-ink">{u.name}</b>
+              <b className="text-base font-bold text-ink">{t(u.name)}</b>
             </span>
             <p className="mt-3 text-xs text-muted">{u.opens}</p>
             <p className="mt-1 text-xs text-muted">{u.effect}</p>
             <p className="mt-3 flex items-baseline gap-2 border-t border-line pt-3 text-xs text-faint">
-              움직이는 지표
+              {t("움직이는 지표")}
               <b className="num text-xs text-accent">{u.metric}</b>
             </p>
           </li>
@@ -457,7 +457,7 @@ function Valuation() {
             곡선이 꺾이는 순서가 그대로 보인다. */}
         <div>
           <p className="mb-4 text-xs font-bold text-ink">
-            잔존율<span className="ml-2 font-normal text-faint">가입 시점 기준</span>
+            {t("잔존율")}<span className="ml-2 font-normal text-faint">{t("가입 시점 기준")}</span>
           </p>
           <dl ref={barRef} className="m-0">
             {RETENTION.map(([k, v], i) => (
@@ -483,7 +483,7 @@ function Valuation() {
             하나 있고 그 주변이 이만큼 넓다" 라서 방향이 그래야 맞다. */}
         <div ref={bandRef}>
           <p className="mb-4 text-xs font-bold text-ink">
-            기업가치
+            {t("기업가치")}
             <span className="ml-2 font-normal text-faint">
               {VALUATION.runs}, 할인율 {VALUATION.discount}
             </span>
@@ -491,7 +491,7 @@ function Valuation() {
           <p>
             <Key value={4.5} suffix="억" decimals={1} size="lg" />
           </p>
-          <p className="mt-2 text-xs text-faint">중앙값</p>
+          <p className="mt-2 text-xs text-faint">{t("중앙값")}</p>
 
           {/* 축은 0 에서 9억. 굵은 띠가 p10–p90, 세로선이 중앙값이다. */}
           <div className="relative mt-8 h-1.5 rounded-full bg-line">
@@ -514,7 +514,7 @@ function Valuation() {
             ))}
           </dl>
           <p className="mt-5 flex items-baseline gap-2 border-t border-line pt-4 text-xs text-faint">
-            손실 확률
+            {t("손실 확률")}
             <b className="num text-base text-ink">{VALUATION.lossChance}</b>
           </p>
         </div>
@@ -524,7 +524,7 @@ function Valuation() {
           기준안만 강조한다. 셋 다 칠하면 어느 것이 우리 주장인지 안 보인다. */}
       <div className="border-t border-line pt-8">
         <p className="mb-5 text-xs font-bold text-ink">
-          시나리오<span className="ml-2 font-normal text-faint">60개월 현재가치</span>
+          {t("시나리오")}<span className="ml-2 font-normal text-faint">{t("60개월 현재가치")}</span>
         </p>
         <dl className="m-0 grid gap-x-8 gap-y-5 sm:grid-cols-3">
           {SCENARIOS.map(([k, v, why], i) => {
@@ -572,7 +572,7 @@ function Streams() {
             ].join(" ")}
           >
             <span className="num opacity-60">{s.no}</span>
-            {s.name}
+            {t(s.name)}
           </button>
         ))}
         <span className="ml-auto flex gap-1">
@@ -580,7 +580,7 @@ function Streams() {
             type="button"
             disabled={i === 0}
             onClick={() => setI(i - 1)}
-            aria-label="이전 수익원"
+            aria-label={t("이전 수익원")}
             className="cursor-pointer rounded border border-line bg-transparent px-2 py-1 text-xs text-faint hover:text-ink disabled:opacity-30"
           >
             ‹
@@ -589,7 +589,7 @@ function Streams() {
             type="button"
             disabled={i === STREAMS.length - 1}
             onClick={() => setI(i + 1)}
-            aria-label="다음 수익원"
+            aria-label={t("다음 수익원")}
             className="cursor-pointer rounded border border-line bg-transparent px-2 py-1 text-xs text-faint hover:text-ink disabled:opacity-30"
           >
             ›
@@ -608,7 +608,7 @@ function Streams() {
               <div className="grid gap-x-10 gap-y-5 sm:grid-cols-[minmax(0,1fr)_180px]">
                 <div>
                   <p className="text-xs text-faint">
-                    {s.who} 에게 {s.how}
+                    {t("{who} 에게 {how}", { who: t(s.who), how: t(s.how) })}
                   </p>
                   <dl className="mt-4 grid gap-x-8 gap-y-3 sm:grid-cols-3">
                     {s.assume.map(([k, v]) => (
@@ -619,14 +619,14 @@ function Streams() {
                     ))}
                   </dl>
                   <p className="num mt-4 border-t border-line pt-3 text-xs text-muted">{s.calc}</p>
-                  <p className="mt-2 text-xs text-faint">{s.note}</p>
+                  <p className="mt-2 text-xs text-faint">{t(s.note)}</p>
                 </div>
 
                 <div className="sm:border-l sm:border-line sm:pl-6">
-                  <p className="text-xs text-faint">월 기여</p>
+                  <p className="text-xs text-faint">{t("월 기여")}</p>
                   <p className="num mt-1 text-4xl leading-none text-ink">
                     {s.mrr.toLocaleString("ko-KR")}
-                    <span className="ml-1 text-base text-muted">만원</span>
+                    <span className="ml-1 text-base text-muted">{t("만원")}</span>
                   </p>
                   <span className="mt-3 block h-1.5 overflow-hidden rounded-full bg-surface-2">
                     <b
@@ -654,11 +654,11 @@ function Streams() {
 
       <dl className="mt-6 flex flex-wrap items-baseline gap-x-8 gap-y-2 border-t border-line pt-4">
         <div className="-mx-2 flex items-baseline gap-2 rounded-lg bg-key-soft px-2 py-1">
-          <dt className="text-xs font-bold text-key">합계 MRR</dt>
+          <dt className="text-xs font-bold text-key">{t("합계 MRR")}</dt>
           <dd className="num m-0 text-2xl text-key">{STREAM_TOTAL.mrr.toLocaleString("ko-KR")}만원</dd>
         </div>
         <div className="flex items-baseline gap-2">
-          <dt className="text-xs text-faint">연 환산</dt>
+          <dt className="text-xs text-faint">{t("연 환산")}</dt>
           <dd className="num m-0 text-base text-ink">{STREAM_TOTAL.arr}</dd>
         </div>
       </dl>
@@ -694,7 +694,7 @@ function RevenueFunnel() {
         {REVENUE_FUNNEL.map((s) => (
           <div key={s.label}>
             <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-              <span className="text-xs font-semibold text-ink">{s.label}</span>
+              <span className="text-xs font-semibold text-ink">{t(s.label)}</span>
               {s.rate && <span className="text-[10px] text-accent">{s.rate}</span>}
               <b className="num ml-auto text-base text-ink">{s.show}</b>
             </div>
@@ -747,12 +747,12 @@ function CountStat({
 
   return (
     <div>
-      <p className="text-xs text-faint">{label}</p>
+      <p className="text-xs text-faint">{t(label)}</p>
       <p className="num mt-3 text-4xl leading-none text-ink">
         <span ref={ref}>{pretty}</span>
         <span className="ml-1 text-base text-muted">{unit}</span>
       </p>
-      <p className="mt-2 text-xs text-muted">{note}</p>
+      <p className="mt-2 text-xs text-muted">{t(note)}</p>
       {typeof fill === "number" && <Bullet fill={fill} mark={mark} markLabel={markLabel} />}
     </div>
   );
@@ -794,7 +794,7 @@ function Section({ n, title, lead, children }: { n: string; title: string; lead?
     >
       <div className="lg:sticky lg:top-[120px] lg:self-start">
         <span className="num block text-xs text-faint">{n}</span>
-        <h2 className="mt-1 text-2xl leading-snug font-bold text-ink">{title}</h2>
+        <h2 className="mt-1 text-2xl leading-snug font-bold text-ink">{t(title)}</h2>
         {lead && <p className="mt-2 truncate text-xs text-muted" title={lead}>{lead}</p>}
       </div>
       <div className="min-w-0 lg:pr-8">{children}</div>
@@ -814,7 +814,7 @@ function Curve() {
 
   return (
     <div className="relative">
-      <svg viewBox="0 0 100 40" preserveAspectRatio="none" className="h-40 w-full" role="img" aria-label="24개월 MRR 추이">
+      <svg viewBox="0 0 100 40" preserveAspectRatio="none" className="h-40 w-full" role="img" aria-label={t("24개월 MRR 추이")}>
         {[10, 20, 30].map((y) => (
           <line key={y} x1="0" y1={y} x2="100" y2={y} stroke="var(--line)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
         ))}
@@ -829,8 +829,8 @@ function Curve() {
         {last.toLocaleString("ko-KR")}만원
       </span>
       <div className="mt-1 flex justify-between text-xs text-faint">
-        <span>0개월</span>
-        <span>24개월</span>
+        <span>{t("0개월")}</span>
+        <span>{t("24개월")}</span>
       </div>
     </div>
   );

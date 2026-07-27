@@ -5,6 +5,7 @@ import { useCart } from "../lib/cart";
 import { Pager } from "../components/Pager";
 import { PIECES } from "../data/pieces";
 import { Stage } from "../components/GameStage";
+import { t } from "../lib/locale";
 
 /* 산 에셋이 우리 게임에 맞는가.
 
@@ -86,9 +87,9 @@ export function Scene() {
   return (
     <main className="mx-auto max-w-[1240px] px-5 pb-20">
       <header className="py-8">
-        <p className="text-xs tracking-wide text-accent">AI 에셋</p>
-        <h1 className="mt-1 text-2xl font-bold text-ink">에셋 컨셉트 매핑</h1>
-        <p className="mt-2 text-xs text-muted">산 에셋이 우리 게임 컨셉에 맞는지 확인합니다.</p>
+        <p className="text-xs tracking-wide text-accent">{t("AI 에셋")}</p>
+        <h1 className="mt-1 text-2xl font-bold text-ink">{t("에셋 컨셉트 매핑")}</h1>
+        <p className="mt-2 text-xs text-muted">{t("산 에셋이 우리 게임 컨셉에 맞는지 확인합니다.")}</p>
       </header>
 
       <div className="grid gap-x-10 gap-y-8 lg:grid-cols-[260px_minmax(0,1fr)]">
@@ -100,8 +101,8 @@ export function Scene() {
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="게임 찾기"
-            aria-label="게임 검색"
+            placeholder={t("게임 찾기")}
+            aria-label={t("게임 검색")}
             className="mb-4 w-full rounded-full border border-line bg-surface px-4 py-2.5 text-xs text-ink placeholder:text-faint focus:border-accent"
           />
 
@@ -162,7 +163,7 @@ export function Scene() {
                     style={{ background: g.sw }}
                   />
                   <span className={`truncate text-xs ${g.id === game.id ? "font-bold" : ""}`}>{g.n}</span>
-                  {g.guess && <span className="shrink-0 text-[10px] text-faint">추정</span>}
+                  {g.guess && <span className="shrink-0 text-[10px] text-faint">{t("추정")}</span>}
                   <span className="ml-auto shrink-0 text-[10px] text-faint">{g.sub}</span>
                 </button>
               </li>
@@ -180,7 +181,7 @@ export function Scene() {
             </span>
             {game.guess && (
               <span className="rounded border border-line px-1.5 py-px text-[10px] text-faint">
-                장르에서 추정한 값
+                {t("장르에서 추정한 값")}
               </span>
             )}
             <span className="ml-auto flex overflow-hidden rounded-full border border-line">
@@ -230,7 +231,7 @@ export function Scene() {
               to={`/workshop?piece=${piece.id}`}
               className="ml-auto text-xs font-semibold text-accent no-underline hover:underline"
             >
-              에디터에서 맞추기
+              {t("에디터에서 맞추기")}
             </Link>
           </div>
         </div>

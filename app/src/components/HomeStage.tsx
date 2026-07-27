@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { SCENE_GAMES } from "../data/scenes";
 import { PIECES } from "../data/pieces";
 import { Stage } from "./GameStage";
+import { t } from "../lib/locale";
 
 /* 홈의 시연.
 
@@ -38,8 +39,8 @@ export function HomeStage() {
     <section className="border-t border-line bg-surface">
       <div className="mx-auto max-w-[1240px] px-5 py-16">
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <h2 className="text-2xl font-bold text-ink">정합</h2>
-          <p className="text-xs text-muted">같은 에셋이 게임마다 다르게 맞춰집니다.</p>
+          <h2 className="text-2xl font-bold text-ink">{t("정합")}</h2>
+          <p className="text-xs text-muted">{t("같은 에셋이 게임마다 다르게 맞춰집니다.")}</p>
         </div>
 
         <div className="mt-6 flex flex-wrap items-center gap-2">
@@ -95,7 +96,7 @@ export function HomeStage() {
             to="/scene"
             className="ml-auto text-xs font-semibold text-accent no-underline hover:underline"
           >
-            게임 196종에서 고르기
+            {t("게임 196종에서 고르기")}
           </Link>
         </p>
       </div>

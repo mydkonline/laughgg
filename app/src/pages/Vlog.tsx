@@ -4,6 +4,7 @@ import { PIECES, modelSrc } from "../data/pieces";
 import { Preview } from "../three/Preview";
 import { NEUTRAL, CONCEPTS } from "../data/concepts";
 import { RankIcon, type BadgeKey } from "../components/Rank";
+import { t } from "../lib/locale";
 
 /* 개발 브이로그 — 에셋 하나가 완성되기까지를 단계별로 남긴다.
    결과물만 보면 왜 그렇게 만들었는지 알 수 없고, 사는 쪽도 판단이 안 선다. */
@@ -38,9 +39,9 @@ export function Vlog() {
   return (
     <main className="mx-auto max-w-[1240px] px-5 pb-20">
       <header className="py-8">
-        <p className="text-xs tracking-wide text-accent">개발 브이로그</p>
-        <h1 className="mt-1 text-2xl font-bold text-ink">에셋 제작 기록</h1>
-        <p className="mt-2 text-xs text-muted">블록아웃부터 분석 통과까지, 단계별 작업 내용과 수치입니다.</p>
+        <p className="text-xs tracking-wide text-accent">{t("개발 브이로그")}</p>
+        <h1 className="mt-1 text-2xl font-bold text-ink">{t("에셋 제작 기록")}</h1>
+        <p className="mt-2 text-xs text-muted">{t("블록아웃부터 분석 통과까지, 단계별 작업 내용과 수치입니다.")}</p>
         <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-t border-line pt-4">
           <Stat k="기록한 단계" v={`${EPISODES.length}편`} />
           <Stat k="기간" v={`${EPISODES[0]?.date ?? ""} 부터`} />
@@ -114,7 +115,7 @@ export function Vlog() {
           onClick={() => setCur((i) => i - 1)}
           className="cursor-pointer rounded-lg border border-line px-4 py-2 text-xs text-muted hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
         >
-          이전 편
+          {t("이전 편")}
         </button>
         <button
           type="button"
@@ -122,7 +123,7 @@ export function Vlog() {
           onClick={() => setCur((i) => i + 1)}
           className="cursor-pointer rounded-lg border border-line px-4 py-2 text-xs text-muted hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
         >
-          다음 편
+          {t("다음 편")}
         </button>
       </div>
     </main>

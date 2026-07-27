@@ -3,6 +3,7 @@ import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom";
 
 import { ApiError, api } from "../lib/api";
 import { logIn, signUp, useAccount } from "../lib/account";
+import { t } from "../lib/locale";
 
 /* 가입과 로그인.
 
@@ -93,7 +94,7 @@ export function Join() {
 
   return (
     <main className="mx-auto max-w-[420px] px-5 py-16">
-      <p className="text-xs tracking-wide text-accent">계정</p>
+      <p className="text-xs tracking-wide text-accent">{t("계정")}</p>
       <h1 className="mt-1 text-2xl font-bold text-ink">{joining ? "가입" : "로그인"}</h1>
       <p className="mt-2 text-xs text-muted">
         {joining ? "에셋을 올리고 산 것을 받으려면 계정이 필요합니다." : "가입한 계정으로 들어갑니다."}
@@ -105,18 +106,18 @@ export function Join() {
         className="mt-8 flex w-full items-center justify-center gap-2.5 rounded-xl border border-line py-3 text-xs font-semibold text-ink no-underline hover:border-accent"
       >
         <GoogleMark />
-        구글로 계속하기
+        {t("구글로 계속하기")}
       </a>
 
       <p className="my-6 flex items-center gap-3 text-[10px] text-faint">
         <span className="h-px flex-1 bg-line" />
-        또는
+        {t("또는")}
         <span className="h-px flex-1 bg-line" />
       </p>
 
       <form onSubmit={submit} className="flex flex-col gap-4">
         <label className="flex flex-col gap-1.5">
-          <span className="text-xs text-faint">이메일</span>
+          <span className="text-xs text-faint">{t("이메일")}</span>
           <input
             type="email"
             value={email}
@@ -131,20 +132,20 @@ export function Join() {
         {joining && (
           <label className="flex flex-col gap-1.5">
             <span className="text-xs text-faint">
-              표시 이름 <span className="text-faint">선택</span>
+              {t("표시 이름")} <span className="text-faint">{t("선택")}</span>
             </span>
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
               autoComplete="nickname"
               className="rounded-xl border border-line bg-surface px-4 py-3 text-xs text-ink placeholder:text-faint focus:border-accent"
-              placeholder="안 적으면 이메일 앞부분을 씁니다"
+              placeholder={t("안 적으면 이메일 앞부분을 씁니다")}
             />
           </label>
         )}
 
         <label className="flex flex-col gap-1.5">
-          <span className="text-xs text-faint">비밀번호</span>
+          <span className="text-xs text-faint">{t("비밀번호")}</span>
           <input
             type="password"
             value={password}
@@ -153,11 +154,11 @@ export function Join() {
             minLength={8}
             autoComplete={joining ? "new-password" : "current-password"}
             className="rounded-xl border border-line bg-surface px-4 py-3 text-xs text-ink placeholder:text-faint focus:border-accent"
-            placeholder="8자 이상"
+            placeholder={t("8자 이상")}
           />
           {/* 눌러 보기 전에 알려 준다. 서버까지 갔다 오면 고치기가 늦다. */}
           {joining && tooShort && (
-            <span className="text-[10px] text-accent">8자 이상이어야 합니다.</span>
+            <span className="text-[10px] text-accent">{t("8자 이상이어야 합니다.")}</span>
           )}
         </label>
 
@@ -195,7 +196,7 @@ export function Join() {
         비밀번호는 Argon2id 로 저장되며 원문은 어디에도 남지 않습니다. 세션은 서버가
         들고 있어 로그아웃하면 그 자리에서 끊깁니다.{" "}
         <Link to="/market" className="text-faint underline">
-          그냥 둘러보기
+          {t("그냥 둘러보기")}
         </Link>
       </p>
     </main>

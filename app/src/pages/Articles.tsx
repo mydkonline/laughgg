@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ARTICLES, type Article } from "../data/news";
 import { ago } from "../lib/feed";
+import { t } from "../lib/locale";
 
 /* 기사 — 우리가 쓴 분석이다. 남의 이름을 빌리지 않는다.
    목록에서 펼쳐 읽는다. 별도 주소로 나누기엔 편수가 적고, 나누면 왕복만 늘어난다. */
@@ -11,9 +12,9 @@ export function Articles() {
   return (
     <main className="mx-auto max-w-[760px] px-5 pb-20">
       <header className="py-8">
-        <p className="text-xs tracking-wide text-accent">커뮤니티</p>
-        <h1 className="mt-1 text-2xl font-bold text-ink">기사</h1>
-        <p className="mt-2 text-xs text-muted">기준을 정한 이유와 접은 안을 남깁니다.</p>
+        <p className="text-xs tracking-wide text-accent">{t("커뮤니티")}</p>
+        <h1 className="mt-1 text-2xl font-bold text-ink">{t("기사")}</h1>
+        <p className="mt-2 text-xs text-muted">{t("기준을 정한 이유와 접은 안을 남깁니다.")}</p>
       </header>
 
       <div className="flex flex-col">
@@ -46,7 +47,7 @@ function Piece({ a, open, onToggle }: { a: Article; open: boolean; onToggle: () 
               <p className="mt-1.5 text-xs leading-relaxed text-muted">{p}</p>
             </section>
           ))}
-          <p className="text-xs text-faint">LaughGG 편집</p>
+          <p className="text-xs text-faint">{t("LaughGG 편집")}</p>
         </div>
       )}
     </article>

@@ -57,10 +57,13 @@ async fn enqueueing_charges_credits_in_the_same_transaction(pool: PgPool) {
         .expect("등록");
 
     assert_eq!(job.status, "queued");
-    assert_eq!(job.credits, 3);
+    assert_eq!(
+        job.credits, 2,
+        "standard 는 2크레딧. 제공자 단가에 비례한다"
+    );
     assert_eq!(
         repo::balance(&pool, who).await.expect("잔액"),
-        before - 3,
+        before - 2,
         "먼저 깎아야 한다. 끝나고 깎으면 큐에 쌓아 놓고 도망갈 수 있다"
     );
 }
@@ -172,7 +175,7 @@ async fn a_failed_job_retries_then_refunds(pool: PgPool) {
     let job = repo::enqueue(&pool, who, &req("고딕 석상", "standard"))
         .await
         .expect("등록");
-    assert_eq!(repo::balance(&pool, who).await.expect("잔액"), before - 3);
+    assert_eq!(repo::balance(&pool, who).await.expect("잔액"), before - 2);
 
     // 재시도가 남아 있는 동안은 큐로 돌아간다.
     let mut requeued = 0;

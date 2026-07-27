@@ -41,10 +41,10 @@ impl From<RepoError> for ApiError {
                 StatusCode::PAYMENT_REQUIRED
             }
 
-            RepoError::Score(_)
-            | RepoError::Credential(_)
+            RepoError::Credential(_)
             | RepoError::File(_)
             | RepoError::Post(_)
+            | RepoError::EmptyCart
             | RepoError::Gen(_) => StatusCode::BAD_REQUEST,
 
             RepoError::BadCredentials | RepoError::Unauthenticated => StatusCode::UNAUTHORIZED,
@@ -53,6 +53,8 @@ impl From<RepoError> for ApiError {
             RepoError::NoFile(_)
             | RepoError::EmailTaken(_)
             | RepoError::AssetNotReviewed(_)
+            | RepoError::AlreadyOwned(_)
+            | RepoError::NotForSale(_)
             | RepoError::AssetNotSellable { .. } => StatusCode::CONFLICT,
 
             RepoError::Other(_) => StatusCode::INTERNAL_SERVER_ERROR,

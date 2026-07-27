@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { t } from "../lib/locale";
 
 /* 프롬프트를 블록으로 조립한다.
 
@@ -96,7 +97,7 @@ export function PromptBuilder({
         ].join(" ")}
       >
         {picked.length === 0 && (
-          <span className="px-1 text-xs text-faint">아래에서 끌어다 놓거나 눌러서 담으세요</span>
+          <span className="px-1 text-xs text-faint">{t("아래에서 끌어다 놓거나 눌러서 담으세요")}</span>
         )}
         {picked.map((id) => {
           const b = ALL.find((x) => x.id === id);
@@ -107,9 +108,9 @@ export function PromptBuilder({
               type="button"
               onClick={() => remove(id)}
               className="flex cursor-pointer items-center gap-1.5 rounded-full border-0 bg-accent px-3 py-1 text-xs font-bold text-white"
-              aria-label={`${b.label} 빼기`}
+              aria-label={t("{label} 빼기", { label: t(b.label) })}
             >
-              {b.label}
+              {t(b.label)}
               <span className="opacity-70">✕</span>
             </button>
           );
@@ -131,7 +132,7 @@ export function PromptBuilder({
                   onDragStart={(e) => e.dataTransfer.setData("text/plain", b.id)}
                   onClick={() => (on ? remove(b.id) : add(b.id))}
                   aria-pressed={on}
-                  title={b.word}
+title={t(b.word)}
                   className={[
                     "cursor-grab rounded-full border px-3 py-1 text-xs active:cursor-grabbing",
                     on
@@ -139,7 +140,7 @@ export function PromptBuilder({
                       : "border-line text-muted hover:border-accent hover:text-ink",
                   ].join(" ")}
                 >
-                  {b.label}
+                  {t(b.label)}
                 </button>
               );
             })}

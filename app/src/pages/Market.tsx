@@ -6,6 +6,7 @@ import { BUNDLES, bundleItems, bundlePrice, bundleScore } from "../data/bundles"
 import { Pager } from "../components/Pager";
 import { Thumb } from "../components/Thumb";
 import { won } from "../lib/format";
+import { t } from "../lib/locale";
 
 /* 카드 그리드는 폭에 따라 한 줄에 2~6개가 들어간다. 24는 그 전부로 나누어떨어져서
    어느 폭에서도 마지막 줄이 어색하게 남지 않는다. 패키지는 줄이 높아 10으로 둔다. */
@@ -71,31 +72,31 @@ export function Market() {
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="에셋 검색"
-          aria-label="에셋 검색"
+          placeholder={t("에셋 검색")}
+          aria-label={t("에셋 검색")}
           className="w-full rounded-full border border-line bg-surface px-5 py-3 text-xs text-ink placeholder:text-faint"
         />
       </div>
 
-      <Row label="형태">
+      <Row label={t("형태")}>
         {(["단품", "패키지"] as const).map((k) => (
           <Chip key={k} on={kind === k} onClick={() => setKind(k)} count={k === "단품" ? PIECES.length : BUNDLES.length}>
-            {k}
+            {t(k)}
           </Chip>
         ))}
       </Row>
 
-      {kind === "패키지" ? null : <Row label="분류">
+      {kind === "패키지" ? null : <Row label={t("분류")}>
         {CATS.map(([k, name]) => (
           <Chip key={k} on={cat === k} onClick={() => setCat(k)} count={catCount(k)}>
-            {name}
+            {t(name)}
           </Chip>
         ))}
       </Row>}
 
-      {kind === "패키지" ? null : <Row label="엔진">
+      {kind === "패키지" ? null : <Row label={t("엔진")}>
         <Chip on={engine === "any"} onClick={() => setEngine("any")} count={engCount("any")}>
-          전체
+          {t("전체")}
         </Chip>
         {ENGINES.map((k) => (
           <Chip key={k} on={engine === k} onClick={() => setEngine(k)} count={engCount(k)}>
@@ -104,7 +105,7 @@ export function Market() {
         ))}
       </Row>}
 
-      {kind === "패키지" ? null : <Row label="점수">
+      {kind === "패키지" ? null : <Row label={t("점수")}>
         <input
           type="range"
           min={0}
@@ -114,11 +115,11 @@ export function Market() {
           className="w-40 accent-[var(--accent)]"
         />
         <span className="text-xs text-faint">
-          <b className="tabular-nums text-ink">{minScore}</b> 이상
+          <b className="tabular-nums text-ink">{minScore}</b> {t("이상")}
         </span>
       </Row>}
 
-      {kind === "패키지" ? null : <Row label="정렬">
+      {kind === "패키지" ? null : <Row label={t("정렬")}>
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value as Sort)}
@@ -126,7 +127,7 @@ export function Market() {
         >
           {SORTS.map(([k, name]) => (
             <option key={k} value={k}>
-              {name}
+              {t(name)}
             </option>
           ))}
         </select>
@@ -135,7 +136,7 @@ export function Market() {
           onClick={reset}
           className="ml-auto cursor-pointer rounded-lg border border-line bg-transparent px-3 py-2 text-xs text-faint hover:text-ink"
         >
-          필터 초기화
+          {t("필터 초기화")}
         </button>
       </Row>}
 
@@ -152,13 +153,13 @@ export function Market() {
               >
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-baseline gap-2">
-                    <span className="text-base font-bold text-ink">{b.name}</span>
+                    <span className="text-base font-bold text-ink">{t(b.name)}</span>
                     <span className="text-xs text-faint">{items.length}종</span>
                     <span className="flex items-center gap-1">
                       <RankIcon badge={badgeOf(bundleScore(b))} size={13} />
                     </span>
                   </div>
-                  <p className="mt-1 text-xs text-faint">{b.note}</p>
+                  <p className="mt-1 text-xs text-faint">{t(b.note)}</p>
 
                   {/* 안에 무엇이 들었는지 낱개로 다 보인다. 안 보이면 못 산다. */}
                   <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
@@ -186,7 +187,7 @@ export function Market() {
         </div>
       ) : list.length === 0 ? (
         <p className="rounded-2xl border border-line py-20 text-center text-base text-faint">
-          조건에 맞는 에셋이 없습니다. 점수 기준을 낮추거나 분류를 넓혀 보세요.
+          {t("조건에 맞는 에셋이 없습니다. 점수 기준을 낮추거나 분류를 넓혀 보세요.")}
         </p>
       ) : (
         <div className="mt-6 grid grid-cols-[repeat(auto-fill,minmax(168px,1fr))] gap-3">

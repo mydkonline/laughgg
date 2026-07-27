@@ -70,9 +70,25 @@ export const BADGE_LABEL: Record<BadgeKey, string> = {
   silv: "실버",
 };
 
-/** 점수에서 배지를 정한다. 90+ 챌린저 · 80+ 다이아 · 70+ 플래티넘 · 그 아래 실버. */
+/** 점수에서 배지를 정한다. 90+ 챌린저, 80+ 다이아, 70+ 플래티넘, 그 아래 실버. */
 export function badgeOf(score: number): BadgeKey {
   return score >= 90 ? "chal" : score >= 80 ? "dia" : score >= 70 ? "plat" : "silv";
+}
+
+/* 서버가 주는 배지를 화면 키로 옮긴다.
+
+   서버는 영문 한 단어로 준다. 화면 말은 화면이 정하고, 옮기는 표는 여기
+   하나만 둔다 — 페이지마다 따로 적으면 한 곳만 고친 채로 갈린다. */
+const FROM_SERVER: Record<string, BadgeKey> = {
+  challenger: "chal",
+  diamond: "dia",
+  platinum: "plat",
+  silver: "silv",
+};
+
+/** 채점 전이면 배지가 없다. `null` 은 "실버" 가 아니라 "아직 없음" 이다. */
+export function badgeKeyOf(label: string | null | undefined): BadgeKey | null {
+  return label ? (FROM_SERVER[label] ?? null) : null;
 }
 
 export function RankIcon({ badge, size = 22, className }: {
