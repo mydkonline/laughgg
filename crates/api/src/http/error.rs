@@ -22,7 +22,10 @@ impl From<RepoError> for ApiError {
     fn from(err: RepoError) -> Self {
         let status = match &err {
             RepoError::AssetNotFound(_) | RepoError::StudioNotFound(_) => StatusCode::NOT_FOUND,
-            RepoError::Score(_) => StatusCode::BAD_REQUEST,
+            RepoError::Score(_) | RepoError::Credential(_) => StatusCode::BAD_REQUEST,
+            RepoError::BadCredentials | RepoError::Unauthenticated => StatusCode::UNAUTHORIZED,
+            RepoError::Forbidden => StatusCode::FORBIDDEN,
+            RepoError::EmailTaken(_) => StatusCode::CONFLICT,
             // 요청은 멀쩡하고 대상의 상태가 안 맞는 경우다. 400 으로 내면
             // 클라이언트가 자기 입력을 고치려 든다.
             RepoError::AssetNotReviewed(_) | RepoError::AssetNotSellable { .. } => {
@@ -40,6 +43,38 @@ impl From<RepoError> for ApiError {
             status,
             message: err.to_string(),
         }
+    }
+}
+
+impl ApiError {
+    fn of(status: StatusCode, message: impl Into<String>) -> Self {
+        let message = message.into();
+        if status.is_server_error() {
+            tracing::error!(%status, %message, "request failed");
+        }
+        Self { status, message }
+    }
+
+    /// 입력이 틀렸다.
+    pub fn bad_request(message: impl Into<String>) -> Self {
+        Self::of(StatusCode::BAD_REQUEST, message)
+    }
+
+    /// 서버가 이 기능을 켜 두지 않았다. 자격증명이 안 들어온 경우다.
+    ///
+    /// 500 으로 내면 고장으로 읽히고, 404 로 내면 경로를 잘못 쓴 줄 안다.
+    pub fn unavailable(message: impl Into<String>) -> Self {
+        Self::of(StatusCode::SERVICE_UNAVAILABLE, message)
+    }
+
+    /// 우리가 부른 바깥 서비스가 문제였다. 우리 잘못과 구분해 둔다.
+    pub fn bad_gateway(message: impl Into<String>) -> Self {
+        Self::of(StatusCode::BAD_GATEWAY, message)
+    }
+
+    /// 우리 잘못이다.
+    pub fn internal(message: impl Into<String>) -> Self {
+        Self::of(StatusCode::INTERNAL_SERVER_ERROR, message)
     }
 }
 

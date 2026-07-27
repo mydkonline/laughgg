@@ -34,7 +34,7 @@ async fn call(pool: &PgPool, method: &str, uri: &str, body: Option<Value>) -> (S
     }
     .expect("요청 생성");
 
-    let res = router(AppState { pool: pool.clone() })
+    let res = router(AppState::bare(pool.clone()))
         .oneshot(req)
         .await
         .expect("라우터 호출");

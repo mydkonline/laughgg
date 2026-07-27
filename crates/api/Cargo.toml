@@ -19,6 +19,15 @@ anyhow.workspace = true
 thiserror.workspace = true
 tracing.workspace = true
 tracing-subscriber.workspace = true
+axum-extra.workspace = true
+argon2.workspace = true
+rand.workspace = true
+reqwest.workspace = true
+hmac.workspace = true
+sha2.workspace = true
+hex.workspace = true
+urlencoding.workspace = true
+time.workspace = true
 
 [dev-dependencies]
 # 라우터를 서버 없이 직접 호출한다. 포트를 열면 테스트가 서로 부딪힌다.

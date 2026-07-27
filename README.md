@@ -54,7 +54,18 @@ cargo run -p laughgg-api
 # http://127.0.0.1:8420
 ```
 
-환경변수: `DATABASE_URL`(기본 `postgres://laughgg:laughgg@127.0.0.1:5432/laughgg`), `PORT`(기본 `8420`).
+환경변수:
+
+| 이름 | 기본값 | 없으면 |
+|---|---|---|
+| `DATABASE_URL` | `postgres://laughgg:laughgg@127.0.0.1:5432/laughgg` | 기본값으로 붙는다 |
+| `PORT` | `8420` | 기본값 |
+| `INSECURE_COOKIES` | (없음) | 쿠키에 `Secure`가 붙는다. 로컬 http 개발에서만 켠다 |
+| `GOOGLE_CLIENT_ID` `GOOGLE_CLIENT_SECRET` `GOOGLE_REDIRECT_URI` | — | 구글 로그인이 꺼지고 해당 경로가 `503` |
+| `STRIPE_SECRET_KEY` `STRIPE_WEBHOOK_SECRET` | — | 결제가 꺼지고 해당 경로가 `503` |
+
+자격증명이 없어도 서버는 뜬다. DB만 있으면 되는 로컬 개발이 남의 키를 요구하기
+시작하면 아무도 안 돌린다. 대신 무엇이 꺼졌는지 부팅 로그에 남는다.
 첫 실행 시 마이그레이션이 자동 적용되고 게임 212종과 구독 스튜디오 4곳이 시드된다.
 
 ## API
@@ -67,7 +78,38 @@ cargo run -p laughgg-api
 | `POST` | `/api/assets/{id}/review` | 등록된 에셋 재검수. 에셋을 새로 만들지 않는다 |
 | `GET` | `/api/games` | 게임 목록. `q` `engine` `category` `scale` `year_from` `year_to` `uses` `limit` `offset` |
 | `GET` | `/api/games/facets` | 축별 선택지와 개수. 목록과 같은 조건을 받는다 |
+| `POST` | `/api/assets/{id}/sales` | 판매 기록. 가격은 에셋에서 읽는다 |
 | `GET` | `/api/metrics` | 마켓 지표 (탈락률·구독 매출·수수료 매출) |
+
+### 계정
+
+| 메서드 | 경로 | 설명 |
+|---|---|---|
+| `POST` | `/api/auth/signup` | 가입. 세션 쿠키를 심는다 |
+| `POST` | `/api/auth/login` | 로그인 |
+| `POST` | `/api/auth/logout` | 로그아웃. 세션 행을 지운다 |
+| `GET` | `/api/auth/me` | 내 정보 |
+| `GET` | `/api/auth/google` | 구글 로그인 시작 |
+| `GET` | `/api/auth/google/callback` | 구글 콜백 |
+
+세션은 서버가 들고 있다. 쿠키에는 32바이트 난수만 들어가고 DB에는 그 SHA-256만
+저장한다 — DB가 새도 그것만으로 로그인이 되면 안 되기 때문이다.
+비밀번호는 Argon2id로 만든다.
+
+### 결제
+
+| 메서드 | 경로 | 설명 |
+|---|---|---|
+| `POST` | `/api/assets/{id}/checkout` | 주문 생성 + Stripe 결제창 주소 반환 |
+| `GET` | `/api/orders` | 내 주문 목록 |
+| `POST` | `/api/payments/webhook` | Stripe 승인 통보. 서명을 검증한다 |
+
+**카드 번호는 이 서버를 지나가지 않는다.** 결제창은 Stripe가 자기 도메인에서
+띄우고 우리는 승인 통보만 받는다. 그래서 코드 어디에도 카드 필드가 없고,
+앞으로도 있으면 안 된다.
+
+webhook은 로그인 없이 열려 있다. 서명 검증이 유일한 방어라, 검증을 지우면
+누구나 결제 완료를 보내 에셋을 공짜로 가져간다 — 테스트가 그걸 잡는다.
 
 오류는 종류대로 갈린다 — 없는 자원은 `404`, 규칙을 어긴 입력은 `400`, 나머지가 `500`이다.
 
@@ -97,7 +139,7 @@ curl -X POST localhost:8420/api/assets -H 'content-type: application/json' -d '{
 
 ```
 crates/api/
-  src/domain/        검수 채점·배지 판정·정산. 바깥을 모른다
+  src/domain/        검수 채점·배지 판정·정산·계정 규칙. 바깥을 모른다
   src/repo/          Postgres 질의. domain만 안다
   src/http/          라우팅·직렬화·상태 코드. 둘 다 안다
   src/lib.rs         위 셋을 내놓는다 (tests/에서 쓰려면 필요하다)
@@ -117,7 +159,7 @@ cargo fmt --all -- --check
 cargo test
 ```
 
-테스트는 도메인 12개(순수 함수)와 통합 17개(저장소·HTTP)로 나뉜다.
+테스트는 도메인 22개(순수 함수)와 통합 39개(저장소·HTTP·인증·결제)로 나뉜다.
 통합 테스트는 `#[sqlx::test]`가 테스트마다 빈 DB를 만들어 쓰므로 **Postgres가 떠 있어야 하고
 `DATABASE_URL`이 필요하다.** 없으면 건너뛰지 않고 실패한다 — 조용히 넘어가면
 CI는 통과하는데 아무것도 검증되지 않은 상태가 된다.

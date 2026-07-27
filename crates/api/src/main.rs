@@ -10,7 +10,10 @@
 use std::net::SocketAddr;
 
 use anyhow::{Context as _, Result};
-use laughgg_api::{http, repo};
+use laughgg_api::{
+    http::{self, google::GoogleConfig, payment::StripeConfig},
+    repo,
+};
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -31,16 +34,52 @@ async fn main() -> Result<()> {
     let pool = repo::connect(&db_url).await?;
     tracing::info!("database ready");
 
+    /* 구글과 Stripe 는 자격증명이 있을 때만 켠다.
+
+    없다고 서버가 안 뜨면 DB 만 있으면 되는 로컬 개발이 막힌다. 대신 어느
+    기능이 꺼졌는지 부팅 로그에 남긴다 — 조용히 꺼져 있으면 나중에 눌렀을
+    때 왜 안 되는지 알 수가 없다. */
+    let google = GoogleConfig::from_env();
+    let stripe = StripeConfig::from_env();
+    if google.is_none() {
+        tracing::warn!(
+            "google sign-in is off: set GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI"
+        );
+    }
+    if stripe.is_none() {
+        tracing::warn!("payments are off: set STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET");
+    }
+
+    /* 쿠키에 Secure 를 붙일지는 배포 환경이 정한다. 로컬은 http 라 붙이면
+    브라우저가 쿠키를 아예 안 보내서 로그인이 안 된다. 기본은 켜 둔다 —
+    빠뜨렸을 때 안전한 쪽으로 틀리는 게 낫다. */
+    let secure_cookies = std::env::var("INSECURE_COOKIES").is_err();
+
+    // 만료된 세션은 부팅할 때 한 번 치운다. 안 치우면 테이블이 영원히 자란다.
+    match repo::purge_expired_sessions(&pool).await {
+        Ok(n) if n > 0 => tracing::info!(purged = n, "expired sessions removed"),
+        Ok(_) => {}
+        Err(e) => tracing::warn!(error = ?e, "could not purge expired sessions"),
+    }
+
     let addr = SocketAddr::from(([127, 0, 0, 1], port));
     let listener = tokio::net::TcpListener::bind(addr)
         .await
         .with_context(|| format!("binding {addr}"))?;
     tracing::info!("listening on http://{addr}");
 
-    axum::serve(listener, http::router(http::AppState { pool }))
-        .with_graceful_shutdown(shutdown_signal())
-        .await
-        .context("server error")?;
+    axum::serve(
+        listener,
+        http::router(http::AppState {
+            pool,
+            secure_cookies,
+            google,
+            stripe,
+        }),
+    )
+    .with_graceful_shutdown(shutdown_signal())
+    .await
+    .context("server error")?;
     Ok(())
 }
 

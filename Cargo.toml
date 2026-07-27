@@ -20,6 +20,19 @@ anyhow = "1"
 thiserror = "2"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+axum-extra = { version = "0.10", features = ["cookie"] }
+# 비밀번호는 Argon2id 로 만든다. 2026 기준 OWASP 권장이며 GPU 공격에 강하다.
+argon2 = "0.5"
+rand = "0.9"
+# 구글 토큰 교환과 Stripe 호출. 서버끼리만 쓰므로 rustls 로 충분하다.
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+# Stripe webhook 서명 검증
+hmac = "0.12"
+sha2 = "0.10"
+hex = "0.4"
+urlencoding = "2"
+# 쿠키 만료 지정. axum-extra 의 cookie 가 이 타입을 쓴다.
+time = "0.3"
 
 [workspace.lints.rust]
 unsafe_code = "forbid"
