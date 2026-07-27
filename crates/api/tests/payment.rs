@@ -33,6 +33,7 @@ fn state(pool: PgPool) -> AppState {
             success_url: "http://localhost/ok".into(),
             cancel_url: "http://localhost/no".into(),
         }),
+        storage: None,
         cors_origins: Vec::new(),
     }
 }

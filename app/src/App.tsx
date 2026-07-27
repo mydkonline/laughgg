@@ -15,6 +15,7 @@ import { Stack } from "./pages/Stack";
 import { Vlog } from "./pages/Vlog";
 import { Soon } from "./pages/Soon";
 import { Join } from "./pages/Join";
+import { Upload } from "./pages/Upload";
 import { Me } from "./pages/Me";
 
 /* GitHub Pages 는 /laughgg/ 하위에 올라간다. basename 은 빌드의 base 를 그대로 따라간다. */
@@ -42,7 +43,7 @@ export default function App() {
         <Route path="/viewer" element={<Viewer />} />
         <Route path="/vlog" element={<Vlog />} />
         <Route path="/cart" element={<Soon title="장바구니" />} />
-        <Route path="/upload" element={<Soon title="에셋 올리기" />} />
+        <Route path="/upload" element={<Upload />} />
         <Route path="*" element={<Navigate to="/market" replace />} />
       </Routes>
     </BrowserRouter>

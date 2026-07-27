@@ -86,4 +86,51 @@ export const api = {
 
   /** 구글 로그인은 리다이렉트라 fetch 가 아니다. 주소만 만들어 준다. */
   googleUrl: () => `${BASE}/api/auth/google`,
+
+  /* 올릴 자리를 받는다. 키는 서버가 정한다 — 우리가 정하면 uploads/ 밖이나
+     남의 접두사를 적어 보낼 수 있다. */
+  uploadIntent: (filename: string, bytes: number, sha256: string) =>
+    call<UploadTarget>("/uploads", {
+      method: "POST",
+      body: JSON.stringify({ filename, bytes, sha256 }),
+    }),
+
+  createAsset: (input: NewAsset) =>
+    call<ReviewResult>("/assets", { method: "POST", body: JSON.stringify(input) }),
+};
+
+export type UploadTarget = {
+  file_key: string;
+  upload_url: string;
+  public_url: string;
+};
+
+export type Scores = {
+  mesh_integrity: number;
+  texture_quality: number;
+  lod_setup: number;
+  runtime_cost: number;
+  license_clean: number;
+  code_quality: number;
+  integration: number;
+};
+
+export type NewAsset = {
+  title: string;
+  category: string;
+  engine: string;
+  art_style: string;
+  price_usd: number;
+  scores: Scores;
+  file_key?: string;
+  file_bytes?: number;
+  file_sha256?: string;
+};
+
+export type ReviewResult = {
+  asset_id: number;
+  total: number;
+  badge: string;
+  production_ready: boolean;
+  license_blocked: boolean;
 };

@@ -14,6 +14,7 @@ pub mod oauth;
 pub mod payment;
 mod post;
 mod sale;
+pub mod upload;
 
 use axum::{
     Router,
@@ -34,6 +35,7 @@ pub struct AppState {
     pub secure_cookies: bool,
     pub google: Option<crate::http::oauth::google::GoogleConfig>,
     pub stripe: Option<crate::http::payment::StripeConfig>,
+    pub storage: Option<crate::http::upload::StorageConfig>,
     /// 쿠키를 실어 보낼 수 있는 오리진. 비면 CORS 를 안 연다.
     pub cors_origins: Vec<String>,
 }
@@ -50,6 +52,7 @@ impl AppState {
             secure_cookies: false,
             google: None,
             stripe: None,
+            storage: None,
             cors_origins: Vec::new(),
         }
     }
@@ -99,6 +102,8 @@ pub fn router(state: AppState) -> Router {
         .route("/payments/webhook", post(payment::webhook))
         .route("/assets", get(asset::list).post(asset::create))
         .route("/assets/facets", get(asset::facets))
+        // 파일은 서버를 안 지나간다. 어디에 올릴지만 정해 준다.
+        .route("/uploads", post(upload::intent))
         .route("/assets/{id}", get(asset::get))
         // 등록과 재검수는 다른 일이라 경로도 다르다. 한때 둘이 같은 핸들러를
         // 가리켜서 재검수를 부르면 에셋이 하나 더 생겼다.

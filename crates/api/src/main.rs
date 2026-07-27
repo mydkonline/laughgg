@@ -11,7 +11,7 @@ use std::net::SocketAddr;
 
 use anyhow::{Context as _, Result};
 use laughgg_api::{
-    http::{self, oauth::google::GoogleConfig, payment::StripeConfig},
+    http::{self, oauth::google::GoogleConfig, payment::StripeConfig, upload::StorageConfig},
     repo,
 };
 
@@ -41,6 +41,7 @@ async fn main() -> Result<()> {
     때 왜 안 되는지 알 수가 없다. */
     let google = GoogleConfig::from_env();
     let stripe = StripeConfig::from_env();
+    let storage = StorageConfig::from_env();
     if google.is_none() {
         tracing::warn!(
             "google sign-in is off: set GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI"
@@ -48,6 +49,9 @@ async fn main() -> Result<()> {
     }
     if stripe.is_none() {
         tracing::warn!("payments are off: set STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET");
+    }
+    if storage.is_none() {
+        tracing::warn!("uploads are off: set STORAGE_UPLOAD_URL");
     }
 
     /* 쿠키에 Secure 를 붙일지는 배포 환경이 정한다. 로컬은 http 라 붙이면
@@ -91,6 +95,7 @@ async fn main() -> Result<()> {
             secure_cookies,
             google,
             stripe,
+            storage,
             cors_origins,
         }),
     )
