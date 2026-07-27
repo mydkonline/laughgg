@@ -21,8 +21,13 @@ pub struct ApiError {
 impl From<RepoError> for ApiError {
     fn from(err: RepoError) -> Self {
         let status = match &err {
-            RepoError::AssetNotFound(_) => StatusCode::NOT_FOUND,
+            RepoError::AssetNotFound(_) | RepoError::StudioNotFound(_) => StatusCode::NOT_FOUND,
             RepoError::Score(_) => StatusCode::BAD_REQUEST,
+            // 요청은 멀쩡하고 대상의 상태가 안 맞는 경우다. 400 으로 내면
+            // 클라이언트가 자기 입력을 고치려 든다.
+            RepoError::AssetNotReviewed(_) | RepoError::AssetNotSellable { .. } => {
+                StatusCode::CONFLICT
+            }
             RepoError::Other(_) => StatusCode::INTERNAL_SERVER_ERROR,
         };
         // 500 만 사고다. 400 과 404 는 정상적인 거절이라 error 로 남기지 않는다.

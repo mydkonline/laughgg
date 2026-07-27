@@ -12,6 +12,18 @@ pub enum RepoError {
     #[error("asset {0} not found")]
     AssetNotFound(i64),
 
+    /// 이름으로 찾은 스튜디오가 없다.
+    #[error("studio {0:?} not found")]
+    StudioNotFound(String),
+
+    /// 아직 검수를 안 받았다. 요청 자체가 이른 것이지 틀린 게 아니다.
+    #[error("asset {0} has not been reviewed yet")]
+    AssetNotReviewed(i64),
+
+    /// 검수는 받았지만 판매 가능 등급이 아니다.
+    #[error("asset {asset_id} is not sellable: badge {badge}")]
+    AssetNotSellable { asset_id: i64, badge: String },
+
     /// 입력이 규칙을 어겼다.
     #[error(transparent)]
     Score(#[from] ScoreError),

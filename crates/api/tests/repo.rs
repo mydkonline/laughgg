@@ -246,3 +246,86 @@ async fn stack_filter_matches_by_tool_name(pool: PgPool) {
         "걸러진 행은 전부 그 도구를 써야 한다"
     );
 }
+
+/* 검수를 통과하지 못한 에셋은 못 판다.
+
+배지 실버는 노출 제외인데, 노출이 안 되는 물건이 팔렸다면 우회 경로가
+있다는 뜻이다. 규칙이 API 경계에서만 지켜지면 규칙이 아니라 권고가 된다. */
+#[sqlx::test]
+async fn a_silver_asset_cannot_be_sold(pool: PgPool) {
+    let blocked = ReviewScores {
+        license_clean: 10,
+        ..scores(100)
+    };
+    let created = repo::create_asset(&pool, &new_asset("sh", "Blocked", blocked))
+        .await
+        .expect("등록");
+    assert_eq!(created.badge, Badge::Silver);
+
+    let err = repo::record_sale(&pool, created.asset_id, &repo::NewSale::default())
+        .await
+        .expect_err("실버는 팔리면 안 된다");
+    assert!(matches!(err, RepoError::AssetNotSellable { .. }), "{err:?}");
+}
+
+#[sqlx::test]
+async fn selling_records_the_fee_and_shows_up_in_metrics(pool: PgPool) {
+    let created = repo::create_asset(&pool, &new_asset("sh", "Gothic Statue", scores(90)))
+        .await
+        .expect("등록");
+
+    let sale = repo::record_sale(&pool, created.asset_id, &repo::NewSale::default())
+        .await
+        .expect("판매");
+
+    // 30 달러 × 8% = 2.4. 창작자가 27.6 을 가져간다.
+    assert!((sale.settlement.fee_usd - 2.4).abs() < 1e-9);
+    assert!((sale.settlement.creator_usd - 27.6).abs() < 1e-9);
+
+    let m = repo::metrics(&pool).await.expect("집계");
+    assert!(
+        (m.monthly_fee_usd - 2.4).abs() < 1e-9,
+        "판매가 수수료 매출에 잡혀야 한다: {}",
+        m.monthly_fee_usd
+    );
+}
+
+#[sqlx::test]
+async fn selling_an_unreviewed_asset_is_rejected(pool: PgPool) {
+    // 검수 없이 에셋만 넣는다. 정상 경로로는 만들 수 없는 상태라 직접 만든다.
+    sqlx::query("INSERT INTO creators (handle, display_name) VALUES ('sh','sh')")
+        .execute(&pool)
+        .await
+        .expect("창작자");
+    let id: i64 = sqlx::query_scalar(
+        r"INSERT INTO assets (creator_id, title, category, engine, price_usd, art_style)
+          SELECT id, 'Raw', 'prop', 'unity', 30.0, 'realistic' FROM creators WHERE handle='sh'
+          RETURNING id",
+    )
+    .fetch_one(&pool)
+    .await
+    .expect("에셋");
+
+    let err = repo::record_sale(&pool, id, &repo::NewSale::default())
+        .await
+        .expect_err("검수 전에는 못 판다");
+    assert!(matches!(err, RepoError::AssetNotReviewed(_)), "{err:?}");
+}
+
+#[sqlx::test]
+async fn an_unknown_studio_is_rejected(pool: PgPool) {
+    let created = repo::create_asset(&pool, &new_asset("sh", "Gothic Statue", scores(90)))
+        .await
+        .expect("등록");
+
+    let err = repo::record_sale(
+        &pool,
+        created.asset_id,
+        &repo::NewSale {
+            studio: Some("없는 스튜디오".into()),
+        },
+    )
+    .await
+    .expect_err("없는 스튜디오는 실패해야 한다");
+    assert!(matches!(err, RepoError::StudioNotFound(_)), "{err:?}");
+}

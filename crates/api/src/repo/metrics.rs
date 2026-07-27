@@ -21,6 +21,9 @@ pub struct Metrics {
 
 /// 마켓 지표를 집계한다.
 ///
+/// 수수료 매출은 이번 달만 센다. 판매를 넣을 길이 없던 동안에는 늘 0 이라
+/// 안 보였는데, 필터가 없어서 이름만 monthly 이고 실제로는 누적이었다.
+///
 /// 카운트 일곱 개를 왕복 일곱 번으로 세지 않는다. 한 문장에 스칼라 서브쿼리로
 /// 모으면 라운드트립이 하나로 줄고, 모든 값이 같은 스냅숏에서 나온다 —
 /// 나눠 세면 그 사이에 들어온 행 때문에 비율이 100%를 넘을 수 있다.
@@ -44,7 +47,8 @@ pub async fn metrics(pool: &PgPool) -> RepoResult<Metrics> {
                 (SELECT COUNT(*) FROM reviews WHERE badge = 'silver'),
                 (SELECT COUNT(*) FROM studios WHERE active),
                 (SELECT COALESCE(SUM(monthly_krw), 0)::bigint FROM studios WHERE active),
-                (SELECT COALESCE(SUM(price_usd * fee_rate), 0)::double precision FROM sales)
+                (SELECT COALESCE(SUM(price_usd * fee_rate), 0)::double precision
+                 FROM sales WHERE sold_at >= date_trunc('month', now()))
             ",
     )
     .fetch_one(pool)

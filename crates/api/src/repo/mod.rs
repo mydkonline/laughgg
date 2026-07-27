@@ -11,6 +11,7 @@ mod asset;
 mod error;
 mod game;
 mod metrics;
+mod sale;
 
 use anyhow::{Context as _, Result};
 use sqlx::{PgPool, postgres::PgPoolOptions};
@@ -21,6 +22,7 @@ pub use asset::{
 pub use error::{RepoError, RepoResult};
 pub use game::{Facet, Facets, GamePage, GameQuery, GameRow, game_facets, list_games};
 pub use metrics::{Metrics, metrics};
+pub use sale::{NewSale, SaleResult, record_sale};
 
 /// 커넥션 풀을 열고 마이그레이션을 적용한다.
 ///

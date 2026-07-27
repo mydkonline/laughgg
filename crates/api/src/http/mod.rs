@@ -8,6 +8,7 @@ mod asset;
 mod error;
 mod game;
 mod metrics;
+mod sale;
 
 use axum::{
     Router,
@@ -32,6 +33,7 @@ pub fn router(state: AppState) -> Router {
         // 등록과 재검수는 다른 일이라 경로도 다르다. 한때 둘이 같은 핸들러를
         // 가리켜서 재검수를 부르면 에셋이 하나 더 생겼다.
         .route("/assets/{id}/review", post(asset::review))
+        .route("/assets/{id}/sales", post(sale::create))
         .route("/games", get(game::list))
         .route("/games/facets", get(game::facets))
         .route("/metrics", get(metrics::get))
