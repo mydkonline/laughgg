@@ -889,4 +889,23 @@ export const EN: Record<string, string> = {
   "로스앤젤레스": "Los Angeles",
   "몬트리올": "Montreal",
   "헬싱키": "Helsinki",
+
+
+  // 스튜디오 — 내보내기, 프롬프트, 점수
+  "형식 직접 고르기 열기": "Pick formats yourself",
+  "형식 직접 고르기 닫기": "Close format picker",
+  "파라미터 직접 조정 열기": "Tune parameters by hand",
+  "파라미터 직접 조정 닫기": "Close manual tuning",
+  "3D 모델": "3D model",
+  "모델": "Model",
+  "이미지": "Image",
+  "텍스처": "Texture",
+  "올린 파일 {n}개": "{n} uploaded",
+  "아직 비어 있어 마켓 상위를 올려 뒀습니다": "Empty for now, so the market's top picks are shown",
+  "스프라이트": "Sprite",
+  "직접 조정": "Manual tuning",
+  "런타임": "Runtime",
+  "면구성": "Mesh",
+  "원본 해상도": "Original resolution",
+  "{n}px 한 칸": "{n}px per cell",
 };

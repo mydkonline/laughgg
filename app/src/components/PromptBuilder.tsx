@@ -117,11 +117,15 @@ export function PromptBuilder({
         })}
       </div>
 
-      {/* 재료. 축마다 묶어 두면 무엇을 고를 수 있는지가 한눈에 들어온다. */}
+      {/* 재료. 축마다 묶어 두면 무엇을 고를 수 있는지가 한눈에 들어온다.
+
+         라벨 칸을 넉넉히 잡는다. 한국어("색온도")에 맞춰 48px 로 뒀더니
+         영어("Temperature")가 넘쳐서 칩 위로 겹쳤다. 폭을 말에 맞춰 재면
+         언어가 늘 때마다 다시 깨진다 — 제일 긴 말이 들어갈 만큼 둔다. */}
       <div className="mt-3 flex flex-col gap-2.5">
         {BLOCK_GROUPS.map(([axis, blocks]) => (
           <div key={axis} className="flex flex-wrap items-center gap-1.5">
-            <span className="w-12 shrink-0 text-xs text-faint">{axis}</span>
+            <span className="w-20 shrink-0 text-xs text-faint">{t(axis)}</span>
             {blocks.map((b) => {
               const on = picked.includes(b.id);
               return (

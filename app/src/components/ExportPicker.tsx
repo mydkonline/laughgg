@@ -50,24 +50,24 @@ export function ExportPicker({
       {/* 라벨이 먼저다. 칩만 늘어놓으면 이게 무엇을 고르는 줄인지 모른다. */}
       <div className="mt-3 flex flex-wrap items-center gap-1.5">
         <span className="mr-1 shrink-0 text-xs text-faint">{t("엔진")}</span>
-        {TARGETS.map((t) => (
+        {TARGETS.map((tg) => (
           <button
-            key={t.id}
+            key={tg.id}
             type="button"
             onClick={() => {
-              onTarget(t.id);
-              onPicks(t.picks);
+              onTarget(tg.id);
+              onPicks(tg.picks);
             }}
-            aria-pressed={target === t.id}
-            title={t.who}
+            aria-pressed={target === tg.id}
+            title={t(tg.who)}
             className={[
               "cursor-pointer rounded-full border px-3 py-1 text-xs",
-              target === t.id
+              target === tg.id
                 ? "border-transparent bg-ink font-bold text-ground"
                 : "border-line text-muted hover:border-accent hover:text-ink",
             ].join(" ")}
           >
-            {t.name}
+            {t(tg.name)}
           </button>
         ))}
       </div>
@@ -79,9 +79,9 @@ export function ExportPicker({
           if (!f) return null;
           return (
             <li key={e} className="flex items-baseline gap-2.5 text-xs">
-              <span className="w-24 shrink-0 font-semibold text-ink">{f.name}</span>
-              <span className="min-w-0 flex-1 truncate text-faint">{f.holds}</span>
-              {f.caveat && <span className="shrink-0 text-[10px] text-accent">{f.caveat}</span>}
+              <span className="w-24 shrink-0 font-semibold text-ink">{t(f.name)}</span>
+              <span className="min-w-0 flex-1 truncate text-faint">{t(f.holds)}</span>
+              {f.caveat && <span className="shrink-0 text-[10px] text-accent">{t(f.caveat)}</span>}
             </li>
           );
         })}
@@ -99,14 +99,14 @@ export function ExportPicker({
         aria-expanded={open}
         className="mt-3 cursor-pointer border-0 bg-transparent p-0 text-xs text-faint hover:text-ink"
       >
-        형식 직접 고르기 {open ? "닫기" : "열기"}
+        {t(open ? "형식 직접 고르기 닫기" : "형식 직접 고르기 열기")}
       </button>
 
       {open && (
         <div className="mt-3 flex flex-col gap-2.5 border-t border-line pt-3">
           {grouped.map(([kind, list]) => (
             <div key={kind} className="flex flex-wrap items-center gap-1.5">
-              <span className="w-12 shrink-0 text-xs text-faint">{KIND_LABEL[kind]}</span>
+              <span className="w-20 shrink-0 text-xs text-faint">{t(KIND_LABEL[kind])}</span>
               {list.map((f) => {
                 const on = picks.includes(f.ext);
                 return (
@@ -115,13 +115,13 @@ export function ExportPicker({
                     type="button"
                     onClick={() => toggle(f.ext)}
                     aria-pressed={on}
-                    title={f.caveat ?? f.holds}
+                    title={t(f.caveat ?? f.holds)}
                     className={[
                       "cursor-pointer rounded-full border px-2.5 py-0.5 text-xs",
                       on ? "border-accent text-accent" : "border-line text-muted hover:text-ink",
                     ].join(" ")}
                   >
-                    {f.name}
+                    {t(f.name)}
                   </button>
                 );
               })}

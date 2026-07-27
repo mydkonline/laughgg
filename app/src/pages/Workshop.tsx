@@ -173,10 +173,10 @@ export function Workshop() {
           <span className="text-xs font-bold text-ink">{t("내 라이브러리")}</span>
           <span className="text-xs text-faint">
             {mine.length
-              ? `올린 파일 ${mine.length}개`
+              ? t("올린 파일 {n}개", { n: mine.length })
               : cartIds.length
                 ? t("산 에셋 {n}개", { n: cartIds.length })
-                : "아직 비어 있어 마켓 상위를 올려 뒀습니다"}
+                : t("아직 비어 있어 마켓 상위를 올려 뒀습니다")}
           </span>
           <label className="ml-auto cursor-pointer rounded-lg border border-line px-3 py-1.5 text-xs text-muted hover:border-accent hover:text-ink">
             {t("파일 올리기")}
@@ -243,7 +243,10 @@ export function Workshop() {
               <Preview model={modelSrc(piece)!} knobs={NEUTRAL} className="h-full w-full" />
             )}
           </Frame>
-          <Frame label={`${conceptName}${sprite ? ` (${palette?.name ?? "스프라이트"})` : ""}`} accent>
+          <Frame
+              label={`${t(conceptName)}${sprite ? ` (${t(palette?.name ?? "스프라이트")})` : ""}`}
+              accent
+            >
             {sprite ? (
               <Sprite piece={piece} knobs={knobs} raster={raster} />
             ) : (
@@ -400,7 +403,7 @@ export function Workshop() {
                     : "border-line text-muted hover:border-accent hover:text-ink",
                 ].join(" ")}
               >
-                {v ? "2D 스프라이트" : "3D 모델"}
+                {t(v ? "2D 스프라이트" : "3D 모델")}
               </button>
             ))}
           </div>
@@ -440,7 +443,7 @@ export function Workshop() {
               </Field>
             )}
 
-            <Field label={t("도트 굵기")} hint={raster.pixel === 1 ? "원본 해상도" : `${raster.pixel}px 한 칸`}>
+            <Field label={t("도트 굵기")} hint={raster.pixel === 1 ? t("원본 해상도") : t("{n}px 한 칸", { n: raster.pixel })}>
               <input
                 type="range"
                 min={1}
@@ -476,7 +479,7 @@ export function Workshop() {
           aria-expanded={tuning}
           className="ml-auto cursor-pointer rounded-lg border border-line bg-transparent px-3 py-1.5 text-xs text-muted hover:text-ink"
         >
-          파라미터 직접 조정 {tuning ? "닫기" : "열기"}
+          {t(tuning ? "파라미터 직접 조정 닫기" : "파라미터 직접 조정 열기")}
         </button>
           </div>
           <ExportPicker
@@ -495,13 +498,13 @@ export function Workshop() {
           </div>
           <span className="mt-2 flex w-fit items-center gap-1.5 rounded-full bg-accent-soft px-2.5 py-1 text-xs font-extrabold text-accent">
             <RankIcon badge={badgeOf(after)} size={14} />
-            {BADGE_LABEL[badgeOf(after)]}
+            {t(BADGE_LABEL[badgeOf(after)])}
           </span>
 
           <dl className="mt-3 flex flex-col gap-1.5 border-t border-line pt-3">
             {Object.entries(delta).map(([k, v]) => (
               <div key={k} className="flex justify-between text-xs">
-                <dt className="text-muted">{k}</dt>
+                <dt className="text-muted">{t(k)}</dt>
                 <dd className={`m-0 tabular-nums ${v > 0 ? "text-accent" : v < 0 ? "text-[#FF6B7A]" : "text-faint"}`}>
                   {v > 0 ? `+${v}` : v}
                 </dd>
