@@ -72,7 +72,7 @@ export function Ir() {
         <ol className="mt-10 grid list-none border-t border-line pt-8 lg:mt-12 gap-x-12 gap-y-6 p-0 sm:grid-cols-3">
           {[
             ["창작자", "에셋 등록"],
-            ["플랫폼", "정적 분석 7항목, 배지 부여"],
+            ["플랫폼", "7항목 채점, 배지 부여"],
             ["게임사", "구독 접근, 에디터로 컨셉 변환"],
           ].map(([who, what], i) => (
             <li key={who}>
@@ -115,14 +115,14 @@ export function Ir() {
         </div>
       </Section>
 
-      {/* 정적 분석과 에디터는 따로 팔지 않는다. 걸러 낸 에셋을 그 자리에서
+      {/* 분석과 에디터는 따로 팔지 않는다. 걸러 낸 에셋을 그 자리에서
           컨셉에 맞추는 한 흐름이라, 섹션을 나누면 두 제품처럼 읽힌다.
           안에서만 들어오는 것과 나가는 것으로 가른다. */}
       <Section n="03" title="기술">
         <div className="flex flex-col gap-12">
           <div>
             <p className="mb-5 flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-line pb-3">
-              <b className="text-base font-bold text-ink">정적 분석</b>
+              <b className="text-base font-bold text-ink">분석</b>
               <span className="text-xs text-faint">학습 소스 역추적 채점, 7항목 가중 합산</span>
             </p>
             <CheckWeights items={CHECK_WEIGHTS} />

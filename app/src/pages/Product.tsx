@@ -137,7 +137,7 @@ function Detail({ p }: { p: Piece }) {
           <ul className="mt-4 flex list-none flex-col gap-2 border-t border-line pt-4 pl-0 text-xs text-muted">
             <li>결제 즉시 내려받습니다. 배송이 없습니다.</li>
             <li>내려받기 전이면 <b className="text-ink">7일 안에 전액 환불</b>됩니다.</li>
-            <li>AI 정적 분석 <b className="text-ink">7항목</b>을 통과한 에셋만 올라옵니다.</li>
+            <li>분석 <b className="text-ink">7항목</b>을 통과한 에셋만 올라옵니다.</li>
           </ul>
 
           {/* 결제 수단 — 아이콘 없이 워드마크 텍스트로만 */}
@@ -164,7 +164,7 @@ function Detail({ p }: { p: Piece }) {
           <p className="text-xs leading-relaxed text-muted">{p.desc}</p>
         </Acc>
 
-        <Acc title={`정적 분석 리포트 (종합 ${p.score}점)`}>
+        <Acc title={`분석 리포트 (종합 ${p.score}점)`}>
           <div className="flex flex-col gap-2.5">
             {CHECKS.map((c, i) => {
               const v = scores[i] ?? 0;

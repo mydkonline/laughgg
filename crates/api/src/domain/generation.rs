@@ -120,12 +120,19 @@ pub enum GenError {
 그건 크레딧을 깎은 뒤라 되돌리는 일이 한 번 더 생긴다. */
 const MAX_PROMPT: usize = 500;
 
-/// 품질별 크레딧. 올릴수록 제공자 단가가 올라간다.
+/* 품질별 크레딧.
+
+제공자 단가에 비례시킨다. 처음에 1/3/8 로 뒀더니 크레딧당 원가가
+draft 가 제일 비싸고 high 가 제일 쌌다 — 싼 옵션을 고르는 사람일수록
+우리 마진이 깎이는 구조였다. 그게 정확히 늘리고 싶은 사용 행태인데.
+
+1/2/4 로 맞추면 크레딧당 원가가 균일해진다. 어느 품질을 골라도 마진이
+같고, 사용자는 싼 걸 눌러도 미안할 이유가 없다. 계산은 docs/pricing.md. */
 const fn cost(quality: Quality) -> i32 {
     match quality {
         Quality::Draft => 1,
-        Quality::Standard => 3,
-        Quality::High => 8,
+        Quality::Standard => 2,
+        Quality::High => 4,
     }
 }
 
@@ -277,11 +284,22 @@ mod tests {
             ..req("검")
         };
         assert_eq!(
-            high.validate(7),
-            Err(GenError::NotEnoughCredits { need: 8, have: 7 })
+            high.validate(3),
+            Err(GenError::NotEnoughCredits { need: 4, have: 3 })
         );
         // 딱 맞으면 통과해야 한다. 경계에서 한 칸 어긋나는 게 제일 흔하다.
-        assert!(high.validate(8).is_ok());
+        assert!(high.validate(4).is_ok());
+    }
+
+    /* 크레딧이 제공자 단가에 비례해야 한다.
+
+    Meshy 단가가 draft $0.05 / standard $0.10 / high $0.20 이므로
+    비율이 1:2:4 다. 어긋나면 어떤 품질이 다른 품질보다 남는 장사가 되고,
+    사용자가 그걸 눈치채면 그쪽으로 몰린다. */
+    #[test]
+    fn credits_track_the_provider_price_ratio() {
+        assert_eq!(cost(Quality::Standard), cost(Quality::Draft) * 2);
+        assert_eq!(cost(Quality::High), cost(Quality::Draft) * 4);
     }
 
     #[test]

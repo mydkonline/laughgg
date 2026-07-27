@@ -136,19 +136,38 @@ function AccountButton() {
 
   if (auth.status === "anon") {
     return (
-      <Link
-        to="/join?mode=login"
-        className="rounded bg-chrome-800 px-3 py-1 text-[length:var(--text-nav)] text-gray-350 no-underline hover:bg-chrome-700 hover:text-white"
-      >
-        로그인
-      </Link>
+      <span className="flex items-center gap-1.5">
+        <Link
+          to="/join?mode=login"
+          className="rounded bg-chrome-800 px-3 py-1 text-[length:var(--text-nav)] text-gray-350 no-underline hover:bg-chrome-700 hover:text-white"
+        >
+          로그인
+        </Link>
+        <Link
+          to="/join"
+          className="rounded bg-accent px-3 py-1 text-[length:var(--text-nav)] font-bold text-white no-underline hover:bg-accent-strong"
+        >
+          가입
+        </Link>
+      </span>
     );
   }
 
+  /* 로그인하면 라이브러리가 먼저다.
+
+     업로드를 최상단에 단독으로 두면 로그인 안 한 사람에게도 보이고, 눌러 봐야
+     로그인 화면으로 튕긴다. 산 것·올린 것·만든 것이 한자리에 모이는 곳을
+     열고, 올리기는 그 안에 둔다. */
   return (
     <span className="flex items-center gap-1.5">
       <Link
-        to="/me"
+        to="/library"
+        className="rounded bg-accent px-3 py-1 text-[length:var(--text-nav)] font-bold text-white no-underline hover:bg-accent-strong"
+      >
+        내 라이브러리
+      </Link>
+      <Link
+        to="/settings"
         className="rounded bg-chrome-800 px-3 py-1 text-[length:var(--text-nav)] text-white no-underline hover:bg-chrome-700"
       >
         {auth.account.display_name}
@@ -188,9 +207,7 @@ export function Nav() {
             <button type="button" onClick={toggle} className="cursor-pointer rounded border-0 bg-chrome-800 px-3 py-1 text-[length:var(--text-nav)] text-gray-350 hover:bg-chrome-700 hover:text-white">
               테마
             </button>
-            <Link to="/upload" className="rounded bg-accent px-3 py-1 text-[length:var(--text-nav)] font-bold text-white no-underline hover:bg-accent-strong">
-              에셋 올리기
-            </Link>
+
           </div>
         </div>
       </div>

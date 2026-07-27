@@ -97,6 +97,48 @@ export const api = {
 
   createAsset: (input: NewAsset) =>
     call<ReviewResult>("/assets", { method: "POST", body: JSON.stringify(input) }),
+
+  /** 내 소유 목록. 같은 걸 두 번 사도 한 줄이다. */
+  library: () => call<{ count: number; assets: OwnedAsset[] }>("/me/library"),
+
+  /** 내 생성 작업과 잔액. */
+  generations: () => call<{ credits: number; jobs: GenJob[] }>("/generate"),
+
+  /* 만들어 달라고 넣는다. 202 로 돌아온다 — 생성이 30초에서 5분 걸려서
+     응답을 기다릴 수 없다. 상태는 폴링으로 본다. */
+  generate: (prompt: string, artStyle: string, quality: string) =>
+    call<GenJob>("/generate", {
+      method: "POST",
+      body: JSON.stringify({ prompt, art_style: artStyle, quality }),
+    }),
+
+  generation: (id: number) => call<GenJob>(`/generate/${id}`),
+};
+
+export type OwnedAsset = {
+  asset_id: number;
+  title: string;
+  creator: string;
+  category: string;
+  engine: string;
+  art_style: string;
+  badge: string | null;
+  paid_usd: number;
+  paid_at: string;
+};
+
+export type GenJob = {
+  id: number;
+  status: "queued" | "running" | "done" | "failed";
+  prompt: string;
+  art_style: string;
+  provider: string;
+  credits: number;
+  attempts: number;
+  asset_id: number | null;
+  error: string | null;
+  created_at: string;
+  finished_at: string | null;
 };
 
 export type UploadTarget = {

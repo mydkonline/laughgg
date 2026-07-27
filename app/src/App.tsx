@@ -16,7 +16,10 @@ import { Vlog } from "./pages/Vlog";
 import { Soon } from "./pages/Soon";
 import { Join } from "./pages/Join";
 import { Upload } from "./pages/Upload";
-import { Me } from "./pages/Me";
+import { Library } from "./pages/Library";
+import { Settings } from "./pages/Settings";
+import { Billing } from "./pages/Billing";
+import { Generate } from "./pages/Generate";
 
 /* GitHub Pages 는 /laughgg/ 하위에 올라간다. basename 은 빌드의 base 를 그대로 따라간다. */
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -37,7 +40,12 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/ir" element={<Ir />} />
         <Route path="/join" element={<Join />} />
-        <Route path="/me" element={<Me />} />
+        <Route path="/library" element={<Library />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/billing" element={<Billing />} />
+        <Route path="/generate" element={<Generate />} />
+        {/* 옛 주소. 링크가 돌아다닐 수 있어 살려 둔다. */}
+        <Route path="/me" element={<Navigate to="/settings" replace />} />
         <Route path="/stack" element={<Stack />} />
         <Route path="/scene" element={<Scene />} />
         <Route path="/viewer" element={<Viewer />} />

@@ -59,7 +59,7 @@ const ICONS: Record<string, React.ReactNode> = {
 
 const STEPS: [keyof typeof ICONS, string, string][] = [
   ["upload", "업로드", "glb, gltf, png"],
-  ["scan", "AI 정적 분석", "학습 소스 역추적, 7항목 가중 채점"],
+  ["scan", "분석", "학습 소스 역추적, 7항목 가중 채점"],
   ["fix", "프롬프트 보완", "떨어진 항목만 다시 생성"],
   ["match", "컨셉 정합", "톤과 팔레트 변경"],
 ];
@@ -79,7 +79,7 @@ export function Home() {
         <div>
           <h1 className="text-4xl leading-[1.2] font-bold text-ink">검증된 게임 에셋 마켓</h1>
           <p className="mt-3 max-w-[52ch] text-xs text-muted">
-            올라온 에셋을 AI 정적 분석 7항목으로 채점해 배지를 매깁니다. 구매한 에셋은 에디터에서
+            올라온 에셋을 7항목으로 채점해 배지를 매깁니다. 구매한 에셋은 에디터에서
             게임 컨셉에 맞춰 변환해 내려받습니다.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
