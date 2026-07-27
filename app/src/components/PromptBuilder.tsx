@@ -92,7 +92,10 @@ export function PromptBuilder({
           if (id) add(id);
         }}
         className={[
-          "flex min-h-[52px] flex-wrap items-center gap-1.5 rounded-lg border border-dashed p-2.5 transition-colors",
+          /* 직접 입력칸과 같은 자리에 오므로 같은 생김새를 쓴다 — 바탕을
+             한 단계 어둡게 눕히고 테두리를 두른다. 점선인 건 여기가
+             "놓는 자리" 라서다. 쓰는 칸과 놓는 칸을 선으로 구분한다. */
+          "flex min-h-[92px] flex-wrap items-start content-start gap-1.5 rounded-xl border border-dashed bg-ground p-3 transition-colors",
           over ? "border-accent bg-accent-soft" : "border-line",
         ].join(" ")}
       >

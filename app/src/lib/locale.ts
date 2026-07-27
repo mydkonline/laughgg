@@ -43,27 +43,20 @@ const TABLES: Partial<Record<Locale, Record<string, string>>> = { en: EN };
 
 const KEY = "igg-locale";
 
-/* 정하는 순서.
+/* 주소가 언어를 정한다. 예외가 없다.
 
-   패키지의 detectors 순서를 줄여서 가져왔다. 주소가 제일 세다 — 링크를 받은
-   사람은 보낸 사람이 보던 언어로 봐야 한다. 그다음이 지난번 고른 것,
-   마지막이 브라우저 설정이다. */
+   처음엔 주소에 접두사가 없으면 저장된 선택으로 넘어가게 뒀다. 그랬더니
+   EN 을 고른 적이 있는 사람이 `/workshop` 으로 들어오면 언어는 en 인데
+   주소에는 접두사가 없어서, 라우터 basename(`/en`)과 실제 주소가 어긋났다.
+   어긋나면 react-router 는 **아무것도 안 그린다** — 빈 화면이 뜬다.
+
+   패키지도 같은 이유로 `OmittedLocaleDetector` 를 session·cookie 앞에 둔다.
+   접두사가 없는 주소는 "모르겠다" 가 아니라 "기본 언어다" 라는 뜻이다.
+
+   저장된 선택은 보낼 곳을 정할 때만 쓴다 — 아래 `preferredEntry()` 가
+   맨 처음 들어온 사람만 옮겨 준다. 그건 진짜 이동이라 어긋날 일이 없다. */
 function detect(): Locale {
-  const fromUrl = fromPath(window.location.pathname);
-  if (fromUrl) return fromUrl;
-
-  try {
-    const saved = localStorage.getItem(KEY);
-    if (isLocale(saved)) return saved;
-  } catch {
-    /* 시크릿 창에서는 못 읽는다. 다음 줄로 넘어간다. */
-  }
-
-  for (const want of navigator.languages ?? []) {
-    const head = want.split("-")[0];
-    if (isLocale(head)) return head;
-  }
-  return BASE;
+  return fromPath(window.location.pathname) ?? BASE;
 }
 
 function isLocale(v: string | null | undefined): v is Locale {
@@ -90,6 +83,32 @@ const current: Locale = detect();
 
 /** 라우터에 넘길 basename. 기본 언어면 언어 칸이 없다. */
 export const ROUTER_BASE = current === BASE ? MOUNT : `${MOUNT}/${current}`;
+
+/* 처음 들어온 사람을 지난번 언어로 보낸다.
+
+   대문(`/`)으로 들어왔을 때만 한다. 안쪽 주소는 누가 링크로 건넨 것일 수
+   있어서 함부로 옮기면 보낸 사람이 보던 화면과 달라진다.
+
+   주소를 바꿔서 다시 여는 방식이다 — 그 자리에서 언어만 갈아 끼우면 위에서
+   본 basename 어긋남이 그대로 재현된다. replace 라 뒤로가기에 안 쌓인다. */
+export function preferredEntry(): string | null {
+  const rest = window.location.pathname.startsWith(MOUNT)
+    ? window.location.pathname.slice(MOUNT.length)
+    : window.location.pathname;
+  if (rest !== "" && rest !== "/") return null;
+
+  let saved: string | null = null;
+  try {
+    saved = localStorage.getItem(KEY);
+  } catch {
+    return null;
+  }
+  if (!isLocale(saved) || saved === BASE) return null;
+
+  const browser = (navigator.languages ?? []).some((l) => l.split("-")[0] === saved);
+  void browser; // 저장된 선택이 우선이다. 브라우저 설정은 참고만 한다.
+  return `${MOUNT}/${saved}/`;
+}
 
 /* 스토어라기엔 바뀌지 않는다.
 

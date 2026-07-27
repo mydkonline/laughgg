@@ -45,6 +45,7 @@ export function PromptComposer({
   refs,
   onAddRef,
   onDropRef,
+  typing,
   children,
 }: {
   value: string;
@@ -56,6 +57,8 @@ export function PromptComposer({
   refs: Reference[];
   onAddRef: (files: FileList) => void;
   onDropRef: (url: string) => void;
+  /** 직접 입력 모드인가. 아니면 입력칸 대신 블록 조립기가 그 자리에 온다. */
+  typing: boolean;
   /** 블록 조립기처럼 상자 안에 같이 들어가는 것 */
   children?: React.ReactNode;
 }) {
@@ -130,24 +133,34 @@ export function PromptComposer({
         </div>
       )}
 
-      <textarea
-        ref={box}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onKeyDown={(e) => {
-          // Enter 는 줄바꿈이다. 여러 줄로 쓰는 글이라 그게 맞다.
-          if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
-            e.preventDefault();
-            send();
-          }
-        }}
-        rows={3}
-        placeholder={t("이끼 낀 고딕 석상, 한쪽 팔이 부서진")}
-        aria-label={t("프롬프트")}
-        className="w-full resize-none border-0 bg-transparent px-4 pt-4 pb-2 text-xs leading-relaxed text-ink outline-none placeholder:text-faint"
-      />
+      {/* 쓸 수 있는 자리를 한 단계 파 넣는다.
 
-      {children && <div className="px-4 pb-1">{children}</div>}
+          카드와 입력칸이 같은 회색이라 어디에 쓰는 건지 안 보였다. 바탕을
+          어둡게 눕히고 테두리를 두르면 "여기가 안쪽" 이라고 읽힌다. 커서가
+          들어오면 테두리가 강조색으로 바뀐다 — 색을 하나 더 쓰지 않고,
+          이미 쓰는 강조색이 상태를 알려 준다. */}
+      <div className="px-3 pt-3">
+        {typing ? (
+          <textarea
+            ref={box}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            onKeyDown={(e) => {
+              // Enter 는 줄바꿈이다. 여러 줄로 쓰는 글이라 그게 맞다.
+              if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+                e.preventDefault();
+                send();
+              }
+            }}
+            rows={4}
+            placeholder={t("이끼 낀 고딕 석상, 한쪽 팔이 부서진")}
+            aria-label={t("프롬프트")}
+            className="w-full resize-none rounded-xl border border-line bg-ground px-3.5 py-3 text-xs leading-relaxed text-ink outline-none transition-colors placeholder:text-faint focus:border-accent"
+          />
+        ) : (
+          children
+        )}
+      </div>
 
       {/* 아래 줄. 왼쪽이 넣는 것, 오른쪽이 내보내는 것이다. */}
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-line px-3 py-2.5">

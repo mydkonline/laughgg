@@ -55,10 +55,19 @@ export function Workshop() {
   const piece = pool.find((p) => p.id === pieceId) ?? PIECES.find((p) => p.id === pieceId) ?? pool[0];
 
   const [conceptId, setConceptId] = useState("dark");
-  const [prompt, setPrompt] = useState("");
+  /* 블록과 직접 입력은 서로 다른 입력칸이다.
+
+     한 문자열을 같이 쓰게 뒀더니 블록을 하나 놓는 순간 타이핑한 문장이
+     통째로 날아갔다. 둘은 같은 것을 다르게 적는 방법이 아니라 각자의
+     자리다 — 블록은 옮겨 붙이는 것이고 직접 입력은 쓰는 것이다.
+
+     각자 상태를 들고, 지금 켜진 쪽이 프롬프트가 된다. 오가며 눌러도
+     반대쪽이 안 지워진다. */
+  const [typed, setTyped] = useState("");
   /* 블록으로 조립해도 결과는 같은 문자열이라 해석기를 그대로 탄다. */
   const [blocks, setBlocks] = useState<string[]>([]);
   const [typing, setTyping] = useState(false);
+  const prompt = typing ? typed : toPrompt(blocks);
   const [knobs, setKnobs] = useState<Knobs>(() => CONCEPTS[0]!.knobs);
   const [raster, setRaster] = useState<RasterSet>(() => CONCEPTS[0]!.raster);
 
@@ -137,7 +146,9 @@ export function Workshop() {
       setRaster(src.raster);
       setAsSprite(true);
     }
-    setPrompt(src.prompt);
+    // 저장된 프리셋은 문장으로 남는다. 블록으로 되돌릴 수 없으니 직접 입력으로 연다.
+    setTyped(src.prompt);
+    setTyping(true);
     setConceptId("custom");
     fork(src.id);
     setParams({}, { replace: true });
@@ -408,8 +419,9 @@ export function Workshop() {
             {/* 입력·첨부·전송이 한 상자다. 흩어 놓으니 무엇을 눌러야
                 시작되는지가 안 보였고, 전송 버튼이 없는 것처럼 읽혔다. */}
             <PromptComposer
-              value={prompt}
-              onChange={setPrompt}
+              value={typed}
+              onChange={setTyped}
+              typing={typing}
               onSubmit={applyPrompt}
               disabled={remaining < 1 || !prompt.trim()}
               credits={remaining}
@@ -418,15 +430,7 @@ export function Workshop() {
               onAddRef={addRefs}
               onDropRef={dropRef}
             >
-              {!typing && (
-                <PromptBuilder
-                  picked={blocks}
-                  onChange={(next) => {
-                    setBlocks(next);
-                    setPrompt(toPrompt(next));
-                  }}
-                />
-              )}
+              {!typing && <PromptBuilder picked={blocks} onChange={setBlocks} />}
             </PromptComposer>
 
             {remaining < 1 && (
