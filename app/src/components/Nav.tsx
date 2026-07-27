@@ -182,13 +182,13 @@ function AccountButton() {
           to="/join?mode=login"
           className="rounded bg-chrome-800 px-3 py-1 text-[length:var(--text-nav)] text-gray-350 no-underline hover:bg-chrome-700 hover:text-white"
         >
-          로그인
+          {t("로그인")}
         </Link>
         <Link
           to="/join"
           className="rounded bg-accent px-3 py-1 text-[length:var(--text-nav)] font-bold text-white no-underline hover:bg-accent-strong"
         >
-          가입
+          {t("가입")}
         </Link>
       </span>
     );
