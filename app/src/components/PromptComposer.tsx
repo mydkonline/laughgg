@@ -24,8 +24,24 @@ import { t } from "../lib/locale";
      멈춤 버튼    변환이 그 자리에서 끝난다. 멈출 시간이 없다
      대화 목록    프리셋으로 저장하는 자리가 따로 있다 */
 
-/** 입력칸이 이보다 커지면 스크롤로 바뀐다. 화면을 다 먹으면 결과가 안 보인다. */
-const MAX_ROWS_PX = 220;
+/* 얼마나 크게 둘 것인가.
+
+   처음엔 4줄로 뒀다. 우리 파서가 키워드 23개만 읽으니 그거면 된다고 봤는데,
+   칸 크기는 우리가 읽는 양이 아니라 **사람이 쓰는 양**에 맞춰야 한다.
+
+   생성 도구들의 권장 길이가 갈린다.
+
+     Midjourney (이미지)  62자 예시. "짧고 단순한 것이 대개 낫다"
+     Kling (영상)         60~100단어. API 상한 2,500자는 "천장이지 목표가 아니다"
+
+   영상이 긴 건 움직임과 카메라가 축으로 더 붙어서다. 우리는 정지 에셋이라
+   이미지 쪽에 가깝지만, 직접 쓰는 사람은 문장으로 쓴다 — 60~100단어면
+   영어 350~600자다. 4줄(영어 184자)로는 자기가 쓴 걸 못 읽는다.
+
+   7줄이면 영어 320자쯤이 한눈에 들어온다. 넘으면 스크롤로 바꾼다 —
+   화면을 다 먹으면 결과가 안 보인다. */
+const ROWS = 7;
+const MAX_ROWS_PX = 320;
 
 export type Reference = {
   /** 화면에 띄울 objectURL. 쓰고 나면 반드시 revoke 한다. */
@@ -46,6 +62,7 @@ export function PromptComposer({
   onAddRef,
   onDropRef,
   typing,
+  readAxes,
   children,
 }: {
   value: string;
@@ -59,6 +76,12 @@ export function PromptComposer({
   onDropRef: (url: string) => void;
   /** 직접 입력 모드인가. 아니면 입력칸 대신 블록 조립기가 그 자리에 온다. */
   typing: boolean;
+  /* 프롬프트에서 실제로 읽어낸 축.
+
+     칸을 키운 만큼 이게 같이 있어야 한다. 100단어를 쓰게 해 놓고 우리는
+     키워드 몇 개만 읽는데 그걸 안 알려 주면, 쓴 사람은 자기 문장이 다
+     반영된 줄 안다. 무엇이 걸렸는지 보이면 안 걸린 것도 보인다. */
+  readAxes: string[];
   /** 블록 조립기처럼 상자 안에 같이 들어가는 것 */
   children?: React.ReactNode;
 }) {
@@ -74,7 +97,18 @@ export function PromptComposer({
     const el = box.current;
     if (!el) return;
     el.style.height = "0px";
-    el.style.height = `${Math.min(el.scrollHeight, MAX_ROWS_PX)}px`;
+
+    /* 바닥을 깔아 둔다.
+
+       처음엔 `min(scrollHeight, MAX)` 만 걸었는데, 빈 칸의 scrollHeight 는
+       한 줄이라 `rows` 를 몇으로 두든 그 자리에서 한 줄로 쪼그라들었다.
+       기본 크기가 아예 안 먹은 것이다 — 늘어나기만 하고 처음부터 크진
+       않았다. 줄 높이 × ROWS 를 최소로 깐다. */
+    const line = parseFloat(getComputedStyle(el).lineHeight) || 20;
+    const pad = el.offsetHeight - el.clientHeight + 24;
+    const floor = line * ROWS + pad;
+
+    el.style.height = `${Math.min(Math.max(el.scrollHeight, floor), MAX_ROWS_PX)}px`;
     el.style.overflowY = el.scrollHeight > MAX_ROWS_PX ? "auto" : "hidden";
   }, [value]);
 
@@ -140,8 +174,17 @@ export function PromptComposer({
           들어오면 테두리가 강조색으로 바뀐다 — 색을 하나 더 쓰지 않고,
           이미 쓰는 강조색이 상태를 알려 준다. */}
       <div className="px-3 pt-3">
+        {/* 보이는 라벨. 플레이스홀더만 두면 쓰기 시작하는 순간 사라져서
+            무엇을 쓰는 칸인지 잊는다. */}
+        <label
+          htmlFor="prompt-box"
+          className="mb-1.5 block text-[10px] tracking-wide text-faint"
+        >
+          {typing ? t("무엇으로 바꿀지 적으세요") : t("블록을 놓아 만드세요")}
+        </label>
         {typing ? (
           <textarea
+            id="prompt-box"
             ref={box}
             value={value}
             onChange={(e) => onChange(e.target.value)}
@@ -152,13 +195,28 @@ export function PromptComposer({
                 send();
               }
             }}
-            rows={4}
+            rows={ROWS}
             placeholder={t("이끼 낀 고딕 석상, 한쪽 팔이 부서진")}
-            aria-label={t("프롬프트")}
             className="w-full resize-none rounded-xl border border-line bg-ground px-3.5 py-3 text-xs leading-relaxed text-ink outline-none transition-colors placeholder:text-faint focus:border-accent"
           />
         ) : (
           children
+        )}
+
+        {/* 읽어낸 축. 안 걸린 게 있으면 그것도 여기서 드러난다. */}
+        {value.trim().length > 0 && (
+          <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px]">
+            <span className="text-faint">{t("읽은 것")}</span>
+            {readAxes.length === 0 ? (
+              <span className="text-accent">{t("아직 없습니다. 아래 블록의 말을 쓰면 걸립니다")}</span>
+            ) : (
+              readAxes.map((a) => (
+                <span key={a} className="rounded-full bg-accent-soft px-2 py-0.5 text-accent">
+                  {t(a)}
+                </span>
+              ))
+            )}
+          </p>
         )}
       </div>
 

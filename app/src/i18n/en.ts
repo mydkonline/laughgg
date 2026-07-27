@@ -919,4 +919,9 @@ export const EN: Record<string, string> = {
   "레퍼런스 이미지": "Reference image",
   "게임 화면을 올리면 그 색으로 맞춥니다": "Drop a screenshot of your game and we match its colors",
   "{name} 빼기": "Remove {name}",
+
+  "무엇으로 바꿀지 적으세요": "Describe what to change it into",
+  "블록을 놓아 만드세요": "Drop blocks to build it",
+  "읽은 것": "Read",
+  "아직 없습니다. 아래 블록의 말을 쓰면 걸립니다": "nothing yet — use the words from the blocks below",
 };

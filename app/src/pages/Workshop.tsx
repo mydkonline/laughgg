@@ -7,6 +7,7 @@ import {
   NEUTRAL_RASTER,
   KNOB_LABEL,
   knobsFromPrompt,
+  matchedAxes,
   rasterFromPrompt,
   promptWantsSprite,
   scoreDelta,
@@ -36,6 +37,19 @@ import { t } from "../lib/locale";
 
    화면은 프롬프트를 맨 위에 둔다. 대부분은 말로 쓰고 끝내고, 손조작은
    그다음에 다듬는 사람만 연다. */
+
+/* 노브 이름을 화면 말로.
+
+   블록 조립기가 쓰는 축 이름과 같은 말을 쓴다 — 같은 것을 두 군데서
+   다르게 부르면 무엇이 걸렸는지 대조가 안 된다. */
+const AXIS_LABEL: Record<string, string> = {
+  tone: "분위기",
+  warm: "색온도",
+  gloss: "재질",
+  facet: "면",
+  sat: "색",
+  line: "외곽선",
+};
 
 export function Workshop() {
   const [params, setParams] = useSearchParams();
@@ -68,6 +82,13 @@ export function Workshop() {
   const [blocks, setBlocks] = useState<string[]>([]);
   const [typing, setTyping] = useState(false);
   const prompt = typing ? typed : toPrompt(blocks);
+
+  /* 프롬프트에서 실제로 읽어낸 축.
+
+     `matchedAxes` 는 처음부터 "무엇을 읽었는지 보여줄 때 쓴다" 고 적어
+     두고 안 쓰던 함수다. 입력칸을 키우면서 필요해졌다 — 길게 쓰게 해 놓고
+     몇 개만 읽는다는 걸 안 알려 주면 쓴 사람이 오해한다. */
+  const readAxes = useMemo(() => matchedAxes(prompt).map((k) => AXIS_LABEL[k] ?? k), [prompt]);
   const [knobs, setKnobs] = useState<Knobs>(() => CONCEPTS[0]!.knobs);
   const [raster, setRaster] = useState<RasterSet>(() => CONCEPTS[0]!.raster);
 
@@ -421,7 +442,6 @@ export function Workshop() {
             <PromptComposer
               value={typed}
               onChange={setTyped}
-              typing={typing}
               onSubmit={applyPrompt}
               disabled={remaining < 1 || !prompt.trim()}
               credits={remaining}
@@ -429,6 +449,8 @@ export function Workshop() {
               refs={refs}
               onAddRef={addRefs}
               onDropRef={dropRef}
+              typing={typing}
+              readAxes={readAxes}
             >
               {!typing && <PromptBuilder picked={blocks} onChange={setBlocks} />}
             </PromptComposer>
