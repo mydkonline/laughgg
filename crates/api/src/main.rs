@@ -4,20 +4,13 @@
 //! 게임 스튜디오가 구독으로 카탈로그에 접근한다. 수수료는 8% 단일이며 주 수익원은 구독이다.
 //! 저장소는 `PostgreSQL` 16 이상을 쓴다.
 //!
-//! 계층은 셋이고 의존은 한 방향이다.
-//!   [`domain`]  판정과 계산. 바깥을 모른다.
-//!   [`repo`]    Postgres 질의. `domain` 만 안다.
-//!   [`http`]    라우팅과 직렬화. 둘 다 안다.
-//!
 //! 이 파일은 부팅만 한다 — 설정을 읽고, 풀을 열고, 라우터를 띄운다.
-
-mod domain;
-mod http;
-mod repo;
+//! 계층 구조는 [`laughgg_api`] 를 본다.
 
 use std::net::SocketAddr;
 
 use anyhow::{Context as _, Result};
+use laughgg_api::{http, repo};
 
 #[tokio::main]
 async fn main() -> Result<()> {

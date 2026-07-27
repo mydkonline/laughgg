@@ -46,16 +46,16 @@ AI가 에셋 생성을 흔하게 만들수록 희소해지는 것은 만드는 �
 
 ## 실행
 
-MySQL 8.0 이상이 필요하다. 로컬은 docker로 띄우면 된다.
+PostgreSQL 16 이상이 필요하다. 로컬은 docker로 띄우면 된다.
 
 ```sh
-docker compose up -d mysql     # MySQL 8.4, DB/계정 자동 생성
+docker compose up -d postgres   # PostgreSQL 16, DB/계정 자동 생성
 cargo run -p laughgg-api
 # http://127.0.0.1:8420
 ```
 
-환경변수: `DATABASE_URL`(기본 `mysql://laughgg:laughgg@127.0.0.1:3306/laughgg`), `PORT`(기본 `8420`).
-첫 실행 시 마이그레이션이 자동 적용되고 게임 스택 25종이 시드된다.
+환경변수: `DATABASE_URL`(기본 `postgres://laughgg:laughgg@127.0.0.1:5432/laughgg`), `PORT`(기본 `8420`).
+첫 실행 시 마이그레이션이 자동 적용되고 게임 212종과 구독 스튜디오 4곳이 시드된다.
 
 ## API
 
@@ -64,8 +64,12 @@ cargo run -p laughgg-api
 | `GET` | `/api/health` | 헬스체크 |
 | `GET` | `/api/assets` | 에셋 목록. `category` `engine` `min_score` `limit` |
 | `POST` | `/api/assets` | 에셋 등록 + 즉시 검수 |
-| `GET` | `/api/games` | 게임 스택. `platform` |
+| `POST` | `/api/assets/{id}/review` | 등록된 에셋 재검수. 에셋을 새로 만들지 않는다 |
+| `GET` | `/api/games` | 게임 목록. `q` `engine` `category` `scale` `year_from` `year_to` `uses` `limit` `offset` |
+| `GET` | `/api/games/facets` | 축별 선택지와 개수. 목록과 같은 조건을 받는다 |
 | `GET` | `/api/metrics` | 마켓 지표 (탈락률·구독 매출·수수료 매출) |
+
+오류는 종류대로 갈린다 — 없는 자원은 `404`, 규칙을 어긴 입력은 `400`, 나머지가 `500`이다.
 
 에셋 등록 예시:
 
@@ -88,13 +92,20 @@ curl -X POST localhost:8420/api/assets -H 'content-type: application/json' -d '{
 
 ## 구조
 
+의존은 한 방향이다. `domain`은 아무것도 모르고, `repo`는 `domain`만 알고,
+`http`는 둘 다 안다. 핸들러가 SQL을 직접 쓰기 시작하면 세 층이 하나로 붙는다.
+
 ```
 crates/api/
-  src/domain.rs      검수 채점·등급 판정·정산 (단위 테스트 12종)
-  src/db.rs          MySQL 조회·쓰기 (SQLx)
-  src/main.rs        axum 라우터·정적 서빙
-  migrations/        MySQL 스키마 + 게임 스택 시드
-web/                 정적 페이지 (마켓·커뮤니티·창작자 랜딩)
+  src/domain/        검수 채점·배지 판정·정산. 바깥을 모른다
+  src/repo/          Postgres 질의. domain만 안다
+  src/http/          라우팅·직렬화·상태 코드. 둘 다 안다
+  src/lib.rs         위 셋을 내놓는다 (tests/에서 쓰려면 필요하다)
+  src/main.rs        부팅만 한다
+  migrations/        스키마 + 게임 212종·스튜디오 4곳 시드
+  tests/             저장소·HTTP 통합 테스트
+app/                 React + Tailwind 프런트 (GitHub Pages 배포)
+web/                 옛 정적 페이지
 ```
 
 ## 개발
@@ -104,6 +115,16 @@ cargo check --all-targets
 cargo clippy --all-targets --all-features -- -D warnings
 cargo fmt --all -- --check
 cargo test
+```
+
+테스트는 도메인 12개(순수 함수)와 통합 17개(저장소·HTTP)로 나뉜다.
+통합 테스트는 `#[sqlx::test]`가 테스트마다 빈 DB를 만들어 쓰므로 **Postgres가 떠 있어야 하고
+`DATABASE_URL`이 필요하다.** 없으면 건너뛰지 않고 실패한다 — 조용히 넘어가면
+CI는 통과하는데 아무것도 검증되지 않은 상태가 된다.
+
+```sh
+docker compose up -d postgres
+DATABASE_URL=postgres://laughgg:laughgg@127.0.0.1:5432/laughgg cargo test
 ```
 
 `unsafe_code = "forbid"`, clippy `pedantic` + `unwrap_used = "deny"`를 적용한다.

@@ -1,23 +1,19 @@
 services:
-  mysql:
-    image: mysql:8.4
-    container_name: laughgg-mysql
+  postgres:
+    image: postgres:16
+    container_name: laughgg-pg
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: laughgg
-      MYSQL_USER: laughgg
-      MYSQL_PASSWORD: laughgg
-    command: >
-      --character-set-server=utf8mb4
-      --collation-server=utf8mb4_unicode_ci
-    ports: ["3306:3306"]
-    volumes: ["laughgg-mysql:/var/lib/mysql"]
+      POSTGRES_USER: laughgg
+      POSTGRES_PASSWORD: laughgg
+      POSTGRES_DB: laughgg
+    ports: ["5432:5432"]
+    volumes: ["laughgg-pg:/var/lib/postgresql/data"]
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      test: ["CMD-SHELL", "pg_isready -U laughgg"]
       interval: 5s
       timeout: 5s
       retries: 20
 
 volumes:
-  laughgg-mysql:
+  laughgg-pg:

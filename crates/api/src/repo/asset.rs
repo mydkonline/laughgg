@@ -20,7 +20,7 @@ pub struct AssetRow {
     pub badge: Option<String>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Default, Deserialize)]
 pub struct AssetQuery {
     pub category: Option<String>,
     pub engine: Option<String>,

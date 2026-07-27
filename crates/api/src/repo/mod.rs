@@ -15,10 +15,12 @@ mod metrics;
 use anyhow::{Context as _, Result};
 use sqlx::{PgPool, postgres::PgPoolOptions};
 
-pub use asset::{AssetQuery, NewAsset, create_asset, list_assets, review_asset};
+pub use asset::{
+    AssetQuery, AssetRow, NewAsset, ReviewResult, create_asset, list_assets, review_asset,
+};
 pub use error::{RepoError, RepoResult};
-pub use game::{GameQuery, game_facets, list_games};
-pub use metrics::metrics;
+pub use game::{Facet, Facets, GamePage, GameQuery, GameRow, game_facets, list_games};
+pub use metrics::{Metrics, metrics};
 
 /// 커넥션 풀을 열고 마이그레이션을 적용한다.
 ///
