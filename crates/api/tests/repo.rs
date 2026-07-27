@@ -8,12 +8,27 @@
 //! 끝나면 지운다. 테스트끼리 상태를 공유하지 않으므로 순서에 기대지 않는다.
 
 use laughgg_api::{
-    domain::{Badge, ReviewScores},
+    domain::{Badge, Credentials, ReviewScores},
     repo::{self, AssetQuery, GameQuery, NewAsset, RepoError},
 };
 use sqlx::PgPool;
 
 /// 모든 항목이 같은 점수인 검수. 총점이 그 값과 같아진다.
+/// 등록에는 로그인이 필요하다. 테스트마다 계정을 하나 만들어 쓴다.
+async fn an_account(pool: &PgPool, email: &str) -> i64 {
+    repo::sign_up(
+        pool,
+        &Credentials {
+            email: email.into(),
+            password: "goodpassword".into(),
+            display_name: None,
+        },
+    )
+    .await
+    .expect("가입")
+    .id
+}
+
 fn scores(v: u8) -> ReviewScores {
     ReviewScores {
         mesh_integrity: v,
@@ -26,9 +41,8 @@ fn scores(v: u8) -> ReviewScores {
     }
 }
 
-fn new_asset(handle: &str, title: &str, scores: ReviewScores) -> NewAsset {
+fn new_asset(title: &str, scores: ReviewScores) -> NewAsset {
     NewAsset {
-        creator_handle: handle.into(),
         title: title.into(),
         category: "prop".into(),
         engine: "unity".into(),
@@ -40,7 +54,8 @@ fn new_asset(handle: &str, title: &str, scores: ReviewScores) -> NewAsset {
 
 #[sqlx::test]
 async fn create_asset_scores_and_badges_in_one_go(pool: PgPool) {
-    let r = repo::create_asset(&pool, &new_asset("sh", "Gothic Statue", scores(90)))
+    let who = an_account(&pool, "sh@op.gg").await;
+    let r = repo::create_asset(&pool, who, &new_asset("Gothic Statue", scores(90)))
         .await
         .expect("등록이 실패하면 안 된다");
 
@@ -58,7 +73,8 @@ async fn create_asset_scores_and_badges_in_one_go(pool: PgPool) {
 에셋이 새로 생겼고, 마켓에 중복 상품이 쌓였다. */
 #[sqlx::test]
 async fn reviewing_again_adds_a_review_not_an_asset(pool: PgPool) {
-    let created = repo::create_asset(&pool, &new_asset("sh", "Gothic Statue", scores(90)))
+    let who = an_account(&pool, "sh@op.gg").await;
+    let created = repo::create_asset(&pool, who, &new_asset("Gothic Statue", scores(90)))
         .await
         .expect("등록");
 
@@ -79,7 +95,8 @@ async fn reviewing_again_adds_a_review_not_an_asset(pool: PgPool) {
 드러난 결함이라, 검수가 하나뿐일 때만 테스트하면 다시 놓친다. */
 #[sqlx::test]
 async fn list_shows_one_row_per_asset_with_the_latest_review(pool: PgPool) {
-    let created = repo::create_asset(&pool, &new_asset("sh", "Gothic Statue", scores(90)))
+    let who = an_account(&pool, "sh@op.gg").await;
+    let created = repo::create_asset(&pool, who, &new_asset("Gothic Statue", scores(90)))
         .await
         .expect("등록");
     repo::review_asset(&pool, created.asset_id, scores(40))
@@ -110,11 +127,12 @@ async fn reviewing_a_missing_asset_is_not_found(pool: PgPool) {
 
 #[sqlx::test]
 async fn out_of_range_scores_are_rejected_before_touching_the_database(pool: PgPool) {
+    let who = an_account(&pool, "sh@op.gg").await;
     let bad = ReviewScores {
         runtime_cost: 200,
         ..scores(80)
     };
-    let err = repo::create_asset(&pool, &new_asset("sh", "Bad", bad))
+    let err = repo::create_asset(&pool, who, &new_asset("Bad", bad))
         .await
         .expect_err("범위 밖 점수는 실패해야 한다");
 
@@ -127,10 +145,11 @@ async fn out_of_range_scores_are_rejected_before_touching_the_database(pool: PgP
 /* 같은 창작자가 두 번 올려도 계정은 하나다. */
 #[sqlx::test]
 async fn the_same_creator_is_reused(pool: PgPool) {
-    repo::create_asset(&pool, &new_asset("sh", "First", scores(80)))
+    let who = an_account(&pool, "sh@op.gg").await;
+    repo::create_asset(&pool, who, &new_asset("First", scores(80)))
         .await
         .expect("첫 등록");
-    repo::create_asset(&pool, &new_asset("sh", "Second", scores(80)))
+    repo::create_asset(&pool, who, &new_asset("Second", scores(80)))
         .await
         .expect("두 번째 등록");
 
@@ -142,15 +161,16 @@ async fn the_same_creator_is_reused(pool: PgPool) {
 /* 탈락률은 같은 스냅숏에서 나와야 한다. 나눠 세면 100% 를 넘을 수 있다. */
 #[sqlx::test]
 async fn rejection_rate_is_computed_from_the_same_snapshot(pool: PgPool) {
+    let who = an_account(&pool, "sh@op.gg").await;
     // 라이선스가 60 미만이면 다른 점수와 무관하게 탈락한다.
     let blocked = ReviewScores {
         license_clean: 10,
         ..scores(100)
     };
-    repo::create_asset(&pool, &new_asset("a", "Blocked", blocked))
+    repo::create_asset(&pool, who, &new_asset("Blocked", blocked))
         .await
         .expect("탈락 에셋");
-    repo::create_asset(&pool, &new_asset("b", "Passed", scores(90)))
+    repo::create_asset(&pool, who, &new_asset("Passed", scores(90)))
         .await
         .expect("통과 에셋");
 
@@ -254,11 +274,12 @@ async fn stack_filter_matches_by_tool_name(pool: PgPool) {
 있다는 뜻이다. 규칙이 API 경계에서만 지켜지면 규칙이 아니라 권고가 된다. */
 #[sqlx::test]
 async fn a_silver_asset_cannot_be_sold(pool: PgPool) {
+    let who = an_account(&pool, "sh@op.gg").await;
     let blocked = ReviewScores {
         license_clean: 10,
         ..scores(100)
     };
-    let created = repo::create_asset(&pool, &new_asset("sh", "Blocked", blocked))
+    let created = repo::create_asset(&pool, who, &new_asset("Blocked", blocked))
         .await
         .expect("등록");
     assert_eq!(created.badge, Badge::Silver);
@@ -271,7 +292,8 @@ async fn a_silver_asset_cannot_be_sold(pool: PgPool) {
 
 #[sqlx::test]
 async fn selling_records_the_fee_and_shows_up_in_metrics(pool: PgPool) {
-    let created = repo::create_asset(&pool, &new_asset("sh", "Gothic Statue", scores(90)))
+    let who = an_account(&pool, "sh@op.gg").await;
+    let created = repo::create_asset(&pool, who, &new_asset("Gothic Statue", scores(90)))
         .await
         .expect("등록");
 
@@ -315,7 +337,8 @@ async fn selling_an_unreviewed_asset_is_rejected(pool: PgPool) {
 
 #[sqlx::test]
 async fn an_unknown_studio_is_rejected(pool: PgPool) {
-    let created = repo::create_asset(&pool, &new_asset("sh", "Gothic Statue", scores(90)))
+    let who = an_account(&pool, "sh@op.gg").await;
+    let created = repo::create_asset(&pool, who, &new_asset("Gothic Statue", scores(90)))
         .await
         .expect("등록");
 
@@ -337,9 +360,10 @@ async fn an_unknown_studio_is_rejected(pool: PgPool) {
 안 된다 — 첫 쪽 안에서만 순서가 맞고 넘기면 뒤섞인다. */
 #[sqlx::test]
 async fn paging_keeps_the_badge_order(pool: PgPool) {
+    let who = an_account(&pool, "sh@op.gg").await;
     // 실버 → 챌린저 순으로 넣는다. 정렬이 없으면 넣은 순서가 그대로 나온다.
     for (title, v) in [("low", 40), ("mid", 75), ("high", 95)] {
-        repo::create_asset(&pool, &new_asset("sh", title, scores(v)))
+        repo::create_asset(&pool, who, &new_asset(title, scores(v)))
             .await
             .expect("등록");
     }
@@ -383,7 +407,8 @@ async fn paging_keeps_the_badge_order(pool: PgPool) {
 
 #[sqlx::test]
 async fn asset_detail_carries_per_check_scores(pool: PgPool) {
-    let created = repo::create_asset(&pool, &new_asset("sh", "Gothic Statue", scores(90)))
+    let who = an_account(&pool, "sh@op.gg").await;
+    let created = repo::create_asset(&pool, who, &new_asset("Gothic Statue", scores(90)))
         .await
         .expect("등록");
 
@@ -414,8 +439,9 @@ async fn a_missing_asset_detail_is_not_found(pool: PgPool) {
 /// 에셋 패싯도 자기 축을 빼고 센다. 게임 쪽과 같은 규칙이다.
 #[sqlx::test]
 async fn asset_facets_exclude_their_own_axis(pool: PgPool) {
+    let who = an_account(&pool, "sh@op.gg").await;
     for (title, v) in [("a", 95), ("b", 95), ("c", 40)] {
-        repo::create_asset(&pool, &new_asset("sh", title, scores(v)))
+        repo::create_asset(&pool, who, &new_asset(title, scores(v)))
             .await
             .expect("등록");
     }
@@ -453,7 +479,9 @@ async fn asset_facets_exclude_their_own_axis(pool: PgPool) {
 /// 제목과 창작자 이름 양쪽으로 검색된다.
 #[sqlx::test]
 async fn searching_matches_title_or_creator(pool: PgPool) {
-    repo::create_asset(&pool, &new_asset("nordveil", "Gothic Statue", scores(90)))
+    // 창작자 이름은 계정에서 온다. 이메일 앞부분이 표시 이름이 된다.
+    let who = an_account(&pool, "nordveil@op.gg").await;
+    repo::create_asset(&pool, who, &new_asset("Gothic Statue", scores(90)))
         .await
         .expect("등록");
 

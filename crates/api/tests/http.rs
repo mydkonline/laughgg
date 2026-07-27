@@ -17,6 +17,68 @@ use serde_json::{Value, json};
 use sqlx::PgPool;
 use tower::ServiceExt as _;
 
+/// 로그인해서 세션 쿠키를 받는다.
+async fn a_session(pool: &PgPool, email: &str) -> String {
+    let res = router(AppState::bare(pool.clone()))
+        .oneshot(
+            Request::builder()
+                .method("POST")
+                .uri("/api/auth/signup")
+                .header("content-type", "application/json")
+                .body(Body::from(
+                    json!({ "email": email, "password": "goodpassword" }).to_string(),
+                ))
+                .expect("요청"),
+        )
+        .await
+        .expect("가입");
+    res.headers()
+        .get_all(axum::http::header::SET_COOKIE)
+        .iter()
+        .filter_map(|v| v.to_str().ok())
+        .find(|v| v.starts_with("laughgg_session="))
+        .map(|v| v.split(';').next().unwrap_or(v).to_owned())
+        .expect("세션 쿠키")
+}
+
+fn an_asset(title: &str) -> Value {
+    json!({
+        "title": title, "category": "prop", "engine": "unity",
+        "art_style": "realistic", "price_usd": 30.0, "scores": scores(90)
+    })
+}
+
+async fn call_as(
+    pool: &PgPool,
+    method: &str,
+    uri: &str,
+    body: Option<Value>,
+    cookie: Option<&str>,
+) -> (StatusCode, Value) {
+    let mut req = Request::builder().method(method).uri(uri);
+    if let Some(c) = cookie {
+        req = req.header(axum::http::header::COOKIE, c);
+    }
+    let req = match body {
+        Some(b) => req
+            .header("content-type", "application/json")
+            .body(Body::from(b.to_string())),
+        None => req.body(Body::empty()),
+    }
+    .expect("요청 생성");
+
+    let res = router(AppState::bare(pool.clone()))
+        .oneshot(req)
+        .await
+        .expect("라우터 호출");
+    let status = res.status();
+    let bytes = res.into_body().collect().await.expect("본문").to_bytes();
+    (
+        status,
+        serde_json::from_slice(&bytes).unwrap_or(Value::Null),
+    )
+}
+
 fn scores(v: u8) -> Value {
     json!({
         "mesh_integrity": v, "texture_quality": v, "lod_setup": v, "runtime_cost": v,
@@ -51,23 +113,54 @@ async fn health_reports_the_service_name(pool: PgPool) {
     assert_eq!(body["service"], "laughgg-api");
 }
 
+/* 등록에는 로그인이 필요하다.
+
+예전에는 creator_handle 을 문자열로 받아서 로그인 없이 아무 이름으로나
+올릴 수 있었다. 그 이름이 곧 정산 대상이라 사칭이 그대로 통했다. */
 #[sqlx::test]
-async fn creating_an_asset_returns_201(pool: PgPool) {
-    let (status, body) = call(
+async fn creating_an_asset_requires_a_session(pool: PgPool) {
+    let anon = call(
         &pool,
         "POST",
         "/api/assets",
-        Some(json!({
-            "creator_handle": "sh", "title": "Gothic Statue", "category": "prop",
-            "engine": "unity", "art_style": "realistic", "price_usd": 30.0,
-            "scores": scores(90)
-        })),
+        Some(an_asset("Gothic Statue")),
+    )
+    .await;
+    assert_eq!(anon.0, StatusCode::UNAUTHORIZED);
+}
+
+#[sqlx::test]
+async fn creating_an_asset_returns_201(pool: PgPool) {
+    let cookie = a_session(&pool, "sh@op.gg").await;
+    let (status, body) = call_as(
+        &pool,
+        "POST",
+        "/api/assets",
+        Some(an_asset("Gothic Statue")),
+        Some(&cookie),
     )
     .await;
 
     assert_eq!(status, StatusCode::CREATED);
     assert_eq!(body["badge"], "challenger");
     assert_eq!(body["total"], 90);
+}
+
+/// 올린 사람이 창작자다. 요청에 이름을 실어도 무시된다.
+#[sqlx::test]
+async fn the_uploader_is_the_creator(pool: PgPool) {
+    let cookie = a_session(&pool, "sh@op.gg").await;
+    let mut body = an_asset("Gothic Statue");
+    // 남의 이름을 끼워 넣어 본다. 서버가 안 읽어야 한다.
+    body["creator_handle"] = json!("someone-else");
+    let (status, _) = call_as(&pool, "POST", "/api/assets", Some(body), Some(&cookie)).await;
+    assert_eq!(status, StatusCode::CREATED);
+
+    let (_, list) = call(&pool, "GET", "/api/assets", None).await;
+    assert_eq!(
+        list["assets"][0]["creator"], "sh",
+        "요청에 적힌 이름이 아니라 로그인한 계정이 창작자여야 한다"
+    );
 }
 
 /* 오류가 종류대로 갈리는가. 이 셋이 전부 500 이던 시절이 있었다. */
@@ -90,19 +183,10 @@ async fn missing_asset_is_404(pool: PgPool) {
 
 #[sqlx::test]
 async fn out_of_range_scores_are_400(pool: PgPool) {
-    let (status, _) = call(
-        &pool,
-        "POST",
-        "/api/assets",
-        Some(json!({
-            "creator_handle": "sh", "title": "Bad", "category": "prop",
-            "engine": "unity", "art_style": "realistic", "price_usd": 30.0,
-            "scores": { "mesh_integrity": 200, "texture_quality": 80, "lod_setup": 80,
-                        "runtime_cost": 80, "license_clean": 80, "code_quality": 80,
-                        "integration": 80 }
-        })),
-    )
-    .await;
+    let cookie = a_session(&pool, "sh@op.gg").await;
+    let mut bad = an_asset("Bad");
+    bad["scores"]["mesh_integrity"] = json!(200);
+    let (status, _) = call_as(&pool, "POST", "/api/assets", Some(bad), Some(&cookie)).await;
 
     assert_eq!(status, StatusCode::BAD_REQUEST);
 }
@@ -110,15 +194,13 @@ async fn out_of_range_scores_are_400(pool: PgPool) {
 /* 등록과 재검수가 다른 경로인가. 한때 둘이 같은 핸들러였다. */
 #[sqlx::test]
 async fn review_route_does_not_create_an_asset(pool: PgPool) {
-    let (_, created) = call(
+    let cookie = a_session(&pool, "sh@op.gg").await;
+    let (_, created) = call_as(
         &pool,
         "POST",
         "/api/assets",
-        Some(json!({
-            "creator_handle": "sh", "title": "Gothic Statue", "category": "prop",
-            "engine": "unity", "art_style": "realistic", "price_usd": 30.0,
-            "scores": scores(90)
-        })),
+        Some(an_asset("Gothic Statue")),
+        Some(&cookie),
     )
     .await;
     let id = created["asset_id"].as_i64().expect("에셋 id");
@@ -177,15 +259,13 @@ async fn health_reports_what_is_configured(pool: PgPool) {
 
 #[sqlx::test]
 async fn asset_detail_is_served(pool: PgPool) {
-    let (_, created) = call(
+    let cookie = a_session(&pool, "sh@op.gg").await;
+    let (_, created) = call_as(
         &pool,
         "POST",
         "/api/assets",
-        Some(json!({
-            "creator_handle": "sh", "title": "Gothic Statue", "category": "prop",
-            "engine": "unity", "art_style": "realistic", "price_usd": 30.0,
-            "scores": scores(90)
-        })),
+        Some(an_asset("Gothic Statue")),
+        Some(&cookie),
     )
     .await;
     let id = created["asset_id"].as_i64().expect("id");
@@ -202,16 +282,14 @@ async fn asset_detail_is_served(pool: PgPool) {
 /// 목록과 패싯이 같은 조건을 본다.
 #[sqlx::test]
 async fn asset_facets_and_list_agree(pool: PgPool) {
+    let cookie = a_session(&pool, "sh@op.gg").await;
     for title in ["a", "b"] {
-        call(
+        call_as(
             &pool,
             "POST",
             "/api/assets",
-            Some(json!({
-                "creator_handle": "sh", "title": title, "category": "prop",
-                "engine": "unity", "art_style": "realistic", "price_usd": 30.0,
-                "scores": scores(95)
-            })),
+            Some(an_asset(title)),
+            Some(&cookie),
         )
         .await;
     }

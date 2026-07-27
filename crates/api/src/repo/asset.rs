@@ -292,9 +292,12 @@ pub async fn asset_facets(pool: &PgPool, q: &AssetQuery) -> RepoResult<AssetFace
     })
 }
 
+/* 등록 입력.
+
+창작자를 받지 않는다. 로그인한 계정이 곧 창작자다 — 문자열로 받으면
+남의 이름으로 올릴 수 있고, 그 이름이 정산 대상이 된다. */
 #[derive(Debug, Deserialize)]
 pub struct NewAsset {
-    pub creator_handle: String,
     pub title: String,
     pub category: String,
     pub engine: String,
@@ -317,27 +320,19 @@ pub struct ReviewResult {
 ///
 /// # Errors
 /// 점수 범위가 잘못됐거나 DB 쓰기에 실패하면 오류를 반환한다.
-pub async fn create_asset(pool: &PgPool, input: &NewAsset) -> RepoResult<ReviewResult> {
+pub async fn create_asset(
+    pool: &PgPool,
+    account_id: i64,
+    input: &NewAsset,
+) -> RepoResult<ReviewResult> {
     input.scores.validate()?;
 
     let mut tx = pool.begin().await.context("starting transaction")?;
 
-    // 같은 핸들이 이미 있으면 그대로 쓴다. RETURNING 이 아무것도 안 주는 경우가
-    // 있어서 뒤이어 한 번 더 조회한다 — ON CONFLICT DO NOTHING 은 충돌 시 행을 안 낸다.
-    sqlx::query(
-        r"INSERT INTO creators (handle, display_name) VALUES ($1, $1)
-          ON CONFLICT (handle) DO NOTHING",
-    )
-    .bind(&input.creator_handle)
-    .execute(&mut *tx)
-    .await
-    .context("upserting creator")?;
-
-    let creator_id: i64 = sqlx::query_scalar("SELECT id FROM creators WHERE handle = $1")
-        .bind(&input.creator_handle)
-        .fetch_one(&mut *tx)
-        .await
-        .context("resolving creator id")?;
+    // 이 계정의 창작자 프로필. 없으면 이 자리에서 만든다.
+    // 핸들은 이메일 앞부분에서 뽑되 겹치면 계정 id 를 붙인다 — 사람이 고르게
+    // 하려면 화면이 하나 더 필요하고, 지금 그게 없어서 등록이 막히면 안 된다.
+    let creator_id = creator_for_account(&mut tx, account_id).await?;
 
     // MySQL 의 last_insert_id 대신 RETURNING 을 쓴다. 커넥션 상태에 기대지 않아
     // 트랜잭션 안에서 다른 문장이 끼어들어도 어긋나지 않는다.
@@ -428,4 +423,53 @@ async fn record_review(
         license_blocked: scores.license_blocked(),
         settlement_preview: Settlement::new(price_usd, DEFAULT_FEE_RATE),
     })
+}
+
+/* 계정의 창작자 프로필을 찾거나 만든다.
+
+계정 하나에 창작자 하나다. 둘이면 정산이 어디로 갈지 정할 수 없다.
+핸들이 겹치면 계정 id 를 붙인다 — 유일해야 하지만 사람이 볼 값은 아니라
+여기서 자동으로 정해도 된다. */
+async fn creator_for_account(
+    tx: &mut Transaction<'_, Postgres>,
+    account_id: i64,
+) -> RepoResult<i64> {
+    if let Some(id) = sqlx::query_scalar::<_, i64>("SELECT id FROM creators WHERE account_id = $1")
+        .bind(account_id)
+        .fetch_optional(&mut **tx)
+        .await
+        .context("looking up creator")?
+    {
+        return Ok(id);
+    }
+
+    let (email, display_name): (String, String) =
+        sqlx::query_as("SELECT email, display_name FROM accounts WHERE id = $1")
+            .bind(account_id)
+            .fetch_one(&mut **tx)
+            .await
+            .context("loading account for creator profile")?;
+
+    let base = email.split('@').next().unwrap_or("creator");
+    let handle = sqlx::query_scalar::<_, String>(
+        r"INSERT INTO creators (handle, display_name, account_id)
+          VALUES (
+            CASE WHEN EXISTS (SELECT 1 FROM creators WHERE handle = $1)
+                 THEN $1 || '-' || $3::text ELSE $1 END,
+            $2, $3)
+          RETURNING handle",
+    )
+    .bind(base)
+    .bind(&display_name)
+    .bind(account_id)
+    .fetch_one(&mut **tx)
+    .await
+    .context("creating creator profile")?;
+
+    sqlx::query_scalar::<_, i64>("SELECT id FROM creators WHERE handle = $1")
+        .bind(handle)
+        .fetch_one(&mut **tx)
+        .await
+        .context("resolving new creator id")
+        .map_err(Into::into)
 }

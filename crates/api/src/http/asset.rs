@@ -8,7 +8,7 @@ use axum::{
 use serde::Deserialize;
 use serde_json::json;
 
-use super::{ApiResult, AppState};
+use super::{ApiResult, AppState, auth::CurrentAccount};
 use crate::{
     domain::ReviewScores,
     repo::{self, AssetQuery, NewAsset},
@@ -50,13 +50,19 @@ pub async fn get(
     Ok(Json(json!(detail)))
 }
 
+/* 에셋 등록.
+
+로그인이 필요하다. 창작자를 문자열로 받으면 남의 이름으로 올릴 수 있고,
+그 이름이 곧 정산 대상이 된다. 올린 사람이 창작자다. */
+///
 /// # Errors
-/// 점수가 규칙을 어겼거나 쓰기에 실패하면 오류를 반환한다.
+/// 로그인이 없거나 점수가 규칙을 어기면 오류를 반환한다.
 pub async fn create(
     State(st): State<AppState>,
+    CurrentAccount(account): CurrentAccount,
     Json(input): Json<NewAsset>,
 ) -> ApiResult<(StatusCode, Json<serde_json::Value>)> {
-    let result = repo::create_asset(&st.pool, &input).await?;
+    let result = repo::create_asset(&st.pool, account.id, &input).await?;
     Ok((StatusCode::CREATED, Json(json!(result))))
 }
 

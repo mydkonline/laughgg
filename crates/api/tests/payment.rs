@@ -95,8 +95,8 @@ async fn an_order(pool: &PgPool, session_id: &str) -> i64 {
 
     let asset = repo::create_asset(
         pool,
+        account.id,
         &NewAsset {
-            creator_handle: "maker".into(),
             title: "Gothic Statue".into(),
             category: "prop".into(),
             engine: "unity".into(),
@@ -242,8 +242,8 @@ async fn a_silver_asset_cannot_be_ordered(pool: PgPool) {
     };
     let asset = repo::create_asset(
         &pool,
+        account.id,
         &NewAsset {
-            creator_handle: "maker".into(),
             title: "Blocked".into(),
             category: "prop".into(),
             engine: "unity".into(),
