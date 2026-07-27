@@ -53,6 +53,15 @@ pub enum RepoError {
     #[error(transparent)]
     Credential(#[from] CredentialError),
 
+    /// 그런 글이 없다. 남의 글을 지우려는 경우도 여기로 온다 —
+    /// 있는지 없는지를 알려 주면 그게 곧 남의 글 목록이다.
+    #[error("no post {0:?}")]
+    PostNotFound(String),
+
+    /// 글이 규칙을 어겼다.
+    #[error(transparent)]
+    Post(#[from] crate::repo::PostError),
+
     /// 올린 파일이 규칙을 어겼다.
     #[error(transparent)]
     File(#[from] crate::repo::FileError),

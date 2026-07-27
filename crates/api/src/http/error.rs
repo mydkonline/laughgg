@@ -31,11 +31,13 @@ impl From<RepoError> for ApiError {
         let status = match &err {
             RepoError::AssetNotFound(_)
             | RepoError::StudioNotFound(_)
-            | RepoError::GrantNotFound => StatusCode::NOT_FOUND,
+            | RepoError::GrantNotFound
+            | RepoError::PostNotFound(_) => StatusCode::NOT_FOUND,
 
-            RepoError::Score(_) | RepoError::Credential(_) | RepoError::File(_) => {
-                StatusCode::BAD_REQUEST
-            }
+            RepoError::Score(_)
+            | RepoError::Credential(_)
+            | RepoError::File(_)
+            | RepoError::Post(_) => StatusCode::BAD_REQUEST,
 
             RepoError::BadCredentials | RepoError::Unauthenticated => StatusCode::UNAUTHORIZED,
             RepoError::Forbidden => StatusCode::FORBIDDEN,

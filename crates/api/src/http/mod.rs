@@ -12,6 +12,7 @@ mod game;
 mod metrics;
 pub mod oauth;
 pub mod payment;
+mod post;
 mod sale;
 
 use axum::{
@@ -81,6 +82,8 @@ pub fn router(state: AppState) -> Router {
         .route("/games", get(game::list))
         .route("/games/facets", get(game::facets))
         .route("/metrics", get(metrics::get))
+        .route("/posts", get(post::list).post(post::create))
+        .route("/posts/{slug}", get(post::get).delete(post::remove))
         .with_state(state);
 
     Router::new()

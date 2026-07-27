@@ -14,6 +14,7 @@ mod error;
 mod game;
 mod metrics;
 mod order;
+mod post;
 mod sale;
 
 use anyhow::{Context as _, Result};
@@ -34,6 +35,10 @@ pub use metrics::{Metrics, metrics};
 pub use order::{
     Order, OwnedAsset, PaidOrder, attach_provider_ref, list_orders, mark_paid, my_library,
     open_order, owns_asset,
+};
+pub use post::{
+    NewPost, Post, PostError, PostKind, PostPage, PostQuery, create_post, delete_post, get_post,
+    list_posts,
 };
 pub use sale::{NewSale, SaleResult, record_sale};
 
