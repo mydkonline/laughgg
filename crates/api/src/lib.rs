@@ -11,4 +11,7 @@
 
 pub mod domain;
 pub mod http;
+pub mod metrics;
+pub mod provider;
 pub mod repo;
+pub mod worker;

@@ -53,6 +53,15 @@ pub enum RepoError {
     #[error(transparent)]
     Credential(#[from] CredentialError),
 
+    /// 그런 작업이 없다. 남의 작업도 여기로 온다 — "권한 없음" 으로
+    /// 알려 주면 그게 곧 남의 작업 목록이다.
+    #[error("no job {0}")]
+    JobNotFound(i64),
+
+    /// 생성 요청이 규칙을 어겼거나 크레딧이 모자라다.
+    #[error(transparent)]
+    Gen(#[from] crate::domain::GenError),
+
     /// 그런 글이 없다. 남의 글을 지우려는 경우도 여기로 온다 —
     /// 있는지 없는지를 알려 주면 그게 곧 남의 글 목록이다.
     #[error("no post {0:?}")]

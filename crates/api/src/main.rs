@@ -12,7 +12,8 @@ use std::net::SocketAddr;
 use anyhow::{Context as _, Result};
 use laughgg_api::{
     http::{self, oauth::google::GoogleConfig, payment::StripeConfig, upload::StorageConfig},
-    repo,
+    provider::meshy::Meshy,
+    repo, worker,
 };
 
 #[tokio::main]
@@ -33,6 +34,26 @@ async fn main() -> Result<()> {
 
     let pool = repo::connect(&db_url).await?;
     tracing::info!("database ready");
+
+    /* 워커 모드.
+
+    같은 바이너리를 --worker 로 띄우면 API 를 안 열고 큐만 돈다. 생성
+    작업이 밀려도 API 응답이 안 느려지려면 그 둘이 같은 스레드 풀을
+    안 써야 한다. */
+    if std::env::args().any(|a| a == "--worker") {
+        let Some(generator) = Meshy::from_env() else {
+            anyhow::bail!("worker needs MESHY_API_KEY");
+        };
+        let worker_id = std::env::var("WORKER_ID")
+            .unwrap_or_else(|_| format!("{}-{}", hostname(), std::process::id()));
+
+        let (tx, rx) = tokio::sync::watch::channel(false);
+        tokio::spawn(async move {
+            shutdown_signal().await;
+            let _ = tx.send(true);
+        });
+        return worker::run(pool, generator, worker_id, rx).await;
+    }
 
     /* 구글과 Stripe 는 자격증명이 있을 때만 켠다.
 
@@ -103,6 +124,11 @@ async fn main() -> Result<()> {
     .await
     .context("server error")?;
     Ok(())
+}
+
+/// 호스트 이름. 워커 id 에 넣어 어느 노드가 잡았는지 로그에서 보이게 한다.
+fn hostname() -> String {
+    std::env::var("HOSTNAME").unwrap_or_else(|_| "worker".to_owned())
 }
 
 async fn shutdown_signal() {

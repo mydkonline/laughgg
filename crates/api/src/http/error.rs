@@ -32,12 +32,20 @@ impl From<RepoError> for ApiError {
             RepoError::AssetNotFound(_)
             | RepoError::StudioNotFound(_)
             | RepoError::GrantNotFound
-            | RepoError::PostNotFound(_) => StatusCode::NOT_FOUND,
+            | RepoError::PostNotFound(_)
+            | RepoError::JobNotFound(_) => StatusCode::NOT_FOUND,
+
+            /* 크레딧 부족은 입력이 틀린 게 아니다. 400 으로 내면 화면이
+            프롬프트를 고치라고 안내하는데, 고쳐도 안 된다. */
+            RepoError::Gen(crate::domain::GenError::NotEnoughCredits { .. }) => {
+                StatusCode::PAYMENT_REQUIRED
+            }
 
             RepoError::Score(_)
             | RepoError::Credential(_)
             | RepoError::File(_)
-            | RepoError::Post(_) => StatusCode::BAD_REQUEST,
+            | RepoError::Post(_)
+            | RepoError::Gen(_) => StatusCode::BAD_REQUEST,
 
             RepoError::BadCredentials | RepoError::Unauthenticated => StatusCode::UNAUTHORIZED,
             RepoError::Forbidden => StatusCode::FORBIDDEN,

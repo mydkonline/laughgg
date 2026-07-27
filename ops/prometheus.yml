@@ -1,0 +1,26 @@
+# Prometheus 수집 설정.
+#
+# 푸시 게이트웨이를 안 쓴다. API 노드가 여럿이라 어느 노드 값인지 구분되어야
+# 하는데, 푸시로 모으면 그게 섞인다.
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  - alerts.yml
+
+scrape_configs:
+  - job_name: laughgg-api
+    metrics_path: /api/metrics/prometheus
+    static_configs:
+      # 배포에서는 서비스 디스커버리로 바꾼다. 노드가 늘 때마다 여기를
+      # 고치는 구조면 늘리는 걸 미루게 된다.
+      - targets: ["api-1:8420", "api-2:8420", "api-3:8420"]
+        labels: { role: api }
+
+  - job_name: laughgg-worker
+    metrics_path: /api/metrics/prometheus
+    static_configs:
+      - targets: ["worker-1:8420", "worker-2:8420"]
+        labels: { role: worker }

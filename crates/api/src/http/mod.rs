@@ -9,6 +9,7 @@ pub mod auth;
 mod download;
 mod error;
 mod game;
+mod generate;
 mod metrics;
 pub mod oauth;
 pub mod payment;
@@ -84,6 +85,8 @@ pub fn router(state: AppState) -> Router {
     let origins = state.cors_origins.clone();
     let api = Router::new()
         .route("/health", get(health))
+        // Prometheus 가 긁어 간다. /api 밖에 둘 이유가 없어서 안에 둔다.
+        .route("/metrics/prometheus", get(prometheus))
         .route("/auth/signup", post(auth::sign_up))
         .route("/auth/login", post(auth::log_in))
         .route("/auth/logout", post(auth::log_out))
@@ -112,12 +115,17 @@ pub fn router(state: AppState) -> Router {
         .route("/games", get(game::list))
         .route("/games/facets", get(game::facets))
         .route("/metrics", get(metrics::get))
+        // 생성은 큐에 넣고 바로 돌아온다. 상태는 폴링으로 본다.
+        .route("/generate", get(generate::list).post(generate::create))
+        .route("/generate/{id}", get(generate::get))
         .route("/posts", get(post::list).post(post::create))
         .route("/posts/{slug}", get(post::get).delete(post::remove))
         .with_state(state);
 
     Router::new()
         .nest("/api", api)
+        // 지표를 여기서 센다. 핸들러마다 부르면 언젠가 한 곳을 빠뜨린다.
+        .layer(axum::middleware::from_fn(measure))
         .fallback_service(ServeDir::new("web").append_index_html_on_directories(true))
         .layer(cors(&origins))
         .layer(TraceLayer::new_for_http())
@@ -128,6 +136,34 @@ pub fn router(state: AppState) -> Router {
 문자열만 돌려주면 프로세스가 살아 있다는 말밖에 안 된다. DB 가 죽어도
 ok 가 나가고, 그걸 보고 로드밸런서는 계속 트래픽을 보낸다.
 실제로 한 번 물어본다. */
+/* 요청 하나를 지표에 남긴다.
+
+경로를 그대로 라벨에 쓰면 /api/assets/1, /api/assets/2 ... 가 전부 다른
+시계열이 되어 Prometheus 가 터진다. 라우터가 매칭한 패턴을 쓴다 —
+/api/assets/{id} 하나로 묶인다. */
+async fn measure(
+    matched: Option<axum::extract::MatchedPath>,
+    req: axum::extract::Request,
+    next: axum::middleware::Next,
+) -> axum::response::Response {
+    let route = matched.map_or_else(|| "unmatched".to_owned(), |m| m.as_str().to_owned());
+    let started = std::time::Instant::now();
+    let res = next.run(req).await;
+    crate::metrics::record_request(&route, res.status().as_u16(), started.elapsed());
+    res
+}
+
+/// Prometheus 형식 지표.
+async fn prometheus() -> ([(axum::http::HeaderName, &'static str); 1], String) {
+    (
+        [(
+            axum::http::header::CONTENT_TYPE,
+            "text/plain; version=0.0.4",
+        )],
+        crate::metrics::render(),
+    )
+}
+
 async fn health(State(st): State<AppState>) -> (StatusCode, axum::Json<serde_json::Value>) {
     match sqlx::query_scalar::<_, i32>("SELECT 1")
         .fetch_one(&st.pool)

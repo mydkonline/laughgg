@@ -1,0 +1,39 @@
+# 경보.
+#
+# 셋만 건다. 많이 걸면 아무도 안 본다 — 울려도 무시하게 되는 순간
+# 경보가 있는 것과 없는 것이 같아진다.
+
+groups:
+  - name: laughgg
+    rules:
+      # 워커 부족. 사용자가 기다리고 있다.
+      - alert: GenerationQueueBacklog
+        expr: laughgg_queued_jobs > 500
+        for: 5m
+        labels: { severity: warning }
+        annotations:
+          summary: "생성 큐에 {{ $value }}건이 쌓였다"
+          description: "워커를 늘려야 한다. 5분 넘게 500건을 넘고 있다."
+
+      # 사람이 느리다고 느끼는 임계.
+      - alert: ApiLatencyHigh
+        expr: |
+          histogram_quantile(0.95,
+            sum by (le, route) (rate(laughgg_http_duration_seconds_bucket[5m]))
+          ) > 1
+        for: 5m
+        labels: { severity: warning }
+        annotations:
+          summary: "{{ $labels.route }} p95 가 1초를 넘었다"
+
+      # 폴백으로 넘길 시점.
+      - alert: ProviderFailing
+        expr: |
+          sum by (provider) (rate(laughgg_jobs_total{status="failed"}[5m]))
+          /
+          sum by (provider) (rate(laughgg_jobs_total[5m])) > 0.2
+        for: 5m
+        labels: { severity: critical }
+        annotations:
+          summary: "{{ $labels.provider }} 실패율이 20%를 넘었다"
+          description: "제공자 문제일 수 있다. 폴백으로 넘길지 판단한다."

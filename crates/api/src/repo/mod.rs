@@ -12,6 +12,7 @@ mod asset;
 mod download;
 mod error;
 mod game;
+mod job;
 mod metrics;
 mod order;
 mod post;
@@ -31,6 +32,10 @@ pub use asset::{
 pub use download::{FileRef, Grant, grant_download, purge_expired_grants, redeem_download};
 pub use error::{RepoError, RepoResult};
 pub use game::{Facet, Facets, GamePage, GameQuery, GameRow, game_facets, list_games};
+pub use job::{
+    Job, attach_job_ref, balance, claim, enqueue, fail, finish, get_job, list_jobs, queued_count,
+    reap_stalled, with_leader_lock,
+};
 pub use metrics::{Metrics, metrics};
 pub use order::{
     Order, OwnedAsset, PaidOrder, attach_provider_ref, list_orders, mark_paid, my_library,
