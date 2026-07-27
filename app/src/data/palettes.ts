@@ -84,14 +84,95 @@ const hexToRgb = (hex: string): Rgb => [
 
 const rgbCache = new Map<string, Rgb[]>();
 
+/* 레퍼런스 이미지에서 뽑은 팔레트.
+
+   올린 스크린샷의 색을 그대로 쓴다. 목록에 박아 둔 팔레트는 공개된 하드웨어
+   스펙이라 고정이지만, 이건 사람이 방금 올린 것이라 매번 바뀐다. 그래서
+   PALETTES 를 건드리지 않고 따로 둔다 — 배열에 밀어 넣으면 새로고침 전까지
+   목록이 계속 길어진다. */
+export const REF_ID = "ref";
+
+let refPalette: Palette | null = null;
+
+export function setRefPalette(colors: string[], from: string) {
+  refPalette = { id: REF_ID, name: "레퍼런스 이미지", from, colors };
+  rgbCache.delete(REF_ID);
+}
+
+export function clearRefPalette() {
+  refPalette = null;
+  rgbCache.delete(REF_ID);
+}
+
+/** 지금 고를 수 있는 팔레트. 레퍼런스가 있으면 맨 앞에 온다. */
+export function palettes(): Palette[] {
+  return refPalette ? [refPalette, ...PALETTES] : PALETTES;
+}
+
 /** 팔레트를 숫자로 편다. 픽셀마다 파싱할 수 없으니 한 번만 만들어 둔다. */
 export function paletteRgb(id: string): Rgb[] {
   let v = rgbCache.get(id);
   if (!v) {
-    v = (PALETTES.find((p) => p.id === id)?.colors ?? []).map(hexToRgb);
+    const src = id === REF_ID ? refPalette : PALETTES.find((p) => p.id === id);
+    v = (src?.colors ?? []).map(hexToRgb);
     rgbCache.set(id, v);
   }
   return v;
+}
+
+/* 이미지에서 색 몇 개를 뽑는다.
+
+   k-means 를 돌리면 정확하지만 브라우저에서 큰 그림에 돌리면 눈에 띄게
+   멈춘다. 대신 색 공간을 격자로 잘라 세고 많이 나온 칸의 평균색을 쓴다 —
+   게임 스크린샷처럼 색이 뭉쳐 있는 그림에서는 결과가 거의 같다.
+
+   샘플을 줄여서 본다. 1920×1080 을 전부 세면 200만 번인데, 격자로 뭉갤
+   거라 열 픽셀에 하나만 봐도 순위가 안 바뀐다. */
+export function extractPalette(img: HTMLImageElement, want = 6): string[] {
+  const W = 160;
+  const h = Math.max(1, Math.round((img.naturalHeight / img.naturalWidth) * W));
+  const c = document.createElement("canvas");
+  c.width = W;
+  c.height = h;
+  const ctx = c.getContext("2d", { willReadFrequently: true });
+  if (!ctx) return [];
+  ctx.drawImage(img, 0, 0, W, h);
+  const { data } = ctx.getImageData(0, 0, W, h);
+
+  /* 칸마다 합과 개수를 쌓는다. 채널당 5비트(32칸)면 32768 칸인데,
+     화면 하나에 실제로 쓰이는 색은 그보다 훨씬 적어서 금방 모인다. */
+  const bins = new Map<number, [number, number, number, number]>();
+  for (let i = 0; i < data.length; i += 4) {
+    const a = data[i + 3]!;
+    if (a < 128) continue; // 투명한 데는 색이 아니다
+    const r = data[i]!;
+    const g = data[i + 1]!;
+    const b = data[i + 2]!;
+    const key = ((r >> 3) << 10) | ((g >> 3) << 5) | (b >> 3);
+    const cur = bins.get(key);
+    if (cur) {
+      cur[0] += r;
+      cur[1] += g;
+      cur[2] += b;
+      cur[3] += 1;
+    } else {
+      bins.set(key, [r, g, b, 1]);
+    }
+  }
+
+  const ranked = [...bins.values()].sort((x, y) => y[3] - x[3]);
+  const out: Rgb[] = [];
+  for (const [r, g, b, n] of ranked) {
+    const avg: Rgb = [Math.round(r / n), Math.round(g / n), Math.round(b / n)];
+    /* 비슷한 색이 줄줄이 뽑히면 팔레트가 한 덩어리가 된다. 이미 뽑은 것과
+       충분히 떨어진 것만 남긴다. */
+    if (out.some((p) => Math.abs(p[0] - avg[0]) + Math.abs(p[1] - avg[1]) + Math.abs(p[2] - avg[2]) < 60)) {
+      continue;
+    }
+    out.push(avg);
+    if (out.length >= want) break;
+  }
+  return out.map(([r, g, b]) => `#${[r, g, b].map((v) => v.toString(16).padStart(2, "0")).join("")}`);
 }
 
 /**

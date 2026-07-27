@@ -908,4 +908,15 @@ export const EN: Record<string, string> = {
   "면구성": "Mesh",
   "원본 해상도": "Original resolution",
   "{n}px 한 칸": "{n}px per cell",
+
+  "시각 방향": "Direction",
+  "차원": "Dimension",
+  "원본 그대로": "As-is",
+  "이 게임에 맞춤": "Fit to this game",
+  "산 에셋": "Bought",
+  "마켓 상위": "Market top",
+
+  "레퍼런스 이미지": "Reference image",
+  "게임 화면을 올리면 그 색으로 맞춥니다": "Drop a screenshot of your game and we match its colors",
+  "{name} 빼기": "Remove {name}",
 };

@@ -13,10 +13,11 @@ import {
   type Knobs,
   type RasterSet,
 } from "../data/concepts";
-import { PALETTES } from "../data/palettes";
+import { REF_ID, extractPalette, palettes, setRefPalette, clearRefPalette } from "../data/palettes";
 import { useCart } from "../lib/cart";
 import { useUploads } from "../lib/uploads";
 import { PromptBuilder, toPrompt } from "../components/PromptBuilder";
+import { PromptComposer, type Reference } from "../components/PromptComposer";
 import { ExportPicker } from "../components/ExportPicker";
 import { TARGETS } from "../data/formats";
 import { useCredit } from "../lib/credit";
@@ -60,6 +61,62 @@ export function Workshop() {
   const [typing, setTyping] = useState(false);
   const [knobs, setKnobs] = useState<Knobs>(() => CONCEPTS[0]!.knobs);
   const [raster, setRaster] = useState<RasterSet>(() => CONCEPTS[0]!.raster);
+
+  /* 레퍼런스 이미지.
+
+     올린 게임 화면에서 색을 뽑아 팔레트로 쓴다. 그림을 받아 두기만 하면
+     장식이라, 실제로 결과를 바꾸는 자리에 꽂는다.
+
+     objectURL 은 반드시 되돌려준다 — 안 하면 탭을 닫을 때까지 메모리에
+     남는다. 페이지를 뜰 때도 한 번 훑는다. */
+  const [refs, setRefs] = useState<Reference[]>([]);
+
+  useEffect(
+    () => () => {
+      refs.forEach((r) => URL.revokeObjectURL(r.url));
+    },
+    // 뜰 때 한 번만 돈다. refs 를 넣으면 한 장 지울 때마다 나머지까지 풀린다.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+
+  const addRefs = (files: FileList) => {
+    for (const f of Array.from(files).slice(0, 3)) {
+      if (!f.type.startsWith("image/")) continue;
+      const url = URL.createObjectURL(f);
+      const img = new Image();
+      img.onload = () => {
+        const colors = extractPalette(img);
+        setRefs((prev) => {
+          const next = [...prev.filter((r) => r.url !== url), { url, name: f.name, colors }];
+          // 마지막에 올린 것이 팔레트를 정한다. 여러 장을 섞으면 어느 색인지 모른다.
+          if (colors.length > 0) {
+            setRefPalette(colors, f.name);
+            setRaster((r) => ({ ...r, palette: REF_ID }));
+            setAsSprite(true);
+            setConceptId("custom");
+          }
+          return next;
+        });
+      };
+      img.src = url;
+    }
+  };
+
+  const dropRef = (url: string) => {
+    URL.revokeObjectURL(url);
+    setRefs((prev) => {
+      const next = prev.filter((r) => r.url !== url);
+      if (next.length === 0) {
+        clearRefPalette();
+        setRaster((r) => (r.palette === REF_ID ? { ...r, palette: "free" } : r));
+      } else {
+        const last = next[next.length - 1]!;
+        setRefPalette(last.colors, last.name);
+      }
+      return next;
+    });
+  };
   const [asSprite, setAsSprite] = useState(false);
   const [tuning, setTuning] = useState(false);
   const [target, setTarget] = useState(TARGETS[0]!.id);
@@ -115,7 +172,7 @@ export function Workshop() {
   const delta = scoreDelta(knobs);
   const after = Math.max(31, Math.min(99, piece.score + Math.round((delta.런타임 + delta.면구성 + delta.텍스처) / 2)));
   const conceptName = CONCEPTS.find((c) => c.id === conceptId)?.name ?? "직접 조정";
-  const palette = PALETTES.find((p) => p.id === raster.palette);
+  const palette = palettes().find((p) => p.id === raster.palette);
 
   const onPublish = () => {
     const id = publish({
@@ -323,68 +380,60 @@ export function Workshop() {
           </div>
 
           <div>
-        <div className="mb-3 flex flex-wrap items-center gap-3">
-          <h2 className="text-xs font-bold text-ink">{t("프롬프트")}</h2>
-          <span className="flex overflow-hidden rounded-full border border-line">
-            {[
-              [false, t("블록")],
-              [true, t("직접 입력")],
-            ].map(([v, label]) => (
-              <button
-                key={String(v)}
-                type="button"
-                onClick={() => setTyping(v as boolean)}
-                aria-pressed={typing === v}
-                className={[
-                  "cursor-pointer border-0 px-3 py-1 text-xs",
-                  typing === v ? "bg-ink font-bold text-ground" : "bg-transparent text-muted hover:text-ink",
-                ].join(" ")}
-              >
-                {label as string}
-              </button>
-            ))}
-          </span>
-          {/* 무료 횟수를 넘긴 요청만 과금하는 게 수익 구조라 화면에서도 그렇게 보여야 한다. */}
-          <span className="flex w-full items-center gap-2 text-xs">
-            <span className="text-faint">
-              {t("크레딧")} <b className="num text-ink">{remaining}</b> / {free}
-            </span>
-            <button
-              type="button"
-              onClick={applyPrompt}
+            <div className="mb-3 flex flex-wrap items-center gap-3">
+              <h2 className="text-xs font-bold text-ink">{t("프롬프트")}</h2>
+              <span className="flex overflow-hidden rounded-full border border-line">
+                {[
+                  [false, t("블록")],
+                  [true, t("직접 입력")],
+                ].map(([v, label]) => (
+                  <button
+                    key={String(v)}
+                    type="button"
+                    onClick={() => setTyping(v as boolean)}
+                    aria-pressed={typing === v}
+                    className={[
+                      "cursor-pointer border-0 px-3 py-1 text-xs",
+                      typing === v
+                        ? "bg-ink font-bold text-ground"
+                        : "bg-transparent text-muted hover:text-ink",
+                    ].join(" ")}
+                  >
+                    {label as string}
+                  </button>
+                ))}
+              </span>
+            </div>
+
+            {/* 입력·첨부·전송이 한 상자다. 흩어 놓으니 무엇을 눌러야
+                시작되는지가 안 보였고, 전송 버튼이 없는 것처럼 읽혔다. */}
+            <PromptComposer
+              value={prompt}
+              onChange={setPrompt}
+              onSubmit={applyPrompt}
               disabled={remaining < 1 || !prompt.trim()}
-              className="ml-auto cursor-pointer rounded-lg border-0 bg-accent px-5 py-2 text-xs font-bold text-white hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-40"
+              credits={remaining}
+              free={free}
+              refs={refs}
+              onAddRef={addRefs}
+              onDropRef={dropRef}
             >
-              {t("적용")} <span className="opacity-70">{t("1 크레딧")}</span>
-            </button>
-          </span>
-        </div>
+              {!typing && (
+                <PromptBuilder
+                  picked={blocks}
+                  onChange={(next) => {
+                    setBlocks(next);
+                    setPrompt(toPrompt(next));
+                  }}
+                />
+              )}
+            </PromptComposer>
 
-        {typing ? (
-          <input
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && applyPrompt()}
-            placeholder={t("어둡고 축축한 던전, 게임보이 초록 4색, 굵은 도트")}
-            aria-label={t("변형 프롬프트")}
-            className="w-full rounded-lg border border-line bg-surface px-4 py-3 text-xs text-ink placeholder:text-faint"
-          />
-        ) : (
-          <PromptBuilder
-            picked={blocks}
-            onChange={(next) => {
-              setBlocks(next);
-              setPrompt(toPrompt(next));
-            }}
-          />
-        )}
-
-        {prompt && (
-          <p className="mt-2.5 rounded-lg bg-surface px-3 py-2 font-mono text-xs text-muted">{prompt}</p>
-        )}
-        {remaining < 1 && (
-          <p className="mt-2 text-xs text-[#FF6B7A]">{t("무료 크레딧을 다 썼습니다. 컨셉 프리셋과 직접 조정은 계속 무료입니다.")}</p>
-        )}
+            {remaining < 1 && (
+              <p className="mt-2 text-xs text-[#FF6B7A]">
+                {t("무료 크레딧을 다 썼습니다. 컨셉 프리셋과 직접 조정은 계속 무료입니다.")}
+              </p>
+            )}
           </div>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3 rounded-xl border border-line bg-surface px-4 py-3.5">
         <Field label={t("출력 형식")}>
@@ -420,7 +469,7 @@ export function Workshop() {
                 }}
                 className="rounded-lg border border-line bg-ground px-3 py-1.5 text-xs text-ink"
               >
-                {PALETTES.map((p) => (
+                {palettes().map((p) => (
                   <option key={p.id} value={p.id}>
                     {t(p.name)}
                   </option>

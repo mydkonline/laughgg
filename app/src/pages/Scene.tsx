@@ -113,7 +113,7 @@ export function Scene() {
           {facets.map((f) => (
             <details key={f.key} className="group mb-3 border-b border-line pb-3" open={f.key === "cat"}>
               <summary className="flex cursor-pointer list-none items-center gap-2 text-xs font-bold text-ink">
-                {f.label}
+                {t(f.label)}
                 {picked[f.key] && (
                   <span className="truncate text-[10px] font-normal text-accent">
                     {[...picked[f.key]!][0]}
@@ -192,8 +192,8 @@ export function Scene() {
             )}
             <span className="ml-auto flex overflow-hidden rounded-full border border-line">
               {[
-                [false, "원본 그대로"],
-                [true, "이 게임에 맞춤"],
+                [false, t("원본 그대로")],
+                [true, t("이 게임에 맞춤")],
               ].map(([v, label]) => (
                 <button
                   key={String(v)}
@@ -215,7 +215,7 @@ export function Scene() {
 
           {/* 어떤 에셋을 올려 볼지. 고른 것이 무대 앞자리에 선다. */}
           <div className="mt-3 flex flex-wrap items-center gap-2">
-            <span className="text-xs text-faint">{cartIds.length ? "산 에셋" : "마켓 상위"}</span>
+            <span className="text-xs text-faint">{t(cartIds.length ? "산 에셋" : "마켓 상위")}</span>
             {owned.map((p) => (
               <button
                 key={p.id}
