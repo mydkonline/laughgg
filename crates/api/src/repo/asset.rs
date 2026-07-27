@@ -22,63 +22,113 @@ pub struct AssetRow {
 
 #[derive(Debug, Default, Deserialize)]
 pub struct AssetQuery {
+    /// 제목이나 창작자 이름에 들어가는 말.
+    pub q: Option<String>,
     pub category: Option<String>,
     pub engine: Option<String>,
+    pub art_style: Option<String>,
+    pub badge: Option<String>,
     pub min_score: Option<i64>,
     pub limit: Option<i64>,
+    pub offset: Option<i64>,
 }
 
-/// 에셋 목록. 배지 노출 가중치와 점수 순으로 정렬한다.
+/* 조건절을 한 곳에서만 쓴다.
+
+목록과 패싯이 다른 조건으로 돌면 "37개" 라고 써 놓고 12줄만 나온다.
+게임 쪽에서 이미 같은 이유로 묶어 뒀다.
+
+$1 검색어  $2 분류  $3 엔진  $4 화풍  $5 배지  $6 최소 점수 */
+const FROM_WHERE: &str = r"
+    FROM assets a
+    JOIN creators c ON c.id = a.creator_id
+    LEFT JOIN LATERAL (
+        SELECT total, badge FROM reviews rv
+        WHERE rv.asset_id = a.id
+        ORDER BY rv.reviewed_at DESC, rv.id DESC
+        LIMIT 1
+    ) r ON TRUE
+    WHERE ($1::text IS NULL OR a.title ILIKE '%' || $1 || '%' OR c.display_name ILIKE '%' || $1 || '%')
+      AND ($2::text IS NULL OR a.category = $2)
+      AND ($3::text IS NULL OR a.engine = $3 OR a.engine = 'any')
+      AND ($4::text IS NULL OR a.art_style = $4)
+      AND ($5::text IS NULL OR r.badge = $5)
+      AND COALESCE(r.total, 0) >= $6
+";
+
+/// DB 에서 오는 목록 행.
+type ListRow = (
+    i64,
+    String,
+    String,
+    String,
+    String,
+    String,
+    f64,
+    Option<i16>,
+    Option<String>,
+);
+
+/// 목록 한 쪽과 전체 건수. 건수가 없으면 쪽 번호를 못 그린다.
+#[derive(Debug, Serialize)]
+pub struct AssetPage {
+    pub total: i64,
+    pub assets: Vec<AssetRow>,
+}
+
+/* 에셋 목록 한 쪽.
+
+정렬을 DB 에 맡긴다. 예전에는 다 받아 온 뒤 Rust 에서 배지 가중치로
+다시 정렬했는데, 페이지를 나누는 순간 그게 안 된다 — 첫 쪽 안에서만
+순서가 맞고 쪽을 넘기면 뒤섞인다. */
 ///
 /// # Errors
 /// 조회 실패 시 오류를 반환한다.
-pub async fn list_assets(pool: &PgPool, q: &AssetQuery) -> RepoResult<Vec<AssetRow>> {
+pub async fn list_assets(pool: &PgPool, q: &AssetQuery) -> RepoResult<AssetPage> {
     let limit = q.limit.unwrap_or(50).clamp(1, 200);
+    let offset = q.offset.unwrap_or(0).max(0);
     let min_score = i16::try_from(q.min_score.unwrap_or(0).clamp(0, 100)).unwrap_or(0);
 
-    let rows = sqlx::query_as::<
-        _,
-        (
-            i64,
-            String,
-            String,
-            String,
-            String,
-            String,
-            f64,
-            Option<i16>,
-            Option<String>,
-        ),
-    >(
-        r"
-        SELECT a.id, a.title, c.display_name, a.category, a.engine, a.art_style,
-               a.price_usd::double precision, r.total, r.badge
-        FROM assets a
-        JOIN creators c ON c.id = a.creator_id
-        -- 검수는 여러 번 붙을 수 있다. 그냥 조인하면 에셋이 검수 건수만큼
-        -- 복제되어 목록에 같은 상품이 여러 줄 뜬다. 최신 한 건만 가져온다.
-        LEFT JOIN LATERAL (
-            SELECT total, badge FROM reviews rv
-            WHERE rv.asset_id = a.id
-            ORDER BY rv.reviewed_at DESC, rv.id DESC
-            LIMIT 1
-        ) r ON TRUE
-        WHERE ($1::text IS NULL OR a.category = $1)
-          AND ($2::text IS NULL OR a.engine = $2 OR a.engine = 'any')
-          AND COALESCE(r.total, 0) >= $3
-        ORDER BY COALESCE(r.total, 0) DESC, a.id DESC
-        LIMIT $4
-        ",
-    )
+    let total: i64 = sqlx::query_scalar(&format!("SELECT COUNT(*) {FROM_WHERE}"))
+        .bind(q.q.as_deref())
+        .bind(q.category.as_deref())
+        .bind(q.engine.as_deref())
+        .bind(q.art_style.as_deref())
+        .bind(q.badge.as_deref())
+        .bind(min_score)
+        .fetch_one(pool)
+        .await
+        .context("counting assets")?;
+
+    // 배지가 노출 순위를 정한다 — 같은 점수라도 상위 배지가 먼저 보인다.
+    // 가중치를 SQL 안에 두면 쪽을 넘겨도 순서가 유지된다.
+    let rows = sqlx::query_as::<_, ListRow>(&format!(
+        r"SELECT a.id, a.title, c.display_name, a.category, a.engine, a.art_style,
+                 a.price_usd::double precision, r.total, r.badge
+          {FROM_WHERE}
+          ORDER BY CASE r.badge
+                     WHEN 'challenger' THEN 8
+                     WHEN 'diamond'    THEN 4
+                     WHEN 'platinum'   THEN 2
+                     WHEN 'silver'     THEN 1
+                     ELSE 0
+                   END DESC,
+                   COALESCE(r.total, 0) DESC, a.id DESC
+          LIMIT $7 OFFSET $8"
+    ))
+    .bind(q.q.as_deref())
     .bind(q.category.as_deref())
     .bind(q.engine.as_deref())
+    .bind(q.art_style.as_deref())
+    .bind(q.badge.as_deref())
     .bind(min_score)
     .bind(limit)
+    .bind(offset)
     .fetch_all(pool)
     .await
     .context("listing assets")?;
 
-    let mut out: Vec<AssetRow> = rows
+    let assets = rows
         .into_iter()
         .map(
             |(id, title, creator, category, engine, art_style, price_usd, total, badge)| AssetRow {
@@ -95,19 +145,151 @@ pub async fn list_assets(pool: &PgPool, q: &AssetQuery) -> RepoResult<Vec<AssetR
         )
         .collect();
 
-    // 배지가 노출 순위를 정한다 — 같은 점수라도 상위 배지가 먼저 보인다.
-    out.sort_by(|a, b| {
-        let key = |r: &AssetRow| {
-            let w = r
-                .badge
-                .as_deref()
-                .and_then(Badge::from_label)
-                .map_or(0, Badge::exposure_weight);
-            (w, r.total.unwrap_or(0))
-        };
-        key(b).cmp(&key(a))
-    });
-    Ok(out)
+    Ok(AssetPage { total, assets })
+}
+
+/// 에셋 하나. 목록에 없는 것까지 보여 준다 — 상세 화면이 쓰는 값이다.
+///
+/// # Errors
+/// 에셋이 없거나 조회에 실패하면 오류를 반환한다.
+pub async fn get_asset(pool: &PgPool, asset_id: i64) -> RepoResult<AssetDetail> {
+    let row: Option<DetailRow> = sqlx::query_as(
+        r"SELECT a.id, a.title, c.display_name, a.category, a.engine, a.art_style,
+                 a.price_usd::double precision, r.total, r.badge,
+                 CASE WHEN r.total IS NULL THEN NULL ELSE jsonb_build_object(
+                   'mesh_integrity',  r.mesh_integrity,
+                   'texture_quality', r.texture_quality,
+                   'lod_setup',       r.lod_setup,
+                   'runtime_cost',    r.runtime_cost,
+                   'license_clean',   r.license_clean,
+                   'code_quality',    r.code_quality,
+                   'integration',     r.integration
+                 ) END,
+                 (SELECT COUNT(*) FROM sales s WHERE s.asset_id = a.id)
+          FROM assets a
+          JOIN creators c ON c.id = a.creator_id
+          LEFT JOIN LATERAL (
+              SELECT * FROM reviews rv WHERE rv.asset_id = a.id
+              ORDER BY rv.reviewed_at DESC, rv.id DESC LIMIT 1
+          ) r ON TRUE
+          WHERE a.id = $1",
+    )
+    .bind(asset_id)
+    .fetch_optional(pool)
+    .await
+    .context("loading asset")?;
+
+    let (id, title, creator, category, engine, art_style, price_usd, total, badge, scores, sold) =
+        row.ok_or(RepoError::AssetNotFound(asset_id))?;
+
+    Ok(AssetDetail {
+        row: AssetRow {
+            id,
+            title,
+            creator,
+            category,
+            engine,
+            art_style,
+            price_usd,
+            total,
+            badge,
+        },
+        scores,
+        sold,
+    })
+}
+
+/* DB 에서 오는 상세 행.
+
+컬럼이 열한 개라 익명 튜플로 두면 무엇이 무엇인지 호출부에서만 알 수 있다.
+이름을 붙여 두면 SELECT 순서가 바뀌었을 때 컴파일러가 잡아 준다. */
+type DetailRow = (
+    i64,
+    String,
+    String,
+    String,
+    String,
+    String,
+    f64,
+    Option<i16>,
+    Option<String>,
+    Option<serde_json::Value>,
+    i64,
+);
+
+/// 상세 화면이 쓰는 값. 목록에 없는 항목별 점수와 판매 수가 붙는다.
+#[derive(Debug, Serialize)]
+pub struct AssetDetail {
+    #[serde(flatten)]
+    pub row: AssetRow,
+    /// 항목별 점수. 검수 전이면 없다.
+    pub scores: Option<serde_json::Value>,
+    pub sold: i64,
+}
+
+/// 축 하나의 선택지와 각 개수.
+#[derive(Debug, Serialize)]
+pub struct AssetFacets {
+    pub category: Vec<super::Facet>,
+    pub engine: Vec<super::Facet>,
+    pub art_style: Vec<super::Facet>,
+    pub badge: Vec<super::Facet>,
+}
+
+/// 자기 축이면 조건을 안 건다. 그 축의 선택지를 전부 남기려는 것이다.
+fn pick<'a>(axis: &str, skip: &str, v: Option<&'a str>) -> Option<&'a str> {
+    if axis == skip { None } else { v }
+}
+
+/* 패싯 개수는 그 축을 뺀 나머지 조건으로 센다.
+
+게임 쪽과 같은 규칙이다. 자기 축까지 좁히면 하나 고르는 순간 나머지가
+0 이 되어 빠져나올 수가 없다. */
+async fn asset_facet(
+    pool: &PgPool,
+    column: &str,
+    q: &AssetQuery,
+    skip: &str,
+) -> RepoResult<Vec<super::Facet>> {
+    let min_score = i16::try_from(q.min_score.unwrap_or(0).clamp(0, 100)).unwrap_or(0);
+    let rows = sqlx::query_as::<_, (String, i64)>(&format!(
+        "SELECT {column}::text AS value, COUNT(*) AS count {FROM_WHERE}
+         AND {column} IS NOT NULL GROUP BY 1 ORDER BY count DESC, value"
+    ))
+    .bind(q.q.as_deref())
+    .bind(pick("category", skip, q.category.as_deref()))
+    .bind(pick("engine", skip, q.engine.as_deref()))
+    .bind(pick("art_style", skip, q.art_style.as_deref()))
+    .bind(pick("badge", skip, q.badge.as_deref()))
+    .bind(min_score)
+    .fetch_all(pool)
+    .await
+    .with_context(|| format!("counting asset facet {column}"))?;
+
+    Ok(rows
+        .into_iter()
+        .map(|(value, count)| super::Facet { value, count })
+        .collect())
+}
+
+/// 네 축의 선택지와 개수.
+///
+/// # Errors
+/// 조회에 실패하면 오류를 반환한다.
+pub async fn asset_facets(pool: &PgPool, q: &AssetQuery) -> RepoResult<AssetFacets> {
+    let (category, engine, art_style, badge) = tokio::try_join!(
+        asset_facet(pool, "a.category", q, "category"),
+        asset_facet(pool, "a.engine", q, "engine"),
+        asset_facet(pool, "a.art_style", q, "art_style"),
+        asset_facet(pool, "r.badge", q, "badge"),
+    )?;
+
+    Ok(AssetFacets {
+        category,
+        engine,
+        art_style,
+        badge,
+    })
 }
 
 #[derive(Debug, Deserialize)]

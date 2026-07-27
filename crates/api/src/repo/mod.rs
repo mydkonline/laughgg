@@ -23,7 +23,8 @@ pub use account::{
     purge_expired_sessions, sign_up, upsert_external,
 };
 pub use asset::{
-    AssetQuery, AssetRow, NewAsset, ReviewResult, create_asset, list_assets, review_asset,
+    AssetDetail, AssetFacets, AssetPage, AssetQuery, AssetRow, NewAsset, ReviewResult,
+    asset_facets, create_asset, get_asset, list_assets, review_asset,
 };
 pub use error::{RepoError, RepoResult};
 pub use game::{Facet, Facets, GamePage, GameQuery, GameRow, game_facets, list_games};

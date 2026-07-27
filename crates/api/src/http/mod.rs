@@ -15,6 +15,8 @@ mod sale;
 
 use axum::{
     Router,
+    extract::State,
+    http::StatusCode,
     routing::{get, post},
 };
 use sqlx::PgPool;
@@ -64,6 +66,8 @@ pub fn router(state: AppState) -> Router {
         // webhook 은 로그인 없이 열려 있다. 대신 서명을 검증한다.
         .route("/payments/webhook", post(payment::webhook))
         .route("/assets", get(asset::list).post(asset::create))
+        .route("/assets/facets", get(asset::facets))
+        .route("/assets/{id}", get(asset::get))
         // 등록과 재검수는 다른 일이라 경로도 다르다. 한때 둘이 같은 핸들러를
         // 가리켜서 재검수를 부르면 에셋이 하나 더 생겼다.
         .route("/assets/{id}/review", post(asset::review))
@@ -80,6 +84,36 @@ pub fn router(state: AppState) -> Router {
         .layer(TraceLayer::new_for_http())
 }
 
-async fn health() -> axum::Json<serde_json::Value> {
-    axum::Json(serde_json::json!({ "status": "ok", "service": "laughgg-api" }))
+/* 헬스체크.
+
+문자열만 돌려주면 프로세스가 살아 있다는 말밖에 안 된다. DB 가 죽어도
+ok 가 나가고, 그걸 보고 로드밸런서는 계속 트래픽을 보낸다.
+실제로 한 번 물어본다. */
+async fn health(State(st): State<AppState>) -> (StatusCode, axum::Json<serde_json::Value>) {
+    match sqlx::query_scalar::<_, i32>("SELECT 1")
+        .fetch_one(&st.pool)
+        .await
+    {
+        Ok(_) => (
+            StatusCode::OK,
+            axum::Json(serde_json::json!({
+                "status": "ok",
+                "service": "laughgg-api",
+                "database": "up",
+                "google": st.google.is_some(),
+                "payments": st.stripe.is_some(),
+            })),
+        ),
+        Err(e) => {
+            tracing::error!(error = ?e, "health check could not reach the database");
+            (
+                StatusCode::SERVICE_UNAVAILABLE,
+                axum::Json(serde_json::json!({
+                    "status": "degraded",
+                    "service": "laughgg-api",
+                    "database": "down",
+                })),
+            )
+        }
+    }
 }

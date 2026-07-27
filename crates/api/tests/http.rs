@@ -137,7 +137,7 @@ async fn review_route_does_not_create_an_asset(pool: PgPool) {
     assert_eq!(metrics["reviewed"], 2);
 
     let (_, list) = call(&pool, "GET", "/api/assets", None).await;
-    assert_eq!(list["count"], 1, "목록도 한 줄이어야 한다");
+    assert_eq!(list["total"], 1, "목록도 한 줄이어야 한다");
 }
 
 #[sqlx::test]
@@ -163,4 +163,69 @@ async fn unknown_route_falls_through_to_static(pool: PgPool) {
     // /api 아래에 없는 경로는 정적 파일 서빙으로 넘어가고, 파일도 없으면 404 다.
     let (status, _) = call(&pool, "GET", "/api/nope", None).await;
     assert_eq!(status, StatusCode::NOT_FOUND);
+}
+
+/// 헬스체크가 DB 를 실제로 본다. 문자열만 돌려주면 DB 가 죽어도 ok 가 나간다.
+#[sqlx::test]
+async fn health_reports_what_is_configured(pool: PgPool) {
+    let (status, body) = call(&pool, "GET", "/api/health", None).await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(body["database"], "up");
+    assert_eq!(body["google"], false, "테스트는 자격증명 없이 돈다");
+    assert_eq!(body["payments"], false);
+}
+
+#[sqlx::test]
+async fn asset_detail_is_served(pool: PgPool) {
+    let (_, created) = call(
+        &pool,
+        "POST",
+        "/api/assets",
+        Some(json!({
+            "creator_handle": "sh", "title": "Gothic Statue", "category": "prop",
+            "engine": "unity", "art_style": "realistic", "price_usd": 30.0,
+            "scores": scores(90)
+        })),
+    )
+    .await;
+    let id = created["asset_id"].as_i64().expect("id");
+
+    let (status, body) = call(&pool, "GET", &format!("/api/assets/{id}"), None).await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(body["title"], "Gothic Statue");
+    assert_eq!(body["scores"]["license_clean"], 90);
+
+    let (missing, _) = call(&pool, "GET", "/api/assets/9999", None).await;
+    assert_eq!(missing, StatusCode::NOT_FOUND);
+}
+
+/// 목록과 패싯이 같은 조건을 본다.
+#[sqlx::test]
+async fn asset_facets_and_list_agree(pool: PgPool) {
+    for title in ["a", "b"] {
+        call(
+            &pool,
+            "POST",
+            "/api/assets",
+            Some(json!({
+                "creator_handle": "sh", "title": title, "category": "prop",
+                "engine": "unity", "art_style": "realistic", "price_usd": 30.0,
+                "scores": scores(95)
+            })),
+        )
+        .await;
+    }
+
+    let (_, facets) = call(&pool, "GET", "/api/assets/facets", None).await;
+    let prop = facets["category"]
+        .as_array()
+        .expect("분류 축")
+        .iter()
+        .find(|f| f["value"] == "prop")
+        .expect("prop")["count"]
+        .as_i64()
+        .expect("개수");
+
+    let (_, page) = call(&pool, "GET", "/api/assets?category=prop", None).await;
+    assert_eq!(page["total"], prop);
 }

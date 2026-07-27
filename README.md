@@ -72,8 +72,10 @@ cargo run -p laughgg-api
 
 | 메서드 | 경로 | 설명 |
 |---|---|---|
-| `GET` | `/api/health` | 헬스체크 |
-| `GET` | `/api/assets` | 에셋 목록. `category` `engine` `min_score` `limit` |
+| `GET` | `/api/health` | 헬스체크. DB에 실제로 질의하고 무엇이 켜졌는지 알려준다 |
+| `GET` | `/api/assets` | 에셋 목록. `q` `category` `engine` `art_style` `badge` `min_score` `limit` `offset` |
+| `GET` | `/api/assets/facets` | 축별 선택지와 개수. 목록과 같은 조건 |
+| `GET` | `/api/assets/{id}` | 에셋 상세. 항목별 점수와 판매 수 |
 | `POST` | `/api/assets` | 에셋 등록 + 즉시 검수 |
 | `POST` | `/api/assets/{id}/review` | 등록된 에셋 재검수. 에셋을 새로 만들지 않는다 |
 | `GET` | `/api/games` | 게임 목록. `q` `engine` `category` `scale` `year_from` `year_to` `uses` `limit` `offset` |
@@ -159,7 +161,7 @@ cargo fmt --all -- --check
 cargo test
 ```
 
-테스트는 도메인 22개(순수 함수)와 통합 39개(저장소·HTTP·인증·결제)로 나뉜다.
+테스트는 도메인 22개(순수 함수)와 통합 47개(저장소·HTTP·인증·결제)로 나뉜다.
 통합 테스트는 `#[sqlx::test]`가 테스트마다 빈 DB를 만들어 쓰므로 **Postgres가 떠 있어야 하고
 `DATABASE_URL`이 필요하다.** 없으면 건너뛰지 않고 실패한다 — 조용히 넘어가면
 CI는 통과하는데 아무것도 검증되지 않은 상태가 된다.

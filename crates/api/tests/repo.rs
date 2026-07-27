@@ -86,13 +86,14 @@ async fn list_shows_one_row_per_asset_with_the_latest_review(pool: PgPool) {
         .await
         .expect("재검수");
 
-    let rows = repo::list_assets(&pool, &AssetQuery::default())
+    let page = repo::list_assets(&pool, &AssetQuery::default())
         .await
         .expect("목록");
 
-    assert_eq!(rows.len(), 1, "검수 두 건이어도 한 줄이어야 한다");
-    assert_eq!(rows[0].total, Some(40), "최신 검수가 붙어야 한다");
-    assert_eq!(rows[0].badge.as_deref(), Some("silver"));
+    assert_eq!(page.total, 1, "검수 두 건이어도 한 줄이어야 한다");
+    assert_eq!(page.assets.len(), 1);
+    assert_eq!(page.assets[0].total, Some(40), "최신 검수가 붙어야 한다");
+    assert_eq!(page.assets[0].badge.as_deref(), Some("silver"));
 }
 
 #[sqlx::test]
@@ -328,4 +329,155 @@ async fn an_unknown_studio_is_rejected(pool: PgPool) {
     .await
     .expect_err("없는 스튜디오는 실패해야 한다");
     assert!(matches!(err, RepoError::StudioNotFound(_)), "{err:?}");
+}
+
+/* 쪽을 넘겨도 배지 순서가 유지되어야 한다.
+
+예전에는 다 받아 온 뒤 Rust 에서 다시 정렬했다. 쪽을 나누는 순간 그게
+안 된다 — 첫 쪽 안에서만 순서가 맞고 넘기면 뒤섞인다. */
+#[sqlx::test]
+async fn paging_keeps_the_badge_order(pool: PgPool) {
+    // 실버 → 챌린저 순으로 넣는다. 정렬이 없으면 넣은 순서가 그대로 나온다.
+    for (title, v) in [("low", 40), ("mid", 75), ("high", 95)] {
+        repo::create_asset(&pool, &new_asset("sh", title, scores(v)))
+            .await
+            .expect("등록");
+    }
+
+    let first = repo::list_assets(
+        &pool,
+        &AssetQuery {
+            limit: Some(1),
+            ..AssetQuery::default()
+        },
+    )
+    .await
+    .expect("첫 쪽");
+    assert_eq!(first.total, 3, "총계는 쪽 크기와 무관해야 한다");
+    assert_eq!(first.assets[0].badge.as_deref(), Some("challenger"));
+
+    let second = repo::list_assets(
+        &pool,
+        &AssetQuery {
+            limit: Some(1),
+            offset: Some(1),
+            ..AssetQuery::default()
+        },
+    )
+    .await
+    .expect("둘째 쪽");
+    assert_eq!(second.assets[0].badge.as_deref(), Some("platinum"));
+
+    let third = repo::list_assets(
+        &pool,
+        &AssetQuery {
+            limit: Some(1),
+            offset: Some(2),
+            ..AssetQuery::default()
+        },
+    )
+    .await
+    .expect("셋째 쪽");
+    assert_eq!(third.assets[0].badge.as_deref(), Some("silver"));
+}
+
+#[sqlx::test]
+async fn asset_detail_carries_per_check_scores(pool: PgPool) {
+    let created = repo::create_asset(&pool, &new_asset("sh", "Gothic Statue", scores(90)))
+        .await
+        .expect("등록");
+
+    let d = repo::get_asset(&pool, created.asset_id)
+        .await
+        .expect("상세");
+    assert_eq!(d.row.title, "Gothic Statue");
+    assert_eq!(d.sold, 0);
+    let scores = d.scores.expect("검수했으면 항목별 점수가 있어야 한다");
+    assert_eq!(scores["license_clean"], 90);
+    assert_eq!(scores["runtime_cost"], 90);
+
+    repo::record_sale(&pool, created.asset_id, &repo::NewSale::default())
+        .await
+        .expect("판매");
+    let after = repo::get_asset(&pool, created.asset_id)
+        .await
+        .expect("상세");
+    assert_eq!(after.sold, 1, "판매 수가 붙어야 한다");
+}
+
+#[sqlx::test]
+async fn a_missing_asset_detail_is_not_found(pool: PgPool) {
+    let err = repo::get_asset(&pool, 9999).await.expect_err("없는 에셋");
+    assert!(matches!(err, RepoError::AssetNotFound(9999)), "{err:?}");
+}
+
+/// 에셋 패싯도 자기 축을 빼고 센다. 게임 쪽과 같은 규칙이다.
+#[sqlx::test]
+async fn asset_facets_exclude_their_own_axis(pool: PgPool) {
+    for (title, v) in [("a", 95), ("b", 95), ("c", 40)] {
+        repo::create_asset(&pool, &new_asset("sh", title, scores(v)))
+            .await
+            .expect("등록");
+    }
+
+    let all = repo::asset_facets(&pool, &AssetQuery::default())
+        .await
+        .expect("전체 패싯");
+    let challenger = all
+        .badge
+        .iter()
+        .find(|f| f.value == "challenger")
+        .expect("챌린저")
+        .count;
+    assert_eq!(challenger, 2);
+
+    let picked = repo::asset_facets(
+        &pool,
+        &AssetQuery {
+            badge: Some("challenger".into()),
+            ..AssetQuery::default()
+        },
+    )
+    .await
+    .expect("좁힌 패싯");
+
+    assert_eq!(
+        picked.badge.len(),
+        all.badge.len(),
+        "배지 축은 자기 조건을 안 받으므로 선택지가 그대로다"
+    );
+    let narrowed: i64 = picked.category.iter().map(|f| f.count).sum();
+    assert_eq!(narrowed, challenger, "다른 축은 챌린저로 좁혀져야 한다");
+}
+
+/// 제목과 창작자 이름 양쪽으로 검색된다.
+#[sqlx::test]
+async fn searching_matches_title_or_creator(pool: PgPool) {
+    repo::create_asset(&pool, &new_asset("nordveil", "Gothic Statue", scores(90)))
+        .await
+        .expect("등록");
+
+    for needle in ["gothic", "STATUE", "nordveil"] {
+        let page = repo::list_assets(
+            &pool,
+            &AssetQuery {
+                q: Some(needle.into()),
+                ..AssetQuery::default()
+            },
+        )
+        .await
+        .expect("검색");
+        assert_eq!(page.total, 1, "{needle:?} 로 찾아야 한다");
+    }
+
+    let miss = repo::list_assets(
+        &pool,
+        &AssetQuery {
+            q: Some("없는말".into()),
+            ..AssetQuery::default()
+        },
+    )
+    .await
+    .expect("검색");
+    assert_eq!(miss.total, 0);
 }
