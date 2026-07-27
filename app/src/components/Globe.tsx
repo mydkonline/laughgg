@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { t } from "../lib/locale";
 
 /* 국경이 없는 공급.
    창작자가 어디서 올리든 같은 기준으로 채점한다는 걸 지도 하나로 말한다.
@@ -187,7 +188,7 @@ export function Globe({ className, focus }: { className?: string; focus?: number
           ctx.globalAlpha = (0.35 + p.z * 0.4) * (lit ? 1 : 0.2);
           ctx.fillStyle = color("--muted");
           ctx.font = "11px Roboto, system-ui, sans-serif";
-          ctx.fillText(name, p.x + 9, p.y + 4);
+          ctx.fillText(t(name), p.x + 9, p.y + 4);
         }
       }
       ctx.globalAlpha = 1;

@@ -255,7 +255,6 @@ export const EN: Record<string, string> = {
   "리뷰": "Reviews",
   "만들기": "Generate",
   "만들다 실패하면 크레딧을 돌려드립니다. 우리 쪽이나 생성 서비스 쪽 문제로 실패한 것을 쓰신 분이 물 이유가 없습니다.": "Failed generations are refunded. If it broke on our side or the provider's, that is not yours to pay for.",
-  "만원": "0K KRW",
   "많이 고릅니다": "most picked",
   "머티리얼": "Materials",
   "명이 따라함": " forked it",
@@ -853,4 +852,41 @@ export const EN: Record<string, string> = {
   "작업": "Time",
   "2시간": "2h",
   "3단": "3 steps",
+
+
+  // IR 섹션별 자리
+  "{org} {size} 인증": "{org}, {size}, verified",
+  "{runs}, 할인율 {rate}": "{runs}, {rate} discount",
+  "전체의 {n}%": "{n}% of the total",
+  "연 환산 {v}": "{v} annualized",
+  "곳": " studios",
+  "배": "×",
+  "억": "00M",
+  "7항목 가중 합산 70점 이상": "70 or more, weighted across seven checks",
+  "%": "%",
+  "2%": "2%",
+  "30%": "30%",
+  "하위 10%": "Bottom 10%",
+  "중앙": "Median",
+  "상위 10%": "Top 10%",
+
+  "sBG 잔존 + DCF, 몬테카를로 3,000회": "sBG retention + DCF, 3,000 Monte Carlo runs",
+  "7.6억원": "760M KRW",
+
+  "공급 먼저, 수요 나중": "Supply first, demand after",
+  "배지와 무관": "Independent of the badge",
+  "밸류에이션 미반영": "Not in the valuation",
+
+
+  // 지구본 도시
+  "서울": "Seoul",
+  "도쿄": "Tokyo",
+  "호치민": "Ho Chi Minh City",
+  "마닐라": "Manila",
+  "방갈로르": "Bengaluru",
+  "바르샤바": "Warsaw",
+  "키이우": "Kyiv",
+  "로스앤젤레스": "Los Angeles",
+  "몬트리올": "Montreal",
+  "헬싱키": "Helsinki",
 };

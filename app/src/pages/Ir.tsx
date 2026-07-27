@@ -3,6 +3,7 @@ import { MARKET, MARKET_SOURCE, MODEL, CHECK_WEIGHTS, REVIEWS, AI_DEV, AI_DEV_SO
 import { PIECES } from "../data/pieces";
 import { Sprite } from "../three/Sprite";
 import { CONCEPTS } from "../data/concepts";
+import { manwon } from "../lib/format";
 import { Donut, CheckWeights, AssetRail, ConceptGrid, CompareBars, useCountUp, useSeen, Key, Bullet, Share } from "../components/Infographic";
 import { Globe } from "../components/Globe";
 import { t } from "../lib/locale";
@@ -58,7 +59,6 @@ export function Ir() {
                 {key ? (
                   <span className="num inline-flex items-baseline text-4xl leading-none text-key">
                     <SummaryMrr />
-                    <span className="text-base font-normal">{t("만원")}</span>
                   </span>
                 ) : (
                   <span className="num text-4xl leading-none text-ink">{t(v as string)}</span>
@@ -94,7 +94,7 @@ export function Ir() {
         <Donut
           percent={38.8}
           label={t("퀄리티 검증률")}
-          sub="7항목 가중 합산 70점 이상"
+          sub={t("7항목 가중 합산 70점 이상")}
         />
       </Section>
 
@@ -105,11 +105,11 @@ export function Ir() {
               <p className="text-xs text-faint">{t(f.label)}</p>
               <p className="num mt-4 text-4xl leading-none text-ink">
                 {f.value}
-                <span className="ml-1 text-base text-muted">{f.unit}</span>
+                <span className="ml-1 text-base text-muted">{t(f.unit)}</span>
               </p>
               <p className="mt-3 text-xs text-muted">{t(f.note)}</p>
               {typeof f.fill === "number" && (
-                <Bullet fill={f.fill} mark={f.mark} markLabel={f.markLabel} />
+                <Bullet fill={f.fill} mark={f.mark} markLabel={f.markLabel && t(f.markLabel)} />
               )}
             </div>
           ))}
@@ -167,11 +167,11 @@ export function Ir() {
               key={f.label}
               label={t(f.label)}
               value={f.value}
-              unit={f.unit ?? ""}
+              unit={t(f.unit ?? "")}
               note={t(f.note)}
               fill={f.fill}
               mark={f.mark}
-              markLabel={f.markLabel}
+              markLabel={f.markLabel && t(f.markLabel)}
             />
           ))}
         </div>
@@ -192,7 +192,7 @@ export function Ir() {
                   : "border-line text-muted hover:border-accent hover:text-ink",
               ].join(" ")}
             >
-              {f}
+              {t(f)}
               <span className={used === f ? "ml-1.5 opacity-60" : "ml-1.5 text-faint"}>
                 {f === "전체" ? REVIEWS.length : REVIEWS.filter((r) => r.used.includes(f)).length}
               </span>
@@ -207,7 +207,7 @@ export function Ir() {
               style={{ animationDelay: `${i * 45}ms` }}
               className="m-0 flex animate-[fade_.4s_both] flex-col border-t border-line pt-4"
             >
-              <blockquote className="m-0 flex-1 text-xs leading-relaxed text-muted">{r.body}</blockquote>
+              <blockquote className="m-0 flex-1 text-xs leading-relaxed text-muted">{t(r.body)}</blockquote>
               <figcaption className="mt-3 flex items-center gap-3">
                 {/* 사진을 안 쓴다. 실명과 얼굴은 본인이 직접 줘야 하는 것이다. */}
                 <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-accent-soft text-xs font-bold text-accent">
@@ -216,7 +216,7 @@ export function Ir() {
                 <span className="min-w-0">
                   <b className="block truncate text-xs font-semibold text-ink">{t(r.role)}</b>
                   <span className="block truncate text-xs text-faint">
-                    {r.org} {r.size} 인증
+                    {t("{org} {size} 인증", { org: t(r.org), size: t(r.size) })}
                   </span>
                 </span>
               </figcaption>
@@ -234,10 +234,10 @@ export function Ir() {
         <dl className="mb-10 grid gap-x-10 gap-y-7 border-b border-line pb-8 sm:grid-cols-3 lg:grid-cols-5">
           {MODEL.assumptions.map(([k, v, unit]) => (
             <div key={k}>
-              <dt className="text-xs text-faint">{k}</dt>
+              <dt className="text-xs text-faint">{t(k)}</dt>
               <dd className="num m-0 text-2xl text-ink">
-                {v}
-                <span className="ml-1 text-xs font-normal text-faint">{unit}</span>
+                {t(v)}
+                <span className="ml-1 text-xs font-normal text-faint">{t(unit)}</span>
               </dd>
             </div>
           ))}
@@ -248,23 +248,23 @@ export function Ir() {
           <dl className="mt-8 grid grid-cols-2 gap-6 border-t border-line pt-6 sm:grid-cols-4">
             {MODEL.milestones.map(([k, v]) => (
               <div key={k}>
-                <dt className="text-xs text-faint">{k}</dt>
-                <dd className="num m-0 text-2xl text-ink">{v}</dd>
+                <dt className="text-xs text-faint">{t(k)}</dt>
+                <dd className="num m-0 text-2xl text-ink">{t(v)}</dd>
               </div>
             ))}
           </dl>
         </div>
       </Section>
 
-      <Section n="06" title={t("기업가치")} lead="sBG 잔존 + DCF, 몬테카를로 3,000회">
+      <Section n="06" title={t("기업가치")} lead={t("sBG 잔존 + DCF, 몬테카를로 3,000회")}>
         <Valuation />
       </Section>
 
-      <Section n="07" title={t("공급 지역")} lead="공급 먼저, 수요 나중">
+      <Section n="07" title={t("공급 지역")} lead={t("공급 먼저, 수요 나중")}>
         <Rollout />
       </Section>
 
-      <Section n="08" title={t("수수료")} lead="배지와 무관">
+      <Section n="08" title={t("수수료")} lead={t("배지와 무관")}>
         <div>
           <CompareBars
             rows={[
@@ -278,7 +278,7 @@ export function Ir() {
 
       {/* 반영하지 않은 값이라 맨 뒤에 온다. 앞에 두면 앞의 숫자들이
           이것까지 포함한 값으로 읽힌다. */}
-      <Section n="09" title={t("기대효과")} lead="밸류에이션 미반영">
+      <Section n="09" title={t("기대효과")} lead={t("밸류에이션 미반영")}>
         <Upside />
       </Section>
 
@@ -298,8 +298,8 @@ export function Ir() {
             ["공급 지역", ROLLOUT_SOURCE],
           ].map(([k, v]) => (
             <div key={k} className="grid grid-cols-[72px_minmax(0,1fr)] gap-4 border-b border-line py-3">
-              <dt className="text-xs font-semibold text-ink">{k}</dt>
-              <dd className="m-0 text-xs leading-relaxed text-faint">{v}</dd>
+              <dt className="text-xs font-semibold text-ink">{t(k)}</dt>
+              <dd className="m-0 text-xs leading-relaxed text-faint">{t(v)}</dd>
             </div>
           ))}
           <div className="grid grid-cols-[72px_minmax(0,1fr)] gap-4 border-b border-line py-3">
@@ -355,7 +355,7 @@ function Rollout() {
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
-                    <b className="text-xs font-bold text-ink">{r.region}</b>
+                    <b className="text-xs font-bold text-ink">{t(r.region)}</b>
                     {/* 공급인지 수요인지가 이 표의 핵심이라 지역 바로 옆에 붙는다. */}
                     <span
                       className={[
@@ -365,9 +365,9 @@ function Rollout() {
                     >
                       {t(r.role)}
                     </span>
-                    <span className="text-[10px] text-faint">{r.cited ? "인용" : "가정"}</span>
+                    <span className="text-[10px] text-faint">{t(r.cited ? "인용" : "가정")}</span>
                   </span>
-                  <span className="mt-0.5 block text-xs text-faint">{r.why}</span>
+                  <span className="mt-0.5 block text-xs text-faint">{t(r.why)}</span>
                 </span>
               </button>
             </li>
@@ -396,16 +396,16 @@ function Upside() {
               <span className="num text-xs text-faint">{String(u.no).padStart(2, "0")}</span>
               <b className="text-base font-bold text-ink">{t(u.name)}</b>
             </span>
-            <p className="mt-3 text-xs text-muted">{u.opens}</p>
-            <p className="mt-1 text-xs text-muted">{u.effect}</p>
+            <p className="mt-3 text-xs text-muted">{t(u.opens)}</p>
+            <p className="mt-1 text-xs text-muted">{t(u.effect)}</p>
             <p className="mt-3 flex items-baseline gap-2 border-t border-line pt-3 text-xs text-faint">
               {t("움직이는 지표")}
-              <b className="num text-xs text-accent">{u.metric}</b>
+              <b className="num text-xs text-accent">{t(u.metric)}</b>
             </p>
           </li>
         ))}
       </ol>
-      <p className="mt-6 text-xs text-faint">{UPSIDE_NOTE}</p>
+      <p className="mt-6 text-xs text-faint">{t(UPSIDE_NOTE)}</p>
     </div>
   );
 }
@@ -413,7 +413,8 @@ function Upside() {
 /** 요약의 MRR. 천 단위 구분이 붙어야 자릿수를 잘못 읽지 않는다. */
 function SummaryMrr() {
   const [ref, shown] = useCountUp(STREAM_TOTAL.mrr);
-  return <span ref={ref}>{Number(shown).toLocaleString("ko-KR")}</span>;
+  // 단위까지 여기서 만든다. 숫자와 단위를 따로 붙이면 영어에서 자릿수가 깨진다.
+  return <span ref={ref}>{manwon(Number(shown))}</span>;
 }
 
 /* 기업가치.
@@ -441,11 +442,15 @@ function Valuation() {
                 key ? "bg-key-soft" : "hover:bg-surface",
               ].join(" ")}
             >
-              <dt className={`text-xs ${key ? "font-bold text-key" : "text-faint"}`}>{k}</dt>
+              <dt className={`text-xs ${key ? "font-bold text-key" : "text-faint"}`}>{t(k)}</dt>
               <dd className="m-0 mt-1">
-                {key ? <Key value={5.9} suffix="배" decimals={1} /> : <span className="num text-2xl text-ink">{v}</span>}
+                {key ? (
+                  <Key value={5.9} suffix={t("배")} decimals={1} />
+                ) : (
+                  <span className="num text-2xl text-ink">{t(v)}</span>
+                )}
               </dd>
-              <dd className="m-0 mt-1 text-[10px] text-faint">{why}</dd>
+              <dd className="m-0 mt-1 text-[10px] text-faint">{t(why)}</dd>
             </div>
           );
         })}
@@ -465,7 +470,9 @@ function Valuation() {
                 key={k}
                 className="group -mx-3 flex items-center gap-3 rounded-lg border-b border-line px-3 py-2.5 transition-colors last:border-b-0 hover:bg-surface"
               >
-                <dt className="num w-12 shrink-0 text-xs text-faint transition-colors group-hover:text-ink">{k}</dt>
+                <dt className="num w-12 shrink-0 text-xs text-faint transition-colors group-hover:text-ink">
+                  {t(k)}
+                </dt>
                 <dd className="m-0 h-1.5 min-w-0 flex-1 overflow-hidden rounded-full bg-line">
                   <span
                     className="block h-full rounded-full bg-accent transition-[width] duration-700 ease-out motion-reduce:transition-none"
@@ -485,11 +492,11 @@ function Valuation() {
           <p className="mb-4 text-xs font-bold text-ink">
             {t("기업가치")}
             <span className="ml-2 font-normal text-faint">
-              {VALUATION.runs}, 할인율 {VALUATION.discount}
+              {t("{runs}, 할인율 {rate}", { runs: t(VALUATION.runs), rate: VALUATION.discount })}
             </span>
           </p>
           <p>
-            <Key value={4.5} suffix="억" decimals={1} size="lg" />
+            <Key value={4.5} suffix={t("억")} decimals={1} size="lg" />
           </p>
           <p className="mt-2 text-xs text-faint">{t("중앙값")}</p>
 
@@ -508,8 +515,10 @@ function Valuation() {
               ["상위 10%", VALUATION.p90],
             ].map(([k, v], i) => (
               <div key={k} className={i === 2 ? "text-right" : i === 1 ? "text-center" : ""}>
-                <dt className="text-[10px] text-faint">{k}</dt>
-                <dd className={`num m-0 text-xs font-bold ${i === 1 ? "text-key" : "text-ink"}`}>{v}</dd>
+                <dt className="text-[10px] text-faint">{t(k)}</dt>
+                <dd className={`num m-0 text-xs font-bold ${i === 1 ? "text-key" : "text-ink"}`}>
+                  {t(v)}
+                </dd>
               </div>
             ))}
           </dl>
@@ -537,9 +546,11 @@ function Valuation() {
                   base ? "border-key bg-key-soft" : "border-line hover:bg-surface",
                 ].join(" ")}
               >
-                <dt className={`text-xs ${base ? "font-bold text-key" : "text-faint"}`}>{k}</dt>
-                <dd className={`num m-0 mt-1 text-2xl ${base ? "text-key" : "text-ink"}`}>{v}</dd>
-                <dd className="m-0 mt-1 text-[10px] text-faint">{why}</dd>
+                <dt className={`text-xs ${base ? "font-bold text-key" : "text-faint"}`}>{t(k)}</dt>
+                <dd className={`num m-0 mt-1 text-2xl ${base ? "text-key" : "text-ink"}`}>
+                  {t(v)}
+                </dd>
+                <dd className="m-0 mt-1 text-[10px] text-faint">{t(why)}</dd>
               </div>
             );
           })}
@@ -613,20 +624,19 @@ function Streams() {
                   <dl className="mt-4 grid gap-x-8 gap-y-3 sm:grid-cols-3">
                     {s.assume.map(([k, v]) => (
                       <div key={k}>
-                        <dt className="text-xs text-faint">{k}</dt>
-                        <dd className="num m-0 text-base text-ink">{v}</dd>
+                        <dt className="text-xs text-faint">{t(k)}</dt>
+                        <dd className="num m-0 text-base text-ink">{t(v)}</dd>
                       </div>
                     ))}
                   </dl>
-                  <p className="num mt-4 border-t border-line pt-3 text-xs text-muted">{s.calc}</p>
+                  <p className="num mt-4 border-t border-line pt-3 text-xs text-muted">{t(s.calc)}</p>
                   <p className="mt-2 text-xs text-faint">{t(s.note)}</p>
                 </div>
 
                 <div className="sm:border-l sm:border-line sm:pl-6">
                   <p className="text-xs text-faint">{t("월 기여")}</p>
                   <p className="num mt-1 text-4xl leading-none text-ink">
-                    {s.mrr.toLocaleString("ko-KR")}
-                    <span className="ml-1 text-base text-muted">{t("만원")}</span>
+                    {manwon(s.mrr)}
                   </p>
                   <span className="mt-3 block h-1.5 overflow-hidden rounded-full bg-surface-2">
                     <b
@@ -635,7 +645,7 @@ function Streams() {
                     />
                   </span>
                   <p className="mt-1.5 text-xs text-faint">
-                    전체의 {Math.round((s.mrr / STREAM_TOTAL.mrr) * 100)}%
+                    {t("전체의 {n}%", { n: Math.round((s.mrr / STREAM_TOTAL.mrr) * 100) })}
                   </p>
                 </div>
               </div>
@@ -649,17 +659,22 @@ function Streams() {
           여기서 할 말은 "셋이 쌓인다" 가 아니라 "하나가 거의 전부다" 이므로
           한 줄에 비율로 눕히는 쪽이 맞다. */}
       <div className="mt-8 border-t border-line pt-6">
-        <Share items={STREAMS.map((x) => [x.name, x.mrr] as [string, number])} unit="만원" />
+        <Share
+          items={STREAMS.map((x) => [t(x.name), x.mrr] as [string, number])}
+          format={manwon}
+        />
       </div>
 
       <dl className="mt-6 flex flex-wrap items-baseline gap-x-8 gap-y-2 border-t border-line pt-4">
         <div className="-mx-2 flex items-baseline gap-2 rounded-lg bg-key-soft px-2 py-1">
           <dt className="text-xs font-bold text-key">{t("합계 MRR")}</dt>
-          <dd className="num m-0 text-2xl text-key">{STREAM_TOTAL.mrr.toLocaleString("ko-KR")}만원</dd>
+          <dd className="num m-0 text-2xl text-key">
+            {manwon(STREAM_TOTAL.mrr)}
+          </dd>
         </div>
         <div className="flex items-baseline gap-2">
           <dt className="text-xs text-faint">{t("연 환산")}</dt>
-          <dd className="num m-0 text-base text-ink">{STREAM_TOTAL.arr}</dd>
+          <dd className="num m-0 text-base text-ink">{t(STREAM_TOTAL.arr)}</dd>
         </div>
       </dl>
     </div>
@@ -696,7 +711,7 @@ function RevenueFunnel() {
             <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
               <span className="text-xs font-semibold text-ink">{t(s.label)}</span>
               {s.rate && <span className="text-[10px] text-accent">{s.rate}</span>}
-              <b className="num ml-auto text-base text-ink">{s.show}</b>
+              <b className="num ml-auto text-base text-ink">{t(s.show)}</b>
             </div>
             <span
               className="mt-1.5 block h-2.5 rounded-sm bg-chrome-700 transition-[width] duration-700"
@@ -708,12 +723,19 @@ function RevenueFunnel() {
 
       {/* 마지막 단계에 구독료를 곱하면 아래 마일스톤의 24개월 MRR 이 나온다. */}
       <div className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1 border-t border-line pt-4">
-        <span className="num text-2xl text-ink">{FUNNEL_RESULT.seats}곳</span>
+        <span className="num text-2xl text-ink">
+          {FUNNEL_RESULT.seats}
+          {t("곳")}
+        </span>
         <span className="text-xs text-faint">×</span>
-        <span className="num text-2xl text-ink">{FUNNEL_RESULT.price}만원</span>
+        <span className="num text-2xl text-ink">
+          {manwon(FUNNEL_RESULT.price)}
+        </span>
         <span className="text-xs text-faint">=</span>
-        <span className="num text-4xl text-accent">{FUNNEL_RESULT.mrr}</span>
-        <span className="ml-auto text-xs text-faint">연 환산 {FUNNEL_RESULT.arr}</span>
+        <span className="num text-4xl text-accent">{t(FUNNEL_RESULT.mrr)}</span>
+        <span className="ml-auto text-xs text-faint">
+          {t("연 환산 {v}", { v: t(FUNNEL_RESULT.arr) })}
+        </span>
       </div>
     </div>
   );
@@ -826,7 +848,7 @@ function Curve() {
         className="pointer-events-none absolute right-0 -translate-y-1/2 rounded bg-accent px-2 py-0.5 text-xs font-bold text-white"
         style={{ top: `${(1 - last / max) * 90 + 5}%` }}
       >
-        {last.toLocaleString("ko-KR")}만원
+        {manwon(last)}
       </span>
       <div className="mt-1 flex justify-between text-xs text-faint">
         <span>{t("0개월")}</span>

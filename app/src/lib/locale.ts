@@ -140,7 +140,16 @@ export function remember(next: Locale) {
 
    `{n}` 자리를 채운다. 문장을 잘라 이어 붙이면 언어마다 어순이 달라
    말이 안 되므로, 자리만 비워 두고 통째로 번역한다. */
-export function t(ko: string, vars?: Record<string, string | number>): string {
+export function t(
+  ko: string | undefined,
+  vars?: Record<string, string | number>,
+): string {
+  /* 없는 값도 받는다.
+
+     데이터셋에서 오는 값은 선택 항목이 많다(`unit?`, `markLabel?`).
+     부르는 자리마다 `?? ""` 를 붙이면 감싼 자리가 안 읽히고, 하나 빠뜨리면
+     그 자리만 조용히 원문으로 남는다. */
+  if (ko === undefined) return "";
   const table = TABLES[current];
   const hit = table?.[ko];
 

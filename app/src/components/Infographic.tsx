@@ -194,7 +194,17 @@ export function Donut({ percent, label, sub }: { percent: number; label: string;
 
    작은 조각은 막대 안에 글자가 안 들어간다. 그래서 아래 범례에 값과 비율을
    따로 적는다 — 길이만으로 읽게 두면 2% 짜리는 없는 것이 된다. */
-export function Share({ items, unit = "" }: { items: [string, number][]; unit?: string }) {
+export function Share({
+  items,
+  unit = "",
+  format,
+}: {
+  items: [string, number][];
+  unit?: string;
+  /* 숫자와 단위를 따로 붙이면 말에 따라 자릿수가 깨진다(만원 → M KRW).
+     그럴 때는 값 전체를 만들어 넘긴다. */
+  format?: (v: number) => string;
+}) {
   const [ref, seen] = useSeen<HTMLDivElement>();
   const total = items.reduce((a, [, v]) => a + v, 0);
   const shade = (i: number) =>
@@ -225,8 +235,8 @@ export function Share({ items, unit = "" }: { items: [string, number][]; unit?: 
             <span className="h-2.5 w-2.5 shrink-0 rounded-sm" style={{ background: shade(i) }} />
             <dt className="min-w-0 flex-1 truncate text-xs text-ink">{name}</dt>
             <dd className="num m-0 shrink-0 text-xs text-ink">
-              {v.toLocaleString("ko-KR")}
-              <span className="ml-0.5 text-[10px] font-normal text-faint">{unit}</span>
+              {format ? format(v) : v.toLocaleString("ko-KR")}
+              {!format && <span className="ml-0.5 text-[10px] font-normal text-faint">{unit}</span>}
             </dd>
             <dd className="num m-0 w-9 shrink-0 text-right text-[10px] text-faint">
               {((v / total) * 100).toFixed(1)}%
@@ -357,7 +367,7 @@ export function CheckWeights({ items }: { items: [string, number, string][] }) {
         {items.map(([name, w], i) => (
           <span
             key={name}
-            title={`${name} ${w}%`}
+            title={`${t(name)} ${w}%`}
             className="grid place-items-center transition-[flex-grow] duration-700"
             style={{ flexGrow: on ? w : 0, background: shade(i) }}
           >
@@ -370,8 +380,8 @@ export function CheckWeights({ items }: { items: [string, number, string][] }) {
         {items.map(([name, w, why], i) => (
           <div key={name} className="flex items-baseline gap-3 border-b border-line-soft pb-2">
             <span className="h-2.5 w-2.5 shrink-0 rounded-sm" style={{ background: shade(i) }} />
-            <dt className="shrink-0 text-xs font-semibold text-ink">{name}</dt>
-            <dd className="m-0 min-w-0 flex-1 truncate text-[10px] text-faint">{why}</dd>
+            <dt className="shrink-0 text-xs font-semibold text-ink">{t(name)}</dt>
+            <dd className="m-0 min-w-0 flex-1 truncate text-[10px] text-faint">{t(why)}</dd>
             <dd className="num m-0 shrink-0 text-base text-ink">{w}</dd>
           </div>
         ))}
@@ -421,7 +431,7 @@ export function ConceptGrid({ piece, ids }: { piece?: Piece; ids: string[] }) {
             <div className="aspect-square overflow-hidden rounded-2xl border border-line bg-gradient-to-b from-surface-2 to-surface">
               <Sprite piece={target} knobs={c.knobs} raster={NEUTRAL_RASTER} />
             </div>
-            <figcaption className="pt-2 text-xs text-faint">{c.name}</figcaption>
+            <figcaption className="pt-2 text-xs text-faint">{t(c.name)}</figcaption>
           </figure>
         );
       })}
