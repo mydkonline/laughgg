@@ -5,10 +5,21 @@ use axum::{
     extract::{Path, Query, State},
     http::StatusCode,
 };
+use serde::Deserialize;
 use serde_json::json;
 
 use super::{ApiResult, AppState, auth::CurrentAccount};
 use crate::repo::{self, AssetQuery, NewAsset};
+
+/* 어느 말로 볼 것인가.
+
+창작자가 쓴 제목과 설명은 사용자 데이터라 앱의 빌드 시점 번역표에 못
+들어간다. 번역이 있으면 얹고 없으면 원문이 나간다 — 비어 보이는 것보다
+원문이 나가는 게 낫다. */
+#[derive(Debug, Default, Deserialize)]
+pub struct LocaleQuery {
+    pub locale: Option<String>,
+}
 
 /// 목록 한 쪽. 전체 건수를 같이 준다 — 없으면 쪽 번호를 못 그린다.
 ///
@@ -41,8 +52,9 @@ pub async fn facets(
 pub async fn get(
     State(st): State<AppState>,
     Path(id): Path<i64>,
+    Query(q): Query<LocaleQuery>,
 ) -> ApiResult<Json<serde_json::Value>> {
-    let detail = repo::get_asset(&st.pool, id).await?;
+    let detail = repo::get_asset(&st.pool, id, q.locale.as_deref()).await?;
     Ok(Json(json!(detail)))
 }
 

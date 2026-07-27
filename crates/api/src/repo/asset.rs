@@ -37,6 +37,12 @@ pub struct AssetQuery {
     장바구니가 쓴다. 담긴 것이 열 점이면 상세를 열 번 부르는 대신
     한 번에 가져온다 — 열 번 부르면 화면이 열 번 나눠 그려진다. */
     pub ids: Option<String>,
+    /* 어느 말로 볼 것인가.
+
+    화면 문구는 앱이 옮기지만 창작자가 쓴 제목과 설명은 사용자 데이터라
+    빌드 시점 표에 못 들어간다. 번역이 있으면 얹고 없으면 원문이 나간다 —
+    비어 보이는 것보다 한국어가 나가는 게 낫다. */
+    pub locale: Option<String>,
     pub limit: Option<i64>,
     pub offset: Option<i64>,
 }
@@ -44,6 +50,14 @@ pub struct AssetQuery {
 impl AssetQuery {
     /// 쉼표로 나눈 id. 숫자가 아닌 건 버린다 — 거르지 않으면 SQL 이
     /// 통째로 실패해서 멀쩡한 줄까지 안 나온다.
+    /// 앱이 아는 말만 받는다. 아무 문자열이나 받으면 인덱스를 못 탄다.
+    fn wanted_locale(&self) -> Option<&str> {
+        match self.locale.as_deref() {
+            Some(l) if l != "ko" && !l.is_empty() => Some(l),
+            _ => None,
+        }
+    }
+
     fn id_list(&self) -> Option<Vec<i64>> {
         let raw = self.ids.as_deref()?;
         let v: Vec<i64> = raw
@@ -59,7 +73,7 @@ impl AssetQuery {
 목록과 패싯이 다른 조건으로 돌면 "37개" 라고 써 놓고 12줄만 나온다.
 게임 쪽에서 이미 같은 이유로 묶어 뒀다.
 
-$1 검색어  $2 분류  $3 엔진  $4 화풍  $5 배지  $6 최소 점수  $7 id 목록 */
+$1 검색어  $2 분류  $3 엔진  $4 화풍  $5 배지  $6 최소 점수  $7 id 목록  $8 언어 */
 const FROM_WHERE: &str = r"
     FROM assets a
     JOIN creators c ON c.id = a.creator_id
@@ -69,6 +83,9 @@ const FROM_WHERE: &str = r"
         ORDER BY rv.reviewed_at DESC, rv.id DESC
         LIMIT 1
     ) r ON TRUE
+    /* 번역이 있으면 얹는다. 없으면 조인이 비고 COALESCE 가 원문으로
+       떨어진다 — 안 옮긴 에셋이 목록에서 사라지면 안 된다. */
+    LEFT JOIN asset_translations tr ON tr.asset_id = a.id AND tr.locale = $8
     WHERE ($1::text IS NULL OR a.title ILIKE '%' || $1 || '%' OR c.display_name ILIKE '%' || $1 || '%')
       AND ($2::text IS NULL OR a.category = $2)
       AND ($3::text IS NULL OR a.engine = $3 OR a.engine = 'any')
@@ -121,6 +138,7 @@ pub async fn list_assets(pool: &PgPool, q: &AssetQuery) -> RepoResult<AssetPage>
         .bind(q.badge.as_deref())
         .bind(min_score)
         .bind(ids.as_deref())
+        .bind(q.wanted_locale())
         .fetch_one(pool)
         .await
         .context("counting assets")?;
@@ -128,8 +146,8 @@ pub async fn list_assets(pool: &PgPool, q: &AssetQuery) -> RepoResult<AssetPage>
     // 배지가 노출 순위를 정한다 — 같은 점수라도 상위 배지가 먼저 보인다.
     // 가중치를 SQL 안에 두면 쪽을 넘겨도 순서가 유지된다.
     let rows = sqlx::query_as::<_, ListRow>(&format!(
-        r"SELECT a.id, a.title, c.display_name, a.category, a.engine, a.art_style,
-                 a.engines, a.price_usd::double precision, r.total, r.badge
+        r"SELECT a.id, COALESCE(tr.title, a.title), c.display_name, a.category, a.engine,
+                 a.art_style, a.engines, a.price_usd::double precision, r.total, r.badge
           {FROM_WHERE}
           ORDER BY CASE r.badge
                      WHEN 'challenger' THEN 8
@@ -139,7 +157,7 @@ pub async fn list_assets(pool: &PgPool, q: &AssetQuery) -> RepoResult<AssetPage>
                      ELSE 0
                    END DESC,
                    COALESCE(r.total, 0) DESC, a.id DESC
-          LIMIT $8 OFFSET $9"
+          LIMIT $9 OFFSET $10"
     ))
     .bind(q.q.as_deref())
     .bind(q.category.as_deref())
@@ -148,6 +166,7 @@ pub async fn list_assets(pool: &PgPool, q: &AssetQuery) -> RepoResult<AssetPage>
     .bind(q.badge.as_deref())
     .bind(min_score)
     .bind(ids.as_deref())
+    .bind(q.wanted_locale())
     .bind(limit)
     .bind(offset)
     .fetch_all(pool)
@@ -192,10 +211,16 @@ pub async fn list_assets(pool: &PgPool, q: &AssetQuery) -> RepoResult<AssetPage>
 ///
 /// # Errors
 /// 에셋이 없거나 조회에 실패하면 오류를 반환한다.
-pub async fn get_asset(pool: &PgPool, asset_id: i64) -> RepoResult<AssetDetail> {
+pub async fn get_asset(
+    pool: &PgPool,
+    asset_id: i64,
+    locale: Option<&str>,
+) -> RepoResult<AssetDetail> {
+    // 기본 언어는 조인할 게 없다. 빈 문자열을 넣으면 안 맞아서 조인이 빈다.
+    let locale = locale.filter(|l| *l != "ko" && !l.is_empty());
     let row: Option<DetailRow> = sqlx::query_as(
-        r"SELECT a.id, a.title, c.display_name, a.category, a.engine, a.art_style,
-                 a.engines, a.price_usd::double precision, r.total, r.badge,
+        r"SELECT a.id, COALESCE(tr.title, a.title), c.display_name, a.category, a.engine,
+                 a.art_style, a.engines, a.price_usd::double precision, r.total, r.badge,
                  CASE WHEN r.total IS NULL THEN NULL ELSE jsonb_build_object(
                    'mesh_integrity',  r.mesh_integrity,
                    'texture_quality', r.texture_quality,
@@ -212,9 +237,11 @@ pub async fn get_asset(pool: &PgPool, asset_id: i64) -> RepoResult<AssetDetail> 
               SELECT * FROM reviews rv WHERE rv.asset_id = a.id
               ORDER BY rv.reviewed_at DESC, rv.id DESC LIMIT 1
           ) r ON TRUE
+          LEFT JOIN asset_translations tr ON tr.asset_id = a.id AND tr.locale = $2
           WHERE a.id = $1",
     )
     .bind(asset_id)
+    .bind(locale)
     .fetch_optional(pool)
     .await
     .context("loading asset")?;
@@ -317,6 +344,7 @@ async fn asset_facet(
     .bind(pick("badge", skip, q.badge.as_deref()))
     .bind(min_score)
     .bind(q.id_list().as_deref())
+    .bind(q.wanted_locale())
     .fetch_all(pool)
     .await
     .with_context(|| format!("counting asset facet {column}"))?;

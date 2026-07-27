@@ -165,3 +165,41 @@ export const missing = new Set<string>();
 if (import.meta.env.DEV) {
   (globalThis as { __laughggMissing?: Set<string> }).__laughggMissing = missing;
 }
+
+/* 레코드 하나를 지금 언어로 겹쳐 읽는다.
+
+   `t()` 와 쓰임이 다르다. `t()` 는 화면 문구용이고 — 개수가 정해져 있고 잘
+   안 바뀐다 — 이건 데이터셋 콘텐츠용이다. 둘을 한 표에 넣었더니 두 가지가
+   깨졌다.
+
+     원문이 키였다     한 글자만 고쳐도 번역이 조용히 끊긴다. 오류가 안 난다
+     레코드가 아니었다  "영어 설명이 없는 기사가 몇 개냐" 에 답을 못 한다
+
+   그래서 키를 **레코드 id** 로 잡는다. 원문을 고쳐도 안 끊기고, 무엇이
+   비었는지 셀 수 있다.
+
+   겹치는 건 필드 단위다. 제목만 옮기고 본문은 아직이면 제목만 영어로 나가고
+   본문은 한국어가 남는다 — 레코드 전체가 있거나 없거나가 아니다.
+
+   기본 언어면 표를 아예 안 본다. */
+export function localized<T extends object>(
+  table: Record<string, Partial<T>> | undefined,
+  key: string | number,
+  base: T,
+): T {
+  if (current === BASE || !table) return base;
+  const over = table[String(key)];
+  return over ? { ...base, ...over } : base;
+}
+
+/* 아직 안 옮긴 레코드를 센다.
+
+   화면을 훑어 세면 빠뜨린다. 콘솔에서 이 값을 보면 데이터셋마다 몇 개가
+   남았는지가 그대로 나온다. */
+export function coverage<T extends object>(
+  table: Record<string, Partial<T>> | undefined,
+  keys: (string | number)[],
+): { done: number; total: number; missing: string[] } {
+  const missing = keys.map(String).filter((k) => !table?.[k]);
+  return { done: keys.length - missing.length, total: keys.length, missing };
+}

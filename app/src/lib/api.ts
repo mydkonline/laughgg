@@ -9,8 +9,19 @@
    비워 두면 같은 도메인으로 본다. */
 
 import type { CheckKey } from "../data/checks";
+import { BASE, locale } from "./locale";
 
-const BASE = (import.meta.env.VITE_API_URL ?? "").replace(/\/$/, "");
+const API = (import.meta.env.VITE_API_URL ?? "").replace(/\/$/, "");
+
+/* 어느 말로 볼지 서버에 알린다.
+
+   창작자가 쓴 제목과 설명은 사용자 데이터라 앱의 번역표에 못 들어간다.
+   서버가 asset_translations 를 얹어서 준다 — 없으면 원문이 온다.
+
+   기본 언어면 아예 안 붙인다. 붙여 봐야 조인만 한 번 더 돈다. */
+function localeParam(): string {
+  return locale() === BASE ? "" : `&locale=${locale()}`;
+}
 
 /** 서버가 준 오류. 상태 코드로 갈라 보려면 종류가 남아 있어야 한다. */
 export class ApiError extends Error {
@@ -36,7 +47,7 @@ export class ApiError extends Error {
 async function call<T>(path: string, init?: RequestInit): Promise<T> {
   let res: Response;
   try {
-    res = await fetch(`${BASE}/api${path}`, {
+    res = await fetch(`${API}/api${path}`, {
       ...init,
       // 쿠키를 싣는다. 이게 없으면 세션이 매 요청 사라진다.
       credentials: "include",
@@ -89,7 +100,7 @@ export const api = {
   me: () => call<Account>("/auth/me"),
 
   /** 구글 로그인은 리다이렉트라 fetch 가 아니다. 주소만 만들어 준다. */
-  googleUrl: () => `${BASE}/api/auth/google`,
+  googleUrl: () => `${API}/api/auth/google`,
 
   /* 올릴 자리를 받는다. 키는 서버가 정한다 — 우리가 정하면 uploads/ 밖이나
      남의 접두사를 적어 보낼 수 있다. */
@@ -118,7 +129,7 @@ export const api = {
      나눠 그려지고, 그중 하나가 느리면 그 줄만 늦게 뜬다. */
   assetsByIds: (ids: number[]) =>
     call<{ total: number; assets: MarketAsset[] }>(
-      `/assets?ids=${ids.join(",")}&limit=${Math.max(ids.length, 1)}`,
+      `/assets?ids=${ids.join(",")}&limit=${Math.max(ids.length, 1)}${localeParam()}`,
     ),
 
   /* 결제를 누르기 전에 무엇이 막혔는지 본다. 장바구니는 브라우저에 있어서

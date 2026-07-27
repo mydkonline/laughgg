@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { EPISODES, type Episode } from "../data/episodes";
+import { EPISODES_EN } from "../i18n/en/episodes";
+import { localized } from "../lib/locale";
 import { PIECES, modelSrc } from "../data/pieces";
 import { Preview } from "../three/Preview";
 import { NEUTRAL, CONCEPTS } from "../data/concepts";
@@ -34,7 +36,9 @@ const STAGE_LOOK: Record<string, string> = {
 
 export function Vlog() {
   const [cur, setCur] = useState(0);
-  const ep = EPISODES[cur] ?? EPISODES[0]!;
+  const base = EPISODES[cur] ?? EPISODES[0]!;
+  // 레코드를 지금 언어로 겹쳐 읽는다. 안 옮긴 필드는 한국어가 남는다.
+  const ep = localized(EPISODES_EN, base.no, base);
 
   return (
     <main className="mx-auto max-w-[1240px] px-5 pb-20">
@@ -43,9 +47,16 @@ export function Vlog() {
         <h1 className="mt-1 text-2xl font-bold text-ink">{t("에셋 제작 기록")}</h1>
         <p className="mt-2 text-xs text-muted">{t("블록아웃부터 분석 통과까지, 단계별 작업 내용과 수치입니다.")}</p>
         <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-t border-line pt-4">
-          <Stat k="기록한 단계" v={`${EPISODES.length}편`} />
-          <Stat k="기간" v={`${EPISODES[0]?.date ?? ""} 부터`} />
-          <Stat k="최종 결과" v={EPISODES.at(-1)?.grade ? `${EPISODES.at(-1)!.grade![0]} ${EPISODES.at(-1)!.grade![2]}점` : "진행 중"} />
+          <Stat k={t("기록한 단계")} v={t("{n}편", { n: EPISODES.length })} />
+          <Stat k={t("기간")} v={t("{d} 부터", { d: EPISODES[0]?.date ?? "" })} />
+          <Stat
+            k={t("최종 결과")}
+            v={
+              EPISODES.at(-1)?.grade
+                ? `${t(EPISODES.at(-1)!.grade![0])} ${EPISODES.at(-1)!.grade![2]}`
+                : t("진행 중")
+            }
+          />
         </dl>
       </header>
 
@@ -82,8 +93,8 @@ export function Vlog() {
           <dl className="mt-5 flex flex-wrap gap-x-8 gap-y-3 border-t border-line pt-4">
             {ep.delta.map(([k, v, dir]) => (
               <div key={k}>
-                <dt className="text-xs text-faint">{k}</dt>
-                <dd className={`m-0 text-2xl font-bold tabular-nums ${dir === "up" ? "text-accent" : "text-ink"}`}>{v}</dd>
+                <dt className="text-xs text-faint">{t(k)}</dt>
+                <dd className={`m-0 text-2xl font-bold tabular-nums ${dir === "up" ? "text-accent" : "text-ink"}`}>{t(v)}</dd>
               </div>
             ))}
           </dl>

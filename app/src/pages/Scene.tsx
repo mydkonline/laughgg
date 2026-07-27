@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { SCENE_GAMES, type SceneGame } from "../data/scenes";
+import { SCENES_EN } from "../i18n/en/scenes";
+import { localized } from "../lib/locale";
 import { useCart } from "../lib/cart";
 import { Pager } from "../components/Pager";
 import { PIECES } from "../data/pieces";
@@ -82,7 +84,9 @@ export function Scene() {
   );
 
   useEffect(() => setPage(1), [q, picked]);
-  const game = SCENE_GAMES.find((g) => g.id === id) ?? SCENE_GAMES[0]!;
+  const chosen = SCENE_GAMES.find((g) => g.id === id) ?? SCENE_GAMES[0]!;
+  // 레코드를 지금 언어로 겹쳐 읽는다. 안 옮긴 필드는 한국어가 남는다.
+  const game = localized(SCENES_EN, chosen.id, chosen);
 
   return (
     <main className="mx-auto max-w-[1240px] px-5 pb-20">
@@ -162,9 +166,11 @@ export function Scene() {
                     className={`h-2.5 w-2.5 shrink-0 rounded-full ${g.id === game.id ? "ring-2 ring-accent ring-offset-2 ring-offset-ground" : ""}`}
                     style={{ background: g.sw }}
                   />
-                  <span className={`truncate text-xs ${g.id === game.id ? "font-bold" : ""}`}>{g.n}</span>
+                  <span className={`truncate text-xs ${g.id === game.id ? "font-bold" : ""}`}>
+                    {localized(SCENES_EN, g.id, g).n}
+                  </span>
                   {g.guess && <span className="shrink-0 text-[10px] text-faint">{t("추정")}</span>}
-                  <span className="ml-auto shrink-0 text-[10px] text-faint">{g.sub}</span>
+                  <span className="ml-auto shrink-0 text-[10px] text-faint">{t(g.sub)}</span>
                 </button>
               </li>
             ))}
@@ -177,7 +183,7 @@ export function Scene() {
           <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2">
             <span className="text-base font-bold text-ink">{game.n}</span>
             <span className="text-xs text-faint">
-              {game.cat}, {game.sub}
+              {t(game.cat)}, {t(game.sub)}
             </span>
             {game.guess && (
               <span className="rounded border border-line px-1.5 py-px text-[10px] text-faint">

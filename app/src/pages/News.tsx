@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 import { NEWS, type News as Item } from "../data/news";
+import { NEWS_EN } from "../i18n/en/news";
+import { localized } from "../lib/locale";
 import { ago } from "../lib/feed";
 import { t } from "../lib/locale";
 
@@ -24,22 +26,22 @@ export function News() {
       </header>
 
       <div className="mb-5 flex flex-wrap gap-1.5 border-b border-line pb-4">
-        {TAGS.map((t) => (
+        {TAGS.map((k) => (
           <button
-            key={t}
+            key={k}
             type="button"
-            onClick={() => setTag(t)}
-            aria-pressed={tag === t}
+            onClick={() => setTag(k)}
+            aria-pressed={tag === k}
             className={[
               "cursor-pointer rounded-full border px-3.5 py-1.5 text-xs",
-              tag === t
+              tag === k
                 ? "border-transparent bg-ink font-bold text-ground"
                 : "border-line text-muted hover:border-accent hover:text-ink",
             ].join(" ")}
           >
-            {t}
-            <span className={tag === t ? "ml-1.5 opacity-60" : "ml-1.5 text-faint"}>
-              {t === "전체" ? NEWS.length : NEWS.filter((n) => n.tag === t).length}
+            {t(k)}
+            <span className={tag === k ? "ml-1.5 opacity-60" : "ml-1.5 text-faint"}>
+              {k === "전체" ? NEWS.length : NEWS.filter((n) => n.tag === k).length}
             </span>
           </button>
         ))}
@@ -54,12 +56,14 @@ export function News() {
   );
 }
 
-function Row({ item }: { item: Item }) {
+function Row({ item: base }: { item: Item }) {
+  // 레코드를 지금 언어로 겹쳐 읽는다. 안 옮긴 필드는 한국어가 남는다.
+  const item = localized(NEWS_EN, base.id, base);
   return (
     <article className="grid gap-x-8 gap-y-3 border-b border-line py-6 sm:grid-cols-[minmax(0,1fr)_140px]">
       <div className="min-w-0">
         <p className="flex flex-wrap items-center gap-x-2 text-xs text-faint">
-          <span className="text-accent">{item.tag}</span>
+          <span className="text-accent">{t(item.tag)}</span>
           <span>{ago(Date.now() - item.daysAgo * 86_400_000)}</span>
         </p>
         <h2 className="mt-1.5 text-base leading-snug font-bold text-ink">{item.title}</h2>

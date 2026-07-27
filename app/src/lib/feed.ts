@@ -1,5 +1,6 @@
 import { useCallback, useSyncExternalStore } from "react";
 import type { Knobs, RasterSet } from "../data/concepts";
+import { t } from "./locale";
 
 /* 커뮤니티를 게시판으로 만들지 않는다. 빈 글쓰기 칸이 커뮤니티를 죽인다.
    스튜디오에서 작업을 끝내면 그게 곧 게시물이 된다 — 아무도 "글을 쓰지" 않는데
@@ -217,6 +218,6 @@ export function ago(at: number): string {
   const s = Math.max(0, (Date.now() - at) / 1000);
   if (s < 60) return "방금";
   if (s < 3600) return `${Math.floor(s / 60)}분 전`;
-  if (s < 86400) return `${Math.floor(s / 3600)}시간 전`;
-  return `${Math.floor(s / 86400)}일 전`;
+  if (s < 86400) return t("{n}시간 전", { n: Math.floor(s / 3600) });
+  return t("{n}일 전", { n: Math.floor(s / 86400) });
 }

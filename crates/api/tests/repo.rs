@@ -80,7 +80,7 @@ async fn creating_an_asset_leaves_it_unreviewed(pool: PgPool) {
         .await
         .expect("등록이 실패하면 안 된다");
 
-    let d = repo::get_asset(&pool, id).await.expect("상세");
+    let d = repo::get_asset(&pool, id, None).await.expect("상세");
     assert!(d.row.badge.is_none(), "안 쟀는데 배지가 붙으면 안 된다");
     assert!(d.row.total.is_none());
 }
@@ -116,7 +116,7 @@ async fn analysis_produces_the_badge(pool: PgPool) {
     assert_eq!(r.total, analysis.total, "저장소가 점수를 고치면 안 된다");
     assert!(r.production_ready, "출처가 공개된 무난한 에셋: {}", r.total);
 
-    let d = repo::get_asset(&pool, id).await.expect("상세");
+    let d = repo::get_asset(&pool, id, None).await.expect("상세");
     assert_eq!(d.row.total, Some(i16::from(analysis.total)));
 }
 
@@ -566,7 +566,7 @@ async fn asset_detail_carries_per_check_scores(pool: PgPool) {
         .await
         .expect("분석");
 
-    let d = repo::get_asset(&pool, created).await.expect("상세");
+    let d = repo::get_asset(&pool, created, None).await.expect("상세");
     assert_eq!(d.row.title, "Gothic Statue");
     assert_eq!(d.sold, 0);
     let scores = d.scores.expect("검수했으면 항목별 점수가 있어야 한다");
@@ -576,13 +576,15 @@ async fn asset_detail_carries_per_check_scores(pool: PgPool) {
     repo::record_sale(&pool, created, &repo::NewSale::default())
         .await
         .expect("판매");
-    let after = repo::get_asset(&pool, created).await.expect("상세");
+    let after = repo::get_asset(&pool, created, None).await.expect("상세");
     assert_eq!(after.sold, 1, "판매 수가 붙어야 한다");
 }
 
 #[sqlx::test]
 async fn a_missing_asset_detail_is_not_found(pool: PgPool) {
-    let err = repo::get_asset(&pool, 9999).await.expect_err("없는 에셋");
+    let err = repo::get_asset(&pool, 9999, None)
+        .await
+        .expect_err("없는 에셋");
     assert!(matches!(err, RepoError::AssetNotFound(9999)), "{err:?}");
 }
 
@@ -671,4 +673,74 @@ async fn searching_matches_title_or_creator(pool: PgPool) {
     .await
     .expect("검색");
     assert_eq!(miss.total, 0);
+}
+
+/* 창작자가 쓴 제목은 번역표에 못 들어간다.
+
+사용자 데이터라 빌드할 때 존재하지 않는다. 마켓이 DB 로 넘어온 이상
+번역도 DB 에 있어야 하고, 없으면 원문이 나가야 한다 — 안 옮긴 에셋이
+목록에서 사라지거나 빈 제목으로 뜨면 그게 더 나쁘다. */
+#[sqlx::test]
+async fn a_translation_overlays_the_title_and_falls_back_when_absent(pool: PgPool) {
+    let who = an_account(&pool, "sh@op.gg").await;
+    let id = repo::create_asset(&pool, who, &new_asset("고딕 석상"))
+        .await
+        .expect("등록");
+
+    // 번역이 없는 동안은 원문이 나간다.
+    let before = repo::get_asset(&pool, id, Some("en")).await.expect("상세");
+    assert_eq!(
+        before.row.title, "고딕 석상",
+        "없는 번역으로 제목을 비우면 안 된다"
+    );
+
+    sqlx::query(
+        "INSERT INTO asset_translations (asset_id, locale, title) VALUES ($1, 'en', 'Gothic Statue')",
+    )
+    .bind(id)
+    .execute(&pool)
+    .await
+    .expect("번역 등록");
+
+    let after = repo::get_asset(&pool, id, Some("en")).await.expect("상세");
+    assert_eq!(after.row.title, "Gothic Statue");
+
+    // 기본 언어는 표를 안 본다. 원문이 그대로다.
+    let ko = repo::get_asset(&pool, id, Some("ko")).await.expect("상세");
+    assert_eq!(ko.row.title, "고딕 석상");
+
+    // 목록도 같은 규칙이다. 상세만 옮기면 카드와 상세가 갈린다.
+    let page = repo::list_assets(
+        &pool,
+        &AssetQuery {
+            ids: Some(id.to_string()),
+            locale: Some("en".into()),
+            ..AssetQuery::default()
+        },
+    )
+    .await
+    .expect("목록");
+    assert_eq!(page.assets[0].title, "Gothic Statue");
+}
+
+/* 제목만 옮기고 설명은 안 옮긴 상태를 허용한다.
+
+레코드 전체가 있거나 없거나로 두면 긴 설명 하나 때문에 제목까지 한국어로
+남는다. 대신 둘 다 비면 줄이 있을 이유가 없어서 그건 막는다. */
+#[sqlx::test]
+async fn an_empty_translation_row_is_rejected(pool: PgPool) {
+    let who = an_account(&pool, "sh@op.gg").await;
+    let id = repo::create_asset(&pool, who, &new_asset("Asset"))
+        .await
+        .expect("등록");
+
+    let err = sqlx::query("INSERT INTO asset_translations (asset_id, locale) VALUES ($1, 'en')")
+        .bind(id)
+        .execute(&pool)
+        .await
+        .expect_err("빈 번역은 거절해야 한다");
+    assert!(
+        err.to_string().contains("chk_translation_not_empty"),
+        "{err}"
+    );
 }
