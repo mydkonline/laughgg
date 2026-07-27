@@ -20,17 +20,31 @@ pub struct ApiError {
 
 impl From<RepoError> for ApiError {
     fn from(err: RepoError) -> Self {
+        /* 상태 코드별로 묶는다.
+
+        404  없는 것. 허가는 없는 것과 만료된 것을 구분하지 않는다 —
+             구분해 주면 토큰을 찍어 볼 수 있다.
+        400  입력이 틀렸다. 고쳐서 다시 보내면 된다.
+        409  입력은 멀쩡하고 대상의 상태가 안 맞는다. 400 으로 내면
+             클라이언트가 자기 입력을 고치려 든다.
+        500  우리 잘못. 이것만 사고다. */
         let status = match &err {
-            RepoError::AssetNotFound(_) | RepoError::StudioNotFound(_) => StatusCode::NOT_FOUND,
-            RepoError::Score(_) | RepoError::Credential(_) => StatusCode::BAD_REQUEST,
+            RepoError::AssetNotFound(_)
+            | RepoError::StudioNotFound(_)
+            | RepoError::GrantNotFound => StatusCode::NOT_FOUND,
+
+            RepoError::Score(_) | RepoError::Credential(_) | RepoError::File(_) => {
+                StatusCode::BAD_REQUEST
+            }
+
             RepoError::BadCredentials | RepoError::Unauthenticated => StatusCode::UNAUTHORIZED,
             RepoError::Forbidden => StatusCode::FORBIDDEN,
-            RepoError::EmailTaken(_) => StatusCode::CONFLICT,
-            // 요청은 멀쩡하고 대상의 상태가 안 맞는 경우다. 400 으로 내면
-            // 클라이언트가 자기 입력을 고치려 든다.
-            RepoError::AssetNotReviewed(_) | RepoError::AssetNotSellable { .. } => {
-                StatusCode::CONFLICT
-            }
+
+            RepoError::NoFile(_)
+            | RepoError::EmailTaken(_)
+            | RepoError::AssetNotReviewed(_)
+            | RepoError::AssetNotSellable { .. } => StatusCode::CONFLICT,
+
             RepoError::Other(_) => StatusCode::INTERNAL_SERVER_ERROR,
         };
         // 500 만 사고다. 400 과 404 는 정상적인 거절이라 error 로 남기지 않는다.

@@ -49,6 +49,7 @@ fn new_asset(title: &str, scores: ReviewScores) -> NewAsset {
         art_style: "realistic".into(),
         price_usd: 30.0,
         scores,
+        file: None,
     }
 }
 

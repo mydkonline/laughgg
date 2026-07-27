@@ -6,10 +6,11 @@
 
 mod asset;
 pub mod auth;
+mod download;
 mod error;
 mod game;
-pub mod google;
 mod metrics;
+pub mod oauth;
 pub mod payment;
 mod sale;
 
@@ -30,7 +31,7 @@ pub struct AppState {
     pub pool: PgPool,
     /// 세션 쿠키에 Secure 를 붙이는가. 로컬 개발은 http 라 못 붙인다.
     pub secure_cookies: bool,
-    pub google: Option<crate::http::google::GoogleConfig>,
+    pub google: Option<crate::http::oauth::google::GoogleConfig>,
     pub stripe: Option<crate::http::payment::StripeConfig>,
 }
 
@@ -58,10 +59,14 @@ pub fn router(state: AppState) -> Router {
         .route("/auth/login", post(auth::log_in))
         .route("/auth/logout", post(auth::log_out))
         .route("/auth/me", get(auth::me))
-        .route("/auth/google", get(google::start))
-        .route("/auth/google/callback", get(google::callback))
+        .route("/auth/google", get(oauth::google::start))
+        .route("/auth/google/callback", get(oauth::google::callback))
         // 결제창은 Stripe 가 띄운다. 여기로는 카드 정보가 오지 않는다.
         .route("/assets/{id}/checkout", post(payment::checkout))
+        // 허가를 먼저 내고 그 토큰으로만 받는다. 에셋 id 로 바로 받게 하면
+        // 산 사람이 링크를 넘기는 순간 아무나 받는다.
+        .route("/assets/{id}/download", post(download::grant))
+        .route("/downloads/{token}", get(download::redeem))
         .route("/orders", get(payment::my_orders))
         .route("/me/library", get(payment::my_library))
         // webhook 은 로그인 없이 열려 있다. 대신 서명을 검증한다.

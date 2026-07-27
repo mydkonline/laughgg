@@ -41,9 +41,21 @@ pub enum RepoError {
     #[error("not allowed")]
     Forbidden,
 
+    /// 에셋은 있는데 파일이 아직 안 올라왔다.
+    #[error("asset {0} has no file yet")]
+    NoFile(i64),
+
+    /// 다운로드 허가가 없거나 만료됐다. 둘을 구분해 알려 줄 이유가 없다.
+    #[error("download link is invalid or has expired")]
+    GrantNotFound,
+
     /// 입력이 규칙을 어겼다.
     #[error(transparent)]
     Credential(#[from] CredentialError),
+
+    /// 올린 파일이 규칙을 어겼다.
+    #[error(transparent)]
+    File(#[from] crate::repo::FileError),
 
     /// 입력이 규칙을 어겼다.
     #[error(transparent)]

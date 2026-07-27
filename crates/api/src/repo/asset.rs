@@ -295,7 +295,11 @@ pub async fn asset_facets(pool: &PgPool, q: &AssetQuery) -> RepoResult<AssetFace
 /* 등록 입력.
 
 창작자를 받지 않는다. 로그인한 계정이 곧 창작자다 — 문자열로 받으면
-남의 이름으로 올릴 수 있고, 그 이름이 정산 대상이 된다. */
+남의 이름으로 올릴 수 있고, 그 이름이 정산 대상이 된다.
+
+파일도 여기로 안 온다. 3D 모델은 수백 메가가 예사인데 그게 API 를 통과하면
+요청 하나가 워커를 오래 잡고, 재시도하면 처음부터 다시 올라간다. 파일은
+스토리지로 직접 올리고 여기에는 그 키만 붙인다. */
 #[derive(Debug, Deserialize)]
 pub struct NewAsset {
     pub title: String,
@@ -304,6 +308,69 @@ pub struct NewAsset {
     pub art_style: String,
     pub price_usd: f64,
     pub scores: ReviewScores,
+    /// 올린 파일. 없으면 초안이고 팔 수 없다.
+    #[serde(default, flatten)]
+    pub file: Option<AssetFile>,
+}
+
+/// 스토리지에 올라간 파일.
+#[derive(Debug, Clone, Deserialize)]
+pub struct AssetFile {
+    pub file_key: String,
+    pub file_bytes: i64,
+    /// 받는 쪽이 무결성을 확인할 값. 중간에 깨진 파일을 엔진에 넣으면
+    /// 원인을 엉뚱한 데서 찾게 된다.
+    pub file_sha256: String,
+}
+
+/// 파일이 규칙을 어긴 이유.
+#[derive(Debug, thiserror::Error, PartialEq, Eq)]
+pub enum FileError {
+    #[error("file_key must not be empty")]
+    EmptyKey,
+    #[error("file_key must stay inside the uploads prefix")]
+    BadKey,
+    #[error("file_sha256 must be 64 hex characters")]
+    BadDigest,
+    #[error("file is too large: {bytes} bytes (max {max})")]
+    TooLarge { bytes: i64, max: i64 },
+}
+
+/// 한 파일 상한. 이보다 크면 스토리지 요금과 다운로드 시간이 감당이 안 된다.
+const MAX_FILE_BYTES: i64 = 2 * 1024 * 1024 * 1024;
+
+impl AssetFile {
+    /* 키를 그대로 믿지 않는다.
+
+    클라이언트가 정하는 값이라 상위 경로나 남의 접두사를 적어 보낼 수 있다.
+    스토리지에서 경로로 해석되면 남의 파일을 가리키게 된다. */
+    ///
+    /// # Errors
+    /// 키나 해시가 규칙을 어기면 [`FileError`] 를 반환한다.
+    pub fn validate(&self) -> Result<(), FileError> {
+        let key = self.file_key.trim();
+        if key.is_empty() {
+            return Err(FileError::EmptyKey);
+        }
+        if !key.starts_with("uploads/")
+            || key.contains("..")
+            || key.contains('\\')
+            || key.starts_with('/')
+        {
+            return Err(FileError::BadKey);
+        }
+        if self.file_sha256.len() != 64 || !self.file_sha256.chars().all(|c| c.is_ascii_hexdigit())
+        {
+            return Err(FileError::BadDigest);
+        }
+        if self.file_bytes <= 0 || self.file_bytes > MAX_FILE_BYTES {
+            return Err(FileError::TooLarge {
+                bytes: self.file_bytes,
+                max: MAX_FILE_BYTES,
+            });
+        }
+        Ok(())
+    }
 }
 
 #[derive(Debug, Serialize)]
@@ -326,6 +393,9 @@ pub async fn create_asset(
     input: &NewAsset,
 ) -> RepoResult<ReviewResult> {
     input.scores.validate()?;
+    if let Some(file) = &input.file {
+        file.validate()?;
+    }
 
     let mut tx = pool.begin().await.context("starting transaction")?;
 
@@ -337,8 +407,10 @@ pub async fn create_asset(
     // MySQL 의 last_insert_id 대신 RETURNING 을 쓴다. 커넥션 상태에 기대지 않아
     // 트랜잭션 안에서 다른 문장이 끼어들어도 어긋나지 않는다.
     let asset_id: i64 = sqlx::query_scalar(
-        r"INSERT INTO assets (creator_id, title, category, engine, price_usd, art_style)
-          VALUES ($1, $2, $3, $4, $5, $6)
+        r"INSERT INTO assets
+            (creator_id, title, category, engine, price_usd, art_style,
+             file_key, file_bytes, file_sha256)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
           RETURNING id",
     )
     .bind(creator_id)
@@ -347,6 +419,9 @@ pub async fn create_asset(
     .bind(&input.engine)
     .bind(input.price_usd)
     .bind(&input.art_style)
+    .bind(input.file.as_ref().map(|f| f.file_key.trim()))
+    .bind(input.file.as_ref().map(|f| f.file_bytes))
+    .bind(input.file.as_ref().map(|f| f.file_sha256.to_lowercase()))
     .fetch_one(&mut *tx)
     .await
     .context("inserting asset")?;

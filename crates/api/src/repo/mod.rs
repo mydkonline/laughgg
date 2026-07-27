@@ -9,6 +9,7 @@
 
 mod account;
 mod asset;
+mod download;
 mod error;
 mod game;
 mod metrics;
@@ -23,9 +24,10 @@ pub use account::{
     purge_expired_sessions, sign_up, upsert_external,
 };
 pub use asset::{
-    AssetDetail, AssetFacets, AssetPage, AssetQuery, AssetRow, NewAsset, ReviewResult,
-    asset_facets, create_asset, get_asset, list_assets, review_asset,
+    AssetDetail, AssetFacets, AssetFile, AssetPage, AssetQuery, AssetRow, FileError, NewAsset,
+    ReviewResult, asset_facets, create_asset, get_asset, list_assets, review_asset,
 };
+pub use download::{FileRef, Grant, grant_download, purge_expired_grants, redeem_download};
 pub use error::{RepoError, RepoResult};
 pub use game::{Facet, Facets, GamePage, GameQuery, GameRow, game_facets, list_games};
 pub use metrics::{Metrics, metrics};

@@ -88,6 +88,7 @@ fn an_asset(title: &str) -> NewAsset {
         art_style: "realistic".into(),
         price_usd: 30.0,
         scores: scores(90),
+        file: None,
     }
 }
 
@@ -144,6 +145,7 @@ async fn an_order(pool: &PgPool, session_id: &str) -> i64 {
             art_style: "realistic".into(),
             price_usd: 30.0,
             scores: scores(90),
+            file: None,
         },
     )
     .await
@@ -291,6 +293,7 @@ async fn a_silver_asset_cannot_be_ordered(pool: PgPool) {
             art_style: "realistic".into(),
             price_usd: 30.0,
             scores: blocked,
+            file: None,
         },
     )
     .await

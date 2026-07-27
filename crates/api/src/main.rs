@@ -11,7 +11,7 @@ use std::net::SocketAddr;
 
 use anyhow::{Context as _, Result};
 use laughgg_api::{
-    http::{self, google::GoogleConfig, payment::StripeConfig},
+    http::{self, oauth::google::GoogleConfig, payment::StripeConfig},
     repo,
 };
 
