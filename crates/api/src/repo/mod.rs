@@ -27,7 +27,8 @@ pub use account::{
 };
 pub use asset::{
     AssetDetail, AssetFacets, AssetFile, AssetPage, AssetQuery, AssetRow, FileError, NewAsset,
-    ReviewResult, asset_facets, create_asset, get_asset, list_assets, record_analysis,
+    ReviewResult, analysis_inputs, asset_facets, create_asset, get_asset, list_assets,
+    record_analysis,
 };
 pub use download::{FileRef, Grant, grant_download, purge_expired_grants, redeem_download};
 pub use error::{RepoError, RepoResult};

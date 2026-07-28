@@ -74,7 +74,10 @@ mod tests {
     fn usd_roundtrip_is_exact_for_two_decimals() {
         for usd in [0.0, 0.01, 0.99, 12.34, 29.99, 100.0] {
             let m = Money::from_usd(usd);
-            assert!((m.as_usd() - usd).abs() < f64::EPSILON, "{usd} 왕복이 어긋난다");
+            assert!(
+                (m.as_usd() - usd).abs() < f64::EPSILON,
+                "{usd} 왕복이 어긋난다"
+            );
         }
     }
 
@@ -93,7 +96,11 @@ mod tests {
             let gross = Money::from_cents(cents);
             let fee = gross.take_rate(0.08);
             let rest = gross.saturating_sub(fee);
-            assert_eq!(fee.cents() + rest.cents(), cents, "{cents} 에서 합이 안 맞는다");
+            assert_eq!(
+                fee.cents() + rest.cents(),
+                cents,
+                "{cents} 에서 합이 안 맞는다"
+            );
         }
     }
 

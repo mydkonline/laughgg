@@ -100,31 +100,9 @@ pub async fn analyze(
     Path(id): Path<i64>,
     body: axum::body::Bytes,
 ) -> ApiResult<Json<serde_json::Value>> {
-    // 내 에셋만 분석한다. 남의 것을 채점하면 배지를 남이 정하게 된다.
-    let owns: bool = sqlx::query_scalar(
-        "SELECT EXISTS (SELECT 1 FROM assets a JOIN creators c ON c.id = a.creator_id
-         WHERE a.id = $1 AND c.account_id = $2)",
-    )
-    .bind(id)
-    .bind(account.id)
-    .fetch_one(&st.pool)
-    .await
-    .map_err(|e| super::ApiError::internal(format!("ownership check failed: {e}")))?;
-    if !owns {
-        return Err(crate::repo::RepoError::Forbidden.into());
-    }
-
-    let (filename, origin) = sqlx::query_as::<_, (Option<String>, String)>(
-        "SELECT file_key, origin FROM assets WHERE id = $1",
-    )
-    .bind(id)
-    .fetch_one(&st.pool)
-    .await
-    .map_err(|e| super::ApiError::internal(format!("loading asset: {e}")))?;
-
-    let filename = filename.unwrap_or_else(|| "unknown".into());
-    let origin =
-        crate::domain::Origin::from_label(&origin).unwrap_or(crate::domain::Origin::Unknown);
+    // 소유권 확인과 파일 메타 로딩을 저장소에 맡긴다. 내 에셋이 아니면
+    // 여기서 막힌다 — 남의 것을 채점하면 배지를 남이 정하게 된다.
+    let (filename, origin) = repo::analysis_inputs(&st.pool, id, account.id).await?;
 
     let analysis = crate::analyzer::analyze_file(&filename, &body, origin)
         .map_err(|e| super::ApiError::bad_request(e.to_string()))?;

@@ -64,7 +64,10 @@ mod tests {
         for cents in [1, 7, 99, 2999, 12_345] {
             let s = Settlement::new(Money::from_cents(cents), DEFAULT_FEE_RATE);
             let sum = Money::from_usd(s.fee_usd).cents() + Money::from_usd(s.creator_usd).cents();
-            assert_eq!(sum, cents, "{cents} 에서 수수료+창작자 몫이 원금과 어긋난다");
+            assert_eq!(
+                sum, cents,
+                "{cents} 에서 수수료+창작자 몫이 원금과 어긋난다"
+            );
         }
     }
 }

@@ -531,6 +531,38 @@ pub async fn create_asset(pool: &PgPool, account_id: i64, input: &NewAsset) -> R
     Ok(asset_id)
 }
 
+/* 분석에 쓸 파일 키와 출처를 소유권 확인과 함께 읽는다.
+
+내 에셋만 채점한다 — 남의 것을 채점하면 배지를 남이 정하게 된다. 소유권과
+값을 한 질의로 같이 읽어, 확인과 로딩 사이에 소유자가 바뀌는 창을 없앤다.
+이 판정이 HTTP 핸들러에 raw SQL 로 흩어져 있던 걸 여기로 모은다 — 저장소
+질의는 이 층의 일이다. */
+///
+/// # Errors
+/// 내 에셋이 아니면 [`RepoError::Forbidden`]. 없는 에셋과 남의 에셋을 같은
+/// 오류로 뭉갠다 — 갈라 주면 어느 id 가 실재하는지가 새어 나간다.
+pub async fn analysis_inputs(
+    pool: &PgPool,
+    asset_id: i64,
+    account_id: i64,
+) -> RepoResult<(String, Origin)> {
+    let row: Option<(Option<String>, String)> = sqlx::query_as(
+        "SELECT a.file_key, a.origin
+         FROM assets a JOIN creators c ON c.id = a.creator_id
+         WHERE a.id = $1 AND c.account_id = $2",
+    )
+    .bind(asset_id)
+    .bind(account_id)
+    .fetch_optional(pool)
+    .await
+    .context("loading asset for analysis")?;
+
+    let (file_key, origin) = row.ok_or(RepoError::Forbidden)?;
+    let origin = Origin::from_label(&origin).unwrap_or(Origin::Unknown);
+    // file_key 가 없으면 확장자 판별용 이름만 없는 것이라 분석은 진행한다.
+    Ok((file_key.unwrap_or_else(|| "unknown".into()), origin))
+}
+
 /* 분석 결과를 검수로 기록한다.
 
 점수를 만드는 건 여기가 아니라 analyzer 다. 이 함수는 그 결과를 옮기기만
