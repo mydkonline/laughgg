@@ -7,6 +7,7 @@ import { useAccount } from "../lib/account";
 import { BADGE_LABEL, badgeKeyOf } from "../components/Rank";
 import { CHECKS } from "../data/checks";
 import { REUSE_AXIS } from "../data/reuse";
+import { ReuseBadge } from "../components/ReuseBadge";
 import { t } from "../lib/locale";
 
 /** 서버 배지를 화면 말로. 옮기는 표는 Rank 에 하나만 둔다. */
@@ -283,19 +284,11 @@ export function Upload() {
               보는지 알려 준다 — 캐릭터면 그림이 아니라 애니메이션이다. 여기서
               무엇을 채워야 팔리는지 알아야 올린 뒤 장롱이 안 된다. */}
           {REUSE_AXIS[category] && (
-            <div className="-mt-1.5 rounded-xl border border-line bg-surface px-3.5 py-3">
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold tracking-wide text-accent">
-                  {t("구매자가 먼저 보는 축")}
-                </span>
-                <span className="text-xs font-bold text-ink">{t(REUSE_AXIS[category]!.axis)}</span>
-                <span className="ml-auto shrink-0 text-[10px] text-faint">
-                  {t("재사용 난도")} {t(REUSE_AXIS[category]!.risk)}
-                </span>
-              </div>
-              <p className="mt-1.5 text-[11px] leading-relaxed text-faint">
-                {t(REUSE_AXIS[category]!.why)}
-              </p>
+            <div className="-mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 rounded-xl border border-line bg-surface px-3.5 py-2.5">
+              <span className="text-[10px] font-bold text-accent">{t("핵심 체크")}</span>
+              <span className="text-xs font-bold text-ink">{t(REUSE_AXIS[category]!.axis)}</span>
+              <span className="text-[11px] text-faint">{t(REUSE_AXIS[category]!.note)}</span>
+              <ReuseBadge cat={category} className="ml-auto shrink-0" />
             </div>
           )}
           {/* 캐릭터면 포함 애니메이션을 실제로 받는다. 위 축이 "말"이라면 여기가

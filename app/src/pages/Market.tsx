@@ -5,6 +5,7 @@ import { RankIcon, badgeOf } from "../components/Rank";
 import { BUNDLES, bundleItems, bundlePrice, bundleScore } from "../data/bundles";
 import { Pager } from "../components/Pager";
 import { Thumb } from "../components/Thumb";
+import { ReuseBadge } from "../components/ReuseBadge";
 import { won } from "../lib/format";
 import { t } from "../lib/locale";
 
@@ -201,6 +202,10 @@ export function Market() {
               <div className="relative aspect-square bg-gradient-to-b from-surface-2 to-surface">
                 <span className="absolute top-2 left-2 z-10 flex items-center rounded bg-ground/70 p-0.5">
                   <RankIcon badge={badgeOf(p.score)} size={14} />
+                </span>
+                {/* 재사용 난도. 이 마켓의 핵심 신호라 표지처럼 오른쪽 위에 올린다. */}
+                <span className="absolute top-2 right-2 z-10">
+                  <ReuseBadge cat={p.cat} className="bg-ground/70 backdrop-blur-sm" />
                 </span>
                 <Thumb piece={p} className="drop-shadow-[0_4px_10px_rgb(0_0_0/0.28)]" />
               </div>

@@ -8,6 +8,7 @@ import { useCart } from "../lib/cart";
 import { Pager } from "../components/Pager";
 import { PIECES, CAT_NAME } from "../data/pieces";
 import { REUSE_AXIS } from "../data/reuse";
+import { ReuseBadge } from "../components/ReuseBadge";
 import { Stage } from "../components/GameStage";
 import { t } from "../lib/locale";
 
@@ -261,13 +262,11 @@ export function Scene() {
               질문은 "이 에셋이 다른 프로젝트에서도 계속 쓰이나"다. 에셋을 심판하지
               않고, 이 유형의 재사용 난도를 알려 장롱을 피하게 한다. */}
           {REUSE_AXIS[piece.cat] && (
-            <p className="mt-3 text-[11px] leading-relaxed text-faint">
-              <span className="text-muted">{t("이 게임엔 맞췄고, 다른 프로젝트엔?")}</span>{" "}
-              <b className="text-ink">{t(CAT_NAME[piece.cat])}</b>{" "}
-              {t("재사용 난도")} <b className="text-ink">{t(REUSE_AXIS[piece.cat]!.risk)}</b>
-              {" — "}
-              {t(REUSE_AXIS[piece.cat]!.why)}
-            </p>
+            <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-faint">
+              <b className="text-muted">{t(CAT_NAME[piece.cat])}</b>
+              <ReuseBadge cat={piece.cat} />
+              <span>{t(REUSE_AXIS[piece.cat]!.note)}</span>
+            </div>
           )}
         </div>
       </div>
