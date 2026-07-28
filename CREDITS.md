@@ -9,6 +9,8 @@
 | [Dungeon Crawl / Project Utumno — OpenGameArt](https://opengameart.org/content/dungeon-crawl-32x32-tiles) | 32×32 던전 타일·캐릭터·아이템 | CC0 |
 | [Poly Haven](https://polyhaven.com) | 폐허 환경 HDRI, 3D 소품 렌더 | CC0 |
 | [Polygonal Mind — open-source-3D-assets](https://github.com/ToxSam/open-source-3D-assets) | Tomb Chaser 무덤/신전 3D 모델(아치·기둥·아누비스·항아리) | CC0 |
+| [three.js examples](https://github.com/mrdoob/three.js) | Expressive Robot 캐릭터 — Tomás Laulhé, Don McCurdy | CC0 |
+| [glTF Sample Assets](https://github.com/KhronosGroup/glTF-Sample-Assets) | Low Poly Fox — 모델 PixelMannen(CC0), 리그·애니메이션 [@tomkranis](https://sketchfab.com/tomkranis)(CC-BY 4.0) | CC0 / CC-BY 4.0 |
 
 ## 저장소에 포함되지 않은 것
 
