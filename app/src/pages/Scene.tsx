@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { SCENE_GAMES, type SceneGame } from "../data/scenes";
+import { GAME_LOGOS } from "../data/logos";
 import { SCENES_EN } from "../i18n/en/scenes";
 import { localized } from "../lib/locale";
 import { useCart } from "../lib/cart";
@@ -157,10 +158,22 @@ export function Scene() {
                     g.id === game.id ? "text-ink" : "text-muted hover:text-ink",
                   ].join(" ")}
                 >
-                  <span
-                    className={`h-2.5 w-2.5 shrink-0 rounded-full ${g.id === game.id ? "ring-2 ring-accent ring-offset-2 ring-offset-ground" : ""}`}
-                    style={{ background: g.sw }}
-                  />
+                  {/* 색 동그라미 대신 게임 로고. 로고가 없는 게임은 원래
+                      스와치 점으로 떨어진다. 로고는 가로 워드마크라 높이만
+                      맞추고 폭은 자른다 — 이름은 옆에 그대로 둔다. */}
+                  {GAME_LOGOS.has(g.id) ? (
+                    <img
+                      src={`${import.meta.env.BASE_URL}assets/logos/${g.id}.png`}
+                      alt=""
+                      loading="lazy"
+                      className={`h-4 w-[52px] shrink-0 object-contain object-left ${g.id === game.id ? "" : "opacity-70"}`}
+                    />
+                  ) : (
+                    <span
+                      className={`h-2.5 w-2.5 shrink-0 rounded-full ${g.id === game.id ? "ring-2 ring-accent ring-offset-2 ring-offset-ground" : ""}`}
+                      style={{ background: g.sw }}
+                    />
+                  )}
                   <span className={`truncate text-xs ${g.id === game.id ? "font-bold" : ""}`}>
                     {localized(SCENES_EN, g.id, g).n}
                   </span>
