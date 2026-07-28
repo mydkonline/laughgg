@@ -44,6 +44,55 @@ export function Stage({
   const moved = places !== game.place;
   const patch = (i: number, p: Partial<(typeof places)[number]>) =>
     setPlaces((ps) => ps.map((q, j) => (j === i ? { ...q, ...p } : q)));
+
+  /* 소유자가 올린 배경 맵. 정적 배포라 서버가 없어서 브라우저에만 담는다 —
+     게임마다 따로 저장하고, 이미지는 그대로, glb/gltf 는 구워서 한 장으로.
+     각 계정 소유자가 자기 게임 무대에 맞는 배경을 올린다는 가정이다. */
+  const bgKey = `scenebg:${game.id}`;
+  const [bgUp, setBgUp] = useState<string | null>(null);
+  useEffect(() => {
+    try {
+      setBgUp(localStorage.getItem(bgKey));
+    } catch {
+      setBgUp(null);
+    }
+  }, [bgKey]);
+
+  const uploadBg = async (file: File) => {
+    let data: string | null = null;
+    if (file.type.startsWith("image/")) {
+      data = await new Promise<string>((res, rej) => {
+        const r = new FileReader();
+        r.onload = () => res(r.result as string);
+        r.onerror = rej;
+        r.readAsDataURL(file);
+      });
+    } else if (/\.(glb|gltf)$/i.test(file.name)) {
+      // 3D 환경은 무대 카메라로 넓게 한 판 굽는다 — three 뷰어를 새로 안 띄운다.
+      const url = URL.createObjectURL(file);
+      try {
+        data = await bakeView(url, [2.2, 1, 2.6], "pbr");
+      } catch {
+        data = null;
+      }
+      URL.revokeObjectURL(url);
+    }
+    if (!data) return;
+    setBgUp(data);
+    try {
+      localStorage.setItem(bgKey, data);
+    } catch {
+      // 저장 한도를 넘으면 이번 세션에만 남는다.
+    }
+  };
+  const clearBg = () => {
+    setBgUp(null);
+    try {
+      localStorage.removeItem(bgKey);
+    } catch {
+      /* 무시 */
+    }
+  };
   const filter = [
     `brightness(${grade.br})`,
     `contrast(${grade.ct})`,
@@ -60,16 +109,22 @@ export function Stage({
       className={`relative overflow-hidden rounded-2xl border border-line ${className}`}
       style={{ background: rgb(game.fog), filter }}
     >
-      {/* 화풍 배경. 맨 아래에 깔아 광원·에셋이 그 위에 얹힌다. 부모의 색보정
-          (filter)이 배경에도 먹어 게임 톤으로 물든다 — 화풍 배경 하나가
-          게임마다 다르게 보이는 이유다. 없는 화풍은 원래 안개색만 남는다. */}
-      {SCENE_BG[game.sub] && (
+      {/* 배경. 소유자가 올린 맵이 있으면 그걸 먼저, 없으면 화풍 기본 배경.
+          맨 아래에 깔아 광원·에셋이 그 위에 얹히고, 부모 색보정(filter)이
+          배경에도 먹어 게임 톤으로 물든다. */}
+      {bgUp ? (
+        <img
+          src={bgUp}
+          alt=""
+          className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+        />
+      ) : SCENE_BG[game.sub] ? (
         <img
           src={`${import.meta.env.BASE_URL}assets/scenes/${SCENE_BG[game.sub]}.svg`}
           alt=""
           className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-90"
         />
-      )}
+      ) : null}
 
       {game.light.map((l, i) => (
         <span
@@ -117,9 +172,33 @@ export function Stage({
           부모에 걸려 있어 톤이 살짝 먹는다 — 무대 위 UI 라 그 편이 자연스럽다. */}
       {editable && (
         <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 p-2.5">
-          <span className="rounded bg-black/45 px-2 py-1 text-[10px] text-white/80 backdrop-blur-sm">
-            에셋을 끌어 옮기세요
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="rounded bg-black/45 px-2 py-1 text-[10px] text-white/80 backdrop-blur-sm">
+              에셋을 끌어 옮기세요
+            </span>
+            <label className="pointer-events-auto cursor-pointer rounded border border-white/20 bg-black/45 px-2 py-1 text-[10px] text-white/90 backdrop-blur-sm hover:bg-black/60">
+              배경 맵 올리기
+              <input
+                type="file"
+                accept="image/*,.glb,.gltf"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) void uploadBg(f);
+                  e.target.value = "";
+                }}
+              />
+            </label>
+            {bgUp && (
+              <button
+                type="button"
+                onClick={clearBg}
+                className="pointer-events-auto cursor-pointer rounded border border-white/20 bg-black/45 px-2 py-1 text-[10px] text-white/90 backdrop-blur-sm hover:bg-black/60"
+              >
+                배경 제거
+              </button>
+            )}
+          </div>
           {moved && (
             <button
               type="button"
