@@ -232,6 +232,8 @@ function HeroShot() {
 
   return (
     <div className="relative aspect-[4/3]">
+      {/* 모델 뒤 스포트라이트. 색 없이 밝기만 올려 무대처럼 띄운다. */}
+      <div className="hero-spot absolute inset-0 z-0" />
       <div className="absolute inset-0 z-[1]">
         {modelSrc(HERO) && <Spin model={modelSrc(HERO)!} className="h-full w-full" />}
       </div>
