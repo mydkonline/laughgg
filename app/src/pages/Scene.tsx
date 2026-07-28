@@ -158,22 +158,29 @@ export function Scene() {
                     g.id === game.id ? "text-ink" : "text-muted hover:text-ink",
                   ].join(" ")}
                 >
-                  {/* 색 동그라미 대신 게임 로고. 로고가 없는 게임은 원래
-                      스와치 점으로 떨어진다. 로고는 가로 워드마크라 높이만
-                      맞추고 폭은 자른다 — 이름은 옆에 그대로 둔다. */}
-                  {GAME_LOGOS.has(g.id) ? (
-                    <img
-                      src={`${import.meta.env.BASE_URL}assets/logos/${g.id}.png`}
-                      alt=""
-                      loading="lazy"
-                      className={`h-4 w-[52px] shrink-0 object-contain object-left ${g.id === game.id ? "" : "opacity-70"}`}
-                    />
-                  ) : (
-                    <span
-                      className={`h-2.5 w-2.5 shrink-0 rounded-full ${g.id === game.id ? "ring-2 ring-accent ring-offset-2 ring-offset-ground" : ""}`}
-                      style={{ background: g.sw }}
-                    />
-                  )}
+                  {/* 로고를 그라디언트 정사각 타일에 담는다. 로고 색·밝기가
+                      제각각이라(검은 워드마크는 다크 배경에서 안 보였다) 밝은↔
+                      어두운 톤이 함께 있는 그라디언트를 깔면 어느 로고든 대비가
+                      생겨 읽힌다. 로고 없는 게임은 같은 타일에 스와치색을 채운다. */}
+                  <span
+                    className={`flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-md border p-1 ${
+                      g.id === game.id ? "border-accent" : "border-line"
+                    }`}
+                    style={
+                      GAME_LOGOS.has(g.id)
+                        ? { background: "linear-gradient(135deg, #47474f 0%, #1b1b1f 100%)" }
+                        : { background: g.sw }
+                    }
+                  >
+                    {GAME_LOGOS.has(g.id) && (
+                      <img
+                        src={`${import.meta.env.BASE_URL}assets/logos/${g.id}.png`}
+                        alt=""
+                        loading="lazy"
+                        className={`max-h-full max-w-full object-contain ${g.id === game.id ? "" : "opacity-90"}`}
+                      />
+                    )}
+                  </span>
                   <span className={`truncate text-xs ${g.id === game.id ? "font-bold" : ""}`}>
                     {localized(SCENES_EN, g.id, g).n}
                   </span>
