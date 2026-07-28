@@ -109,18 +109,12 @@ export const PIECES: Piece[] = [
     { id:27, img:"mt-tile04", t:"Dungeon Wall Tiles",  by:"utumno",  cat:"env",  eng:["unity","godot"],          score:76, feel:75, price:8,  dl:6420, days:4,  tri:"—", tex:"64²",  desc:"이어 붙이는 벽 타일. 모서리와 이음매가 포함돼 있어 반복 배치에서 티가 나지 않습니다." },
     { id:28, img:"iso/example",  t:"Isometric Sample Map", by:"indiesquid", cat:"env", eng:["unity","unreal","godot"], score:74, feel:73, price:6,  dl:8930, days:1,  tri:"—", tex:"32²",  desc:"위 타일들로 실제 조립한 예시 맵. 어떻게 이어 붙이는지 한눈에 보입니다." },
 
-    // 캐릭터 — 애니메이션 포함 glb 는 모션이 make-or-break라 목록을 그대로 노출한다.
-    // 정적 도트는 anim 이 없어 "정적 캐릭터" 경고가 붙는다. 전부 CC0/공개.
+    // 캐릭터 — 애니메이션 포함 glb. 캐릭터는 모션이 make-or-break라 실제 클립
+    // 이름을 그대로 anim 에 노출한다(glb 에서 직접 읽음). 전부 CC0/공개.
     { id:29, glb:"char/RobotExpressive.glb", t:"Expressive Robot", by:"donmccurdy", cat:"char", eng:["unity","unreal","godot"], score:90, feel:93, price:29, dl:3120, days:2, tri:"6.9k", tex:"1K",
       anim:["Idle","Walking","Running","Jump","Punch","Wave","Dance","Sitting","Standing","Death","Yes","No","ThumbsUp","WalkJump"],
       desc:"리깅과 애니메이션 14종이 함께 들어오는 로봇 캐릭터. 컨트롤러에 그대로 물려 걷기, 달리기, 점프, 펀치까지 바로 씁니다." },
     { id:30, glb:"char/Fox.glb", t:"Low Poly Fox", by:"pixelmannen", cat:"char", eng:["unity","unreal","godot"], score:85, feel:88, price:18, dl:5400, days:3, tri:"1.7k", tex:"512²",
       anim:["Survey","Walk","Run"],
       desc:"저폴리 여우 크리처. 둘러보기, 걷기, 달리기 3종 애니메이션이 포함돼 소환수나 야생 동물로 바로 씁니다." },
-    { id:31, img:"px-char1", t:"Pixel Hero", by:"utumno", cat:"char", eng:["unity","godot"], score:79, feel:82, price:5, dl:9200, days:5, tri:"—", tex:"32²",
-      desc:"도트 주인공 스프라이트. 단일 프레임이라 걷기, 공격 프레임은 직접 그려 넣어야 합니다." },
-    { id:32, img:"px-char2", t:"Pixel Mage",  by:"utumno", cat:"char", eng:["unity","godot"], score:77, feel:80, price:5, dl:6100, days:8, tri:"—", tex:"32²",
-      desc:"도트 마법사 스프라이트. 정적 한 장이라 캐스팅 모션은 별도로 채워야 합니다." },
-    { id:33, img:"px-char3", t:"Pixel Rogue", by:"utumno", cat:"char", eng:["unity","godot"], score:75, feel:78, price:5, dl:4300, days:11, tri:"—", tex:"32²",
-      desc:"도트 도적 스프라이트. 단일 프레임 정적 에셋입니다." },
 ];
