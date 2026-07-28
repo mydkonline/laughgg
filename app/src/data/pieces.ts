@@ -45,6 +45,7 @@ export const CATS = [
   ["tex", "재질"],
   ["sfx", "이펙트/사운드"],
   ["vfx", "VFX/파티클"],
+  ["music", "음악/BGM"],
 ] as const;
 
 export type CatKey = (typeof CATS)[number][0];
@@ -162,4 +163,17 @@ export const PIECES: Piece[] = [
       desc:"반짝임·획득 이펙트. 아이템 습득과 버프 연출에 씁니다." },
     { id:45, fx:"vfx/twirl_02.png", t:"Swirl VFX",         by:"kenney", cat:"vfx", eng:["unity","unreal","godot"], score:82, feel:85, price:5, dl:5100, days:8, tri:"—", tex:"PNG",
       desc:"소용돌이·회오리 이펙트. 회전 스킬과 포탈 연출에 씁니다." },
+
+    // 음악/BGM — 소리라 파형+재생 카드로 낸다. 오디오는 그냥 사서 어디에나 돌려
+    // 쓰는 안전군. 전부 Kenney CC0 징글.
+    { id:46, audio:"music/nes.ogg", t:"8-Bit Jingle",      by:"kenney", cat:"music", eng:["unity","unreal","godot"], score:87, feel:90, price:4, dl:8800, days:3, tri:"—", tex:"OGG",
+      desc:"8비트 NES풍 짧은 징글. 레트로 게임 승리와 화면 전환에 씁니다." },
+    { id:47, audio:"music/pizzi.ogg", t:"Pizzicato Jingle", by:"kenney", cat:"music", eng:["unity","unreal","godot"], score:85, feel:88, price:4, dl:6400, days:4, tri:"—", tex:"OGG",
+      desc:"피치카토 현악 징글. 아기자기한 퍼즐과 캐주얼 게임 분위기에 씁니다." },
+    { id:48, audio:"music/sax.ogg", t:"Sax Jingle",         by:"kenney", cat:"music", eng:["unity","unreal","godot"], score:84, feel:87, price:4, dl:5200, days:5, tri:"—", tex:"OGG",
+      desc:"색소폰 징글. 느긋한 재즈풍 메뉴와 로비 배경에 씁니다." },
+    { id:49, audio:"music/steel.ogg", t:"Steel Drum Jingle", by:"kenney", cat:"music", eng:["unity","unreal","godot"], score:83, feel:86, price:4, dl:4700, days:6, tri:"—", tex:"OGG",
+      desc:"스틸 드럼 징글. 트로피컬하고 경쾌한 스테이지 연출에 씁니다." },
+    { id:50, audio:"music/hit.ogg", t:"Hit Sting Jingle",   by:"kenney", cat:"music", eng:["unity","unreal","godot"], score:81, feel:85, price:4, dl:4100, days:8, tri:"—", tex:"OGG",
+      desc:"타격감 있는 스팅어 징글. 보스 등장과 강조 순간에 씁니다." },
 ];

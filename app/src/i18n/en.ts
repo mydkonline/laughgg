@@ -1212,4 +1212,12 @@ export const EN: Record<string, string> = {
   "정적 캐릭터 — 포함 애니메이션이 없습니다. 필요한 동작이 있는지 먼저 확인하세요. 원하는 모션이 없으면 리깅부터 다시 해야 합니다.": "Static character — no animations included. Check the motions you need exist first; without them you'll have to re-rig from scratch.",
   "같은 제작자": "Same creator",
   "— 좋은 에셋 하나를 찾으면 같은 제작자가 안전합니다": "— once you find one good asset, the same creator is a safe bet",
+
+  // 음악/BGM
+  "음악은 그냥 사서 어디에나 돌려 씀": "Just buy music and reuse it everywhere",
+  "8비트 NES풍 짧은 징글. 레트로 게임 승리와 화면 전환에 씁니다.": "A short 8-bit, NES-style jingle for retro-game wins and screen transitions.",
+  "피치카토 현악 징글. 아기자기한 퍼즐과 캐주얼 게임 분위기에 씁니다.": "A pizzicato string jingle for cute puzzle and casual game moods.",
+  "색소폰 징글. 느긋한 재즈풍 메뉴와 로비 배경에 씁니다.": "A saxophone jingle for laid-back, jazzy menus and lobby backdrops.",
+  "스틸 드럼 징글. 트로피컬하고 경쾌한 스테이지 연출에 씁니다.": "A steel-drum jingle for tropical, upbeat stage vibes.",
+  "타격감 있는 스팅어 징글. 보스 등장과 강조 순간에 씁니다.": "A punchy stinger jingle for boss entrances and emphasis moments.",
 };
