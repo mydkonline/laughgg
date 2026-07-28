@@ -33,21 +33,21 @@ export const MARKET_SOURCE =
 /** 수익 모델. 고정비와 이탈률까지 적어 두지 않으면 검증할 수 없다. */
 export const MODEL = {
   assumptions: [
-    ["구독", "49만원", "월"],
+    ["구독", 49, "월"],
     ["수수료", "8%", "단일"],
-    ["고정비", "1,700만원", "월"],
+    ["고정비", 1700, "월"],
     ["순증", "4곳", "월"],
     ["이탈", "2%", "월"],
-  ],
+  ] as [string, string | number, string][],
   /* 곡선과 마일스톤은 구독만 반영한다. 수수료와 크레딧은 STREAMS 에서
      따로 세고, 셋을 합친 값이 STREAM_TOTAL 이다. 라벨을 안 붙이면
      같은 화면에 7.2억과 7.6억이 같이 떠서 어느 쪽이 맞는지 알 수 없다. */
   milestones: [
     ["월 흑자 전환", "7개월"],
     ["누적 손익분기", "13개월"],
-    ["24개월 구독 MRR", "6,027만원"],
-    ["구독 ARR", "7.2억원"],
-  ],
+    ["24개월 구독 MRR", 6027],
+    ["구독 ARR", 72_000],
+  ] as [string, string | number][],
   /** 24개월 MRR 곡선. 순증에서 이탈을 뺀 값을 누적한 모양이고,
       24개월 값이 아래 마일스톤과 같아야 해서 거기 맞춰 눕혔다. */
   curve: [0, 314, 621, 922, 1218, 1507, 1791, 2069, 2341, 2608, 2869, 3126, 3377, 3623, 3864, 4101, 4333, 4560, 4782, 5000, 5214, 5423, 5629, 5830, 6027],
@@ -76,7 +76,7 @@ export const REVENUE_FUNNEL: FunnelStep[] = [
 ];
 
 /** 마지막 단계에 구독료를 곱한 값. 위 퍼널과 아래 마일스톤을 잇는다. */
-export const FUNNEL_RESULT = { seats: 123, price: 49, mrr: "6,027만원", arr: "7.2억원" };
+export const FUNNEL_RESULT = { seats: 123, price: 49, mrr: 6027, arr: 72_000 };
 
 /** 분석 7항목과 가중치. 합이 100 이어야 한다. */
 export const CHECK_WEIGHTS: [string, number, string][] = [
@@ -180,9 +180,9 @@ export type Stream = {
   /** 어떻게 받는가 */
   how: string;
   /** [항목, 값] */
-  assume: [string, string][];
-  /** 계산식을 사람이 읽는 형태로 */
-  calc: string;
+  assume: [string, string | number][];
+  /** 계산식 토큰. 돈은 숫자(만원)로 두면 화면에서 통화에 맞춰 적힌다. */
+  calc: (string | number)[];
   /** 월 기여액, 만원 */
   mrr: number;
   note: string;
@@ -196,10 +196,10 @@ export const STREAMS: Stream[] = [
     how: "매달 정액",
     assume: [
       ["구독 게임사", "123곳"],
-      ["월 구독료", "49만원"],
+      ["월 구독료", 49],
       ["월 이탈", "2%"],
     ],
-    calc: "123곳 × 49만원",
+    calc: ["123곳", "×", 49],
     mrr: 6027,
     note: "주 수익원입니다. 카탈로그 접근과 분석 리포트를 엽니다.",
   },
@@ -213,7 +213,7 @@ export const STREAMS: Stream[] = [
       ["평균 단가", "$30"],
       ["수수료율", "8% 단일"],
     ],
-    calc: "123곳 × 3건 × $30 × 8%",
+    calc: ["123곳", "×", "3건", "×", "$30", "×", "8%"],
     mrr: 117,
     note: "배지에 연동하지 않습니다. 채점하는 쪽이 값도 정하면 이해가 충돌합니다.",
   },
@@ -225,9 +225,9 @@ export const STREAMS: Stream[] = [
     assume: [
       ["팀당 사용 인원", "2.5명"],
       ["무료 초과 비율", "30%"],
-      ["초과분 월 결제", "1.9만원"],
+      ["초과분 월 결제", 1.9],
     ],
-    calc: "308명 × 30% × 1.9만원",
+    calc: ["308명", "×", "30%", "×", 1.9],
     mrr: 175,
     note: "월 20회까지 무료입니다. 컨셉 프리셋과 직접 조정은 계속 무료입니다.",
   },
@@ -235,7 +235,8 @@ export const STREAMS: Stream[] = [
 
 export const STREAM_TOTAL = {
   mrr: STREAMS.reduce((a, s) => a + s.mrr, 0),
-  arr: `${((STREAMS.reduce((a, s) => a + s.mrr, 0) * 12) / 10000).toFixed(1)}억원`,
+  // 연 환산도 만원 단위 숫자로 둔다 — 표기는 화면에서 통화에 맞춰 만든다.
+  arr: STREAMS.reduce((a, s) => a + s.mrr, 0) * 12,
 };
 
 
@@ -248,10 +249,10 @@ export const STREAM_TOTAL = {
    얼마나 남는가(잔존), 회사가 얼마인가(기업가치), 틀리면 어떻게 되는가(시나리오).
    계산 과정은 안 낸다. 결과만 낸다. */
 
-export const UNIT = [
-  ["게임사당 월매출", "51.4만원", "구독·수수료·크레딧 합산"],
-  ["월 계약마진", "31.1만원", "총이익률 78%"],
-  ["획득 비용 회수", "3.9개월", "CAC 120만원"],
+export const UNIT: [string, string | number, string][] = [
+  ["게임사당 월매출", 51.4, "구독·수수료·크레딧 합산"],
+  ["월 계약마진", 31.1, "총이익률 78%"],
+  ["획득 비용 회수", "3.9개월", "CAC {v}"],
   ["LTV / CAC", "5.9배", "통상 기준 3배"],
 ] as const;
 
@@ -330,6 +331,8 @@ export type Upside = {
   effect: string;
   /** 성사 시 바뀌는 지표 */
   metric: string;
+  /** 지표에 든 금액(만원). 있으면 화면 통화로 적힌다. */
+  won?: number;
 };
 
 export const UPSIDE: Upside[] = [
@@ -338,7 +341,8 @@ export const UPSIDE: Upside[] = [
     name: "게임 네트워크 확장",
     opens: "게임사가 늘수록 엔진과 컨셉 데이터가 쌓인다",
     effect: "정합 정확도가 오르고 신규 게임사 획득 비용이 내려간다",
-    metric: "CAC 120만원",
+    metric: "CAC {v}",
+    won: 120,
   },
   {
     no: 2,
@@ -359,7 +363,8 @@ export const UPSIDE: Upside[] = [
     name: "인력 활용",
     opens: "외주 인력이 상시 창작자로 전환된다",
     effect: "일회성 외주비가 반복 판매 수익으로 바뀐다",
-    metric: "게임사당 월매출 51.4만원",
+    metric: "게임사당 월매출 {v}",
+    won: 51.4,
   },
 ];
 

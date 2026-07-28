@@ -1137,4 +1137,8 @@ export const EN: Record<string, string> = {
   "검수 {before} 에서 {after} 로 바뀐 것을 확인한다": "Check the score move from {before} to {after}",
   "방금": "just now",
   "{n}분 전": "{n}m ago",
+  "달러는 1 USD = {rate}원({asof} 가정) 환산. 원문은 원화입니다.": "USD figures converted at 1 USD = {rate} KRW (assumed, {asof}). Source figures are in KRW.",
+  "고정비 월 {v}": "Fixed cost {v}/mo",
+  "CAC {v}": "CAC {v}",
+  "게임사당 월매출 {v}": "{v} per studio/mo",
 };

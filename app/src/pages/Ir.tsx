@@ -3,10 +3,10 @@ import { MARKET, MARKET_SOURCE, MODEL, CHECK_WEIGHTS, REVIEWS, AI_DEV, AI_DEV_SO
 import { PIECES } from "../data/pieces";
 import { Sprite } from "../three/Sprite";
 import { CONCEPTS } from "../data/concepts";
-import { manwon } from "../lib/format";
+import { manwon, usdBillions, FX_KRW_PER_USD, FX_AS_OF } from "../lib/format";
 import { Donut, CheckWeights, AssetRail, ConceptGrid, CompareBars, useCountUp, useSeen, Key, Bullet, Share } from "../components/Infographic";
 import { Globe } from "../components/Globe";
-import { t } from "../lib/locale";
+import { BASE, locale, t } from "../lib/locale";
 
 /* IR — 얼마나 큰 시장이고, 누가 쓰고, 어떻게 버는가.
    인용값과 우리 가정을 절대 같은 줄에 놓지 않는다. 섞이면 자료가 아니다. */
@@ -44,7 +44,7 @@ export function Ir() {
           {[
             ["퀄리티 검증률", "38.8%", "7항목 모두 통과", false],
             ["합계 MRR", `${STREAM_TOTAL.mrr.toLocaleString("ko-KR")}만원`, "구독 95%", true],
-            ["누적 손익분기", "13개월", "고정비 월 1,700만원", false],
+            ["누적 손익분기", "13개월", t("고정비 월 {v}", { v: manwon(1700) }), false],
             ["거래 수수료", "8%", "Epic 12%, Unity 30%", false],
           ].map(([k, v, note, key]) => (
             <div
@@ -104,8 +104,14 @@ export function Ir() {
             <div key={f.label}>
               <p className="text-xs text-faint">{t(f.label)}</p>
               <p className="num mt-4 text-4xl leading-none text-ink">
-                {f.value}
-                <span className="ml-1 text-base text-muted">{t(f.unit)}</span>
+                {f.unit === "억 달러" ? (
+                  usdBillions(Number(f.value))
+                ) : (
+                  <>
+                    {f.value}
+                    <span className="ml-1 text-base text-muted">{t(f.unit)}</span>
+                  </>
+                )}
               </p>
               <p className="mt-3 text-xs text-muted">{t(f.note)}</p>
               {typeof f.fill === "number" && (
@@ -236,7 +242,7 @@ export function Ir() {
             <div key={k}>
               <dt className="text-xs text-faint">{t(k)}</dt>
               <dd className="num m-0 text-2xl text-ink">
-                {t(v)}
+                {typeof v === "number" ? manwon(v) : t(v)}
                 <span className="ml-1 text-xs font-normal text-faint">{t(unit)}</span>
               </dd>
             </div>
@@ -249,7 +255,7 @@ export function Ir() {
             {MODEL.milestones.map(([k, v]) => (
               <div key={k}>
                 <dt className="text-xs text-faint">{t(k)}</dt>
-                <dd className="num m-0 text-2xl text-ink">{t(v)}</dd>
+                <dd className="num m-0 text-2xl text-ink">{typeof v === "number" ? manwon(v) : t(v)}</dd>
               </div>
             ))}
           </dl>
@@ -400,7 +406,9 @@ function Upside() {
             <p className="mt-1 text-xs text-muted">{t(u.effect)}</p>
             <p className="mt-3 flex items-baseline gap-2 border-t border-line pt-3 text-xs text-faint">
               {t("움직이는 지표")}
-              <b className="num text-xs text-accent">{t(u.metric)}</b>
+              <b className="num text-xs text-accent">
+                {t(u.metric, u.won != null ? { v: manwon(u.won) } : undefined)}
+              </b>
             </p>
           </li>
         ))}
@@ -447,10 +455,10 @@ function Valuation() {
                 {key ? (
                   <Key value={5.9} suffix={t("배")} decimals={1} />
                 ) : (
-                  <span className="num text-2xl text-ink">{t(v)}</span>
+                  <span className="num text-2xl text-ink">{typeof v === "number" ? manwon(v) : t(v)}</span>
                 )}
               </dd>
-              <dd className="m-0 mt-1 text-[10px] text-faint">{t(why)}</dd>
+              <dd className="m-0 mt-1 text-[10px] text-faint">{t(why, { v: manwon(120) })}</dd>
             </div>
           );
         })}
@@ -550,7 +558,7 @@ function Valuation() {
                 <dd className={`num m-0 mt-1 text-2xl ${base ? "text-key" : "text-ink"}`}>
                   {t(v)}
                 </dd>
-                <dd className="m-0 mt-1 text-[10px] text-faint">{t(why)}</dd>
+                <dd className="m-0 mt-1 text-[10px] text-faint">{t(why, { v: manwon(120) })}</dd>
               </div>
             );
           })}
@@ -625,11 +633,13 @@ function Streams() {
                     {s.assume.map(([k, v]) => (
                       <div key={k}>
                         <dt className="text-xs text-faint">{t(k)}</dt>
-                        <dd className="num m-0 text-base text-ink">{t(v)}</dd>
+                        <dd className="num m-0 text-base text-ink">{typeof v === "number" ? manwon(v) : t(v)}</dd>
                       </div>
                     ))}
                   </dl>
-                  <p className="num mt-4 border-t border-line pt-3 text-xs text-muted">{t(s.calc)}</p>
+                  <p className="num mt-4 border-t border-line pt-3 text-xs text-muted">
+                    {s.calc.map((tok) => (typeof tok === "number" ? manwon(tok) : t(tok))).join(" ")}
+                  </p>
                   <p className="mt-2 text-xs text-faint">{t(s.note)}</p>
                 </div>
 
@@ -674,7 +684,7 @@ function Streams() {
         </div>
         <div className="flex items-baseline gap-2">
           <dt className="text-xs text-faint">{t("연 환산")}</dt>
-          <dd className="num m-0 text-base text-ink">{t(STREAM_TOTAL.arr)}</dd>
+          <dd className="num m-0 text-base text-ink">{manwon(STREAM_TOTAL.arr)}</dd>
         </div>
       </dl>
     </div>
@@ -732,11 +742,22 @@ function RevenueFunnel() {
           {manwon(FUNNEL_RESULT.price)}
         </span>
         <span className="text-xs text-faint">=</span>
-        <span className="num text-4xl text-accent">{t(FUNNEL_RESULT.mrr)}</span>
+        <span className="num text-4xl text-accent">{manwon(FUNNEL_RESULT.mrr)}</span>
         <span className="ml-auto text-xs text-faint">
-          {t("연 환산 {v}", { v: t(FUNNEL_RESULT.arr) })}
+          {t("연 환산 {v}", { v: manwon(FUNNEL_RESULT.arr) })}
         </span>
       </div>
+
+      {/* 달러 표기는 환산값이고, 환율은 우리 가정이다. 원문은 원화라는 걸
+          밝혀야 인용값과 가정이 안 섞인다. 원화로 보면 환산이 없으니 안 띄운다. */}
+      {locale() !== BASE && (
+        <p className="mt-3 text-[10px] text-faint">
+          {t("달러는 1 USD = {rate}원({asof} 가정) 환산. 원문은 원화입니다.", {
+            rate: FX_KRW_PER_USD.toLocaleString("en-US"),
+            asof: FX_AS_OF,
+          })}
+        </p>
+      )}
     </div>
   );
 }
