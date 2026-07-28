@@ -35,6 +35,20 @@ async fn main() -> Result<()> {
     let pool = repo::connect(&db_url).await?;
     tracing::info!("database ready");
 
+    /* 관리자 계정을 심는다.
+
+    비번은 env 로 정하고, 안 주면 데모용 기본값을 쓴다. 부팅마다 upsert 라
+    이미 있어도 비번을 그 값으로 다시 맞춘다 — 그래서 "정해 둔 자격으로
+    무조건 로그인" 이 재부팅 뒤에도 지켜진다. 진짜 운영이면 ADMIN_PASSWORD 를
+    반드시 넘겨서 기본값을 덮어야 한다. */
+    let admin_email = std::env::var("ADMIN_EMAIL").unwrap_or_else(|_| "admin@laughgg.io".into());
+    let admin_password =
+        std::env::var("ADMIN_PASSWORD").unwrap_or_else(|_| "laughgg-admin-2026".into());
+    match repo::seed_admin(&pool, &admin_email, &admin_password, "Admin").await {
+        Ok(id) => tracing::info!(admin_id = id, admin_email, "admin account ready"),
+        Err(e) => tracing::error!("seeding admin failed: {e}"),
+    }
+
     /* 워커 모드.
 
     같은 바이너리를 --worker 로 띄우면 API 를 안 열고 큐만 돈다. 생성

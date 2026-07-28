@@ -27,6 +27,48 @@ pub struct Account {
     pub has_password: bool,
 }
 
+/* 관리자 계정을 심는다.
+
+부팅할 때마다 부른다. 이미 있으면 비밀번호만 env 값으로 다시 맞춘다 —
+그래야 "정해 둔 비번으로 무조건 로그인된다" 가 재부팅 뒤에도 지켜진다.
+멱등해야 하므로 INSERT ... ON CONFLICT DO UPDATE 로 짠다.
+
+해시를 여기서 실시간으로 굽는다. 마이그레이션에 해시 문자열을 박아 두는
+방법도 있지만, argon2 는 소금이 매번 달라 리터럴로 두면 비번을 바꾸기가
+번거롭고 무엇보다 다른 계정과 채점 로직이 쓰는 hash_password 를 그대로
+재사용하는 게 낫다.
+
+가입 검증(validate)은 일부러 안 건다 — 관리자 비번은 운영자가 env 로
+정하는 값이라, 길이 규칙 같은 가입자 대상 제약을 강제할 이유가 없다. */
+///
+/// # Errors
+/// 해싱이나 삽입에 실패하면 오류를 반환한다.
+pub async fn seed_admin(
+    pool: &PgPool,
+    email: &str,
+    password: &str,
+    display_name: &str,
+) -> RepoResult<i64> {
+    let hash = hash_password(password)?;
+    let email = email.trim();
+
+    let row: (i64,) = sqlx::query_as(
+        r"INSERT INTO accounts (email, display_name, password_hash)
+          VALUES ($1, $2, $3)
+          ON CONFLICT (lower(email))
+          DO UPDATE SET password_hash = EXCLUDED.password_hash
+          RETURNING id",
+    )
+    .bind(email)
+    .bind(display_name)
+    .bind(&hash)
+    .fetch_one(pool)
+    .await
+    .context("seeding admin account")?;
+
+    Ok(row.0)
+}
+
 /* 가입.
 
 이메일이 이미 있으면 거절한다. 여기서 "이미 있다" 와 "비밀번호가 틀리다" 를

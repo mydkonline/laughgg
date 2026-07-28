@@ -23,7 +23,7 @@ use sqlx::{PgPool, postgres::PgPoolOptions};
 
 pub use account::{
     Account, account_for_token, close_session, log_in, new_state_token, open_session,
-    purge_expired_sessions, sign_up, upsert_external,
+    purge_expired_sessions, seed_admin, sign_up, upsert_external,
 };
 pub use asset::{
     AssetDetail, AssetFacets, AssetFile, AssetPage, AssetQuery, AssetRow, FileError, NewAsset,

@@ -316,3 +316,88 @@ async fn google_and_payments_are_503_when_not_configured(pool: PgPool) {
     .await;
     assert_eq!(w.status, StatusCode::SERVICE_UNAVAILABLE);
 }
+
+/* 시드된 관리자 계정으로 실제 로그인 경로가 통과하는가.
+
+부팅 때 심는 계정이 정상 로그인 흐름(argon2 검증 + 세션 발급)을 그대로
+타는지 본다. 프론트에서 자격을 우회하던 방식을 걷어 내고 이 경로 하나로
+모았으므로, 여기가 무너지면 관리자는 아무 데서도 못 들어온다. */
+#[sqlx::test]
+async fn seeded_admin_logs_in(pool: PgPool) {
+    let id = repo::seed_admin(&pool, "admin@laughgg.io", "laughgg-admin-2026", "Admin")
+        .await
+        .expect("관리자 시드");
+    assert!(id > 0);
+
+    let ok = call(
+        &pool,
+        "POST",
+        "/api/auth/login",
+        Some(json!({ "email": "admin@laughgg.io", "password": "laughgg-admin-2026" })),
+        None,
+    )
+    .await;
+    assert_eq!(
+        ok.status,
+        StatusCode::OK,
+        "시드된 자격으로 로그인이 돼야 한다"
+    );
+    assert!(ok.cookie.is_some(), "로그인이면 세션 쿠키가 붙어야 한다");
+
+    // 틀린 비번은 여전히 막힌다 — 시드가 검증을 무르게 만들면 안 된다.
+    let bad = call(
+        &pool,
+        "POST",
+        "/api/auth/login",
+        Some(json!({ "email": "admin@laughgg.io", "password": "wrong" })),
+        None,
+    )
+    .await;
+    assert_eq!(bad.status, StatusCode::UNAUTHORIZED);
+}
+
+/* 재부팅해도 자격이 유지되는가.
+
+seed_admin 은 부팅마다 불린다. 두 번 불러도 계정이 둘로 갈리지 않고,
+비번은 마지막에 준 값으로 맞춰져야 한다. */
+#[sqlx::test]
+async fn re_seeding_is_idempotent_and_resets_password(pool: PgPool) {
+    let first = repo::seed_admin(&pool, "admin@laughgg.io", "first-password", "Admin")
+        .await
+        .expect("첫 시드");
+    // 같은 이메일, 다른 비번으로 다시 심는다.
+    let second = repo::seed_admin(&pool, "ADMIN@laughgg.io", "second-password", "Admin")
+        .await
+        .expect("재시드");
+    assert_eq!(
+        first, second,
+        "대소문자만 다른 이메일은 같은 계정이라 id 가 같아야 한다"
+    );
+
+    let accounts: i64 =
+        sqlx::query_scalar("SELECT count(*) FROM accounts WHERE lower(email) = 'admin@laughgg.io'")
+            .fetch_one(&pool)
+            .await
+            .expect("개수");
+    assert_eq!(accounts, 1, "재시드로 계정이 늘면 안 된다");
+
+    // 옛 비번은 죽고 새 비번만 통해야 한다.
+    let old = call(
+        &pool,
+        "POST",
+        "/api/auth/login",
+        Some(json!({ "email": "admin@laughgg.io", "password": "first-password" })),
+        None,
+    )
+    .await;
+    assert_eq!(old.status, StatusCode::UNAUTHORIZED);
+    let new = call(
+        &pool,
+        "POST",
+        "/api/auth/login",
+        Some(json!({ "email": "admin@laughgg.io", "password": "second-password" })),
+        None,
+    )
+    .await;
+    assert_eq!(new.status, StatusCode::OK);
+}
