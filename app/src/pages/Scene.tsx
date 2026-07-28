@@ -226,7 +226,7 @@ export function Scene() {
             </span>
           </div>
 
-          <Stage game={game} fit={fit} hero={piece?.m} />
+          <Stage game={game} fit={fit} hero={piece?.m} editable />
 
           {/* 어떤 에셋을 올려 볼지. 고른 것이 무대 앞자리에 선다. */}
           <div className="mt-3 flex flex-wrap items-center gap-2">

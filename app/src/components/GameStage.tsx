@@ -23,14 +23,26 @@ export function Stage({
   fit,
   hero,
   className = "aspect-[16/9]",
+  editable = false,
 }: {
   game: SceneGame;
   fit: boolean;
   hero?: string;
   /** 무대 비율. 씬 페이지는 16:9 지만 홈에서는 첫 화면을 다 먹으면 안 된다. */
   className?: string;
+  /** 켜면 에셋을 끌어 옮길 수 있다. 홈 시연은 정적이라 끈다. */
+  editable?: boolean;
 }) {
   const { grade } = game;
+
+  /* 배치는 게임마다 기본값이 있고, 편집 모드에서 사용자가 옮기면 그 위에
+     덮어쓴다. 게임을 바꾸면 그 게임 기본값으로 되돌린다 — 앞 게임에서
+     옮긴 자리가 다음 게임에 남으면 안 된다. */
+  const [places, setPlaces] = useState(game.place);
+  useEffect(() => setPlaces(game.place), [game]);
+  const moved = places !== game.place;
+  const patch = (i: number, p: Partial<(typeof places)[number]>) =>
+    setPlaces((ps) => ps.map((q, j) => (j === i ? { ...q, ...p } : q)));
   const filter = [
     `brightness(${grade.br})`,
     `contrast(${grade.ct})`,
@@ -43,6 +55,7 @@ export function Stage({
 
   return (
     <div
+      data-stage
       className={`relative overflow-hidden rounded-2xl border border-line ${className}`}
       style={{ background: rgb(game.fog), filter }}
     >
@@ -68,7 +81,7 @@ export function Stage({
 
       {/* 첫 자리는 사용자가 고른 에셋이 선다. 여기가 바뀌지 않으면
           아래 칩을 눌러도 화면이 그대로라 무엇을 보고 있는지 알 수 없다. */}
-      {game.place.map((p, i) => (
+      {places.map((p, i) => (
         <Placed
           key={p.key + i}
           model={(i === 0 && hero) || PLACE_MODEL[p.key]}
@@ -78,6 +91,8 @@ export function Stage({
           r={p.r}
           fit={fit}
           game={game}
+          editable={editable}
+          onChange={(np) => patch(i, np)}
         />
       ))}
 
@@ -85,6 +100,25 @@ export function Stage({
         className="pointer-events-none absolute inset-0"
         style={{ boxShadow: `inset 0 0 ${game.vig * 160}px ${game.vig * 60}px ${rgb(game.fog, 0.9)}` }}
       />
+
+      {/* 편집 안내·초기화. 색 보정(filter) 밖에 두려고 여기 얹지만 filter 는
+          부모에 걸려 있어 톤이 살짝 먹는다 — 무대 위 UI 라 그 편이 자연스럽다. */}
+      {editable && (
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 p-2.5">
+          <span className="rounded bg-black/45 px-2 py-1 text-[10px] text-white/80 backdrop-blur-sm">
+            에셋을 끌어 옮기세요
+          </span>
+          {moved && (
+            <button
+              type="button"
+              onClick={() => setPlaces(game.place)}
+              className="pointer-events-auto cursor-pointer rounded border border-white/20 bg-black/45 px-2 py-1 text-[10px] text-white/90 backdrop-blur-sm hover:bg-black/60"
+            >
+              위치 초기화
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -98,6 +132,8 @@ function Placed({
   r,
   fit,
   game,
+  editable = false,
+  onChange,
 }: {
   model?: string;
   x: number;
@@ -106,8 +142,30 @@ function Placed({
   r: number;
   fit: boolean;
   game: SceneGame;
+  editable?: boolean;
+  onChange?: (p: { x?: number; y?: number; s?: number }) => void;
 }) {
   const [src, setSrc] = useState<string | null>(null);
+
+  /* 끌어서 옮긴다. 무대 좌표는 비율(0~1)이라 커서 위치를 무대 폭·높이로
+     나눈다. 가장자리로 아예 밀어내지 못하게 살짝 가둔다. */
+  const startDrag = (e: React.PointerEvent<HTMLImageElement>) => {
+    if (!editable || !onChange) return;
+    e.preventDefault();
+    const stage = (e.currentTarget.closest("[data-stage]") as HTMLElement | null)?.getBoundingClientRect();
+    if (!stage) return;
+    const move = (ev: PointerEvent) => {
+      const nx = Math.min(0.94, Math.max(0.06, (ev.clientX - stage.left) / stage.width));
+      const ny = Math.min(0.96, Math.max(0.2, (ev.clientY - stage.top) / stage.height));
+      onChange({ x: nx, y: ny });
+    };
+    const up = () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+    };
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
+  };
 
   useEffect(() => {
     const piece = PIECES.find((p) => p.m === model);
@@ -141,7 +199,10 @@ function Placed({
     <img
       src={src}
       alt=""
-      className="pointer-events-none absolute drop-shadow-[0_10px_18px_rgb(0_0_0/0.5)] transition-[filter] duration-500"
+      onPointerDown={startDrag}
+      className={`absolute drop-shadow-[0_10px_18px_rgb(0_0_0/0.5)] transition-[filter] duration-500 ${
+        editable ? "cursor-grab touch-none select-none active:cursor-grabbing" : "pointer-events-none"
+      }`}
       style={{
         left: `${x * 100}%`,
         top: `${y * 100}%`,
@@ -150,6 +211,7 @@ function Placed({
         rotate: `${r * 0.4}deg`,
         filter: tint,
       }}
+      draggable={false}
     />
   );
 }
