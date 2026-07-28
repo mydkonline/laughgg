@@ -162,7 +162,7 @@ export function Stack() {
                 type="button"
                 onClick={() => setPicked({})}
                 aria-label={t("필터 전체 해제")}
-                className="flex cursor-pointer items-center gap-1.5 rounded-full border-0 bg-accent px-2.5 py-1 text-xs text-white"
+                className="flex cursor-pointer items-center gap-1.5 rounded-full border-0 bg-accent px-2.5 py-1 text-xs text-ground"
               >
                 {active.map(([, v]) => v).join(", ")}
                 <span className="opacity-70">✕</span>

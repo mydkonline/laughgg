@@ -363,7 +363,7 @@ export function Upload() {
         type="button"
         onClick={() => void publish()}
         disabled={stage.at !== "ready" || !title.trim()}
-        className="mt-8 w-full cursor-pointer rounded-xl border-0 bg-accent px-6 py-4 text-xs font-bold text-white hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-40"
+        className="mt-8 w-full cursor-pointer rounded-xl border-0 bg-accent px-6 py-4 text-xs font-bold text-ground hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-40"
       >
         {busy ? stage.step : t("등록하고 채점받기")}
       </button>
@@ -471,7 +471,7 @@ function Done({
       <div className="mt-8 flex flex-wrap gap-3">
         <Link
           to={`/market/${assetId}`}
-          className="rounded-xl bg-accent px-5 py-3 text-xs font-bold text-white no-underline hover:bg-accent-strong"
+          className="rounded-xl bg-accent px-5 py-3 text-xs font-bold text-ground no-underline hover:bg-accent-strong"
         >
           {t("상품 보기")}
         </Link>

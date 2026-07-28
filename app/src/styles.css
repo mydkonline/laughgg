@@ -12,15 +12,18 @@
    옅은 바탕을 깔아 구분하고, 블록마다 하나만 쓴다 — 둘이 되면 어느 쪽도
    핵심이 아니게 된다. */
 @theme {
-  --color-chrome-900: #1c1c1f;
-  --color-chrome-850: #282830;
-  --color-chrome-800: #31313c;
-  --color-chrome-700: #424254;
-  --color-chrome-600: #515163;
-  --color-chrome-300: #9e9eb1;
-  --color-chrome-200: #b7b7c9;
-  --color-chrome-100: #cfcfe1;
+  /* 중립 다크 램프. 보라 기운을 뺐다 — 검/흰 위주로 간다. */
+  --color-chrome-900: #18181a;
+  --color-chrome-850: #232326;
+  --color-chrome-800: #2e2e31;
+  --color-chrome-700: #3c3c40;
+  --color-chrome-600: #4b4b4f;
+  --color-chrome-300: #9a9a9e;
+  --color-chrome-200: #b5b5b9;
+  --color-chrome-100: #cececf;
 
+  /* 강조는 보라 대신 흰/검(ink)으로 쓴다. 이 스케일은 남겨 두지만 시맨틱
+     토큰이 ink 를 가리키므로 화면에는 거의 안 나온다. */
   --color-accent-300: #c0a5ff;
   --color-accent-400: #a072ff;
   --color-accent-500: #7d59ea;
@@ -64,11 +67,13 @@
     --ink: #ffffff;
     --muted: var(--color-chrome-200);
     --faint: var(--color-chrome-300);
-    --accent: var(--color-accent-400);
-    --accent-strong: var(--color-accent-500);
-    --accent-soft: rgb(160 114 255 / 0.14);
-    --key: var(--color-accent-300);
-    --key-soft: rgb(160 114 255 / 0.16);
+    /* 강조 = 흰색. 버튼·선택·강조가 전부 흰/검으로 간다. 버튼 글자는
+       ground(반대색)로 둬서 흰 버튼 위에서 어둡게 읽힌다. */
+    --accent: #ffffff;
+    --accent-strong: #d8d8db;
+    --accent-soft: rgb(255 255 255 / 0.1);
+    --key: #ffffff;
+    --key-soft: rgb(255 255 255 / 0.12);
   }
 
   :root[data-theme="light"] {
@@ -80,11 +85,12 @@
     --ink: var(--color-chrome-900);
     --muted: var(--color-gray-650);
     --faint: var(--color-gray-550);
-    --accent: var(--color-accent-500);
-    --accent-strong: var(--color-accent-600);
-    --accent-soft: rgb(125 89 234 / 0.1);
-    --key: var(--color-accent-600);
-    --key-soft: rgb(125 89 234 / 0.12);
+    /* 라이트 테마의 강조 = 검정. 검 버튼 위 글자는 ground(흰색)로 읽힌다. */
+    --accent: #1a1a1c;
+    --accent-strong: #000000;
+    --accent-soft: rgb(0 0 0 / 0.06);
+    --key: #1a1a1c;
+    --key-soft: rgb(0 0 0 / 0.08);
   }
 
   html {

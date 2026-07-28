@@ -221,7 +221,7 @@ export function PromptComposer({
       </div>
 
       {/* 아래 줄. 왼쪽이 넣는 것, 오른쪽이 내보내는 것이다. */}
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-line px-3 py-2.5">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-line px-3 py-2">
         <button
           type="button"
           onClick={() => file.current?.click()}
@@ -255,7 +255,7 @@ export function PromptComposer({
             type="button"
             onClick={send}
             disabled={disabled}
-            className="flex min-h-11 cursor-pointer items-center gap-2 rounded-xl border-0 bg-accent px-5 text-xs font-bold text-white hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex min-h-9 cursor-pointer items-center gap-2 rounded-xl border-0 bg-accent px-4 text-xs font-bold text-ground hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-40"
           >
             {t("적용")}
             <kbd className="rounded bg-white/20 px-1.5 py-0.5 text-[10px] font-normal">⌘↵</kbd>

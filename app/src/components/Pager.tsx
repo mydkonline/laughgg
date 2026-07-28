@@ -43,7 +43,7 @@ export function Pager({
             aria-current={p === page ? "page" : undefined}
             className={[
               "num min-w-7 cursor-pointer rounded border-0 px-2 py-1 text-xs",
-              p === page ? "bg-accent text-white" : "bg-transparent text-muted hover:text-ink",
+              p === page ? "bg-accent text-ground" : "bg-transparent text-muted hover:text-ink",
             ].join(" ")}
           >
             {p}

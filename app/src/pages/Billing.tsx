@@ -67,7 +67,7 @@ export function Billing() {
                 className={[
                   "mt-6 rounded-xl px-4 py-2.5 text-center text-xs font-bold no-underline",
                   p.featured
-                    ? "bg-accent text-white hover:bg-accent-strong"
+                    ? "bg-accent text-ground hover:bg-accent-strong"
                     : "border border-line text-muted hover:border-accent hover:text-ink",
                 ].join(" ")}
               >

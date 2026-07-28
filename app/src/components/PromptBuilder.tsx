@@ -113,7 +113,7 @@ export function PromptBuilder({
               key={id}
               type="button"
               onClick={() => remove(id)}
-              className="flex cursor-pointer items-center gap-1.5 rounded-full border-0 bg-accent px-3 py-1 text-xs font-bold text-white"
+              className="flex cursor-pointer items-center gap-1.5 rounded-full border-0 bg-accent px-3 py-1 text-xs font-bold text-ground"
               aria-label={t("{label} 빼기", { label: t(b.label) })}
             >
               {t(b.label)}

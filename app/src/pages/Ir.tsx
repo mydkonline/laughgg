@@ -868,7 +868,7 @@ function Curve() {
       </svg>
       {/* 끝점에 값을 붙인다. 선만 있으면 어디까지 온 건지 안 보인다. */}
       <span
-        className="pointer-events-none absolute right-0 -translate-y-1/2 rounded bg-accent px-2 py-0.5 text-xs font-bold text-white"
+        className="pointer-events-none absolute right-0 -translate-y-1/2 rounded bg-accent px-2 py-0.5 text-xs font-bold text-ground"
         style={{ top: `${(1 - last / max) * 90 + 5}%` }}
       >
         {manwon(last)}

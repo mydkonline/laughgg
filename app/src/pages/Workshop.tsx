@@ -480,7 +480,7 @@ export function Workshop() {
               </p>
             )}
           </div>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-3 rounded-xl border border-line bg-surface px-4 py-3.5">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3 rounded-xl border border-line bg-surface px-4 py-3">
         <Field label={t("출력 형식")}>
           <div className="flex gap-1.5">
             {([false, true] as const).map((v) => (
@@ -611,14 +611,14 @@ export function Workshop() {
               <button
                 type="button"
                 onClick={() => navigate("/feed")}
-                className="flex-1 cursor-pointer rounded-lg border-0 bg-accent px-3 py-2.5 text-xs font-bold text-white"
+                className="flex-1 cursor-pointer rounded-lg border-0 bg-accent px-3 py-2 text-xs font-bold text-ground"
               >
                 {t("피드에서 보기")}
               </button>
               <button
                 type="button"
                 onClick={() => setPublished(null)}
-                className="cursor-pointer rounded-lg border border-line bg-transparent px-3 py-2.5 text-xs text-muted"
+                className="cursor-pointer rounded-lg border border-line bg-transparent px-3 py-2 text-xs text-muted"
               >
                 {t("더 만지기")}
               </button>
@@ -628,7 +628,7 @@ export function Workshop() {
               <button
                 type="button"
                 onClick={onPublish}
-                className="w-full cursor-pointer rounded-lg border-0 bg-accent px-4 py-3 text-xs font-bold text-white hover:bg-accent-strong"
+                className="w-full cursor-pointer rounded-lg border-0 bg-accent px-4 py-2.5 text-xs font-bold text-ground hover:bg-accent-strong"
               >
                 {t("프리셋 저장")}
               </button>

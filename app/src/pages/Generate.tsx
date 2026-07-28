@@ -172,7 +172,7 @@ export function Generate() {
         <button
           type="submit"
           disabled={busy || !prompt.trim() || short}
-          className="rounded-xl border-0 bg-accent px-6 py-3.5 text-xs font-bold text-white hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-40"
+          className="rounded-xl border-0 bg-accent px-6 py-3.5 text-xs font-bold text-ground hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-40"
         >
           {busy ? "요청하는 중" : `만들기 · ${cost}크레딧`}
         </button>

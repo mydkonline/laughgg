@@ -132,7 +132,7 @@ function Detail({ p }: { p: Piece }) {
           <button
             type="button"
             onClick={() => add(p.id)}
-            className="mt-5 w-full cursor-pointer rounded-xl border-0 bg-accent px-4 py-3.5 text-base font-bold text-white hover:bg-accent-strong"
+            className="mt-5 w-full cursor-pointer rounded-xl border-0 bg-accent px-4 py-3.5 text-base font-bold text-ground hover:bg-accent-strong"
           >
             {t(has(p.id) ? "장바구니에 있음" : "장바구니에 담기")}
           </button>

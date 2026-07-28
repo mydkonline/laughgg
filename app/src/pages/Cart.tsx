@@ -235,7 +235,7 @@ export function Cart() {
               type="button"
               onClick={() => void checkout()}
               disabled={!ready || paying}
-              className="mt-5 hidden w-full cursor-pointer rounded-xl border-0 bg-accent px-6 py-4 text-xs font-bold text-white hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-40 lg:block"
+              className="mt-5 hidden w-full cursor-pointer rounded-xl border-0 bg-accent px-6 py-4 text-xs font-bold text-ground hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-40 lg:block"
             >
               {paying ? t("결제창을 여는 중") : t(auth.status === "signed" ? "결제하기" : "로그인하고 결제")}
             </button>
@@ -260,7 +260,7 @@ export function Cart() {
             type="button"
             onClick={() => void checkout()}
             disabled={!ready || paying}
-            className="min-w-0 flex-1 cursor-pointer rounded-xl border-0 bg-accent px-5 py-3.5 text-xs font-bold text-white disabled:opacity-40"
+            className="min-w-0 flex-1 cursor-pointer rounded-xl border-0 bg-accent px-5 py-3.5 text-xs font-bold text-ground disabled:opacity-40"
           >
             {paying ? t("결제창을 여는 중") : t(auth.status === "signed" ? "결제하기" : "로그인하고 결제")}
           </button>
@@ -409,7 +409,7 @@ function Empty({
       </p>
       <Link
         to="/market"
-        className="mt-6 inline-block rounded-xl bg-accent px-5 py-3 text-xs font-bold text-white no-underline hover:bg-accent-strong"
+        className="mt-6 inline-block rounded-xl bg-accent px-5 py-3 text-xs font-bold text-ground no-underline hover:bg-accent-strong"
       >
         {t("마켓 둘러보기")}
       </Link>

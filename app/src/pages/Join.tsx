@@ -172,7 +172,7 @@ export function Join() {
         <button
           type="submit"
           disabled={busy || (joining && tooShort)}
-          className="cursor-pointer rounded-xl border-0 bg-accent px-6 py-3.5 text-xs font-bold text-white hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-50"
+          className="cursor-pointer rounded-xl border-0 bg-accent px-6 py-3.5 text-xs font-bold text-ground hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-50"
         >
           {busy ? t("처리 중") : joining ? t("가입하기") : t("로그인")}
         </button>

@@ -89,7 +89,7 @@ export function Home() {
               가둔다. 강조색 하나, 아이콘 없이. */}
           <Link
             to="/market"
-            className="mt-7 block w-full max-w-[17rem] rounded-xl bg-accent px-5 py-3.5 text-center text-base font-bold text-white no-underline transition-colors hover:bg-accent-strong"
+            className="mt-7 block w-full max-w-[17rem] rounded-xl bg-accent px-5 py-3.5 text-center text-base font-bold text-ground no-underline transition-colors hover:bg-accent-strong"
           >
             {t("마켓 둘러보기")}
           </Link>
@@ -160,7 +160,7 @@ export function Home() {
 
           <div className="mt-8 flex h-16 overflow-hidden rounded-lg border border-line">
             <span className="flex items-center justify-center bg-accent" style={{ flexGrow: 92 }}>
-              <b className="num text-2xl text-white">92%</b>
+              <b className="num text-2xl text-ground">92%</b>
             </span>
             <span className="flex items-center justify-center bg-chrome-700" style={{ flexGrow: 8 }}>
               <b className="num text-xs text-white">8%</b>
@@ -211,7 +211,7 @@ export function Home() {
         <p className="mt-2 text-xs text-muted">{t("3D 와 2D 를 게임 컨셉에 맞춰 변환합니다.")}</p>
         <Link
           to="/workshop"
-          className="mt-6 inline-block rounded-xl bg-accent px-8 py-4 text-base font-bold text-white no-underline hover:bg-accent-strong"
+          className="mt-6 inline-block rounded-xl bg-accent px-8 py-4 text-base font-bold text-ground no-underline hover:bg-accent-strong"
         >
           {t("스튜디오 열기")}
         </Link>

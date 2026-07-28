@@ -185,7 +185,7 @@ function AccountButton() {
         </Link>
         <Link
           to="/join"
-          className="rounded bg-accent px-3 py-1 text-[length:var(--text-nav)] font-bold text-white no-underline hover:bg-accent-strong"
+          className="rounded bg-accent px-3 py-1 text-[length:var(--text-nav)] font-bold text-ground no-underline hover:bg-accent-strong"
         >
           {t("가입")}
         </Link>
@@ -202,7 +202,7 @@ function AccountButton() {
     <span className="flex items-center gap-1.5">
       <Link
         to="/library"
-        className="rounded bg-accent px-3 py-1 text-[length:var(--text-nav)] font-bold text-white no-underline hover:bg-accent-strong"
+        className="rounded bg-accent px-3 py-1 text-[length:var(--text-nav)] font-bold text-ground no-underline hover:bg-accent-strong"
       >
         {t("내 라이브러리")}
       </Link>

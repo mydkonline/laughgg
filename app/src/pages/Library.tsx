@@ -104,7 +104,7 @@ export function Library() {
           </Link>
           <Link
             to="/upload"
-            className="rounded-xl bg-accent px-4 py-2.5 text-xs font-bold text-white no-underline hover:bg-accent-strong"
+            className="rounded-xl bg-accent px-4 py-2.5 text-xs font-bold text-ground no-underline hover:bg-accent-strong"
           >
             {t("에셋 올리기")}
           </Link>
@@ -187,7 +187,7 @@ function Mine() {
       <p className="mt-1 text-[10px] text-faint">{t("창작자별 조회를 붙이면 여기에 뜹니다.")}</p>
       <Link
         to="/upload"
-        className="mt-5 inline-block rounded-xl bg-accent px-5 py-2.5 text-xs font-bold text-white no-underline hover:bg-accent-strong"
+        className="mt-5 inline-block rounded-xl bg-accent px-5 py-2.5 text-xs font-bold text-ground no-underline hover:bg-accent-strong"
       >
         {t("에셋 올리기")}
       </Link>
@@ -240,7 +240,7 @@ function Empty({ what, to, cta }: { what: string; to: string; cta: string }) {
       <p className="text-xs text-muted">{what}</p>
       <Link
         to={to}
-        className="mt-5 inline-block rounded-xl bg-accent px-5 py-2.5 text-xs font-bold text-white no-underline hover:bg-accent-strong"
+        className="mt-5 inline-block rounded-xl bg-accent px-5 py-2.5 text-xs font-bold text-ground no-underline hover:bg-accent-strong"
       >
         {cta}
       </Link>

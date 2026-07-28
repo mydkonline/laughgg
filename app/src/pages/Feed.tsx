@@ -63,7 +63,7 @@ export function Feed() {
         ))}
         <Link
           to="/workshop"
-          className="ml-auto rounded-lg bg-accent px-3.5 py-1.5 text-xs font-bold text-white no-underline hover:bg-accent-strong"
+          className="ml-auto rounded-lg bg-accent px-3.5 py-1.5 text-xs font-bold text-ground no-underline hover:bg-accent-strong"
         >
           {t("스튜디오에서 만들기")}
         </Link>
@@ -200,7 +200,7 @@ function Card({ post }: { post: Post }) {
             <button
               type="button"
               onClick={send}
-              className="cursor-pointer rounded-lg border-0 bg-accent px-4 py-2.5 text-xs font-bold text-white"
+              className="cursor-pointer rounded-lg border-0 bg-accent px-4 py-2.5 text-xs font-bold text-ground"
             >
               {t("남기기")}
             </button>
