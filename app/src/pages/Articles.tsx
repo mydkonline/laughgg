@@ -10,7 +10,7 @@ export function Articles() {
   const [open, setOpen] = useState<string | null>(ARTICLES[0]?.id ?? null);
 
   return (
-    <main className="mx-auto max-w-[760px] px-5 pb-20">
+    <main className="mx-auto max-w-[840px] px-5 pb-20">
       <header className="py-8">
         <p className="text-xs tracking-wide text-accent">{t("커뮤니티")}</p>
         <h1 className="mt-1 text-2xl font-bold text-ink">{t("기사")}</h1>

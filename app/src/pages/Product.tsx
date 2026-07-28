@@ -52,7 +52,7 @@ function Detail({ p }: { p: Piece }) {
     .slice(0, 3);
 
   return (
-    <main className="mx-auto max-w-[1180px] px-5 pb-20">
+    <main className="mx-auto max-w-[1240px] px-5 pb-20">
       {/* 마켓으로 돌아가기 — 동그란 버튼 하나. 글자를 빼고 화살표만 둔다. */}
       <Link
         to="/market"
