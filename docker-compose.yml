@@ -1,3 +1,8 @@
+# 프로젝트명을 고정한다. 안 정하면 compose 가 폴더명을 쓰는데, 그러면
+# 소스 폴더 이름을 바꾸는 순간 볼륨 접두사가 달라져 DB 데이터가 고아가 된다.
+# 여기 박아 두면 폴더를 어떻게 옮기든 같은 볼륨을 본다.
+name: laughgg
+
 services:
   postgres:
     image: postgres:16
