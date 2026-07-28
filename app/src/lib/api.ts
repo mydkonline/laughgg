@@ -232,6 +232,9 @@ export type NewAsset = {
   price_usd: number;
   /** self_made | public_domain | licensed | ai_generated | unknown */
   origin: string;
+  /** 캐릭터 전용. 포함 애니메이션 목록 — 이 유형의 make-or-break 다.
+      원하는 모션이 없으면 아무리 잘 만들어도 안 팔린다. */
+  animations?: string[];
   file_key?: string;
   file_bytes?: number;
   file_sha256?: string;

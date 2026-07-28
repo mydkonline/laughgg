@@ -169,6 +169,32 @@ function Detail({ p }: { p: Piece }) {
 
       {/* 본문 */}
       <div className="mt-12 max-w-[760px]">
+        {/* 캐릭터는 그림보다 애니메이션이 make-or-break다. 상세에서 제일 먼저,
+            리포트보다 위에 보여 준다. 비어 있으면 정적이라고 붉게 경고한다 —
+            원하는 모션이 없는 캐릭터는 대개 장롱이 된다. */}
+        {p.cat === "char" && (
+          <div className="mb-6 rounded-xl border border-line bg-surface-2 px-4 py-3">
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-bold text-accent">{t("이 캐릭터의 핵심")}</span>
+              <span className="text-xs font-bold text-ink">{t("포함 애니메이션")}</span>
+            </div>
+            {p.anim && p.anim.length ? (
+              <span className="mt-2 flex flex-wrap gap-1">
+                {p.anim.map((a) => (
+                  <span key={a} className="rounded-full bg-surface px-2 py-0.5 text-[10px] text-muted">
+                    {a}
+                  </span>
+                ))}
+              </span>
+            ) : (
+              <p className="mt-1.5 text-[11px] leading-relaxed text-[#FF6B7A]">
+                {t(
+                  "정적 캐릭터 — 포함 애니메이션이 없습니다. 필요한 동작이 있는지 먼저 확인하세요. 원하는 모션이 없으면 리깅부터 다시 해야 합니다.",
+                )}
+              </p>
+            )}
+          </div>
+        )}
         <Acc title={t("상품 설명")} open>
           <p className="text-xs leading-relaxed text-muted">{t(p.desc)}</p>
         </Acc>

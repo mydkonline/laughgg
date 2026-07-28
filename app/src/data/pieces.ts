@@ -21,6 +21,9 @@ export type Piece = {
   days: number;
   tri: string;
   tex: string;
+  /** 캐릭터 전용. 포함 애니메이션 이름. 캐릭터는 그림보다 모션이 make-or-break라
+      상세에서 이걸 제일 먼저 보여 준다. 없으면 정적 에셋으로 표시한다. */
+  anim?: string[];
   desc: string;
 };
 

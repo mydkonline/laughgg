@@ -82,6 +82,10 @@ export function Upload() {
   const [style, setStyle] = useState<string>("realistic");
   const [price, setPrice] = useState("20");
   const [origin, setOrigin] = useState<string>("self_made");
+  /* 캐릭터 전용. 포함 애니메이션을 쉼표로 받는다 — 이 유형은 모션이
+     make-or-break라 안 받으면 장롱을 파는 셈이 된다. */
+  const [anims, setAnims] = useState("");
+  const animList = anims.split(",").map((s) => s.trim()).filter(Boolean);
 
   const take = useCallback(async (file: File) => {
     setError(null);
@@ -134,6 +138,7 @@ export function Upload() {
         art_style: style,
         price_usd: Number(price) || 0,
         origin,
+        ...(category === "char" && animList.length ? { animations: animList } : {}),
         ...fileRef,
       });
 
@@ -284,6 +289,32 @@ export function Upload() {
                 {t(REUSE_AXIS[category]!.why)}
               </p>
             </div>
+          )}
+          {/* 캐릭터면 포함 애니메이션을 실제로 받는다. 위 축이 "말"이라면 여기가
+              그 축을 채우는 자리다 — 이게 비면 구매자가 걸러야 할 정적 캐릭터다. */}
+          {category === "char" && (
+            <label className="flex flex-col gap-1.5">
+              <span className="text-xs text-faint">{t("포함 애니메이션")}</span>
+              <input
+                value={anims}
+                onChange={(e) => setAnims(e.target.value)}
+                className="rounded-xl border border-line bg-surface px-4 py-3 text-xs text-ink placeholder:text-faint focus:border-accent"
+                placeholder={t("걷기, 달리기, 공격, 피격, 사망")}
+              />
+              {animList.length > 0 ? (
+                <span className="flex flex-wrap gap-1">
+                  {animList.map((a) => (
+                    <span key={a} className="rounded-full bg-surface-2 px-2 py-0.5 text-[10px] text-muted">
+                      {a}
+                    </span>
+                  ))}
+                </span>
+              ) : (
+                <span className="text-[10px] text-[#FF6B7A]">
+                  {t("비워 두면 정적 캐릭터로 표시됩니다 — 원하는 모션이 없는 캐릭터는 대부분 장롱이 됩니다.")}
+                </span>
+              )}
+            </label>
           )}
           <Chips
             label={t("엔진")}
