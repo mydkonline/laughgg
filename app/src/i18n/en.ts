@@ -924,4 +924,217 @@ export const EN: Record<string, string> = {
   "블록을 놓아 만드세요": "Drop blocks to build it",
   "읽은 것": "Read",
   "아직 없습니다. 아래 블록의 말을 쓰면 걸립니다": "nothing yet — use the words from the blocks below",
+
+  /* 계정 — 오류 문구는 서버가 준 한국어 원문을 그대로 키로 쓴다.
+     화면이 만드는 말이 아니라서, 서버 문구가 바뀌면 여기가 비고 원문이 뜬다. */
+  "가입하기": "Create account",
+  "가입한 계정으로 들어갑니다.": "Sign in with your account.",
+  "계정이 없나요?": "No account yet?",
+  "이미 계정이 있나요?": "Already have an account?",
+  "에셋을 올리고 산 것을 받으려면 계정이 필요합니다.": "You need an account to upload assets and download what you buy.",
+  "서버에 닿지 못했습니다. 잠시 후 다시 시도해 주세요.": "Could not reach the server. Try again in a moment.",
+  "서버에 닿지 못했습니다": "Could not reach the server",
+  "이메일 또는 비밀번호가 맞지 않습니다.": "That email and password do not match.",
+  "이메일 형태와 비밀번호 길이를 확인해 주세요.": "Check the email format and password length.",
+  "이미 가입된 이메일입니다.": "That email is already registered.",
+  "처리하지 못했습니다. 잠시 후 다시 시도해 주세요.": "Could not complete that. Try again in a moment.",
+  "처리 중": "Working",
+  "로그인 수단": "Sign-in method",
+  "구글": "Google",
+  "복사": "Copy",
+  "복사됨": "Copied",
+
+  /* 커뮤니티 */
+  "최신": "Newest",
+  "많이 따라한 순": "Most forked",
+  "효과 작은 순": "Smallest effect",
+  "따라하기": "Fork this",
+  "설정을 들고 스튜디오로 이동": "Opens in Studio with these settings",
+  "상황, 문제, 순서, 파라미터 9개": "Context, problem, steps, 9 parameters",
+  "익명": "Anonymous",
+  "익명, 소속만 인증": "Anonymous, employer verified",
+  "인증": "Verified",
+  "공개": "Public",
+  "운영자": "Staff",
+  "PC 인디 2인팀": "PC indie, two-person team",
+
+  /* 생성·라이브러리 상태 */
+  "대기 중": "Queued",
+  "만드는 중": "Generating",
+  "요청하는 중": "Submitting",
+  "완료": "Done",
+  "실패": "Failed",
+  "생성 기능이 아직 켜져 있지 않습니다.": "Generation is not switched on yet.",
+  "요청하지 못했습니다. 잠시 후 다시 시도해 주세요.": "Could not submit that. Try again in a moment.",
+
+  /* 엔진 표 */
+  "출시": "Released",
+  "2014 이전": "2014 and earlier",
+  "2024 이후": "2024 and later",
+  "공개 확인": "Confirmed public",
+  "업계 추정": "Industry estimate",
+  "확인": "Confirmed",
+  "국내": "Korea",
+  "대형": "Large",
+  "모바일": "Mobile",
+
+  /* 뷰어 */
+  "격자": "Grid",
+  "노멀": "Normals",
+  "알파": "Alpha",
+  "기기를 확인하는 중입니다": "Checking your device",
+  "헤드셋에서 실제 크기로 봅니다. 눈높이 1.4m, 60cm 크기로 세웁니다.": "View it at real size in a headset. Placed at 1.4 m eye height, 60 cm tall.",
+  "이 브라우저는 WebXR 을 지원하지 않습니다. Quest 브라우저나 WebXR 확장이 있는 데스크톱에서 열어 주세요.": "This browser does not support WebXR. Open it in the Quest browser, or on a desktop with a WebXR extension.",
+
+  /* 상세 */
+  "지원 엔진": "Engines",
+  "내려받기": "Downloads",
+  "최근 갱신": "Last updated",
+
+  /* 검수 7항목 — 라벨과 그 아래 설명 */
+  "에셋 무결성": "Mesh integrity",
+  "토폴로지, UV, LOD": "Topology, UVs, LODs",
+  "실측 프레임 영향": "Measured frame impact",
+  "학습 소스 추적": "Training-source tracing",
+  "결합도와 테스트": "Coupling and tests",
+  "붙이는 데 걸리는 시간": "Time to wire it in",
+  "게임 필": "Game feel",
+  "입력 반응과 연출 타이밍": "Input response and timing",
+
+  /* 브이로그 단계 */
+  "블록아웃": "Blockout",
+  "하이폴리": "High-poly",
+  "리토폴로지": "Retopology",
+
+  /* 스튜디오 */
+  "프리셋 컨셉 적용": "Preset concept applied",
+  "조명과 재질을 컨셉값으로 맞춘다": "Lighting and materials set to the concept values",
+  "원본 그대로 넣으면 조명과 재질이 달라 배경과 따로 놉니다.": "Dropped in as-is, the lighting and materials do not match and it sits apart from the background.",
+  "원본 그대로 넣으면 팔레트가 달라 기존 화면에서 튑니다.": "Dropped in as-is, the palette does not match and it stands out on screen.",
+
+  "뉴스": "News",
+  "브이로그": "Dev vlog",
+  "내 파일": "My file",
+
+  /* 상품 설명 10–28. 1–9 는 이미 위에 있다. */
+  "청동 조형물. 산화된 녹색 얼룩이 텍스처에 들어 있어 야외 배치에 그대로 씁니다.": "Bronze figure. The oxidised green staining is baked into the texture, so it drops straight into outdoor scenes.",
+  "연회장용 대형 샹들리에. 촛대 하나하나가 분리돼 있어 일부만 켜는 연출이 됩니다.": "Large banquet-hall chandelier. Each candle is a separate object, so you can light only some of them.",
+  "조각 다리가 있는 낮은 탁자. 상판이 평평해 소품을 올려 놓기 좋습니다.": "Low table on carved legs. The flat top takes props well.",
+  "쇠테를 두른 나무통. 폴리곤이 가벼워 창고나 부두에 수십 개를 깔아도 부담이 없습니다.": "Iron-banded wooden barrel. Light enough on polygons to scatter dozens across a warehouse or dock.",
+  "선술집용 나무 탁자. 상판 나뭇결이 이어져 있어 여러 개를 붙여도 반복이 티나지 않습니다.": "Tavern table. The grain runs continuous across the top, so tiled side by side the repeat does not show.",
+  "찌그러진 금속 주전자. 눌린 자국이 메시에 들어 있어 노멀맵만으로 만든 것과 다릅니다.": "Dented metal jug. The dents are in the mesh, not faked with a normal map.",
+  "등받이 있는 나무 의자. 탁자와 같은 재질 세트라 나란히 놓으면 톤이 맞습니다.": "Wooden chair with a back. Shares a material set with the table, so they tone-match side by side.",
+  "유약을 바른 항아리. 표면 반사가 강해 실내 조명 확인용으로도 씁니다.": "Glazed pot. The strong surface reflection also makes it useful for checking interior lighting.",
+  "손잡이 달린 도기 주전자. 깨진 변형이 없는 온전한 형태 하나입니다.": "Handled earthenware jug. One intact form, no broken variant.",
+  "해안 바위 덩어리. 무료로 풀어 둔 것이라 지형 채우기에 부담 없이 씁니다.": "Coastal rock mass. Released free, so use it freely to fill out terrain.",
+  "작은 황동 냄비. 폴리곤 대비 텍스처 해상도가 높아 가까이서만 씁니다.": "Small brass pot. High texture resolution for its polygon count, so use it close up.",
+  "쿼터뷰 마을 건물 타일. 지붕,벽이 한 장에 들어 있어 그대로 놓으면 격자에 맞습니다.": "Isometric village building tile. Roof and walls are on one sheet, so it snaps to the grid as placed.",
+  "쿼터뷰 나무 타일. 여러 종을 섞어 심으면 같은 타일을 반복한 티가 나지 않습니다.": "Isometric tree tiles. Mix the variants when planting and the repeat does not read.",
+  "사거리,직선,곡선이 한 세트인 길 타일. 이음매가 맞아떨어집니다.": "Road tiles: crossing, straight and curve in one set. The seams line up.",
+  "물 위를 건너는 다리 타일. 양끝이 지면 타일과 그대로 붙습니다.": "Bridge tile for crossing water. Both ends butt straight onto the ground tiles.",
+  "폐허 배경 레이어. 앞뒤로 겹쳐 깔면 쿼터뷰 화면에 깊이가 생깁니다.": "Ruins background layer. Stack front to back and the isometric view gains depth.",
+  "지하 납골당 배경 레이어. 벽,바닥,기둥이 분리돼 있어 방 크기를 자유롭게 잡습니다.": "Catacomb background layer. Walls, floor and columns are separate, so you set the room size yourself.",
+  "이어 붙이는 벽 타일. 모서리와 이음매가 포함돼 있어 반복 배치에서 티가 나지 않습니다.": "Tiling wall pieces. Corners and joints are included, so the repeat does not show when laid out.",
+  "위 타일들로 실제 조립한 예시 맵. 어떻게 이어 붙이는지 한눈에 보입니다.": "A sample map actually built from the tiles above. Shows at a glance how they fit together.",
+
+
+  /* 커뮤니티 글. 화면이 아니라 사람이 쓴 글이라 문장째로 옮긴다. */
+  "도트 게임에 3D 에셋을 섞어 쓰기": "Mixing 3D assets into a pixel-art game",
+  "2D 도트로 만든 던전에 3D 모델 에셋을 넣어야 했습니다.": "We had to put a 3D model asset into a dungeon built from 2D pixel art.",
+  "3D 모델을 그대로 놓으면 해상도와 음영이 달라 도트 타일 옆에서 혼자 튑니다.": "Placed as-is, the resolution and shading differ and it stands out next to the pixel tiles.",
+  "형식을 2D 스프라이트로 바꾼다": "Switch the output format to 2D sprites",
+  "팔레트를 이끼 6색으로 고정한다": "Lock the palette to the six moss colours",
+  "도트 굵기를 2로 두고 디더링을 34까지 올린다": "Set pixel size to 2 and raise dithering to 34",
+  "면 처리를 낮춰 실루엣이 뭉개지지 않게 한다": "Lower the faceting so the silhouette does not smear",
+
+  "게임보이 4색 안에서 실루엣 살리기": "Keeping a silhouette inside the Game Boy four colours",
+  "게임보이 팔레트로 맞춘 프로젝트에 무기 에셋이 필요했습니다.": "A project locked to the Game Boy palette needed a weapon asset.",
+  "색이 네 개뿐이라 형태가 뭉개져 무엇인지 안 읽힙니다.": "With only four colours the form collapses and you cannot tell what it is.",
+  "팔레트를 게임보이로 고정한다": "Lock the palette to Game Boy",
+  "디더링을 70까지 올려 중간색을 만든다": "Raise dithering to 70 to fake the mid-tones",
+  "외곽선을 22로 세워 형태를 잡는다": "Push the outline to 22 to hold the form",
+  "도트 굵기는 6 이상으로 둔다": "Keep pixel size at 6 or above",
+
+  "광택을 올렸다가 점수가 18점 떨어진 경우": "Raising gloss cost us 18 points",
+  "금속 질감을 강조하려고 광택을 끝까지 올렸습니다.": "We pushed gloss all the way up to bring out the metal.",
+  "그림은 화려해졌는데 런타임 점수가 크게 떨어져 배지가 실버로 내려갔습니다.": "It looked richer, but the runtime score dropped hard and the badge fell to Silver.",
+  "광택 98은 셰이더 비용을 그대로 올린다": "Gloss at 98 raises shader cost one for one",
+  "48까지 낮춰도 눈에 보이는 차이는 거의 없다": "Down at 48 there is almost no visible difference",
+  "대신 채도를 올려 화려함을 보완한다": "Raise saturation instead to get the richness back",
+
+  "광택을 64까지 올리면 모바일에서 드로우콜이 아깝습니다. 48 정도로 낮춰도 그림은 거의 같아요.": "Gloss at 64 is not worth the draw calls on mobile. Around 48 looks nearly the same.",
+  "그대로 포크해서 우리 던전에 넣어 봤는데 외곽선 10은 너무 얇아서 안 보였습니다. 20부터 티가 납니다.": "Forked it straight into our dungeon — outline 10 was too thin to see. It starts reading at 20.",
+  "런타임 항목이 이렇게 크게 떨어지는 게 맞나요? 셰이더 비용만으로 18점은 과한 것 같은데요.": "Should runtime really fall that far? 18 points from shader cost alone seems steep.",
+  "{n}회": "{n}",
+
+  /* 읽을거리. 우리가 쓴 글이라 문장째로 옮긴다. */
+  "기록": "Record",
+  "{n}분": "{n} min",
+
+  "생성이 흔해지면 무엇이 비싸지는가": "When making gets cheap, what gets expensive",
+  "만드는 비용이 0에 수렴할 때 값이 붙는 건 만든 물건이 아니라 그 물건이 쓸 만하다는 보증이다.": "When the cost of making approaches zero, the price attaches not to the thing made but to the assurance that it is usable.",
+  "공급이 아니라 선별이 병목이다": "The bottleneck is selection, not supply",
+  "생성 도구로 하루에 모델 수백 개를 뽑을 수 있게 되면서, 개발팀의 시간은 만드는 데서 고르는 데로 옮겨 갔다. 파이프라인 담당자가 하루에 볼 수 있는 에셋 수는 그대로인데 후보만 100배가 됐다. 병목은 공급이 아니라 선별에 있다.": "Now that generation tools can produce hundreds of models a day, a team's time has moved from making to choosing. The number of assets one pipeline lead can look at in a day has not changed, but the candidate pool is a hundred times larger. The bottleneck is selection, not supply.",
+  "품질은 개별 값이 아니라 관계 값이다": "Quality is a relational value, not an absolute one",
+  "잘 만든 에셋이라도 프로젝트 톤과 어긋나면 못 쓴다. 열 개를 뽑으면 열 개가 다 다른 세계관이라는 말이 그래서 나온다. 절대 품질보다 정합성이 먼저 걸린다.": "A well-made asset is unusable if it fights the project's tone. That is why people say ten generations give you ten different worlds. Coherence blocks you before absolute quality does.",
+  "그래서 재는 쪽에 값이 붙는다": "So the measuring is what gets paid for",
+  "만드는 능력이 흔해질수록 판별 기준이 희소해진다. 우리가 에셋을 만들지 않고 점수를 만드는 이유다.": "The more common the ability to make, the scarcer the standard for judging. That is why we do not make assets — we make the score.",
+
+  "학습 소스를 왜 가장 무겁게 보는가": "Why training provenance carries the most weight",
+  "7항목 중 라이선스 출처에 22%를 준 이유. 다른 여섯 항목은 고칠 수 있고 이것만 못 고친다.": "Why license provenance takes 22% of the seven. The other six can be fixed; this one cannot.",
+  "고칠 수 있는 문제와 못 고치는 문제": "Problems you can fix and problems you cannot",
+  "면이 지저분하면 리토폴로지하면 되고, 드로우콜이 많으면 아틀라스로 합치면 된다. 전부 시간 문제다. 하지만 학습 소스에 남의 저작물이 섞였다면 그 에셋은 손볼 방법이 없다. 되돌릴 수 없는 항목에 가중치를 몰아야 하는 이유다.": "Messy topology can be retopologised; too many draw calls can be atlased. Both are just time. But if someone else's work is in the training source, there is nothing to fix. That is why the weight goes to the item you cannot undo.",
+  "구매자가 지는 위험이다": "The buyer carries the risk",
+  "출처가 불분명한 재료가 섞이면 문제가 되는 건 만든 사람이 아니라 그걸 출시한 게임이다. 위험을 지는 쪽이 사는 쪽이라, 사기 전에 알려 줘야 한다.": "When material of unclear origin is mixed in, the exposure lands on the game that ships it, not the person who made it. The buyer carries the risk, so the buyer has to be told before buying.",
+  "역추적이 기술 과제다": "Tracing back is the hard part",
+  "생성 결과물만 보고 학습 소스를 되짚는 일은 쉽지 않다. 그래서 여기가 경쟁 지점이 된다. 누구나 만들 수 있게 된 다음에도 이건 어렵다.": "Working back from a generated result to its training source is not easy. That is exactly why it is where the competition sits — it stays hard even after everyone can generate.",
+
+  "수수료를 배지에 연동하지 않기로 한 이유": "Why we did not tie the fee to the badge",
+  "높은 배지에 낮은 수수료를 매기는 안을 검토했다가 접었다.": "We looked at charging a lower fee for a higher badge, then dropped it.",
+  "검토한 안": "The proposal",
+  "배지가 높을수록 수수료를 깎아 주면 창작자가 점수를 올릴 동기가 생긴다. 얼핏 맞는 설계로 보였다.": "Discount the fee as the badge rises and creators have a reason to raise their score. At a glance it looked like the right design.",
+  "접은 이유": "Why we dropped it",
+  "채점하는 쪽이 수수료도 정하면, 점수를 낮게 주는 게 우리 이익이 된다. 이해가 충돌하는 구조는 아무리 잘 운영해도 신뢰를 못 받는다.": "If the party doing the scoring also sets the fee, scoring low becomes profitable for us. A structure with that conflict in it does not earn trust no matter how well it is run.",
+  "대신 노출로 보상한다": "We reward with placement instead",
+  "수수료는 8% 단일로 고정하고, 배지는 목록에서의 자리만 정한다. 점수를 높게 주는 것이 우리에게 손해가 되지 않으므로 채점을 왜곡할 이유가 없다.": "The fee is a flat 8%, and the badge only decides position in the listings. Scoring high costs us nothing, so we have no reason to skew it.",
+
+  "{n}% 면 수": "{n}% face count",
+
+  "댓글 {n}": "Comments {n}",
+
+  /* 엔진 표 — 규모, 보유 수, 엔진 개조 표기 */
+  "(개조)": "(modified)",
+  "(자체)": "(in-house)",
+  "10만+": "100K+",
+
+  /* 요금 */
+  "{v}원": "KRW {v}",
+  "개당 {v}원": "KRW {v} each",
+
+  "{s} 단계": "{s} stage",
+
+  /* 브이로그 수치 표 */
+  "면 구성": "Topology",
+  "실행 성능": "Runtime",
+  "거리별 단계": "LOD steps",
+  "드로우콜": "Draw calls",
+  "스케일": "Scale",
+  "종합": "Total",
+  "9시간": "9 h",
+
+  "비밀번호는 Argon2id 로 저장되며 원문은 어디에도 남지 않습니다. 세션은 서버가 들고 있어 로그아웃하면 그 자리에서 끊깁니다.": "Passwords are stored with Argon2id and the plaintext is never kept anywhere. Sessions live on the server, so logging out ends them on the spot.",
+
+  /* 슬라이더 양 끝 */
+
+  "{v} 절약": "Save {v}",
+
+  /* 스튜디오에서 자동으로 만들어지는 글. 값이 문장 안에 들어가서 자리를 비워 둔다. */
+  "{asset} 를 {concept} 톤으로": "{asset} in a {concept} tone",
+  "{asset} 를 {concept} 프로젝트에 넣어야 했습니다.": "We needed {asset} to sit in a {concept} project.",
+  "컨셉을 {concept} 으로 고른다": "Pick {concept} as the concept",
+  "프롬프트로 방향을 잡는다: {p}": "Set the direction with a prompt: {p}",
+  "팔레트를 {palette} 로 고정하고 도트 굵기를 {px} 로 둔다": "Lock the palette to {palette} and set pixel size to {px}",
+  "검수 {before} 에서 {after} 로 바뀐 것을 확인한다": "Check the score move from {before} to {after}",
+  "방금": "just now",
+  "{n}분 전": "{n}m ago",
 };

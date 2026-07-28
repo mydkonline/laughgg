@@ -1,3 +1,4 @@
+import { t } from "../lib/locale";
 import type { Piece } from "./pieces";
 
 /* 패키지 콘텐츠 — 사기 전에 안에 뭐가 들었는지 본다.
@@ -66,7 +67,9 @@ export function packageTree(p: Piece): PackageTree {
             name: `${base}_LOD${i}`,
             ext: "fbx",
             size: seeded(p.id, 10 + i, 240, 900) * KB,
-            note: i === 0 ? "원본" : `${100 - i * 28}% 면 수`,
+            /* 숫자가 말 안에 박혀 있어서 통째로 키가 될 수 없다. 자리를 비워 두고
+               번역표가 그 자리를 채운다. */
+            note: i === 0 ? t("원본") : t("{n}% 면 수", { n: 100 - i * 28 }),
           })),
         },
         {

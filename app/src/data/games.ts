@@ -58,6 +58,12 @@ export function engineMark(name: string): EngineMark {
       return { family, version, logo };
     }
   }
+  /* 아는 계열이 아니면 이름을 그대로 쓴다. 다만 괄호 꼬리는 떼어 낸다 —
+     "AnvilNext (자체)" 처럼 상표 뒤에 우리말 표기가 붙어 있으면, 통째로
+     고유명사 취급돼서 영어 화면에도 한글이 그대로 남는다. 상표는 안 옮기고
+     꼬리만 옮기면 된다. */
+  const tail = /\s*(\([^)]*\))\s*$/.exec(name);
+  if (tail) return { family: name.slice(0, tail.index).trim(), version: tail[1]! };
   return { family: name, version: "" };
 }
 

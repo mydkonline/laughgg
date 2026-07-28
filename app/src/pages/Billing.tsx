@@ -97,10 +97,10 @@ export function Billing() {
                 {p.credits}
                 <span className="ml-1 text-xs font-normal text-faint">{t("크레딧")}</span>
               </p>
-              <p className="num mt-3 text-base text-accent">{won(p.won)}원</p>
+              <p className="num mt-3 text-base text-accent">{t("{v}원", { v: won(p.won) })}</p>
               {/* 개당 값을 적어 준다. 비교를 화면 밖에서 하게 만들면 안 산다. */}
               <p className="mt-1 text-[10px] text-faint">
-                개당 {Math.round(p.won / p.credits)}원
+                {t("개당 {v}원", { v: Math.round(p.won / p.credits) })}
               </p>
               <Link
                 to={signed ? "/library" : "/join"}

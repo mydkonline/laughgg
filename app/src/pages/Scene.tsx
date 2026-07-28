@@ -116,7 +116,7 @@ export function Scene() {
                 {t(f.label)}
                 {picked[f.key] && (
                   <span className="truncate text-[10px] font-normal text-accent">
-                    {[...picked[f.key]!][0]}
+                    {t([...picked[f.key]!][0])}
                   </span>
                 )}
                 <span className="ml-auto text-[10px] text-faint group-open:hidden">+</span>
@@ -136,7 +136,7 @@ export function Scene() {
                           on ? "font-bold text-accent" : "text-muted hover:text-ink",
                         ].join(" ")}
                       >
-                        <span className="truncate">{v}</span>
+                        <span className="truncate">{t(v)}</span>
                         <span className="num ml-auto shrink-0 text-faint">{n}</span>
                       </button>
                     </li>

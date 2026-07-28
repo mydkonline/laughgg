@@ -116,10 +116,10 @@ export function Stack() {
           {facets.map((f) => (
             <details key={f.key} className="group mb-3 border-b border-line pb-3" open={f.key === "engine"}>
               <summary className="flex cursor-pointer list-none items-center gap-2 text-xs font-bold text-ink">
-                {f.label}
+                {t(f.label)}
                 {picked[f.key] && (
                   <span className="truncate text-[10px] font-normal text-accent">
-                    {[...picked[f.key]!][0]}
+                    {t([...picked[f.key]!][0])}
                   </span>
                 )}
                 <span className="ml-auto text-[10px] text-faint group-open:hidden">+</span>
@@ -139,7 +139,7 @@ export function Stack() {
                           on ? "font-bold text-accent" : "text-muted hover:text-ink",
                         ].join(" ")}
                       >
-                        <span className="truncate">{v}</span>
+                        <span className="truncate">{t(v)}</span>
                         <span className="num ml-auto shrink-0 text-faint">{n}</span>
                       </button>
                     </li>
@@ -212,7 +212,7 @@ function Row({ game }: { game: Game }) {
             <EngineLogo family={mark.family} />
             <span className="font-semibold text-accent">
               {mark.family}
-              {mark.version && <span className="ml-1 font-normal text-muted">{mark.version}</span>}
+              {mark.version && <span className="ml-1 font-normal text-muted">{t(mark.version)}</span>}
             </span>
           </span>
           <span className="text-xs text-muted">
@@ -221,12 +221,12 @@ function Row({ game }: { game: Game }) {
           </span>
           <span className="text-xs text-muted">
             <span className="text-faint">{t("규모")} </span>
-            {SCALES[game.sc] ?? game.sc}
+            {t(SCALES[game.sc] ?? game.sc)}
           </span>
           {game.own && (
             <span className="text-xs text-muted">
               <span className="text-faint">{t("보유")} </span>
-              {game.own}
+              {t(game.own)}
             </span>
           )}
           {typeof game.pos === "number" && game.pos > 0 && (
@@ -245,9 +245,9 @@ function Row({ game }: { game: Game }) {
               key={name + role}
               className="grid grid-cols-[minmax(0,1fr)_92px_36px] items-center gap-3 border-b border-line-soft py-1.5 text-xs last:border-b-0"
             >
-              <dt className="truncate text-ink">{name}</dt>
-              <dd className="m-0 truncate text-faint">{role}</dd>
-              <dd className={`m-0 text-right ${ok ? "text-accent" : "text-faint"}`}>{ok ? "확인" : "추정"}</dd>
+              <dt className="truncate text-ink">{t(name)}</dt>
+              <dd className="m-0 truncate text-faint">{t(role)}</dd>
+              <dd className={`m-0 text-right ${ok ? "text-accent" : "text-faint"}`}>{ok ? t("확인") : t("추정")}</dd>
             </div>
           ))}
         </dl>

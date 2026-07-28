@@ -58,7 +58,7 @@ export function Feed() {
                 : "border-line text-muted hover:border-accent hover:text-ink",
             ].join(" ")}
           >
-            {name}
+            {t(name)}
           </button>
         ))}
         <Link
@@ -100,7 +100,7 @@ function Card({ post }: { post: Post }) {
        목록으로 보이면 아무도 안 읽는다. */
     <article className="border-b border-line py-8">
       <header>
-        <h2 className="text-2xl leading-snug font-bold text-ink">{post.title}</h2>
+        <h2 className="text-2xl leading-snug font-bold text-ink">{t(post.title)}</h2>
         <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-faint">
           <Byline by={post.by} />
           <span>{ago(post.at)}</span>
@@ -112,12 +112,12 @@ function Card({ post }: { post: Post }) {
         <div className="min-w-0">
           <section>
             <h3 className="text-xs font-bold text-ink">{t("상황")}</h3>
-            <p className="mt-1.5 text-xs leading-relaxed text-muted">{post.situation}</p>
+            <p className="mt-1.5 text-xs leading-relaxed text-muted">{t(post.situation)}</p>
           </section>
 
           <section className="mt-4">
             <h3 className="text-xs font-bold text-ink">{t("문제")}</h3>
-            <p className="mt-1.5 text-xs leading-relaxed text-muted">{post.problem}</p>
+            <p className="mt-1.5 text-xs leading-relaxed text-muted">{t(post.problem)}</p>
           </section>
 
           <section className="mt-4">
@@ -126,7 +126,7 @@ function Card({ post }: { post: Post }) {
               {(post.steps ?? []).map((st, i) => (
                 <li key={st} className="flex gap-2.5 text-xs">
                   <span className="num w-6 shrink-0 text-faint">{String(i + 1).padStart(2, "0")}</span>
-                  <span className="leading-relaxed text-muted">{st}</span>
+                  <span className="leading-relaxed text-muted">{t(st)}</span>
                 </li>
               ))}
             </ol>
@@ -161,7 +161,7 @@ function Card({ post }: { post: Post }) {
           aria-expanded={open}
           className="cursor-pointer border-0 bg-transparent p-0 text-xs text-faint hover:text-ink"
         >
-          댓글 {post.comments.length}
+          {t("댓글 {n}", { n: post.comments.length })}
         </button>
         <Link
           to={`/workshop?fork=${post.id}`}
@@ -182,7 +182,7 @@ function Card({ post }: { post: Post }) {
                   <Byline by={c.by} />
                   <span>{ago(c.at)}</span>
                 </p>
-                <p className="mt-1 text-xs leading-relaxed text-muted">{c.body}</p>
+                <p className="mt-1 text-xs leading-relaxed text-muted">{t(c.body)}</p>
               </div>
             ))}
             {post.comments.length === 0 && <p className="text-xs text-faint">{t("아직 댓글이 없습니다.")}</p>}
@@ -224,8 +224,8 @@ function Card({ post }: { post: Post }) {
 function FeedSpec({ k, v }: { k: string; v: string }) {
   return (
     <div>
-      <dt className="text-xs text-faint">{k}</dt>
-      <dd className="m-0 text-xs font-semibold text-ink">{v}</dd>
+      <dt className="text-xs text-faint">{t(k)}</dt>
+      <dd className="m-0 text-xs font-semibold text-ink">{t(v)}</dd>
     </div>
   );
 }
@@ -233,11 +233,11 @@ function FeedSpec({ k, v }: { k: string; v: string }) {
 function Byline({ by }: { by: Author }) {
   return (
     <span className="flex items-center gap-1.5">
-      <b className="font-semibold text-muted">{by.name}</b>
+      <b className="font-semibold text-muted">{t(by.name)}</b>
       {by.studio && (
         <span className="rounded border border-line px-1.5 py-px text-[10px] text-faint">
-          {by.studio}
-          {by.verified && " 인증"}
+          {t(by.studio)}
+          {by.verified && ` ${t("인증")}`}
         </span>
       )}
     </span>
@@ -249,7 +249,7 @@ function Knoblist({ knobs }: { knobs: Knobs }) {
     <dl className="grid grid-cols-2 gap-x-6 gap-y-1.5 sm:grid-cols-3">
       {(Object.keys(KNOB_LABEL) as (keyof Knobs)[]).map((k) => (
         <div key={k} className="flex items-center justify-between gap-2">
-          <dt className="text-xs text-faint">{KNOB_LABEL[k][0]}</dt>
+          <dt className="text-xs text-faint">{t(KNOB_LABEL[k][0])}</dt>
           <dd className="m-0 flex flex-1 items-center gap-2">
             <span className="block h-1 flex-1 overflow-hidden rounded-full bg-surface-2">
               <b className="block h-full bg-accent" style={{ width: `${knobs[k]}%` }} />

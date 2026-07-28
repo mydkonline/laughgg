@@ -43,4 +43,5 @@ export const SCENES_EN: Record<string, Partial<SceneGame>> = {
     n: "Slay the Spire",
     note: "The card UI takes the bottom of the screen. Characters split left and right.",
   },
+  cuphead: { n: "Cuphead", note: "1930s cel animation. Paper grain and sepia are the signature." },
 };

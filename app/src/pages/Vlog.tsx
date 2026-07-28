@@ -103,7 +103,7 @@ export function Vlog() {
             <div className="mt-5 flex items-center gap-2 rounded-full bg-accent-soft px-3 py-1.5 w-fit">
               <RankIcon badge={ep.grade[1] as BadgeKey} size={18} />
               <b className="text-base font-extrabold text-accent">
-                {ep.grade[0]} {ep.grade[2]}
+                {t(ep.grade[0])} {ep.grade[2]}
               </b>
             </div>
           )}
@@ -152,7 +152,7 @@ function EpisodeShot({ ep }: { ep: Episode }) {
       <div className="relative aspect-[4/3] overflow-hidden rounded-xl border border-line bg-gradient-to-b from-surface-2 to-surface">
         {src && <Preview model={src} knobs={look?.knobs ?? NEUTRAL} className="h-full w-full" />}
       </div>
-      <figcaption className="pt-2 text-xs text-faint">{STAGE_NAME[ep.stage] ?? ep.stage} 단계</figcaption>
+      <figcaption className="pt-2 text-xs text-faint">{t("{s} 단계", { s: t(STAGE_NAME[ep.stage] ?? ep.stage) })}</figcaption>
     </figure>
   );
 }

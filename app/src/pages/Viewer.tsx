@@ -49,7 +49,7 @@ export function Viewer() {
 
       {/* 무엇을 볼지 */}
       <div className="mb-4">
-        <p className="mb-2 text-xs text-faint">{cartIds.length ? "장바구니" : "마켓 상위"}</p>
+        <p className="mb-2 text-xs text-faint">{cartIds.length ? t("장바구니") : t("마켓 상위")}</p>
         <div className="flex gap-2 overflow-x-auto pb-2">
           {pool.map((p) => (
             <button
@@ -231,7 +231,7 @@ function Viewer3D({ piece }: { piece: Piece }) {
               shading === k ? "border-accent text-ink" : "border-line text-faint hover:text-ink",
             ].join(" ")}
           >
-            {label}
+            {t(label)}
           </button>
         ))}
         <button

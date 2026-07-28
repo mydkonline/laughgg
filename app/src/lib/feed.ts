@@ -216,8 +216,8 @@ export function useFeed() {
 /** 상대 시각. 초 단위까지 보여줄 이유가 없다. */
 export function ago(at: number): string {
   const s = Math.max(0, (Date.now() - at) / 1000);
-  if (s < 60) return "방금";
-  if (s < 3600) return `${Math.floor(s / 60)}분 전`;
+  if (s < 60) return t("방금");
+  if (s < 3600) return t("{n}분 전", { n: Math.floor(s / 60) });
   if (s < 86400) return t("{n}시간 전", { n: Math.floor(s / 3600) });
   return t("{n}일 전", { n: Math.floor(s / 86400) });
 }

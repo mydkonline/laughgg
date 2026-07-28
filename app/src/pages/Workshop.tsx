@@ -219,17 +219,21 @@ export function Workshop() {
   const onPublish = () => {
     const id = publish({
       pieceId: piece.id,
-      title: `${piece.t} 를 ${conceptName} 톤으로`,
+      title: t("{asset} 를 {concept} 톤으로", { asset: piece.t, concept: t(conceptName) }),
       /* 올릴 때 상황을 자동으로 채운다. 빈 칸을 내밀면 아무도 안 쓴다.
          나중에 본인이 고칠 수 있게 두는 게 맞지만, 시작은 채워 준다. */
-      situation: `${piece.t} 를 ${conceptName} 프로젝트에 넣어야 했습니다.`,
+      situation: t("{asset} 를 {concept} 프로젝트에 넣어야 했습니다.", { asset: piece.t, concept: t(conceptName) }),
       problem: sprite
-        ? "원본 그대로 넣으면 팔레트가 달라 기존 화면에서 튑니다."
-        : "원본 그대로 넣으면 조명과 재질이 달라 배경과 따로 놉니다.",
+        ? t("원본 그대로 넣으면 팔레트가 달라 기존 화면에서 튑니다.")
+        : t("원본 그대로 넣으면 조명과 재질이 달라 배경과 따로 놉니다."),
       steps: [
-        prompt.trim() ? `프롬프트로 방향을 잡는다: ${prompt.trim()}` : `컨셉을 ${conceptName} 으로 고른다`,
-        sprite ? `팔레트를 ${palette?.name ?? "자유"} 로 고정하고 도트 굵기를 ${raster.pixel} 로 둔다` : "조명과 재질을 컨셉값으로 맞춘다",
-        `검수 ${piece.score} 에서 ${after} 로 바뀐 것을 확인한다`,
+        prompt.trim()
+          ? t("프롬프트로 방향을 잡는다: {p}", { p: prompt.trim() })
+          : t("컨셉을 {concept} 으로 고른다", { concept: t(conceptName) }),
+        sprite
+          ? t("팔레트를 {palette} 로 고정하고 도트 굵기를 {px} 로 둔다", { palette: t(palette?.name ?? "자유"), px: raster.pixel })
+          : t("조명과 재질을 컨셉값으로 맞춘다"),
+        t("검수 {before} 에서 {after} 로 바뀐 것을 확인한다", { before: piece.score, after }),
       ],
       concept: conceptName,
       prompt: prompt.trim() || "프리셋 컨셉 적용",
@@ -507,7 +511,7 @@ export function Workshop() {
 
         {sprite && (
           <>
-            <Field label={t("팔레트")} hint={palette?.from}>
+            <Field label={t("팔레트")} hint={palette?.from ? t(palette.from) : undefined}>
               <select
                 value={raster.palette}
                 onChange={(e) => {
@@ -553,7 +557,7 @@ export function Workshop() {
               />
             </Field>
 
-            <Field label={t("디더링")} hint={raster.dither === 0 ? "없음" : `${raster.dither}`}>
+            <Field label={t("디더링")} hint={raster.dither === 0 ? t("없음") : `${raster.dither}`}>
               <input
                 type="range"
                 min={0}
@@ -648,10 +652,10 @@ export function Workshop() {
         <section className="mt-4 grid gap-x-8 gap-y-3 rounded-xl border border-line bg-surface p-4 sm:grid-cols-2 lg:grid-cols-3">
           {(Object.keys(KNOB_LABEL) as (keyof Knobs)[]).map((k) => (
             <label key={k} className="flex flex-col gap-1">
-              <span className="text-xs font-semibold text-ink">{KNOB_LABEL[k][0]}</span>
+              <span className="text-xs font-semibold text-ink">{t(KNOB_LABEL[k][0])}</span>
               {/* 양끝을 슬라이더 좌우에 붙인다. 어느 쪽으로 미는지가 바로 보인다. */}
               <span className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2.5">
-                <span className="text-xs text-faint">{KNOB_LABEL[k][1]}</span>
+                <span className="text-xs text-faint">{t(KNOB_LABEL[k][1])}</span>
                 <input
                   type="range"
                   min={0}
@@ -663,7 +667,7 @@ export function Workshop() {
                   }}
                   className="accent-[var(--accent)]"
                 />
-                <span className="text-xs text-faint">{KNOB_LABEL[k][2]}</span>
+                <span className="text-xs text-faint">{t(KNOB_LABEL[k][2])}</span>
               </span>
             </label>
           ))}

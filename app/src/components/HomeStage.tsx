@@ -2,9 +2,10 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { SCENE_GAMES } from "../data/scenes";
+import { SCENES_EN } from "../i18n/en/scenes";
 import { PIECES } from "../data/pieces";
 import { Stage } from "./GameStage";
-import { t } from "../lib/locale";
+import { localized, t } from "../lib/locale";
 
 /* 홈의 시연.
 
@@ -58,7 +59,7 @@ export function HomeStage() {
               ].join(" ")}
             >
               <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: g.sw }} />
-              {g.n}
+              {localized(SCENES_EN, g.id, g).n}
             </button>
           ))}
 
@@ -78,7 +79,7 @@ export function HomeStage() {
                   fit === v ? "bg-ink font-bold text-ground" : "bg-transparent text-muted hover:text-ink",
                 ].join(" ")}
               >
-                {label as string}
+                {t(label as string)}
               </button>
             ))}
           </span>
@@ -90,7 +91,7 @@ export function HomeStage() {
 
         <p className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
           <span className="text-xs text-faint">
-            {game.cat}, {game.sub}
+            {t(game.cat)}, {t(localized(SCENES_EN, game.id, game).sub)}
           </span>
           <Link
             to="/scene"

@@ -178,7 +178,7 @@ function Detail({ p }: { p: Piece }) {
                 <div key={c.k} className="grid grid-cols-[minmax(0,1fr)_96px_30px] items-center gap-3">
                   {/* 부제는 항목명보다 확실히 작아야 한다. 같은 크기면 둘 다 안 읽힌다. */}
                   <span className="min-w-0 truncate text-xs text-muted">
-                    {c.k} <span className="ml-1 text-[10px] text-faint">{c.d}</span>
+                    {t(c.k)} <span className="ml-1 text-[10px] text-faint">{t(c.d)}</span>
                   </span>
                   <span className="block h-1.5 overflow-hidden rounded-full bg-surface-2">
                     <b
@@ -209,8 +209,8 @@ function Detail({ p }: { p: Piece }) {
             <Kv k="폴리곤" v={p.tri} />
             <Kv k="텍스처" v={p.tex} />
             <Kv k="지원 엔진" v={p.eng.map((e) => ENGINE_NAME[e]).join(", ")} />
-            <Kv k="내려받기" v={`${num(p.dl)}회`} />
-            <Kv k="최근 갱신" v={`${p.days}일 전`} />
+            <Kv k="내려받기" v={t("{n}회", { n: num(p.dl) })} />
+            <Kv k="최근 갱신" v={t("{n}일 전", { n: p.days })} />
           </dl>
         </Acc>
       </div>
@@ -290,7 +290,7 @@ function Folder({ entry, defaultOpen }: { entry: Entry; defaultOpen?: boolean })
       >
         <span className="w-3 shrink-0 text-xs text-faint">{open ? "−" : "+"}</span>
         <span className="min-w-0 flex-1 truncate text-base font-semibold text-ink">{entry.name}</span>
-        <span className="shrink-0 text-xs tabular-nums text-faint">{kids.length}개</span>
+        <span className="shrink-0 text-xs tabular-nums text-faint">{t("{n}개", { n: kids.length })}</span>
         <span className="w-20 shrink-0 text-right text-xs tabular-nums text-faint">{bytes(total)}</span>
       </button>
 
@@ -305,7 +305,7 @@ function Folder({ entry, defaultOpen }: { entry: Entry; defaultOpen?: boolean })
                 {t(k.name)}
                 <span className="text-faint">.{k.ext}</span>
               </span>
-              <span className="text-xs text-faint">{k.note ?? ""}</span>
+              <span className="text-xs text-faint">{k.note ? t(k.note) : ""}</span>
               <span className="text-right text-xs tracking-wide text-faint uppercase">{k.ext}</span>
               <span className="text-right text-xs tabular-nums text-faint">{bytes(k.size ?? 0)}</span>
             </li>
@@ -328,7 +328,7 @@ function Acc({ title, open, children }: { title: string; open?: boolean; childre
 function Kv({ k, v }: { k: string; v: string }) {
   return (
     <div className="flex justify-between border-b border-line-soft py-1.5 text-base last:border-b-0">
-      <dt className="text-faint">{k}</dt>
+      <dt className="text-faint">{t(k)}</dt>
       <dd className="m-0 tabular-nums text-muted">{v}</dd>
     </div>
   );

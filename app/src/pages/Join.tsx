@@ -95,9 +95,9 @@ export function Join() {
   return (
     <main className="mx-auto max-w-[420px] px-5 py-16">
       <p className="text-xs tracking-wide text-accent">{t("계정")}</p>
-      <h1 className="mt-1 text-2xl font-bold text-ink">{joining ? "가입" : "로그인"}</h1>
+      <h1 className="mt-1 text-2xl font-bold text-ink">{joining ? t("가입") : t("로그인")}</h1>
       <p className="mt-2 text-xs text-muted">
-        {joining ? "에셋을 올리고 산 것을 받으려면 계정이 필요합니다." : "가입한 계정으로 들어갑니다."}
+        {joining ? t("에셋을 올리고 산 것을 받으려면 계정이 필요합니다.") : t("가입한 계정으로 들어갑니다.")}
       </p>
 
       {/* 구글이 먼저다. 비밀번호를 새로 만들 이유가 없으면 안 만드는 게 낫다. */}
@@ -174,12 +174,12 @@ export function Join() {
           disabled={busy || (joining && tooShort)}
           className="cursor-pointer rounded-xl border-0 bg-accent px-6 py-3.5 text-xs font-bold text-white hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {busy ? "처리 중" : joining ? "가입하기" : "로그인"}
+          {busy ? t("처리 중") : joining ? t("가입하기") : t("로그인")}
         </button>
       </form>
 
       <p className="mt-6 text-xs text-faint">
-        {joining ? "이미 계정이 있나요? " : "계정이 없나요? "}
+        {joining ? `${t("이미 계정이 있나요?")} ` : `${t("계정이 없나요?")} `}
         <button
           type="button"
           onClick={() => {
@@ -188,13 +188,12 @@ export function Join() {
           }}
           className="cursor-pointer border-0 bg-transparent p-0 text-xs font-semibold text-accent hover:underline"
         >
-          {joining ? "로그인" : "가입하기"}
+          {joining ? t("로그인") : t("가입하기")}
         </button>
       </p>
 
       <p className="mt-10 border-t border-line pt-5 text-[10px] leading-relaxed text-faint">
-        비밀번호는 Argon2id 로 저장되며 원문은 어디에도 남지 않습니다. 세션은 서버가
-        들고 있어 로그아웃하면 그 자리에서 끊깁니다.{" "}
+        {t("비밀번호는 Argon2id 로 저장되며 원문은 어디에도 남지 않습니다. 세션은 서버가 들고 있어 로그아웃하면 그 자리에서 끊깁니다.")}{" "}
         <Link to="/market" className="text-faint underline">
           {t("그냥 둘러보기")}
         </Link>

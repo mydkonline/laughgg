@@ -31,20 +31,20 @@ function Piece({ a, open, onToggle }: { a: Article; open: boolean; onToggle: () 
     <article className="border-b border-line py-6">
       <button type="button" onClick={onToggle} aria-expanded={open} className="w-full cursor-pointer text-left">
         <p className="flex flex-wrap items-center gap-x-2 text-xs text-faint">
-          <span className="text-accent">{a.kind}</span>
+          <span className="text-accent">{t(a.kind)}</span>
           <span>{ago(Date.now() - a.daysAgo * 86_400_000)}</span>
-          <span>{a.minutes}분</span>
+          <span>{t("{n}분", { n: a.minutes })}</span>
         </p>
-        <h2 className="mt-1.5 text-base leading-snug font-bold text-ink">{a.title}</h2>
-        <p className="mt-2 text-xs leading-relaxed text-muted">{a.lead}</p>
+        <h2 className="mt-1.5 text-base leading-snug font-bold text-ink">{t(a.title)}</h2>
+        <p className="mt-2 text-xs leading-relaxed text-muted">{t(a.lead)}</p>
       </button>
 
       {open && (
         <div className="mt-6 flex flex-col gap-5 border-t border-line pt-5">
           {a.body.map(([h, p]) => (
             <section key={h}>
-              <h3 className="text-xs font-bold text-ink">{h}</h3>
-              <p className="mt-1.5 text-xs leading-relaxed text-muted">{p}</p>
+              <h3 className="text-xs font-bold text-ink">{t(h)}</h3>
+              <p className="mt-1.5 text-xs leading-relaxed text-muted">{t(p)}</p>
             </section>
           ))}
           <p className="text-xs text-faint">{t("LaughGG 편집")}</p>

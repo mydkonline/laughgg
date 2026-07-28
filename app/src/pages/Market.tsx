@@ -154,7 +154,7 @@ export function Market() {
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-baseline gap-2">
                     <span className="text-base font-bold text-ink">{t(b.name)}</span>
-                    <span className="text-xs text-faint">{items.length}종</span>
+                    <span className="text-xs text-faint">{t("{n}종", { n: items.length })}</span>
                     <span className="flex items-center gap-1">
                       <RankIcon badge={badgeOf(bundleScore(b))} size={13} />
                     </span>
@@ -178,7 +178,7 @@ export function Market() {
                 <div className="sm:border-l sm:border-line sm:pl-6">
                   <p className="text-xs text-faint line-through">{won(price.single)}</p>
                   <p className="num mt-0.5 text-4xl leading-none text-ink">{won(price.bundled)}</p>
-                  <p className="mt-1.5 text-xs text-accent">{won(price.saved)} 절약</p>
+                  <p className="mt-1.5 text-xs text-accent">{t("{v} 절약", { v: won(price.saved) })}</p>
                 </div>
               </Link>
             );
