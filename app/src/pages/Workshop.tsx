@@ -326,7 +326,6 @@ export function Workshop() {
           ))}
         </div>
 
-        <p className="text-xs text-faint">{t("glb, gltf, png, jpg. 파일은 브라우저에만 남습니다.")}</p>
       </section>
       {/* 2 — 결과. 조작을 그림 위에 두면 보면서 못 만진다. 그림이 먼저고,
           원본과 나란히 두지 않으면 무엇이 달라졌는지 안 보인다. */}
