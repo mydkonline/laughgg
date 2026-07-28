@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { HDRLoader } from "three/examples/jsm/loaders/HDRLoader.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
+import { clone as cloneSkinned } from "three/examples/jsm/utils/SkeletonUtils.js";
 
 /* 상품이 3D 에셋이니 그림도 실제 모델을 렌더해서 쓴다.
    WebGL 컨텍스트는 브라우저당 몇 개 안 되므로 렌더러 하나를 돌려 쓰고,
@@ -93,8 +94,10 @@ export async function loadNormalized(url: string): Promise<THREE.Group> {
     })();
     gltfCache.set(url, p);
   }
-  /* 여러 장면이 같은 노드를 동시에 붙이면 서로 부모를 뺏는다. 사본을 준다. */
-  return (await p).clone(true);
+  /* 여러 장면이 같은 노드를 동시에 붙이면 서로 부모를 뺏는다. 사본을 준다.
+     스킨드 메시는 clone(true) 로 뼈대 바인딩이 깨져 두 번째부터 빈 화면이 된다 —
+     SkeletonUtils.clone 이 스켈레톤까지 다시 묶어 준다(정적 메시엔 일반 clone 과 같다). */
+  return cloneSkinned(await p) as THREE.Group;
 }
 
 /** 경계구에 카메라를 맞춘다. 모델마다 크기가 제각각이라 고정 거리로는 잘린다. */
