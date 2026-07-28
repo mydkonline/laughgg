@@ -117,4 +117,12 @@ export const PIECES: Piece[] = [
     { id:30, glb:"char/Fox.glb", t:"Low Poly Fox", by:"pixelmannen", cat:"char", eng:["unity","unreal","godot"], score:85, feel:88, price:18, dl:5400, days:3, tri:"1.7k", tex:"512²",
       anim:["Survey","Walk","Run"],
       desc:"저폴리 여우 크리처. 둘러보기, 걷기, 달리기 3종 애니메이션이 포함돼 소환수나 야생 동물로 바로 씁니다." },
+
+    // 맵/레벨 — 조립된 3D 레벨. 정적 메시라 베이커로 그대로 구워 미리보기가 된다.
+    { id:31, glb:"map/TempleFloor01_Art.glb", t:"Tomb Temple Map",   by:"polygonalmind", cat:"env", eng:["unity","unreal","godot"], score:84, feel:86, price:22, dl:2680, days:4, tri:"14k", tex:"1K",
+      desc:"이집트 무덤 신전 바닥 레벨. 계단과 단이 한 메시라 그대로 깔면 던전 한 방이 됩니다." },
+    { id:32, glb:"map/TempleFloor03_Art.glb", t:"Sunken Temple Map", by:"polygonalmind", cat:"env", eng:["unity","unreal","godot"], score:82, feel:84, price:22, dl:1940, days:7, tri:"13k", tex:"1K",
+      desc:"가라앉은 신전 바닥 레벨. 무덤 화풍 무대에 그대로 올리는 배경 맵으로 씁니다." },
+    { id:33, glb:"map/Layout_Floor01.glb", t:"Dungeon Layout Block", by:"polygonalmind", cat:"env", eng:["unity","godot"], score:80, feel:82, price:26, dl:1510, days:9, tri:"31k", tex:"1K",
+      desc:"조합형 던전 레이아웃 블록. 여러 개를 이어 붙여 층을 만들고 트랩과 소품을 얹습니다." },
 ];
