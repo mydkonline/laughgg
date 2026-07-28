@@ -36,4 +36,5 @@ export const REUSE_AXIS: Record<string, ReuseAxis> = {
   prop: { axis: "아트 결/스케일", note: "결/크기 맞으면 어디나", risk: "낮음" },
   tex: { axis: "타일링/PBR 채널", note: "맞으면 모든 표면 재사용", risk: "낮음" },
   util: { axis: "모든 프로젝트 필수", note: "장롱 될 일 없음", risk: "낮음" },
+  sfx: { axis: "돌려 쓰기 좋은가", note: "효과음은 어느 게임에나 재사용", risk: "낮음" },
 };

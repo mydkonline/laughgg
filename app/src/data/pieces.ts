@@ -6,6 +6,8 @@ export type Piece = {
   m?: string;
   /** 외부 CC0 단일 glb 경로(assets/ 아래). Poly Haven 이 아닌 캐릭터·레벨용. */
   glb?: string;
+  /** 소리 상품의 오디오 경로(assets/ 아래). 있으면 그림 대신 파형+재생으로 낸다. */
+  audio?: string;
   /** 도트 스프라이트. 3D 상품에는 없다. */
   img?: string;
   /** 올린 파일의 objectURL. 있으면 m/img 대신 이걸 쓴다. */
@@ -38,6 +40,7 @@ export const CATS = [
   ["light", "조명"],
   ["furniture", "가구"],
   ["tex", "재질"],
+  ["sfx", "이펙트/사운드"],
 ] as const;
 
 export type CatKey = (typeof CATS)[number][0];
@@ -125,4 +128,19 @@ export const PIECES: Piece[] = [
       desc:"가라앉은 신전 바닥 레벨. 무덤 화풍 무대에 그대로 올리는 배경 맵으로 씁니다." },
     { id:33, glb:"map/Layout_Floor01.glb", t:"Dungeon Layout Block", by:"polygonalmind", cat:"env", eng:["unity","godot"], score:80, feel:82, price:26, dl:1510, days:9, tri:"31k", tex:"1K",
       desc:"조합형 던전 레이아웃 블록. 여러 개를 이어 붙여 층을 만들고 트랩과 소품을 얹습니다." },
+
+    // 이펙트/사운드 — 그림이 없어 파형+재생 버튼으로 낸다. 오디오는 어느 게임에나
+    // 돌려 쓰기 좋아 재사용 난도가 낮다. 전부 Kenney CC0.
+    { id:34, audio:"sfx/confirmation_001.wav", t:"UI Confirm FX", by:"kenney", cat:"sfx", eng:["unity","unreal","godot"], score:88, feel:90, price:4, dl:12100, days:2, tri:"—", tex:"WAV",
+      desc:"확인·완료 UI 효과음. 버튼과 팝업 마무리에 얹어 손맛을 줍니다." },
+    { id:35, audio:"sfx/error_002.wav", t:"Error Alert FX", by:"kenney", cat:"sfx", eng:["unity","unreal","godot"], score:86, feel:88, price:4, dl:9800, days:3, tri:"—", tex:"WAV",
+      desc:"오류·경고 효과음. 잘못된 입력이나 실패 피드백에 씁니다." },
+    { id:36, audio:"sfx/glass_003.wav", t:"Glass Break FX", by:"kenney", cat:"sfx", eng:["unity","unreal","godot"], score:85, feel:87, price:4, dl:7600, days:5, tri:"—", tex:"WAV",
+      desc:"유리 깨짐 효과음. 파괴와 타격 연출에 얹습니다." },
+    { id:37, audio:"sfx/drop_003.wav", t:"Item Drop FX", by:"kenney", cat:"sfx", eng:["unity","unreal","godot"], score:84, feel:86, price:4, dl:8300, days:4, tri:"—", tex:"WAV",
+      desc:"아이템 드롭·획득 효과음. 인벤토리 연출에 씁니다." },
+    { id:38, audio:"sfx/maximize_003.wav", t:"Whoosh UI FX", by:"kenney", cat:"sfx", eng:["unity","unreal","godot"], score:82, feel:85, price:4, dl:6100, days:6, tri:"—", tex:"WAV",
+      desc:"휙 열림 효과음. 창과 메뉴 전환에 씁니다." },
+    { id:39, audio:"sfx/bong_001.wav", t:"Notify Bell FX", by:"kenney", cat:"sfx", eng:["unity","unreal","godot"], score:81, feel:84, price:4, dl:5400, days:8, tri:"—", tex:"WAV",
+      desc:"알림 벨 효과음. 완료와 수신 알림에 씁니다." },
 ];

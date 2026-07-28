@@ -14,7 +14,48 @@ const THREE_QUARTER: Dir = [1.3, 0.85, 1.6];
  *
  * 안쪽 여백도 여기서 정한다. 부르는 쪽마다 다르게 주면 다시 제각각이 된다.
  */
-export function Thumb({
+/** 상품 그림. 소리 상품은 그림이 없어 파형+재생으로, 나머지는 모델/도트로 낸다. */
+export function Thumb(props: {
+  piece: Piece;
+  dir?: Dir;
+  material?: Material;
+  className?: string;
+  /** 액자 안쪽 여백. 칸 너비 기준이라 크기가 달라도 비율이 유지된다. */
+  pad?: string;
+}) {
+  if (props.piece.audio) return <AudioThumb piece={props.piece} pad={props.pad ?? "10%"} />;
+  return <ModelThumb {...props} />;
+}
+
+/* 소리 상품. 파형 막대(상품마다 고정 모양)와 재생 버튼. 카드가 링크라
+   재생 버튼은 전파를 막아 소리만 나고 페이지 이동은 안 하게 한다. */
+function AudioThumb({ piece, pad }: { piece: Piece; pad: string }) {
+  const src = `${import.meta.env.BASE_URL}assets/${piece.audio}`;
+  const bars = Array.from({ length: 22 }, (_, i) => 22 + ((piece.id * 7 + i * 29) % 74));
+  return (
+    <span className="absolute inset-0 grid place-items-center gap-3" style={{ padding: pad }}>
+      <span className="flex h-14 items-center justify-center gap-[3px]">
+        {bars.map((h, i) => (
+          <i key={i} className="w-[3px] rounded-full bg-accent/55" style={{ height: `${h}%` }} />
+        ))}
+      </span>
+      <button
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          void new Audio(src).play().catch(() => {});
+        }}
+        aria-label="재생"
+        className="flex h-10 w-10 items-center justify-center rounded-full bg-accent pl-0.5 text-sm text-ground transition-transform hover:scale-105 active:scale-95"
+      >
+        ▶
+      </button>
+    </span>
+  );
+}
+
+function ModelThumb({
   piece,
   dir = THREE_QUARTER,
   material = "pbr",
@@ -25,7 +66,6 @@ export function Thumb({
   dir?: Dir;
   material?: Material;
   className?: string;
-  /** 액자 안쪽 여백. 칸 너비 기준이라 크기가 달라도 비율이 유지된다. */
   pad?: string;
 }) {
   const [src, setSrc] = useState<string | null>(null);
