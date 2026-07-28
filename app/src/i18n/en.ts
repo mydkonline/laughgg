@@ -1144,4 +1144,72 @@ export const EN: Record<string, string> = {
   "올라온 에셋을 7항목으로 채점해 배지를 매깁니다. 배지가 높을수록 목록 위에 노출됩니다.": "Uploaded assets are scored on seven checks and given a badge. The higher the badge, the higher it sits in the listings.",
   "배지순으로 검증된 에셋": "Verified assets, ranked by badge",
   "마켓으로": "Back to market",
+
+  // ── 이번 세션 추가분(카테고리·재사용·에셋 설명·UI) ──────────────────
+  // 새 분류
+  "이펙트/사운드": "SFX / Audio",
+  "VFX/파티클": "VFX / Particles",
+  "음악/BGM": "Music / BGM",
+  "툴/키트": "Tools / Kits",
+  "범용 유틸": "General Utilities",
+
+  // 재사용 뱃지·판정 축(reuse.ts)
+  "재사용 쉬움": "Easy reuse",
+  "재사용 보통": "Fair reuse",
+  "재사용 어려움": "Hard reuse",
+  "애니메이션 포함 여부": "Animations included?",
+  "원하는 모션 없으면 못 씀": "Useless without the motions you need",
+  "그립/리깅 호환": "Grip / rig compatibility",
+  "본 안 맞으면 장착 불가": "Won't attach if the bones mismatch",
+  "제작자 지원 (튜토/문서)": "Creator support (tutorial / docs)",
+  "튜토/문서 없으면 장롱": "No tutorial or docs, it rots unused",
+  "아트 결 (PBR/로폴/복셀)": "Art style (PBR / lowpoly / voxel)",
+  "결 안 맞으면 배경만 튐": "Wrong style and only the scenery clashes",
+  "렌더 파이프라인 (URP/HDRP)": "Render pipeline (URP / HDRP)",
+  "파이프라인 다르면 안 켜짐": "Won't render on the wrong pipeline",
+  "아트 결/스케일": "Art style / scale",
+  "결/크기 맞으면 어디나": "Fits anywhere if style and scale match",
+  "타일링/PBR 채널": "Tiling / PBR channels",
+  "맞으면 모든 표면 재사용": "Reuses on every surface once it matches",
+  "모든 프로젝트 필수": "Every project needs it",
+  "장롱 될 일 없음": "Never rots unused",
+  "돌려 쓰기 좋은가": "Easy to reuse everywhere?",
+  "효과음은 어느 게임에나 재사용": "SFX reuse across any game",
+  "파티클은 플머가 만들기 어렵고 어디에나 재사용": "Hard for coders to make, reuses everywhere",
+
+  // 캐릭터·맵 에셋 설명
+  "리깅과 애니메이션 14종이 함께 들어오는 로봇 캐릭터. 컨트롤러에 그대로 물려 걷기, 달리기, 점프, 펀치까지 바로 씁니다.": "A robot character rigged with 14 animations. Drop it on a controller and walk, run, jump, and punch out of the box.",
+  "저폴리 여우 크리처. 둘러보기, 걷기, 달리기 3종 애니메이션이 포함돼 소환수나 야생 동물로 바로 씁니다.": "A low-poly fox creature with Survey, Walk, and Run animations — ready as a summon or wildlife.",
+  "이집트 무덤 신전 바닥 레벨. 계단과 단이 한 메시라 그대로 깔면 던전 한 방이 됩니다.": "An Egyptian tomb-temple floor level. Steps and tiers are one mesh, so it drops in as a whole dungeon room.",
+  "가라앉은 신전 바닥 레벨. 무덤 화풍 무대에 그대로 올리는 배경 맵으로 씁니다.": "A sunken temple floor level. Use it as a backdrop map on any tomb-styled stage.",
+  "조합형 던전 레이아웃 블록. 여러 개를 이어 붙여 층을 만들고 트랩과 소품을 얹습니다.": "A modular dungeon layout block. Chain several to build a floor, then add traps and props.",
+
+  // 사운드 에셋 설명
+  "확인·완료 UI 효과음. 버튼과 팝업 마무리에 얹어 손맛을 줍니다.": "A confirm / complete UI sound. Layer it on buttons and popups for tactile feedback.",
+  "오류·경고 효과음. 잘못된 입력이나 실패 피드백에 씁니다.": "An error / alert sound for invalid input or failure feedback.",
+  "유리 깨짐 효과음. 파괴와 타격 연출에 얹습니다.": "A glass-break sound for destruction and impact moments.",
+  "아이템 드롭·획득 효과음. 인벤토리 연출에 씁니다.": "An item drop / pickup sound for inventory feedback.",
+  "휙 열림 효과음. 창과 메뉴 전환에 씁니다.": "A whoosh sound for opening windows and menu transitions.",
+  "알림 벨 효과음. 완료와 수신 알림에 씁니다.": "A notification bell for completion and incoming alerts.",
+
+  // VFX 에셋 설명
+  "마법진·소환 스킬 이펙트. 시전 연출과 광역 표식에 씁니다.": "A magic-circle summon skill effect for casting sequences and AoE markers.",
+  "베기·근접 타격 이펙트. 검격과 참격 순간에 얹습니다.": "A slash melee-hit effect for sword strikes and cleaves.",
+  "전격·번개 스킬 이펙트. 감전과 체인 라이트닝에 씁니다.": "A lightning skill effect for shocks and chain lightning.",
+  "화염 분출·머즐 플래시 이펙트. 발사와 화염 스킬에 씁니다.": "A flame-burst / muzzle-flash effect for shots and fire skills.",
+  "반짝임·획득 이펙트. 아이템 습득과 버프 연출에 씁니다.": "A sparkle / pickup effect for item collection and buffs.",
+  "소용돌이·회오리 이펙트. 회전 스킬과 포탈 연출에 씁니다.": "A swirl / vortex effect for spin skills and portals.",
+
+  // 업로드·상세·무대 UI
+  "핵심 체크": "Key check",
+  "포함 애니메이션": "Included animations",
+  "걷기, 달리기, 공격, 피격, 사망": "Walk, Run, Attack, Hit, Death",
+  "비워 두면 정적 캐릭터로 표시됩니다 — 원하는 모션이 없는 캐릭터는 대부분 장롱이 됩니다.": "Leave it empty and it shows as a static character — characters without the motions you need usually rot unused.",
+  "튜토리얼 영상 URL": "Tutorial video URL",
+  "문서 URL": "Docs URL",
+  "튜토리얼도 문서도 없으면 초보 경고가 붙습니다 — 스샷만 있는 툴은 대부분 장롱이 됩니다.": "With no tutorial or docs, a beginner warning is attached — tools with only screenshots usually rot unused.",
+  "이 캐릭터의 핵심": "What matters for this character",
+  "정적 캐릭터 — 포함 애니메이션이 없습니다. 필요한 동작이 있는지 먼저 확인하세요. 원하는 모션이 없으면 리깅부터 다시 해야 합니다.": "Static character — no animations included. Check the motions you need exist first; without them you'll have to re-rig from scratch.",
+  "같은 제작자": "Same creator",
+  "— 좋은 에셋 하나를 찾으면 같은 제작자가 안전합니다": "— once you find one good asset, the same creator is a safe bet",
 };
