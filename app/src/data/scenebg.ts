@@ -14,3 +14,11 @@ export const SCENE_BG: Record<string, string> = {
   "포스트 아포칼립스": "post-apoc",
   "밀리터리": "military",
 };
+
+/* 게임 하나에만 붙는 배경 맵(확장자 포함). 화풍 공용 배경(SCENE_BG)보다 앞선다.
+   실제 CC0 무덤 에셋(Polygonal Mind tomb-chaser)을 던전 한 방으로 조립해 구운
+   PNG/JPG 다. 화풍 태그로는 못 잡는 "이 게임만의 무대"를 소유자가 박제한 자리 —
+   지금은 Diablo IV 한 개가 샘플이다. 값은 assets/scenes/ 아래 파일명 그대로. */
+export const GAME_MAP: Record<string, string> = {
+  diablo4: "tomb-dungeon.jpg",
+};

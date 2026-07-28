@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { PLACE_MODEL, type SceneGame } from "../data/scenes";
-import { SCENE_BG } from "../data/scenebg";
+import { SCENE_BG, GAME_MAP } from "../data/scenebg";
 import { PIECES, modelSrc } from "../data/pieces";
 import { bakeView } from "../three/baker";
 
@@ -103,6 +103,14 @@ export function Stage({
     .filter(Boolean)
     .join(" ");
 
+  /* 박제된 배경. 게임 전용 맵(GAME_MAP)이 먼저, 없으면 화풍 공용 배경(SCENE_BG).
+     소유자가 브라우저에 올린 bgUp 이 있으면 그게 이 둘을 모두 덮는다. */
+  const shipped = GAME_MAP[game.id]
+    ? `${import.meta.env.BASE_URL}assets/scenes/${GAME_MAP[game.id]}`
+    : SCENE_BG[game.sub]
+      ? `${import.meta.env.BASE_URL}assets/scenes/${SCENE_BG[game.sub]}.svg`
+      : null;
+
   return (
     <div
       data-stage
@@ -118,9 +126,9 @@ export function Stage({
           alt=""
           className="pointer-events-none absolute inset-0 h-full w-full object-cover"
         />
-      ) : SCENE_BG[game.sub] ? (
+      ) : shipped ? (
         <img
-          src={`${import.meta.env.BASE_URL}assets/scenes/${SCENE_BG[game.sub]}.svg`}
+          src={shipped}
           alt=""
           className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-90"
         />

@@ -8,6 +8,7 @@
 | [Cethiel — OpenGameArt](https://opengameart.org/content/dark-ruins-tilesets-isometric) | Dark Ruins 아이소메트릭 타일셋 | CC0 |
 | [Dungeon Crawl / Project Utumno — OpenGameArt](https://opengameart.org/content/dungeon-crawl-32x32-tiles) | 32×32 던전 타일·캐릭터·아이템 | CC0 |
 | [Poly Haven](https://polyhaven.com) | 폐허 환경 HDRI, 3D 소품 렌더 | CC0 |
+| [Polygonal Mind — open-source-3D-assets](https://github.com/ToxSam/open-source-3D-assets) | Tomb Chaser 무덤/신전 3D 모델(아치·기둥·아누비스·항아리) | CC0 |
 
 ## 저장소에 포함되지 않은 것
 
@@ -82,3 +83,11 @@ Brown Photostudio 02 (HDRI 1k)
 출처 표기 의무는 없지만 제작자 요청대로 링크를 남깁니다 — http://indiesquid.com
 
 마켓의 아이소메트릭 상품 5종에 쓰였습니다.
+
+## Polygonal Mind — Tomb Chaser (CC0)
+
+Scene 페이지 Diablo IV 무대의 배경 맵(`web/assets/scenes/tomb-dungeon.jpg`)은
+[Polygonal Mind](https://github.com/ToxSam/open-source-3D-assets)가 CC0 로 공개한
+Tomb Chaser 무덤 에셋(신전 아치·기둥·아누비스 신상·카노푸스 항아리)을 던전 한 방으로
+three.js 에서 조립·조명한 뒤 구운 한 장입니다. 화풍 태그 공용 배경(SCENE_BG)과 달리
+특정 게임 무대에만 붙는 배경으로, 소유자가 자기 게임에 맞는 맵을 박제하는 예시입니다.
