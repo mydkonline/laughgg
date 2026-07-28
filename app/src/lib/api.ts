@@ -235,6 +235,10 @@ export type NewAsset = {
   /** 캐릭터 전용. 포함 애니메이션 목록 — 이 유형의 make-or-break 다.
       원하는 모션이 없으면 아무리 잘 만들어도 안 팔린다. */
   animations?: string[];
+  /** 툴/키트 전용. 지원이 make-or-break라 튜토리얼 영상과 문서 링크를 받는다.
+      둘 다 없으면 스샷만 있는 툴로, 초보에겐 장롱이 된다. */
+  tutorial_url?: string;
+  docs_url?: string;
   file_key?: string;
   file_bytes?: number;
   file_sha256?: string;

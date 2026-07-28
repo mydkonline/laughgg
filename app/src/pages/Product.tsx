@@ -50,6 +50,11 @@ function Detail({ p }: { p: Piece }) {
   const also = PIECES.filter((o) => o.cat === p.cat && o.id !== p.id)
     .sort((a, b) => b.score - a.score)
     .slice(0, 3);
+  /* 제작자 신뢰 승계. 좋은 에셋 하나를 찾으면 다음엔 같은 제작자를 믿는 게
+     장롱을 피하는 실전 규칙이다 — 이 제작자의 다른 물건을 바로 보여 준다. */
+  const bySame = PIECES.filter((o) => o.by === p.by && o.id !== p.id)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 4);
 
   return (
     <main className="mx-auto max-w-[1240px] px-5 pb-20">
@@ -251,6 +256,37 @@ function Detail({ p }: { p: Piece }) {
           <h2 className="mb-4 text-2xl font-bold text-ink">{t("같은 분류 상위")}</h2>
           <div className="grid grid-cols-[repeat(auto-fill,minmax(168px,1fr))] gap-3">
             {also.map((o) => (
+              <Link
+                key={o.id}
+                to={`/market/${o.id}`}
+                className="flex flex-col overflow-hidden rounded-xl border border-line bg-surface no-underline hover:border-accent"
+              >
+                <div className="relative aspect-square bg-gradient-to-b from-surface-2 to-surface">
+                  <Thumb piece={o} />
+                </div>
+                <div className="flex items-baseline justify-between gap-2 p-2.5">
+                  <span className="truncate text-xs font-bold text-ink">{o.t}</span>
+                  <span className="shrink-0 text-xs text-muted">{won(o.price)}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* 제작자 신뢰 승계. "좋은 걸 하나 찾으면 같은 제작자를 산다"는 실전
+          규칙을 그대로 보여 준다 — 한 제작자를 믿게 되면 장롱 확률이 준다. */}
+      {bySame.length > 0 && (
+        <section className="mt-12">
+          <div className="mb-4 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+            <h2 className="text-2xl font-bold text-ink">{t("같은 제작자")}</h2>
+            <span className="text-xs text-faint">
+              <b className="text-muted">{p.by}</b>{" "}
+              {t("— 좋은 에셋 하나를 찾으면 같은 제작자가 안전합니다")}
+            </span>
+          </div>
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(168px,1fr))] gap-3">
+            {bySame.map((o) => (
               <Link
                 key={o.id}
                 to={`/market/${o.id}`}

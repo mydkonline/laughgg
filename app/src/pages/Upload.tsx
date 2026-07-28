@@ -36,6 +36,8 @@ const CATEGORIES = [
   ["prop", "소품"],
   ["light", "조명"],
   ["furniture", "가구"],
+  ["tool", "툴/키트"],
+  ["util", "범용 유틸"],
 ] as const;
 
 const ENGINES = ["unity", "unreal", "godot", "any"] as const;
@@ -86,6 +88,10 @@ export function Upload() {
      make-or-break라 안 받으면 장롱을 파는 셈이 된다. */
   const [anims, setAnims] = useState("");
   const animList = anims.split(",").map((s) => s.trim()).filter(Boolean);
+  /* 툴/키트 전용. 튜토리얼 영상과 문서 링크를 받는다 — 이 유형은 지원이
+     make-or-break라, 둘 다 없으면 스샷만 있는 툴이 되어 초보에겐 장롱이다. */
+  const [tut, setTut] = useState("");
+  const [docs, setDocs] = useState("");
 
   const take = useCallback(async (file: File) => {
     setError(null);
@@ -139,6 +145,8 @@ export function Upload() {
         price_usd: Number(price) || 0,
         origin,
         ...(category === "char" && animList.length ? { animations: animList } : {}),
+        ...(category === "tool" && tut.trim() ? { tutorial_url: tut.trim() } : {}),
+        ...(category === "tool" && docs.trim() ? { docs_url: docs.trim() } : {}),
         ...fileRef,
       });
 
@@ -315,6 +323,35 @@ export function Upload() {
                 </span>
               )}
             </label>
+          )}
+          {/* 툴/키트면 지원(튜토리얼·문서)을 받는다. 이 유형은 지원이
+              make-or-break라, 둘 다 없으면 초보에겐 장롱이 되는 스샷 툴이다. */}
+          {category === "tool" && (
+            <div className="flex flex-col gap-3">
+              <label className="flex flex-col gap-1.5">
+                <span className="text-xs text-faint">{t("튜토리얼 영상 URL")}</span>
+                <input
+                  value={tut}
+                  onChange={(e) => setTut(e.target.value)}
+                  className="rounded-xl border border-line bg-surface px-4 py-3 text-xs text-ink placeholder:text-faint focus:border-accent"
+                  placeholder="https://youtu.be/..."
+                />
+              </label>
+              <label className="flex flex-col gap-1.5">
+                <span className="text-xs text-faint">{t("문서 URL")}</span>
+                <input
+                  value={docs}
+                  onChange={(e) => setDocs(e.target.value)}
+                  className="rounded-xl border border-line bg-surface px-4 py-3 text-xs text-ink placeholder:text-faint focus:border-accent"
+                  placeholder="https://docs..."
+                />
+              </label>
+              {!tut.trim() && !docs.trim() && (
+                <span className="text-[10px] text-[#FF6B7A]">
+                  {t("튜토리얼도 문서도 없으면 초보 경고가 붙습니다 — 스샷만 있는 툴은 대부분 장롱이 됩니다.")}
+                </span>
+              )}
+            </div>
           )}
           <Chips
             label={t("엔진")}
