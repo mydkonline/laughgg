@@ -89,12 +89,7 @@ export function Scene() {
   const game = localized(SCENES_EN, chosen.id, chosen);
 
   return (
-    <main className="mx-auto max-w-[1240px] px-5 pb-20">
-      <header className="py-8">
-        <p className="text-xs tracking-wide text-accent">{t("AI 에셋")}</p>
-        <h1 className="mt-1 text-2xl font-bold text-ink">{t("에셋 컨셉트 매핑")}</h1>
-        <p className="mt-2 text-xs text-muted">{t("산 에셋이 우리 게임 컨셉에 맞는지 확인합니다.")}</p>
-      </header>
+    <main className="mx-auto max-w-[1240px] px-5 pt-8 pb-20">
 
       <div className="grid gap-x-10 gap-y-8 lg:grid-cols-[260px_minmax(0,1fr)]">
         {/* 고르는 자리는 왼쪽으로 몬다. 오른쪽은 시연만 본다.

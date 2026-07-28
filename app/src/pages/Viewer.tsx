@@ -40,12 +40,7 @@ export function Viewer() {
   }, [pieceId]);
 
   return (
-    <main className="mx-auto max-w-[1240px] px-5 pb-20">
-      <header className="py-8">
-        <p className="text-xs tracking-wide text-accent">{t("AI 뷰어")}</p>
-        <h1 className="mt-1 text-2xl font-bold text-ink">{t("에셋 뜯어보기")}</h1>
-        <p className="mt-2 text-xs text-muted">{t("각도와 재질을 직접 만져 보고 삽니다.")}</p>
-      </header>
+    <main className="mx-auto max-w-[1240px] px-5 pt-8 pb-20">
 
       {/* 무엇을 볼지 */}
       <div className="mb-4">

@@ -1143,4 +1143,5 @@ export const EN: Record<string, string> = {
   "게임사당 월매출 {v}": "{v} per studio/mo",
   "올라온 에셋을 7항목으로 채점해 배지를 매깁니다. 배지가 높을수록 목록 위에 노출됩니다.": "Uploaded assets are scored on seven checks and given a badge. The higher the badge, the higher it sits in the listings.",
   "배지순으로 검증된 에셋": "Verified assets, ranked by badge",
+  "마켓으로": "Back to market",
 };

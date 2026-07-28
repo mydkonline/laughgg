@@ -53,8 +53,13 @@ function Detail({ p }: { p: Piece }) {
 
   return (
     <main className="mx-auto max-w-[1180px] px-5 pb-20">
-      <Link to="/market" className="inline-block py-4 text-xs text-faint no-underline hover:text-ink">
-        {t("← 마켓")}
+      {/* 마켓으로 돌아가기 — 동그란 버튼 하나. 글자를 빼고 화살표만 둔다. */}
+      <Link
+        to="/market"
+        aria-label={t("마켓으로")}
+        className="mt-4 flex h-8 w-8 items-center justify-center rounded-full border border-line text-base text-muted no-underline hover:border-ink hover:text-ink"
+      >
+        ←
       </Link>
 
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px]">
