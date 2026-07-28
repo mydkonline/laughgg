@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
 
 use super::{RepoError, RepoResult};
-use crate::domain::{Badge, DEFAULT_FEE_RATE, Settlement};
+use crate::domain::{Badge, DEFAULT_FEE_RATE, Money, Settlement};
 
 /// 판매 요청. 값은 여기 없다 — 가격은 에셋에서 읽고 수수료율은 서버가 정한다.
 ///
@@ -105,6 +105,6 @@ pub async fn record_sale(pool: &PgPool, asset_id: i64, input: &NewSale) -> RepoR
         sale_id,
         asset_id,
         badge,
-        settlement: Settlement::new(price_usd, DEFAULT_FEE_RATE),
+        settlement: Settlement::new(Money::from_usd(price_usd), DEFAULT_FEE_RATE),
     })
 }

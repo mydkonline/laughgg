@@ -9,6 +9,7 @@ mod account;
 mod analysis;
 mod badge;
 mod generation;
+mod money;
 mod settlement;
 
 pub use account::{CredentialError, Credentials, is_email_shaped};
@@ -17,4 +18,5 @@ pub use badge::Badge;
 pub use generation::{
     ArtStyle, GenError, GenRequest, GenSpec, MAX_ATTEMPTS, Quality, backoff_seconds,
 };
+pub use money::Money;
 pub use settlement::{DEFAULT_FEE_RATE, Settlement};

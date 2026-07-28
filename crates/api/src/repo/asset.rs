@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::{PgPool, Postgres, Transaction};
 
 use super::{RepoError, RepoResult};
-use crate::domain::{Analysis, Badge, DEFAULT_FEE_RATE, Origin, Settlement};
+use crate::domain::{Analysis, Badge, DEFAULT_FEE_RATE, Money, Origin, Settlement};
 
 #[derive(Debug, Serialize)]
 pub struct AssetRow {
@@ -590,7 +590,7 @@ pub async fn record_analysis(
         badge,
         production_ready: badge.production_ready(),
         license_blocked: analysis.license_clean < 60,
-        settlement_preview: Settlement::new(price_usd, DEFAULT_FEE_RATE),
+        settlement_preview: Settlement::new(Money::from_usd(price_usd), DEFAULT_FEE_RATE),
     })
 }
 

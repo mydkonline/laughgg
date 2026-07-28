@@ -11,7 +11,7 @@ use serde::Serialize;
 use sqlx::{PgPool, Postgres, Transaction};
 
 use super::{RepoError, RepoResult};
-use crate::domain::{Badge, DEFAULT_FEE_RATE, Settlement};
+use crate::domain::{Badge, DEFAULT_FEE_RATE, Money, Settlement};
 
 /// 주문 한 줄에 들어가는 에셋 하나.
 #[derive(Debug, Clone, Serialize)]
@@ -145,12 +145,12 @@ async fn priced_item(
         return Err(RepoError::AlreadyOwned(asset_id));
     }
 
-    // 달러를 센트로. 0.5 를 더해 반올림한다 — 29.99 가 2998 이 되면 안 된다.
+    // 달러를 센트로. 반올림은 Money 안에서 하고, 여기선 저장 폭(i32)에 맞춘다.
     #[expect(
         clippy::cast_possible_truncation,
         reason = "가격은 NUMERIC(10,2) 라 센트로 바꿔도 i32 를 넘지 않는다"
     )]
-    let amount_cents = (price_usd * 100.0 + 0.5) as i32;
+    let amount_cents = Money::from_usd(price_usd).cents() as i32;
     if amount_cents <= 0 {
         // 무료 배포는 판매가 아니다. 500 으로 내면 우리 잘못처럼 보인다.
         return Err(RepoError::NotForSale(asset_id));
@@ -262,7 +262,7 @@ pub async fn mark_paid(pool: &PgPool, provider_ref: &str) -> RepoResult<PaidOrde
     let asset_ids: Vec<i64> = lines.iter().map(|&(id, _)| id).collect();
     let settlements: Vec<Settlement> = lines
         .iter()
-        .map(|&(_, cents)| Settlement::new(f64::from(cents) / 100.0, DEFAULT_FEE_RATE))
+        .map(|&(_, cents)| Settlement::new(Money::from_cents(cents.into()), DEFAULT_FEE_RATE))
         .collect();
 
     if status != "pending" {
@@ -288,7 +288,7 @@ pub async fn mark_paid(pool: &PgPool, provider_ref: &str) -> RepoResult<PaidOrde
               ON CONFLICT (order_id, asset_id) WHERE order_id IS NOT NULL DO NOTHING",
         )
         .bind(asset_id)
-        .bind(f64::from(cents) / 100.0)
+        .bind(Money::from_cents(cents.into()).as_usd())
         .bind(DEFAULT_FEE_RATE)
         .bind(order_id)
         .execute(&mut *tx)
