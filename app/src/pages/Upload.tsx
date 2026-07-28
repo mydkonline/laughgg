@@ -6,6 +6,7 @@ import { humanBytes, sha256 } from "../lib/hash";
 import { useAccount } from "../lib/account";
 import { BADGE_LABEL, badgeKeyOf } from "../components/Rank";
 import { CHECKS } from "../data/checks";
+import { REUSE_AXIS } from "../data/reuse";
 import { t } from "../lib/locale";
 
 /** 서버 배지를 화면 말로. 옮기는 표는 Rank 에 하나만 둔다. */
@@ -265,6 +266,25 @@ export function Upload() {
             onPick={setCategory}
             options={CATEGORIES.map(([k, name]) => [k, t(name)] as const)}
           />
+          {/* 장롱 방지 축. 분류를 고르는 순간, 이 유형에서 구매자가 무엇을 먼저
+              보는지 알려 준다 — 캐릭터면 그림이 아니라 애니메이션이다. 여기서
+              무엇을 채워야 팔리는지 알아야 올린 뒤 장롱이 안 된다. */}
+          {REUSE_AXIS[category] && (
+            <div className="-mt-1.5 rounded-xl border border-line bg-surface px-3.5 py-3">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold tracking-wide text-accent">
+                  {t("구매자가 먼저 보는 축")}
+                </span>
+                <span className="text-xs font-bold text-ink">{t(REUSE_AXIS[category]!.axis)}</span>
+                <span className="ml-auto shrink-0 text-[10px] text-faint">
+                  {t("재사용 난도")} {t(REUSE_AXIS[category]!.risk)}
+                </span>
+              </div>
+              <p className="mt-1.5 text-[11px] leading-relaxed text-faint">
+                {t(REUSE_AXIS[category]!.why)}
+              </p>
+            </div>
+          )}
           <Chips
             label={t("엔진")}
             value={engine}
