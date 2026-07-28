@@ -28,15 +28,22 @@ export const FX_AS_OF = "2026-07";
 
    입력 v 는 만원 단위다(6027 = 6,027만원 = 60,270,000원). */
 export function manwon(v: number): string {
-  if (locale() === BASE) {
-    // 1만만원 = 1억원. 억 단위가 넘으면 억원으로 올려 읽는다.
-    if (Math.abs(v) >= 10_000) return `${(v / 10_000).toFixed(1).replace(/\.0$/, "")}억원`;
-    return `${v.toLocaleString("ko-KR")}만원`;
-  }
-  const usd = (v * 10_000) / FX_KRW_PER_USD;
-  if (usd >= 1_000_000) return `$${(usd / 1_000_000).toFixed(2).replace(/\.?0+$/, "")}M`;
-  if (usd >= 1_000) return `$${(usd / 1_000).toFixed(1).replace(/\.0$/, "")}K`;
-  return `$${Math.round(usd).toLocaleString("en-US")}`;
+  // 부호를 떼고 크기만 포맷한 뒤 다시 붙인다 — 비관 시나리오 같은 음수도
+  // "-2.4억원" / "-$174K" 로 자연스럽게 읽힌다.
+  const neg = v < 0;
+  const a = Math.abs(v);
+  const body = (() => {
+    if (locale() === BASE) {
+      // 1만만원 = 1억원. 억 단위가 넘으면 억원으로 올려 읽는다.
+      if (a >= 10_000) return `${(a / 10_000).toFixed(1).replace(/\.0$/, "")}억원`;
+      return `${a.toLocaleString("ko-KR")}만원`;
+    }
+    const usd = (a * 10_000) / FX_KRW_PER_USD;
+    if (usd >= 1_000_000) return `$${(usd / 1_000_000).toFixed(2).replace(/\.?0+$/, "")}M`;
+    if (usd >= 1_000) return `$${(usd / 1_000).toFixed(1).replace(/\.0$/, "")}K`;
+    return `$${Math.round(usd).toLocaleString("en-US")}`;
+  })();
+  return neg ? `-${body}` : body;
 }
 
 /* 달러로 인용된 금액(시장 규모 등). 이건 환산이 아니다 — 출처가 달러다.

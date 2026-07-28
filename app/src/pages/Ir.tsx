@@ -505,9 +505,7 @@ function Valuation() {
               {t("{runs}, 할인율 {rate}", { runs: t(VALUATION.runs), rate: VALUATION.discount })}
             </span>
           </p>
-          <p>
-            <Key value={4.5} suffix={t("억")} decimals={1} size="lg" />
-          </p>
+          <p className="num text-6xl leading-none text-key">{manwon(VALUATION.p50)}</p>
           <p className="mt-2 text-xs text-faint">{t("중앙값")}</p>
 
           {/* 축은 0 에서 9억. 굵은 띠가 p10–p90, 세로선이 중앙값이다. */}
@@ -519,15 +517,17 @@ function Valuation() {
             <span className="absolute top-1/2 left-1/2 h-3.5 w-0.5 -translate-y-1/2 bg-key" />
           </div>
           <dl className="mt-3 grid grid-cols-3 gap-2">
-            {[
-              ["하위 10%", VALUATION.p10],
-              ["중앙", VALUATION.p50],
-              ["상위 10%", VALUATION.p90],
-            ].map(([k, v], i) => (
+            {(
+              [
+                ["하위 10%", VALUATION.p10],
+                ["중앙", VALUATION.p50],
+                ["상위 10%", VALUATION.p90],
+              ] as [string, number][]
+            ).map(([k, v], i) => (
               <div key={k} className={i === 2 ? "text-right" : i === 1 ? "text-center" : ""}>
                 <dt className="text-[10px] text-faint">{t(k)}</dt>
                 <dd className={`num m-0 text-xs font-bold ${i === 1 ? "text-key" : "text-ink"}`}>
-                  {t(v)}
+                  {manwon(v)}
                 </dd>
               </div>
             ))}
@@ -558,7 +558,7 @@ function Valuation() {
               >
                 <dt className={`text-xs ${base ? "font-bold text-key" : "text-faint"}`}>{t(k)}</dt>
                 <dd className={`num m-0 mt-1 text-2xl ${base ? "text-key" : "text-ink"}`}>
-                  {t(v)}
+                  {manwon(v)}
                 </dd>
                 <dd className="m-0 mt-1 text-[10px] text-faint">{t(why, { v: manwon(120) })}</dd>
               </div>
