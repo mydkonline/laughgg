@@ -25,7 +25,15 @@ export function Thumb(props: {
 }) {
   if (props.piece.audio) return <AudioThumb piece={props.piece} pad={props.pad ?? "10%"} />;
   if (props.piece.fx) return <FxThumb piece={props.piece} pad={props.pad ?? "10%"} />;
+  if (props.piece.swatch) return <TexThumb piece={props.piece} />;
   return <ModelThumb {...props} />;
+}
+
+/* 재질 상품. 텍스처를 카드 가득 채우는 머티리얼 스와치로, 도트처럼 뭉개지 않고
+   매끈하게 낸다. 여백 없이 꽉 채워 재질 그 자체가 보이게 한다. */
+function TexThumb({ piece }: { piece: Piece }) {
+  const src = `${import.meta.env.BASE_URL}assets/${piece.swatch}`;
+  return <img src={src} alt="" className="absolute inset-0 h-full w-full object-cover" />;
 }
 
 /* VFX 상품. 이펙트 스프라이트를 도트처럼 뭉개지 않고 부드럽게, 은은한 글로우와

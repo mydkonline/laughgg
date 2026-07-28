@@ -7,7 +7,7 @@
 | [Kenney](https://kenney.nl) | Mini Dungeon 3D 모델·스프라이트, Sci-fi RTS 스프라이트, 인터페이스 사운드([Calinou 패키징](https://github.com/Calinou/kenney-interface-sounds)), 파티클/VFX 스프라이트([Calinou 패키징](https://github.com/Calinou/kenney-particle-pack)), 뮤직 징글([Boyquotes 패키징](https://github.com/Boyquotes/kenney-music-jingles-for-godot)) | CC0 |
 | [Cethiel — OpenGameArt](https://opengameart.org/content/dark-ruins-tilesets-isometric) | Dark Ruins 아이소메트릭 타일셋 | CC0 |
 | [Dungeon Crawl / Project Utumno — OpenGameArt](https://opengameart.org/content/dungeon-crawl-32x32-tiles) | 32×32 던전 타일·캐릭터·아이템 | CC0 |
-| [Poly Haven](https://polyhaven.com) | 폐허 환경 HDRI, 3D 소품 렌더 | CC0 |
+| [Poly Haven](https://polyhaven.com) | 폐허 환경 HDRI, 3D 소품 렌더, 타일링 PBR 텍스처(벽돌·자갈·나무·금속·데님·지면) | CC0 |
 | [Polygonal Mind — open-source-3D-assets](https://github.com/ToxSam/open-source-3D-assets) | Tomb Chaser 무덤/신전 3D 모델(아치·기둥·아누비스·항아리) | CC0 |
 | [three.js examples](https://github.com/mrdoob/three.js) | Expressive Robot 캐릭터 — Tomás Laulhé, Don McCurdy | CC0 |
 | [glTF Sample Assets](https://github.com/KhronosGroup/glTF-Sample-Assets) | Low Poly Fox — 모델 PixelMannen(CC0), 리그·애니메이션 [@tomkranis](https://sketchfab.com/tomkranis)(CC-BY 4.0) | CC0 / CC-BY 4.0 |

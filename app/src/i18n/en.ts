@@ -1220,4 +1220,12 @@ export const EN: Record<string, string> = {
   "색소폰 징글. 느긋한 재즈풍 메뉴와 로비 배경에 씁니다.": "A saxophone jingle for laid-back, jazzy menus and lobby backdrops.",
   "스틸 드럼 징글. 트로피컬하고 경쾌한 스테이지 연출에 씁니다.": "A steel-drum jingle for tropical, upbeat stage vibes.",
   "타격감 있는 스팅어 징글. 보스 등장과 강조 순간에 씁니다.": "A punchy stinger jingle for boss entrances and emphasis moments.",
+
+  // 재질(텍스처)
+  "타일링되는 벽돌 바닥 재질. 넓은 바닥에 반복해 깔아도 이음매가 티나지 않습니다.": "A tiling brick-floor material. Repeats seamlessly across large floors.",
+  "타일링되는 자갈 포장 재질. 길과 광장 바닥에 그대로 깝니다.": "A tiling cobblestone material. Lay it straight onto roads and plazas.",
+  "타일링되는 낡은 나무 바닥 재질. 실내 마룻바닥에 반복해 씁니다.": "A tiling old-wood-floor material for repeating indoor flooring.",
+  "타일링되는 금속 판 재질. 기계와 구조물 표면에 씁니다.": "A tiling metal-plate material for machinery and structure surfaces.",
+  "타일링되는 데님 천 재질. 의상과 천 소품에 씁니다.": "A tiling denim-fabric material for clothing and cloth props.",
+  "타일링되는 자갈 지면 재질. 야외 지형 바닥에 깝니다.": "A tiling rocky-ground material for outdoor terrain floors.",
 };

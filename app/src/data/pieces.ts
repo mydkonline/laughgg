@@ -11,6 +11,9 @@ export type Piece = {
   /** VFX 상품의 이펙트 스프라이트 경로(assets/ 아래). 도트가 아니라 부드럽게,
       은은한 글로우와 맥동으로 낸다. */
   fx?: string;
+  /** 재질 상품의 텍스처 스와치 경로(assets/ 아래). 카드를 꽉 채우는 매끈한
+      머티리얼 스와치로 낸다. */
+  swatch?: string;
   /** 도트 스프라이트. 3D 상품에는 없다. */
   img?: string;
   /** 올린 파일의 objectURL. 있으면 m/img 대신 이걸 쓴다. */
@@ -176,4 +179,19 @@ export const PIECES: Piece[] = [
       desc:"스틸 드럼 징글. 트로피컬하고 경쾌한 스테이지 연출에 씁니다." },
     { id:50, audio:"music/hit.ogg", t:"Hit Sting Jingle",   by:"kenney", cat:"music", eng:["unity","unreal","godot"], score:81, feel:85, price:4, dl:4100, days:8, tri:"—", tex:"OGG",
       desc:"타격감 있는 스팅어 징글. 보스 등장과 강조 순간에 씁니다." },
+
+    // 재질 — 타일링 텍스처. 카드를 꽉 채우는 스와치로 낸다. 채널·타일만 맞으면
+    // 모든 표면에 재사용되는 안전군. 전부 Poly Haven CC0.
+    { id:51, swatch:"tex/brick.jpg", t:"Brick Floor Texture", by:"polyhaven", cat:"tex", eng:["unity","unreal","godot"], score:88, feel:86, price:6, dl:7200, days:3, tri:"—", tex:"1K",
+      desc:"타일링되는 벽돌 바닥 재질. 넓은 바닥에 반복해 깔아도 이음매가 티나지 않습니다." },
+    { id:52, swatch:"tex/cobblestone_01.jpg", t:"Cobblestone Texture", by:"polyhaven", cat:"tex", eng:["unity","unreal","godot"], score:86, feel:84, price:6, dl:6100, days:4, tri:"—", tex:"1K",
+      desc:"타일링되는 자갈 포장 재질. 길과 광장 바닥에 그대로 깝니다." },
+    { id:53, swatch:"tex/old_wood_floor.jpg", t:"Wood Floor Texture", by:"polyhaven", cat:"tex", eng:["unity","unreal","godot"], score:85, feel:83, price:6, dl:5400, days:5, tri:"—", tex:"1K",
+      desc:"타일링되는 낡은 나무 바닥 재질. 실내 마룻바닥에 반복해 씁니다." },
+    { id:54, swatch:"tex/blue_metal_plate.jpg", t:"Metal Plate Texture", by:"polyhaven", cat:"tex", eng:["unity","unreal","godot"], score:84, feel:82, price:6, dl:4800, days:6, tri:"—", tex:"1K",
+      desc:"타일링되는 금속 판 재질. 기계와 구조물 표면에 씁니다." },
+    { id:55, swatch:"tex/denim_fabric.jpg", t:"Denim Fabric Texture", by:"polyhaven", cat:"tex", eng:["unity","unreal","godot"], score:83, feel:81, price:6, dl:4200, days:7, tri:"—", tex:"1K",
+      desc:"타일링되는 데님 천 재질. 의상과 천 소품에 씁니다." },
+    { id:56, swatch:"tex/dry_ground_rocks.jpg", t:"Rocky Ground Texture", by:"polyhaven", cat:"tex", eng:["unity","unreal","godot"], score:82, feel:80, price:6, dl:3900, days:9, tri:"—", tex:"1K",
+      desc:"타일링되는 자갈 지면 재질. 야외 지형 바닥에 깝니다." },
 ];
