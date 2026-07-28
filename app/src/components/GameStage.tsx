@@ -17,6 +17,10 @@ import { bakeView } from "../three/baker";
 
 const rgb = (c: [number, number, number], a = 1) => `rgb(${c[0]} ${c[1]} ${c[2]} / ${a})`;
 
+/* 무대 편집 툴바의 작은 버튼. 배경 위라 반투명 유리로 띄운다. */
+const CTRL =
+  "flex h-6 min-w-6 cursor-pointer items-center justify-center rounded-full border border-white/15 bg-white/10 px-1 leading-none text-white/90 transition-colors hover:bg-white/20";
+
 /* 무대 한 판. 바탕 안개 → 광원 → 에셋 → 비네팅 순으로 쌓고,
    맨 위에 색 보정을 통째로 건다. 순서가 바뀌면 보정이 광원만 먹는다. */
 export function Stage({
@@ -44,6 +48,15 @@ export function Stage({
   const moved = places !== game.place;
   const patch = (i: number, p: Partial<(typeof places)[number]>) =>
     setPlaces((ps) => ps.map((q, j) => (j === i ? { ...q, ...p } : q)));
+
+  /* 고른 에셋 하나에만 크기·회전 조절이 붙는다. 옮기기는 끌어서(아래 startDrag),
+     크기·회전은 툴바 버튼으로 — 드래그로 두 축을 동시에 잡느라 손이 꼬이지 않게
+     나눴다. 게임을 바꾸면 선택을 푼다. */
+  const [sel, setSel] = useState<number | null>(null);
+  useEffect(() => setSel(null), [game]);
+  const clampN = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
+  const nudge = (i: number, key: "s" | "r", d: number, a: number, b: number) =>
+    patch(i, { [key]: clampN((places[i]?.[key] ?? (key === "s" ? 1 : 0)) + d, a, b) });
 
   /* 소유자가 올린 배경 맵. 정적 배포라 서버가 없어서 브라우저에만 담는다 —
      게임마다 따로 저장하고, 이미지는 그대로, glb/gltf 는 구워서 한 장으로.
@@ -167,6 +180,8 @@ export function Stage({
           fit={fit}
           game={game}
           editable={editable}
+          selected={editable && sel === i}
+          onSelect={() => setSel(i)}
           onChange={(np) => patch(i, np)}
         />
       ))}
@@ -178,11 +193,37 @@ export function Stage({
 
       {/* 편집 안내·초기화. 색 보정(filter) 밖에 두려고 여기 얹지만 filter 는
           부모에 걸려 있어 톤이 살짝 먹는다 — 무대 위 UI 라 그 편이 자연스럽다. */}
+      {/* 고른 에셋의 크기·회전 툴바. 옮기기는 끌어서, 여기서는 나머지 두 축.
+          배경 맵 위라 떠 보이게 유리 알약으로 가운데 아래에 띄운다. */}
+      {editable && sel !== null && (
+        <div className="pointer-events-auto absolute bottom-14 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full border border-white/15 bg-black/60 px-2 py-1 text-[10px] text-white/90 backdrop-blur-sm">
+          <span className="pl-1 pr-0.5 text-white/55">크기</span>
+          <button type="button" onClick={() => nudge(sel, "s", -0.12, 0.5, 1.6)} className={CTRL}>
+            −
+          </button>
+          <button type="button" onClick={() => nudge(sel, "s", 0.12, 0.5, 1.6)} className={CTRL}>
+            ＋
+          </button>
+          <span className="mx-1 h-3 w-px bg-white/15" />
+          <span className="pr-0.5 text-white/55">회전</span>
+          <button type="button" onClick={() => nudge(sel, "r", -18, -90, 90)} className={CTRL}>
+            ↺
+          </button>
+          <button type="button" onClick={() => nudge(sel, "r", 18, -90, 90)} className={CTRL}>
+            ↻
+          </button>
+          <span className="mx-1 h-3 w-px bg-white/15" />
+          <button type="button" onClick={() => patch(sel, game.place[sel]!)} className={`${CTRL} w-auto px-2`}>
+            초기화
+          </button>
+        </div>
+      )}
+
       {editable && (
         <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 p-2.5">
           <div className="flex items-center gap-2">
             <span className="rounded bg-black/45 px-2 py-1 text-[10px] text-white/80 backdrop-blur-sm">
-              에셋을 끌어 옮기세요
+              에셋을 눌러 고르고 끌어 옮기세요
             </span>
             <label className="pointer-events-auto cursor-pointer rounded border border-white/20 bg-black/45 px-2 py-1 text-[10px] text-white/90 backdrop-blur-sm hover:bg-black/60">
               배경 맵 올리기
@@ -232,6 +273,8 @@ function Placed({
   fit,
   game,
   editable = false,
+  selected = false,
+  onSelect,
   onChange,
 }: {
   model?: string;
@@ -242,6 +285,8 @@ function Placed({
   fit: boolean;
   game: SceneGame;
   editable?: boolean;
+  selected?: boolean;
+  onSelect?: () => void;
   onChange?: (p: { x?: number; y?: number; s?: number }) => void;
 }) {
   const [src, setSrc] = useState<string | null>(null);
@@ -298,10 +343,14 @@ function Placed({
     <img
       src={src}
       alt=""
-      onPointerDown={startDrag}
+      onPointerDown={(e) => {
+        if (!editable) return;
+        onSelect?.();
+        startDrag(e);
+      }}
       className={`absolute drop-shadow-[0_10px_18px_rgb(0_0_0/0.5)] transition-[filter] duration-500 ${
         editable ? "cursor-grab touch-none select-none active:cursor-grabbing" : "pointer-events-none"
-      }`}
+      } ${selected ? "rounded-sm outline outline-2 outline-offset-4 outline-white/80" : ""}`}
       style={{
         left: `${x * 100}%`,
         top: `${y * 100}%`,
