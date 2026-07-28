@@ -3,7 +3,7 @@ import { MARKET, MARKET_SOURCE, MODEL, CHECK_WEIGHTS, REVIEWS, AI_DEV, AI_DEV_SO
 import { PIECES } from "../data/pieces";
 import { Sprite } from "../three/Sprite";
 import { CONCEPTS } from "../data/concepts";
-import { manwon, usdBillions, FX_KRW_PER_USD, FX_AS_OF } from "../lib/format";
+import { manwon, usdBillions, peopleMan, FX_KRW_PER_USD, FX_AS_OF } from "../lib/format";
 import { Donut, CheckWeights, AssetRail, ConceptGrid, CompareBars, useCountUp, useSeen, Key, Bullet, Share } from "../components/Infographic";
 import { Globe } from "../components/Globe";
 import { BASE, locale, t } from "../lib/locale";
@@ -106,6 +106,8 @@ export function Ir() {
               <p className="num mt-4 text-4xl leading-none text-ink">
                 {f.unit === "억 달러" ? (
                   usdBillions(Number(f.value))
+                ) : f.unit === "만 명" ? (
+                  peopleMan(Number(f.value.replace(/,/g, "")))
                 ) : (
                   <>
                     {f.value}

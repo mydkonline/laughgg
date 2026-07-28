@@ -45,3 +45,16 @@ export function usdBillions(b: number): string {
   if (locale() === BASE) return `${b}억 달러`;
   return `$${(b / 10).toFixed(b % 10 === 0 ? 0 : 1)}B`;
 }
+
+/* 만 명 단위 인원.
+
+   "만" 은 자릿수라 통화와 같은 문제를 낸다 — "500" 과 "만 명" 을 따로 옮기면
+   "500" + "0K people" 가 붙어 "5000K people" 이 된다. 자릿수는 숫자로 곱해서
+   합친 뒤 영어 표기(M/K)를 만든다. 입력 v 는 만 단위다(500 = 500만 = 5,000,000). */
+export function peopleMan(v: number): string {
+  if (locale() === BASE) return `${v.toLocaleString("ko-KR")}만 명`;
+  const people = v * 10_000;
+  if (people >= 1_000_000) return `${(people / 1_000_000).toFixed(1).replace(/\.0$/, "")}M people`;
+  if (people >= 1_000) return `${(people / 1_000).toFixed(0)}K people`;
+  return `${people.toLocaleString("en-US")} people`;
+}

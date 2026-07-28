@@ -336,7 +336,7 @@ export const EN: Record<string, string> = {
   "정합": "Matching",
   "조건에 맞는 게임이 없습니다.": "No games match.",
   "조건에 맞는 에셋이 없습니다. 점수 기준을 낮추거나 분류를 넓혀 보세요.": "Nothing matches. Try a lower score, or widen the category.",
-  "종": "",
+  "종": "titles",
   "중앙값": "Median",
   "쪽 넘기기": "Pagination",
   "창작자별 조회를 붙이면 여기에 뜹니다.": "This fills in once per-creator lookup is wired up.",
@@ -1141,4 +1141,6 @@ export const EN: Record<string, string> = {
   "고정비 월 {v}": "Fixed cost {v}/mo",
   "CAC {v}": "CAC {v}",
   "게임사당 월매출 {v}": "{v} per studio/mo",
+  "올라온 에셋을 7항목으로 채점해 배지를 매깁니다. 배지가 높을수록 목록 위에 노출됩니다.": "Uploaded assets are scored on seven checks and given a badge. The higher the badge, the higher it sits in the listings.",
+  "배지순으로 검증된 에셋": "Verified assets, ranked by badge",
 };

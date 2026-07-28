@@ -1,19 +1,14 @@
-import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { PIECES } from "../data/pieces";
 import { CONCEPTS } from "../data/concepts";
 import { PALETTES } from "../data/palettes";
-import { Spin } from "../three/Spin";
-import { modelSrc } from "../data/pieces";
 import { RankIcon, BADGE_LABEL, type BadgeKey } from "../components/Rank";
-import { HomeStage } from "../components/HomeStage";
 import { t } from "../lib/locale";
 
 /* 홈 — 무엇을 파는 곳인지 한 화면에서 끝난다.
    에셋을 파는 게 아니라 "쓸 만한지 보증"을 판다는 게 요지고, 그건 글보다
    에셋 하나에 점수가 붙는 그림으로 보여야 빨리 읽힌다. */
 
-const HERO = PIECES.find((p) => p.m === "gothic_statue") ?? PIECES[0]!;
 
 /* 파이프라인 아이콘. 이모지를 안 쓰고 같은 규격으로 직접 그린다 —
    24 뷰박스, 1.5 스트로크, 채우기 없음, 색은 상속.
@@ -75,43 +70,29 @@ const TIERS: { badge: BadgeKey; range: string; note: string }[] = [
 export function Home() {
   return (
     <main>
-      {/* 히어로 */}
-      <section className="mx-auto grid max-w-[1240px] items-center gap-10 px-5 py-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
-        <div>
-          <h1 className="text-4xl leading-[1.2] font-bold text-ink">{t("검증된 게임 에셋 마켓")}</h1>
-          <p className="mt-3 max-w-[52ch] text-xs text-muted">
-            {t(
-              "올라온 에셋을 7항목으로 채점해 배지를 매깁니다. 구매한 에셋은 에디터에서 게임 컨셉에 맞춰 변환해 내려받습니다.",
-            )}
-          </p>
-          <div className="mt-7 flex flex-wrap gap-3">
-            <Link
-              to="/market"
-              className="rounded-xl bg-accent px-6 py-3.5 text-base font-bold text-white no-underline hover:bg-accent-strong"
-            >
-              {t("마켓 둘러보기")}
-            </Link>
-            <Link
-              to="/workshop"
-              className="rounded-xl border border-line px-6 py-3.5 text-base font-semibold text-muted no-underline hover:border-accent hover:text-ink"
-            >
-              {t("에셋 프롬프트 조정")}
-            </Link>
-          </div>
+      {/* 히어로. 진입 동선을 마켓 하나로 모은다 — 가로로 긴 박스 하나.
+          프롬프트 조정 시연은 뺐다. 컨셉 변환은 상단 내비의 스튜디오에 있다. */}
+      <section className="mx-auto max-w-[1240px] px-5 py-16">
+        <h1 className="text-4xl leading-[1.2] font-bold text-ink">{t("검증된 게임 에셋 마켓")}</h1>
+        <p className="mt-3 max-w-[52ch] text-xs text-muted">
+          {t("올라온 에셋을 7항목으로 채점해 배지를 매깁니다. 배지가 높을수록 목록 위에 노출됩니다.")}
+        </p>
 
-          <dl className="mt-10 flex flex-wrap gap-x-12 gap-y-4 border-t border-line pt-6">
-            <Stat k={t("등록된 에셋")} v={t("{n}종", { n: PIECES.length })} />
-            <Stat k={t("맞출 수 있는 컨셉")} v={t("{n}종", { n: CONCEPTS.length })} />
-            <Stat k={t("고정 팔레트")} v={t("{n}종", { n: PALETTES.length - 1 })} />
-          </dl>
-        </div>
+        <dl className="mt-8 flex flex-wrap gap-x-12 gap-y-4 border-t border-line pt-6">
+          <Stat k={t("등록된 에셋")} v={t("{n}종", { n: PIECES.length })} />
+          <Stat k={t("맞출 수 있는 컨셉")} v={t("{n}종", { n: CONCEPTS.length })} />
+          <Stat k={t("고정 팔레트")} v={t("{n}종", { n: PALETTES.length - 1 })} />
+        </dl>
 
-        <HeroShot />
+        {/* 가로로 긴 단일 진입 박스. 강조색 하나, 아이콘 없이. */}
+        <Link
+          to="/market"
+          className="mt-10 flex w-full items-center justify-between gap-4 rounded-2xl bg-accent px-8 py-7 no-underline transition-colors hover:bg-accent-strong"
+        >
+          <span className="text-2xl font-bold text-white">{t("마켓 둘러보기")}</span>
+          <span className="text-xs font-semibold text-white/80">{t("배지순으로 검증된 에셋")}</span>
+        </Link>
       </section>
-
-      {/* 시연이 두 번째다. 히어로에서 "컨셉에 맞춰 변환합니다" 라고 말했으니
-          그다음에 와야 할 것은 다음 설명이 아니라 그 말의 증거다. */}
-      <HomeStage />
 
       {/* 진행 순서 */}
       <section className="border-t border-line bg-surface">
@@ -231,60 +212,6 @@ export function Home() {
 
 /* 에셋 하나에 점수가 붙는 장면. 이 제품이 파는 게 무엇인지 한 컷으로 말한다.
    선은 모델 뒤로 지나가고, 점선은 아주 잘게 끊어 배경처럼 눕힌다. */
-function HeroShot() {
-  const [on, setOn] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(([e]) => e?.isIntersecting && setOn(true), { threshold: 0.3 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
-  const marks: [string, string, string][] = [
-    ["면 무결성", "96", "top-[14%] left-0"],
-    ["런타임 성능", "92", "top-[42%] right-0"],
-    ["라이선스 출처", "98", "bottom-[16%] left-[4%]"],
-  ];
-
-  return (
-    <div ref={ref} className="relative aspect-[4/3]">
-      <div className="absolute inset-0 z-[2]">
-        {modelSrc(HERO) && <Spin model={modelSrc(HERO)!} className="h-full w-full" />}
-      </div>
-
-      {marks.map(([label, score, pos], i) => (
-        <div
-          key={label}
-          className={[
-            "absolute z-[1] transition-opacity duration-700",
-            pos,
-            on ? "opacity-100" : "opacity-0",
-          ].join(" ")}
-          style={{ transitionDelay: `${300 + i * 220}ms` }}
-        >
-          <div className="flex items-baseline gap-2 border-b border-dashed border-line pb-1">
-            <span className="text-xs text-faint">{t(label)}</span>
-            <b className="num text-2xl text-ink">{score}</b>
-          </div>
-        </div>
-      ))}
-
-      <div
-        className={[
-          "absolute right-0 bottom-0 z-[3] flex items-center gap-2 rounded-full bg-accent-soft px-3 py-1.5 transition-opacity duration-700",
-          on ? "opacity-100" : "opacity-0",
-        ].join(" ")}
-        style={{ transitionDelay: "960ms" }}
-      >
-        <RankIcon badge="chal" size={18} />
-        <b className="text-base font-extrabold text-accent">{t("챌린저")} 94</b>
-      </div>
-    </div>
-  );
-}
 
 function Stat({ k, v }: { k: string; v: string }) {
   return (
