@@ -8,6 +8,9 @@ export type Piece = {
   glb?: string;
   /** 소리 상품의 오디오 경로(assets/ 아래). 있으면 그림 대신 파형+재생으로 낸다. */
   audio?: string;
+  /** VFX 상품의 이펙트 스프라이트 경로(assets/ 아래). 도트가 아니라 부드럽게,
+      은은한 글로우와 맥동으로 낸다. */
+  fx?: string;
   /** 도트 스프라이트. 3D 상품에는 없다. */
   img?: string;
   /** 올린 파일의 objectURL. 있으면 m/img 대신 이걸 쓴다. */
@@ -41,6 +44,7 @@ export const CATS = [
   ["furniture", "가구"],
   ["tex", "재질"],
   ["sfx", "이펙트/사운드"],
+  ["vfx", "VFX/파티클"],
 ] as const;
 
 export type CatKey = (typeof CATS)[number][0];
@@ -143,4 +147,19 @@ export const PIECES: Piece[] = [
       desc:"휙 열림 효과음. 창과 메뉴 전환에 씁니다." },
     { id:39, audio:"sfx/bong_001.wav", t:"Notify Bell FX", by:"kenney", cat:"sfx", eng:["unity","unreal","godot"], score:81, feel:84, price:4, dl:5400, days:8, tri:"—", tex:"WAV",
       desc:"알림 벨 효과음. 완료와 수신 알림에 씁니다." },
+
+    // VFX/파티클 — 스킬·마법 이펙트. 스프라이트라 파티클 텍스처로 그대로 쓰거나
+    // 파티클 시스템의 입자로 물린다. 파티클은 재사용 난도 낮음(안전군). Kenney CC0.
+    { id:40, fx:"vfx/magic_03.png", t:"Magic Circle VFX",  by:"kenney", cat:"vfx", eng:["unity","unreal","godot"], score:89, feel:92, price:5, dl:9400, days:2, tri:"—", tex:"PNG",
+      desc:"마법진·소환 스킬 이펙트. 시전 연출과 광역 표식에 씁니다." },
+    { id:41, fx:"vfx/slash_02.png", t:"Slash Hit VFX",     by:"kenney", cat:"vfx", eng:["unity","unreal","godot"], score:87, feel:90, price:5, dl:8100, days:3, tri:"—", tex:"PNG",
+      desc:"베기·근접 타격 이펙트. 검격과 참격 순간에 얹습니다." },
+    { id:42, fx:"vfx/spark_05.png", t:"Lightning VFX",     by:"kenney", cat:"vfx", eng:["unity","unreal","godot"], score:86, feel:89, price:5, dl:7300, days:4, tri:"—", tex:"PNG",
+      desc:"전격·번개 스킬 이펙트. 감전과 체인 라이트닝에 씁니다." },
+    { id:43, fx:"vfx/muzzle_04.png", t:"Flame Burst VFX",  by:"kenney", cat:"vfx", eng:["unity","unreal","godot"], score:85, feel:88, price:5, dl:6600, days:5, tri:"—", tex:"PNG",
+      desc:"화염 분출·머즐 플래시 이펙트. 발사와 화염 스킬에 씁니다." },
+    { id:44, fx:"vfx/star_08.png", t:"Sparkle Burst VFX",  by:"kenney", cat:"vfx", eng:["unity","unreal","godot"], score:83, feel:86, price:5, dl:5900, days:6, tri:"—", tex:"PNG",
+      desc:"반짝임·획득 이펙트. 아이템 습득과 버프 연출에 씁니다." },
+    { id:45, fx:"vfx/twirl_02.png", t:"Swirl VFX",         by:"kenney", cat:"vfx", eng:["unity","unreal","godot"], score:82, feel:85, price:5, dl:5100, days:8, tri:"—", tex:"PNG",
+      desc:"소용돌이·회오리 이펙트. 회전 스킬과 포탈 연출에 씁니다." },
 ];

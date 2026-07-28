@@ -71,7 +71,7 @@ function Detail({ p }: { p: Piece }) {
         {/* 갤러리 */}
         <div>
           <div className="relative aspect-square overflow-hidden rounded-2xl border border-line bg-gradient-to-b from-surface-2 to-surface p-8">
-            {p.audio ? (
+            {p.audio || p.fx ? (
               <Thumb piece={p} pad="18%" />
             ) : spinning && modelSrc(p) ? (
               <Spin model={modelSrc(p)!} className="h-full w-full" />

@@ -176,3 +176,9 @@
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: none; }
 }
+
+/* VFX 썸네일 맥동. 이펙트가 죽은 그림이 아니라 살아 있는 것처럼 은은히 뛴다. */
+@keyframes fxpulse {
+  0%, 100% { opacity: 0.68; transform: scale(0.96); }
+  50% { opacity: 1; transform: scale(1.05); }
+}

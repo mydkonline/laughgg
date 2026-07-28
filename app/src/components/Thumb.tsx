@@ -24,7 +24,23 @@ export function Thumb(props: {
   pad?: string;
 }) {
   if (props.piece.audio) return <AudioThumb piece={props.piece} pad={props.pad ?? "10%"} />;
+  if (props.piece.fx) return <FxThumb piece={props.piece} pad={props.pad ?? "10%"} />;
   return <ModelThumb {...props} />;
+}
+
+/* VFX 상품. 이펙트 스프라이트를 도트처럼 뭉개지 않고 부드럽게, 은은한 글로우와
+   느린 맥동으로 살아 있는 것처럼 보이게 한다. */
+function FxThumb({ piece, pad }: { piece: Piece; pad: string }) {
+  const src = `${import.meta.env.BASE_URL}assets/${piece.fx}`;
+  return (
+    <span className="absolute inset-0 grid place-items-center" style={{ padding: pad }}>
+      <img
+        src={src}
+        alt=""
+        className="max-h-full max-w-full object-contain drop-shadow-[0_0_18px_rgba(255,255,255,0.3)] motion-safe:animate-[fxpulse_2.6s_ease-in-out_infinite]"
+      />
+    </span>
+  );
 }
 
 /* 소리 상품. 파형 막대(상품마다 고정 모양)와 재생 버튼. 카드가 링크라
