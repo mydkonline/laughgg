@@ -247,12 +247,7 @@ export function Workshop() {
   };
 
   return (
-    <main className="mx-auto max-w-[1240px] px-5 pb-20">
-      <header className="py-8">
-        <p className="text-xs tracking-wide text-accent">{t("스튜디오")}</p>
-        <h1 className="mt-1 text-2xl font-bold text-ink">{t("에셋 컨셉 변환")}</h1>
-        <p className="mt-2 text-xs text-muted">{t("3D 는 조명과 재질, 2D 는 팔레트와 도트를 바꿉니다.")}</p>
-      </header>
+    <main className="mx-auto max-w-[1240px] px-5 pt-8 pb-20">
 
       {/* 1 — 무엇을 만질지 고른다 */}
       <section

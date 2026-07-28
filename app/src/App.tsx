@@ -11,7 +11,6 @@ import { Articles } from "./pages/Articles";
 import { Viewer } from "./pages/Viewer";
 import { Home } from "./pages/Home";
 import { Ir } from "./pages/Ir";
-import { Stack } from "./pages/Stack";
 import { Join } from "./pages/Join";
 import { Upload } from "./pages/Upload";
 import { Library } from "./pages/Library";
@@ -52,7 +51,6 @@ export default function App() {
         <Route path="/generate" element={<Generate />} />
         {/* 옛 주소. 링크가 돌아다닐 수 있어 살려 둔다. */}
         <Route path="/me" element={<Navigate to="/settings" replace />} />
-        <Route path="/stack" element={<Stack />} />
         <Route path="/scene" element={<Scene />} />
         <Route path="/viewer" element={<Viewer />} />
         <Route path="/cart" element={<Cart />} />

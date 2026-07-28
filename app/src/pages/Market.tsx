@@ -74,7 +74,7 @@ export function Market() {
           onChange={(e) => setQ(e.target.value)}
           placeholder={t("에셋 검색")}
           aria-label={t("에셋 검색")}
-          className="w-full rounded-full border border-line bg-surface px-5 py-3 text-xs text-ink placeholder:text-faint shadow-[0_1px_3px_rgba(0,0,0,0.3)] outline-none transition-shadow focus:border-accent focus:shadow-[0_2px_6px_rgba(0,0,0,0.4)]"
+          className="w-full rounded-full border border-line-soft bg-surface-2 px-5 py-3.5 text-xs text-ink placeholder:text-muted shadow-[0_2px_6px_rgba(0,0,0,0.45)] outline-none transition-[box-shadow,border-color] focus:border-accent focus:shadow-[0_2px_10px_rgba(0,0,0,0.55)]"
         />
       </div>
 
