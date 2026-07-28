@@ -6,7 +6,8 @@ import { SCENES_EN } from "../i18n/en/scenes";
 import { localized } from "../lib/locale";
 import { useCart } from "../lib/cart";
 import { Pager } from "../components/Pager";
-import { PIECES } from "../data/pieces";
+import { PIECES, CAT_NAME } from "../data/pieces";
+import { REUSE_AXIS } from "../data/reuse";
 import { Stage } from "../components/GameStage";
 import { t } from "../lib/locale";
 
@@ -255,6 +256,19 @@ export function Scene() {
               {t("에디터에서 맞추기")}
             </Link>
           </div>
+
+          {/* 궁합 한 줄. 무대는 "이 게임에 맞췄나"를 보여 주지만, 이 마켓의 진짜
+              질문은 "이 에셋이 다른 프로젝트에서도 계속 쓰이나"다. 에셋을 심판하지
+              않고, 이 유형의 재사용 난도를 알려 장롱을 피하게 한다. */}
+          {REUSE_AXIS[piece.cat] && (
+            <p className="mt-3 text-[11px] leading-relaxed text-faint">
+              <span className="text-muted">{t("이 게임엔 맞췄고, 다른 프로젝트엔?")}</span>{" "}
+              <b className="text-ink">{t(CAT_NAME[piece.cat])}</b>{" "}
+              {t("재사용 난도")} <b className="text-ink">{t(REUSE_AXIS[piece.cat]!.risk)}</b>
+              {" — "}
+              {t(REUSE_AXIS[piece.cat]!.why)}
+            </p>
+          )}
         </div>
       </div>
     </main>
