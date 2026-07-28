@@ -108,7 +108,7 @@ export function Stack() {
         onChange={(e) => setQ(e.target.value)}
         placeholder={t("게임, 엔진, 개발사 검색")}
         aria-label={t("게임 검색")}
-        className="mb-6 w-full rounded-full border border-line bg-surface px-5 py-3 text-xs text-ink placeholder:text-faint shadow-[0_1px_8px_rgba(0,0,0,0.35)] outline-none transition-shadow focus:border-accent focus:shadow-[0_2px_16px_rgba(0,0,0,0.5)]"
+        className="mb-6 w-full rounded-full border border-line bg-surface px-5 py-3 text-xs text-ink placeholder:text-faint shadow-[0_1px_3px_rgba(0,0,0,0.3)] outline-none transition-shadow focus:border-accent focus:shadow-[0_2px_6px_rgba(0,0,0,0.4)]"
       />
 
       <div className="grid gap-x-12 gap-y-8 lg:grid-cols-[184px_minmax(0,1fr)]">

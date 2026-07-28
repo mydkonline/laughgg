@@ -143,14 +143,16 @@ export function PromptBuilder({
               type="button"
               onClick={() => setAxis(axis)}
               aria-pressed={axis === openAxis}
-              /* 테두리와 배경을 줘서 "누르는 것" 으로 읽히게 한다. 밋밋한
-                 텍스트로 두면 클릭 요소인지 안 보인다(가이드: Input Affordance).
-                 고른 축은 강조색으로 채워 지금 어디를 보고 있는지 드러낸다. */
+              /* 스트로크로 구분한다. 지금 보는 축은 흰/검(ink) 테두리로
+                 또렷하게, 나머지는 흐린 테두리로. 강조색(보라)은 여기 안 쓴다
+                 — 그건 아래 블록에서 실제로 값을 고를 때 쓰는 색이라, 축을
+                 고르는 것과 값을 고르는 것을 색으로 갈라 둔다. 고른 값이 있는
+                 축에만 점을 찍어 표시한다. */
               className={[
                 "flex cursor-pointer items-center gap-1 rounded-lg border px-3 py-1.5 text-xs transition-colors",
                 axis === openAxis
-                  ? "border-accent bg-accent-soft font-bold text-accent"
-                  : "border-line bg-surface-2 text-muted hover:border-accent hover:text-ink",
+                  ? "border-ink font-bold text-ink"
+                  : "border-line text-muted hover:border-ink/50 hover:text-ink",
               ].join(" ")}
             >
               {t(axis)}
