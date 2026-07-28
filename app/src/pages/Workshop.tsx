@@ -397,17 +397,11 @@ export function Workshop() {
         {/* 조작 패널. 그림 옆에 둔다 — 프롬프트가 이 제품이 파는 것이라
             스크롤을 내려야 보이면 안 된다.
 
-            **뷰포트보다 크면 sticky 가 sticky 가 아니다.** 이 패널은 1,184px
-            이었고 화면은 723px 이었다. 붙박이로 세워 두면 아래 461px 이
-            화면 밖에 고정돼서, 페이지를 아무리 굴려도 점수 패널이 안 올라온다.
-
-            그림 편집 도구들의 인스펙터가 하는 대로 한다 — 패널을 화면 높이에
-            맞추고 그 안에서만 굴린다. 그러면 왼쪽 그림이 안 움직인다. 조작과
-            결과를 같이 보는 게 이 화면의 전부라, 둘 중 하나가 밀려나면 안 된다.
-
-            가로는 안 자른다. 안쪽 칩은 전부 줄바꿈이라 넘칠 일이 없고,
-            자르면 포커스 테두리가 잘린다. */}
-        <aside className="flex flex-col gap-5 lg:sticky lg:top-[100px] lg:max-h-[calc(100vh-120px)] lg:self-start lg:overflow-y-auto lg:pr-1">
+            한때 이 패널이 뷰포트보다 커서 안에 스크롤을 뒀는데, 블록 팔레트를
+            탭으로 접은 뒤로는 패널이 화면 안에 들어온다. 그래서 내부 스크롤을
+            뺐다 — 패널 안에서 또 굴리는 건 스크롤이 두 겹이라 헷갈린다.
+            sticky 로 붙여 두기만 하면 왼쪽 그림 옆에 그대로 머문다. */}
+        <aside className="flex flex-col gap-5 lg:sticky lg:top-[100px] lg:self-start">
           {/* 컨셉이 먼저다. 대부분은 이것만 눌러 보고 끝낸다. */}
           <div>
             <div className="mb-2.5 flex flex-wrap items-baseline gap-3">

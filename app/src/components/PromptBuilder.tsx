@@ -143,11 +143,14 @@ export function PromptBuilder({
               type="button"
               onClick={() => setAxis(axis)}
               aria-pressed={axis === openAxis}
+              /* 테두리와 배경을 줘서 "누르는 것" 으로 읽히게 한다. 밋밋한
+                 텍스트로 두면 클릭 요소인지 안 보인다(가이드: Input Affordance).
+                 고른 축은 강조색으로 채워 지금 어디를 보고 있는지 드러낸다. */
               className={[
-                "flex cursor-pointer items-center gap-1 rounded-lg border-0 px-2.5 py-1 text-xs",
+                "flex cursor-pointer items-center gap-1 rounded-lg border px-3 py-1.5 text-xs transition-colors",
                 axis === openAxis
-                  ? "bg-chrome-700 font-bold text-ink"
-                  : "bg-transparent text-faint hover:text-ink",
+                  ? "border-accent bg-accent-soft font-bold text-accent"
+                  : "border-line bg-surface-2 text-muted hover:border-accent hover:text-ink",
               ].join(" ")}
             >
               {t(axis)}
