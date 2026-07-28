@@ -157,7 +157,7 @@ function LocalePicker() {
   const now = useLocale();
   return (
     <details className="relative">
-      <summary className="flex h-7 cursor-pointer list-none items-center gap-1 rounded-md border border-white/10 bg-white/[0.06] px-2 text-[length:var(--text-nav)] text-gray-350 backdrop-blur-md hover:bg-white/[0.12] hover:text-white [&::-webkit-details-marker]:hidden">
+      <summary className="flex h-6 cursor-pointer list-none items-center gap-1 rounded-md border border-white/10 bg-white/[0.06] px-2 text-[length:var(--text-nav)] text-gray-350 backdrop-blur-md hover:bg-white/[0.12] hover:text-white [&::-webkit-details-marker]:hidden">
         <span className="text-[13px] leading-none">{FLAG[now]}</span>
         <b className="font-bold">{LOCALE_SHORT[now]}</b>
         <Icon name="chevron" className="h-3 w-3" />
@@ -198,7 +198,7 @@ function AccountButton() {
 
   if (auth.status === "loading") {
     // 자리만 잡는다. 폭이 바뀌면 옆 단추들이 밀린다.
-    return <span className="h-7 w-7" />;
+    return <span className="h-6 w-6" />;
   }
 
   if (auth.status === "anon") {
@@ -208,17 +208,17 @@ function AccountButton() {
           to="/join?mode=login"
           aria-label={t("로그인")}
           title={t("로그인")}
-          className="flex h-7 w-7 items-center justify-center rounded-md bg-chrome-800 text-gray-350 no-underline hover:bg-chrome-700 hover:text-white"
+          className="flex h-6 w-6 items-center justify-center rounded-md bg-chrome-800 text-gray-350 no-underline hover:bg-chrome-700 hover:text-white"
         >
-          <Icon name="login" className="h-[17px] w-[17px]" />
+          <Icon name="login" className="h-[15px] w-[15px]" />
         </Link>
         <Link
           to="/join"
           aria-label={t("가입")}
           title={t("가입")}
-          className="flex h-7 w-7 items-center justify-center rounded-md bg-accent text-ground no-underline hover:bg-accent-strong"
+          className="flex h-6 w-6 items-center justify-center rounded-md bg-accent text-ground no-underline hover:bg-accent-strong"
         >
-          <Icon name="person_add" className="h-[17px] w-[17px]" />
+          <Icon name="person_add" className="h-[15px] w-[15px]" />
         </Link>
       </span>
     );
@@ -235,26 +235,26 @@ function AccountButton() {
         to="/library"
         aria-label={t("내 라이브러리")}
         title={t("내 라이브러리")}
-        className="flex h-7 w-7 items-center justify-center rounded-md bg-accent text-ground no-underline hover:bg-accent-strong"
+        className="flex h-6 w-6 items-center justify-center rounded-md bg-accent text-ground no-underline hover:bg-accent-strong"
       >
-        <Icon name="library" className="h-[17px] w-[17px]" />
+        <Icon name="library" className="h-[15px] w-[15px]" />
       </Link>
       <Link
         to="/settings"
         aria-label={auth.account.display_name}
         title={auth.account.display_name}
-        className="flex h-7 w-7 items-center justify-center rounded-md bg-chrome-800 text-white no-underline hover:bg-chrome-700"
+        className="flex h-6 w-6 items-center justify-center rounded-md bg-chrome-800 text-white no-underline hover:bg-chrome-700"
       >
-        <Icon name="person" className="h-[17px] w-[17px]" />
+        <Icon name="person" className="h-[15px] w-[15px]" />
       </Link>
       <button
         type="button"
         onClick={() => void logOut()}
         aria-label={t("나가기")}
         title={t("나가기")}
-        className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md border-0 border border-white/10 bg-white/[0.06] text-gray-350 backdrop-blur-md hover:bg-white/[0.12] hover:text-white"
+        className="flex h-6 w-6 cursor-pointer items-center justify-center rounded-md border-0 border border-white/10 bg-white/[0.06] text-gray-350 backdrop-blur-md hover:bg-white/[0.12] hover:text-white"
       >
-        <Icon name="logout" className="h-[17px] w-[17px]" />
+        <Icon name="logout" className="h-[15px] w-[15px]" />
       </button>
     </span>
   );
@@ -281,9 +281,9 @@ export function Nav() {
               to="/cart"
               aria-label={t("장바구니")}
               title={t("장바구니")}
-              className="relative flex h-7 w-7 items-center justify-center rounded-md bg-chrome-800 text-gray-350 no-underline hover:bg-chrome-700 hover:text-white"
+              className="relative flex h-6 w-6 items-center justify-center rounded-md bg-chrome-800 text-gray-350 no-underline hover:bg-chrome-700 hover:text-white"
             >
-              <Icon name="cart" className="h-[17px] w-[17px]" />
+              <Icon name="cart" className="h-[15px] w-[15px]" />
               {count > 0 && (
                 <b className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#FF6B7A] px-1 text-[9px] font-extrabold text-white">
                   {count}
@@ -296,9 +296,9 @@ export function Nav() {
               onClick={toggle}
               aria-label={t("테마")}
               title={t("테마")}
-              className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md border-0 border border-white/10 bg-white/[0.06] text-gray-350 backdrop-blur-md hover:bg-white/[0.12] hover:text-white"
+              className="flex h-6 w-6 cursor-pointer items-center justify-center rounded-md border-0 border border-white/10 bg-white/[0.06] text-gray-350 backdrop-blur-md hover:bg-white/[0.12] hover:text-white"
             >
-              <Icon name={theme === "dark" ? "light" : "dark"} className="h-[17px] w-[17px]" />
+              <Icon name={theme === "dark" ? "light" : "dark"} className="h-[15px] w-[15px]" />
             </button>
             <LocalePicker />
           </div>
