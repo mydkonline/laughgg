@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { PIECES, modelSrc } from "../data/pieces";
 import { CONCEPTS } from "../data/concepts";
@@ -85,14 +84,14 @@ export function Home() {
             {t("올라온 에셋을 7항목으로 채점해 배지를 매깁니다. 배지가 높을수록 목록 위에 노출됩니다.")}
           </p>
 
-          {/* 가로로 긴 단일 진입 박스. 왼쪽 컬럼 폭을 채우되 배너처럼 키우진
-              않는다 — 강조색 하나, 아이콘 없이. */}
+          {/* 진입 박스. 오른쪽 끝을 제목 끝에 맞춘다 — 컬럼 전체로 늘리면
+              제목보다 한참 튀어나와 균형이 깨진다. 제목 폭(약 17rem)에 맞춰
+              가둔다. 강조색 하나, 아이콘 없이. */}
           <Link
             to="/market"
-            className="mt-7 flex w-full items-center justify-between gap-4 rounded-xl bg-accent px-6 py-4 no-underline transition-colors hover:bg-accent-strong"
+            className="mt-7 block w-full max-w-[17rem] rounded-xl bg-accent px-5 py-3.5 text-center text-base font-bold text-white no-underline transition-colors hover:bg-accent-strong"
           >
-            <span className="text-base font-bold text-white">{t("마켓 둘러보기")}</span>
-            <span className="text-xs text-white/80">{t("배지순으로 검증된 에셋")}</span>
+            {t("마켓 둘러보기")}
           </Link>
 
           <dl className="mt-8 flex flex-wrap gap-x-12 gap-y-4 border-t border-line pt-6">
@@ -225,17 +224,6 @@ export function Home() {
    선은 모델 뒤로 지나가고, 점선은 아주 잘게 끊어 배경처럼 눕힌다. */
 
 function HeroShot() {
-  const [on, setOn] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(([e]) => e?.isIntersecting && setOn(true), { threshold: 0.3 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
   const marks: [string, string, string][] = [
     ["면 무결성", "96", "top-[14%] left-0"],
     ["런타임 성능", "92", "top-[42%] right-0"],
@@ -243,20 +231,18 @@ function HeroShot() {
   ];
 
   return (
-    <div ref={ref} className="relative aspect-[4/3]">
-      <div className="absolute inset-0 z-[2]">
+    <div className="relative aspect-[4/3]">
+      <div className="absolute inset-0 z-[1]">
         {modelSrc(HERO) && <Spin model={modelSrc(HERO)!} className="h-full w-full" />}
       </div>
 
+      {/* 눈금은 모델 위에 얹는다(z-2). 뜬 뒤 순서대로 올라온다 — 애니메이션은
+          CSS 로만, 상태에 안 기댄다. */}
       {marks.map(([label, score, pos], i) => (
         <div
           key={label}
-          className={[
-            "absolute z-[1] transition-opacity duration-700",
-            pos,
-            on ? "opacity-100" : "opacity-0",
-          ].join(" ")}
-          style={{ transitionDelay: `${300 + i * 220}ms` }}
+          className={`absolute z-[2] ${pos}`}
+          style={{ animation: "rise .6s ease both", animationDelay: `${300 + i * 220}ms` }}
         >
           <div className="flex items-baseline gap-2 border-b border-dashed border-line pb-1">
             <span className="text-xs text-faint">{t(label)}</span>
@@ -266,11 +252,8 @@ function HeroShot() {
       ))}
 
       <div
-        className={[
-          "absolute right-0 bottom-0 z-[3] flex items-center gap-2 rounded-full bg-accent-soft px-3 py-1.5 transition-opacity duration-700",
-          on ? "opacity-100" : "opacity-0",
-        ].join(" ")}
-        style={{ transitionDelay: "960ms" }}
+        className="absolute right-0 bottom-0 z-[3] flex items-center gap-2 rounded-full bg-accent-soft px-3 py-1.5"
+        style={{ animation: "rise .6s ease both", animationDelay: "960ms" }}
       >
         <RankIcon badge="chal" size={18} />
         <b className="text-base font-extrabold text-accent">{t("챌린저")} 94</b>

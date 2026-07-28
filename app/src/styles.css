@@ -147,3 +147,10 @@
   --color-key: var(--key);
   --color-key-soft: var(--key-soft);
 }
+
+/* 히어로 눈금·배지가 뜬 뒤 살짝 올라온다. JS 상태에 안 기댄다 —
+   전에 관찰자로 켜던 게 첫 화면에선 안 잡혀 아예 안 보였다. */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
