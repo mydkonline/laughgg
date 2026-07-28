@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { PLACE_MODEL, type SceneGame } from "../data/scenes";
+import { SCENE_BG } from "../data/scenebg";
 import { PIECES, modelSrc } from "../data/pieces";
 import { bakeView } from "../three/baker";
 
@@ -59,6 +60,17 @@ export function Stage({
       className={`relative overflow-hidden rounded-2xl border border-line ${className}`}
       style={{ background: rgb(game.fog), filter }}
     >
+      {/* 화풍 배경. 맨 아래에 깔아 광원·에셋이 그 위에 얹힌다. 부모의 색보정
+          (filter)이 배경에도 먹어 게임 톤으로 물든다 — 화풍 배경 하나가
+          게임마다 다르게 보이는 이유다. 없는 화풍은 원래 안개색만 남는다. */}
+      {SCENE_BG[game.sub] && (
+        <img
+          src={`${import.meta.env.BASE_URL}assets/scenes/${SCENE_BG[game.sub]}.svg`}
+          alt=""
+          className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-90"
+        />
+      )}
+
       {game.light.map((l, i) => (
         <span
           key={i}
