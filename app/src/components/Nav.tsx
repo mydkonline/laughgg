@@ -148,22 +148,16 @@ const tabClass = ({ isActive }: { isActive: boolean }) =>
       : "text-chrome-300 hover:bg-white/7 hover:text-white",
   ].join(" ");
 
-/* 언어 선택. 테마 옆에 둔다.
+/* 언어 선택 — 국기와 코드를 단 드롭다운.
 
-   두 개뿐이라 드롭다운을 안 쓴다. 눌러야 목록이 열리고 거기서 또 골라야
-   하면, 두 개짜리에 두 번 누르는 셈이다.
-
-   `<a>` 다. 언어가 라우터 basename 에 들어 있어서 그 자리에서 갈아 끼울 수가
-   없고 — SPA 안에서 바꾸면 이미 그려진 화면의 언어와 라우터가 어긋난다 —
-   주소를 새로 열어야 한다. 그래서 `<Link>` 가 아니라 진짜 링크다.
-
-   가는 주소는 지금 보던 자리 그대로다. 홈으로 돌려보내면 열 쪽 넘겨 찾아온
-   자리를 잃는다. */
+   항목은 진짜 링크(`<a href>`)다. 언어가 라우터 basename 에 들어 있어서 SPA
+   안에서 갈아 끼우면 화면과 라우터가 어긋난다 — 주소를 새로 열어야 한다.
+   가는 곳은 지금 보던 자리 그대로다. */
 function LocalePicker() {
   const now = useLocale();
   return (
     <details className="relative">
-      <summary className="flex h-7 cursor-pointer list-none items-center gap-1 rounded-md bg-chrome-800 px-2 text-[length:var(--text-nav)] text-gray-350 hover:bg-chrome-700 hover:text-white [&::-webkit-details-marker]:hidden">
+      <summary className="flex h-7 cursor-pointer list-none items-center gap-1 rounded-md border border-white/10 bg-white/[0.06] px-2 text-[length:var(--text-nav)] text-gray-350 backdrop-blur-md hover:bg-white/[0.12] hover:text-white [&::-webkit-details-marker]:hidden">
         <span className="text-[13px] leading-none">{FLAG[now]}</span>
         <b className="font-bold">{LOCALE_SHORT[now]}</b>
         <Icon name="chevron" className="h-3 w-3" />
@@ -258,7 +252,7 @@ function AccountButton() {
         onClick={() => void logOut()}
         aria-label={t("나가기")}
         title={t("나가기")}
-        className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md border-0 bg-chrome-800 text-gray-350 hover:bg-chrome-700 hover:text-white"
+        className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md border-0 border border-white/10 bg-white/[0.06] text-gray-350 backdrop-blur-md hover:bg-white/[0.12] hover:text-white"
       >
         <Icon name="logout" className="h-[17px] w-[17px]" />
       </button>
@@ -302,7 +296,7 @@ export function Nav() {
               onClick={toggle}
               aria-label={t("테마")}
               title={t("테마")}
-              className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md border-0 bg-chrome-800 text-gray-350 hover:bg-chrome-700 hover:text-white"
+              className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md border-0 border border-white/10 bg-white/[0.06] text-gray-350 backdrop-blur-md hover:bg-white/[0.12] hover:text-white"
             >
               <Icon name={theme === "dark" ? "light" : "dark"} className="h-[17px] w-[17px]" />
             </button>
