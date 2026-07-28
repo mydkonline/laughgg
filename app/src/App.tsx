@@ -12,7 +12,6 @@ import { Viewer } from "./pages/Viewer";
 import { Home } from "./pages/Home";
 import { Ir } from "./pages/Ir";
 import { Stack } from "./pages/Stack";
-import { Vlog } from "./pages/Vlog";
 import { Join } from "./pages/Join";
 import { Upload } from "./pages/Upload";
 import { Library } from "./pages/Library";
@@ -56,7 +55,6 @@ export default function App() {
         <Route path="/stack" element={<Stack />} />
         <Route path="/scene" element={<Scene />} />
         <Route path="/viewer" element={<Viewer />} />
-        <Route path="/vlog" element={<Vlog />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/upload" element={<Upload />} />
         <Route path="*" element={<Navigate to="/market" replace />} />

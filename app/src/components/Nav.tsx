@@ -29,7 +29,6 @@ const GROUPS: Group[] = [
     subs: [
       { label: "뉴스", to: "/news" },
       { label: "사례", to: "/feed" },
-      { label: "브이로그", to: "/vlog" },
       { label: "기사", to: "/articles" },
     ],
   },
