@@ -70,22 +70,16 @@ export function PromptBuilder({
   onChange: (next: string[]) => void;
 }) {
   const [over, setOver] = useState(false);
-  /* 키워드도 카테고리도 늘어날 수 있어 검색을 앞에 둔다. 비우면 카테고리별로
-     다 보이고, 치면 전 카테고리에서 맞는 블록만 뜬다. */
-  const [query, setQuery] = useState("");
+  /* 어느 카테고리의 블록을 볼지. 카테고리가 늘어도 드롭다운은 줄바꿈도 스크롤도
+     없이 하나만 고른다. 고른 블록은 위 드롭존에 다 쌓여 보인다. */
+  const [axis, setAxis] = useState(BLOCK_GROUPS[0]?.[0] ?? "");
 
   const add = (id: string) => {
     if (!picked.includes(id)) onChange([...picked, id]);
   };
   const remove = (id: string) => onChange(picked.filter((x) => x !== id));
 
-  /* 검색은 라벨(현재 언어와 원문)과 실제 들어가는 말 모두를 훑는다. */
-  const q = query.trim().toLowerCase();
-  const matches = q
-    ? ALL.filter((b) => `${t(b.label)} ${b.label} ${b.word}`.toLowerCase().includes(q))
-    : null;
-
-  /* 끌 수 있는 블록 하나. 검색 결과와 카테고리 목록이 같은 칩을 쓴다. */
+  /* 끌 수 있는 블록 하나. */
   const chip = (b: Block) => {
     const on = picked.includes(b.id);
     return (
@@ -151,42 +145,28 @@ export function PromptBuilder({
         })}
       </div>
 
-      {/* 재료 팔레트. 키워드도 카테고리도 늘어날 수 있어 검색을 앞에 둔다 —
-         커맨드 팔레트/이모지 피커 방식이다. 검색하면 전 카테고리에서 맞는 블록이
-         뜨고, 비우면 카테고리별로 묶어 보여 준다. 높이를 고정해 안에서만 스크롤
-         하므로 카테고리가 수십 개로 늘어도 이 상자가 화면을 삼키지 않는다. */}
-      <div className="mt-4 rounded-xl border border-line bg-ground p-2.5">
-        <input
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder={t("블록 찾기")}
-          className="w-full rounded-lg border border-line bg-surface-2 px-3 py-2 text-xs text-ink outline-none placeholder:text-faint focus:border-accent"
-        />
-        <div className="mt-2 max-h-[224px] overflow-y-auto pr-1 [scrollbar-width:thin]">
-          {matches ? (
-            <div className="flex flex-wrap gap-2 py-1">
-              {matches.length ? (
-                matches.map(chip)
-              ) : (
-                <span className="px-1 py-2 text-xs text-faint">{t("맞는 블록이 없습니다")}</span>
-              )}
-            </div>
-          ) : (
-            BLOCK_GROUPS.map(([axis, blocks]) => {
-              const n = blocks.filter((b) => picked.includes(b.id)).length;
-              return (
-                <div key={axis} className="mb-1">
-                  {/* 카테고리 머리는 스크롤 위에 붙어, 어느 축을 보는지 항상 보인다. */}
-                  <div className="sticky top-0 z-10 flex items-center gap-1.5 bg-ground py-1.5 text-[10px] font-bold tracking-wide text-faint">
-                    {t(axis)}
-                    {n > 0 && <b className="h-1.5 w-1.5 rounded-full bg-accent" />}
-                  </div>
-                  <div className="flex flex-wrap gap-2 pb-2">{blocks.map(chip)}</div>
-                </div>
-              );
-            })
-          )}
+      {/* 재료. 카테고리를 드롭다운으로 골라 그 블록만 편다 — 스크롤도 줄바꿈 탭도
+         없이, 카테고리가 수십 개로 늘어도 드롭다운은 하나만 고른다. 고른 블록은
+         위 드롭존에 다 쌓여 보이므로 여기선 지금 카테고리의 값만 보이면 된다.
+         고른 게 있는 카테고리는 이름 옆 숫자로 표시한다. */}
+      <div className="mt-4 flex flex-col gap-3">
+        <select
+          value={axis}
+          onChange={(e) => setAxis(e.target.value)}
+          className="w-full cursor-pointer rounded-xl border border-line bg-ground px-3 py-2 text-xs text-ink"
+        >
+          {BLOCK_GROUPS.map(([a, blocks]) => {
+            const n = blocks.filter((b) => picked.includes(b.id)).length;
+            return (
+              <option key={a} value={a}>
+                {t(a)}
+                {n > 0 ? ` (${n})` : ""}
+              </option>
+            );
+          })}
+        </select>
+        <div className="flex min-h-[36px] flex-wrap gap-2">
+          {(BLOCK_GROUPS.find(([a]) => a === axis)?.[1] ?? []).map(chip)}
         </div>
       </div>
     </div>
