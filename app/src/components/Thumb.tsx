@@ -35,16 +35,29 @@ function UiThumb({ piece, pad }: { piece: Piece; pad: string }) {
   const src = `${import.meta.env.BASE_URL}assets/${piece.ui}`;
   return (
     <span className="absolute inset-0 grid place-items-center" style={{ padding: pad }}>
-      <img src={src} alt="" className="max-h-full max-w-full object-contain" />
+      <img
+        src={src}
+        alt=""
+        className="max-h-full max-w-full object-contain drop-shadow-[0_8px_18px_rgb(0_0_0/0.5)]"
+      />
     </span>
   );
 }
 
-/* 재질 상품. 텍스처를 카드 가득 채우는 머티리얼 스와치로, 도트처럼 뭉개지 않고
-   매끈하게 낸다. 여백 없이 꽉 채워 재질 그 자체가 보이게 한다. */
+/* 재질 상품. 카드를 꽉 채우면 이 카드만 혼자 튄다 — 다른 카드처럼 어두운
+   캔버스 위에 여백을 두고 둥근 머티리얼 칩으로 띄운다. 테두리와 그림자로
+   3D 오브젝트와 같은 "무대 위에 놓인 것" 느낌을 맞춘다. */
 function TexThumb({ piece }: { piece: Piece }) {
   const src = `${import.meta.env.BASE_URL}assets/${piece.swatch}`;
-  return <img src={src} alt="" className="absolute inset-0 h-full w-full object-cover" />;
+  return (
+    <span className="absolute inset-0 grid place-items-center" style={{ padding: "13%" }}>
+      <img
+        src={src}
+        alt=""
+        className="h-full w-full rounded-xl border border-white/10 object-cover shadow-[0_8px_20px_rgb(0_0_0/0.45)]"
+      />
+    </span>
+  );
 }
 
 /* VFX 상품. 이펙트 스프라이트를 도트처럼 뭉개지 않고 부드럽게, 은은한 글로우와

@@ -87,7 +87,7 @@ export function Market() {
         ))}
       </Row>
 
-      {kind === "패키지" ? null : <Row label={t("분류")}>
+      {kind === "패키지" ? null : <Row label={t("분류")} scroll>
         {CATS.map(([k, name]) => (
           <Chip key={k} on={cat === k} onClick={() => setCat(k)} count={catCount(k)}>
             {t(name)}
@@ -228,11 +228,32 @@ export function Market() {
   );
 }
 
-function Row({ label, children }: { label: string; children: React.ReactNode }) {
+/* 필터 한 줄. 분류처럼 개수가 늘어나는 축은 줄바꿈 대신 한 줄 가로 스크롤로
+   둔다 — 카테고리가 몇 개로 불어나도 줄이 2·3단으로 접혀 라벨과 어긋나는 일이
+   없다. 페이지 본문은 안 밀리게 컨테이너 안에서만 스크롤하고, 오른쪽 끝에
+   페이드를 둬 더 있다는 걸 알린다. */
+function Row({
+  label,
+  children,
+  scroll = false,
+}: {
+  label: string;
+  children: React.ReactNode;
+  scroll?: boolean;
+}) {
   return (
     <div className="mb-3 flex items-center gap-3">
       <span className="w-10 flex-none text-xs text-faint">{label}</span>
-      <div className="flex flex-wrap items-center gap-1.5">{children}</div>
+      {scroll ? (
+        <div className="relative min-w-0 flex-1">
+          <div className="flex items-center gap-1.5 overflow-x-auto pr-9 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {children}
+          </div>
+          <span className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-ground to-transparent" />
+        </div>
+      ) : (
+        <div className="flex flex-wrap items-center gap-1.5">{children}</div>
+      )}
     </div>
   );
 }
@@ -254,7 +275,7 @@ function Chip({
       onClick={onClick}
       aria-pressed={on}
       className={[
-        "cursor-pointer rounded-full border px-3.5 py-1.5 text-xs",
+        "shrink-0 cursor-pointer whitespace-nowrap rounded-full border px-3.5 py-1.5 text-xs",
         on
           ? "border-transparent bg-ink font-bold text-ground"
           : "border-line bg-transparent text-muted hover:border-accent hover:text-ink",
