@@ -299,11 +299,15 @@ function Shelf({
   onSeeAll?: () => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [nav, setNav] = useState({ start: true, end: false });
+  const [nav, setNav] = useState({ start: true, end: false, over: false });
   const sync = () => {
     const el = ref.current;
     if (!el) return;
-    setNav({ start: el.scrollLeft <= 2, end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 2 });
+    setNav({
+      start: el.scrollLeft <= 2,
+      end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 2,
+      over: el.scrollWidth > el.clientWidth + 2,
+    });
   };
   useEffect(() => {
     sync();
@@ -313,47 +317,52 @@ function Shelf({
 
   return (
     <section>
-      <div className="mb-3 flex items-baseline justify-between gap-2">
+      {/* 넘길 화살표는 카드 위에 겹치면 카드가 눌려 버린다 — 헤더 오른쪽(카드
+          바깥)에 두고, 끝에 닿으면 그쪽을 흐린다. 넘칠 때만 뜬다. */}
+      <div className="mb-3 flex items-center justify-between gap-3">
         <h2 className="text-base font-bold text-ink">
           {title} <span className="text-xs font-normal text-faint">{total}</span>
         </h2>
-        {onSeeAll && (
-          <button
-            type="button"
-            onClick={onSeeAll}
-            className="shrink-0 cursor-pointer text-xs font-semibold text-accent hover:underline"
-          >
-            {t("전체 보기")}
-          </button>
-        )}
-      </div>
-      <div className="relative">
-        <div
-          ref={ref}
-          onScroll={sync}
-          className="flex gap-3 overflow-x-auto scroll-smooth pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        >
-          {items.map((p) => (
-            <Card key={p.id} piece={p} className="w-[168px] shrink-0" />
-          ))}
+        <div className="flex items-center gap-3">
+          {nav.over && (
+            <div className="flex items-center gap-1">
+              <ArrowBtn dir={-1} disabled={nav.start} onClick={() => page(-1)} />
+              <ArrowBtn dir={1} disabled={nav.end} onClick={() => page(1)} />
+            </div>
+          )}
+          {onSeeAll && (
+            <button
+              type="button"
+              onClick={onSeeAll}
+              className="shrink-0 cursor-pointer text-xs font-semibold text-accent hover:underline"
+            >
+              {t("전체 보기")}
+            </button>
+          )}
         </div>
-        {!nav.start && <ShelfArrow dir={-1} onClick={() => page(-1)} />}
-        {!nav.end && <ShelfArrow dir={1} onClick={() => page(1)} />}
+      </div>
+      <div
+        ref={ref}
+        onScroll={sync}
+        className="flex gap-3 overflow-x-auto scroll-smooth pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {items.map((p) => (
+          <Card key={p.id} piece={p} className="w-[168px] shrink-0" />
+        ))}
       </div>
     </section>
   );
 }
 
-/* 선반 좌우 화살표. 카드 그림 높이의 가운데에 걸치고, 반투명 유리로 띄운다. */
-function ShelfArrow({ dir, onClick }: { dir: -1 | 1; onClick: () => void }) {
+/* 선반 넘김 버튼. 헤더에 놓여 카드와 안 겹친다. 끝이면 disabled 로 흐린다. */
+function ArrowBtn({ dir, disabled, onClick }: { dir: -1 | 1; disabled: boolean; onClick: () => void }) {
   return (
     <button
       type="button"
       onClick={onClick}
+      disabled={disabled}
       aria-label={dir < 0 ? t("이전") : t("다음")}
-      className={`absolute top-[84px] z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-ground/80 pb-0.5 text-lg text-ink shadow-[0_4px_12px_rgb(0_0_0/0.5)] backdrop-blur transition-colors hover:bg-surface-2 ${
-        dir < 0 ? "left-1" : "right-1"
-      }`}
+      className="flex h-7 w-7 items-center justify-center rounded-full border border-line pb-0.5 text-sm text-muted transition-colors hover:border-ink hover:text-ink disabled:cursor-default disabled:border-line disabled:text-faint disabled:opacity-40 disabled:hover:text-faint"
     >
       {dir < 0 ? "‹" : "›"}
     </button>
