@@ -4,10 +4,33 @@ import { Link, useNavigate } from "react-router-dom";
 import { ApiError, api, type Blocked, type MarketAsset } from "../lib/api";
 import { useAccount } from "../lib/account";
 import { useCart } from "../lib/cart";
-import { BADGE_LABEL, RankIcon, badgeKeyOf } from "../components/Rank";
+import { BADGE_LABEL, RankIcon, badgeKeyOf, badgeOf } from "../components/Rank";
 import { Thumb } from "../components/Thumb";
-import { PIECES } from "../data/pieces";
+import { PIECES, type Piece } from "../data/pieces";
 import { t } from "../lib/locale";
+
+/* 정적 배포엔 백엔드가 없다. 서버가 안 닿으면 로컬 카탈로그(PIECES)로 채운다 —
+   마켓·상세·씬은 이미 로컬을 쓰는데 카트만 API 에 매여 빈 화면이 났다.
+   서버 배지 문자열은 badgeKeyOf 가 되받으므로 점수에서 되돌려 만든다. */
+const SERVER_BADGE: Record<string, string> = {
+  chal: "challenger",
+  dia: "diamond",
+  plat: "platinum",
+  silv: "silver",
+};
+function pieceToAsset(p: Piece): MarketAsset {
+  return {
+    id: p.id,
+    title: p.t,
+    creator: p.by,
+    category: p.cat,
+    engine: p.eng[0] ?? "any",
+    art_style: "",
+    price_usd: p.price,
+    total: null,
+    badge: SERVER_BADGE[badgeOf(p.score)] ?? null,
+  };
+}
 
 /* 장바구니.
 
@@ -65,13 +88,16 @@ export function Cart() {
         setAssets(new Map(page.assets.map((a) => [a.id, a])));
         setError(null);
       })
-      .catch((e: unknown) => {
+      .catch(() => {
         if (!alive) return;
-        setError(
-          e instanceof ApiError && e.status === 0
-            ? t("서버에 닿지 못했습니다.")
-            : t("담긴 것을 불러오지 못했습니다."),
-        );
+        // 서버가 없으면 로컬 카탈로그로 채운다. 담긴 id 가 로컬에도 없을 때만 오류.
+        const local = new Map<number, MarketAsset>();
+        for (const id of wanted) {
+          const p = PIECES.find((x) => x.id === id);
+          if (p) local.set(id, pieceToAsset(p));
+        }
+        setAssets(local);
+        setError(local.size ? null : t("담긴 것을 불러오지 못했습니다."));
       })
       .finally(() => alive && setLoading(false));
     return () => {

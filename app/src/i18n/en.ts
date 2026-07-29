@@ -1211,7 +1211,7 @@ export const EN: Record<string, string> = {
   "이 캐릭터의 핵심": "What matters for this character",
   "정적 캐릭터 — 포함 애니메이션이 없습니다. 필요한 동작이 있는지 먼저 확인하세요. 원하는 모션이 없으면 리깅부터 다시 해야 합니다.": "Static character — no animations included. Check the motions you need exist first; without them you'll have to re-rig from scratch.",
   "같은 제작자": "Same creator",
-  "— 좋은 에셋 하나를 찾으면 같은 제작자가 안전합니다": "— once you find one good asset, the same creator is a safe bet",
+  "{by} 의 에셋": "{by}'s assets",
 
   // 음악/BGM
   "음악은 그냥 사서 어디에나 돌려 씀": "Just buy music and reuse it everywhere",

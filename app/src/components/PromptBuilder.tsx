@@ -134,7 +134,7 @@ export function PromptBuilder({
 
          팔레트를 팝오버로 숨기는 방법도 있었는데 안 썼다. 여기는 끌어다
          놓는 자리고, 팝오버가 열린 채로 드래그를 시작할 수가 없다. */}
-      <div className="mt-3 flex flex-wrap gap-1">
+      <div className="mt-4 flex gap-1.5 overflow-x-auto pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {BLOCK_GROUPS.map(([axis, blocks]) => {
           const n = blocks.filter((b) => picked.includes(b.id)).length;
           return (
@@ -149,7 +149,7 @@ export function PromptBuilder({
                  고르는 것과 값을 고르는 것을 색으로 갈라 둔다. 고른 값이 있는
                  축에만 점을 찍어 표시한다. */
               className={[
-                "flex cursor-pointer items-center gap-1 rounded-lg border px-3 py-1.5 text-xs transition-colors",
+                "flex shrink-0 cursor-pointer items-center gap-1 whitespace-nowrap rounded-lg border px-3 py-1.5 text-xs transition-colors",
                 axis === openAxis
                   ? "border-ink font-bold text-ink"
                   : "border-line text-muted hover:border-ink/50 hover:text-ink",
@@ -162,7 +162,7 @@ export function PromptBuilder({
         })}
       </div>
 
-      <div className="mt-2 flex min-h-[34px] flex-wrap gap-1.5">
+      <div className="mt-3 flex min-h-[36px] flex-wrap gap-2">
         {(BLOCK_GROUPS.find(([a]) => a === openAxis)?.[1] ?? []).map((b) => {
           const on = picked.includes(b.id);
           return (
@@ -175,7 +175,7 @@ export function PromptBuilder({
               aria-pressed={on}
               title={t(b.word)}
               className={[
-                "cursor-grab rounded-full border px-3 py-1 text-xs active:cursor-grabbing",
+                "cursor-grab rounded-full border px-3 py-1.5 text-xs active:cursor-grabbing",
                 on
                   ? "border-accent text-accent"
                   : "border-line text-muted hover:border-accent hover:text-ink",

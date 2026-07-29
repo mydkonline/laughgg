@@ -173,7 +173,7 @@ export function PromptComposer({
           어둡게 눕히고 테두리를 두르면 "여기가 안쪽" 이라고 읽힌다. 커서가
           들어오면 테두리가 강조색으로 바뀐다 — 색을 하나 더 쓰지 않고,
           이미 쓰는 강조색이 상태를 알려 준다. */}
-      <div className="px-3 pt-3">
+      <div className="px-4 pt-4 pb-4">
         {/* 보이는 라벨. 플레이스홀더만 두면 쓰기 시작하는 순간 사라져서
             무엇을 쓰는 칸인지 잊는다. */}
         <label
@@ -221,7 +221,7 @@ export function PromptComposer({
       </div>
 
       {/* 아래 줄. 왼쪽이 넣는 것, 오른쪽이 내보내는 것이다. */}
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-line px-3 py-2">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-3 border-t border-line px-4 py-3">
         <button
           type="button"
           onClick={() => file.current?.click()}

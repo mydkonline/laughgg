@@ -281,13 +281,7 @@ function Detail({ p }: { p: Piece }) {
           규칙을 그대로 보여 준다 — 한 제작자를 믿게 되면 장롱 확률이 준다. */}
       {bySame.length > 0 && (
         <section className="mt-12">
-          <div className="mb-4 flex flex-wrap items-baseline gap-x-2 gap-y-1">
-            <h2 className="text-2xl font-bold text-ink">{t("같은 제작자")}</h2>
-            <span className="text-xs text-faint">
-              <b className="text-muted">{p.by}</b>{" "}
-              {t("— 좋은 에셋 하나를 찾으면 같은 제작자가 안전합니다")}
-            </span>
-          </div>
+          <h2 className="mb-4 text-2xl font-bold text-ink">{t("{by} 의 에셋", { by: p.by })}</h2>
           <div className="grid grid-cols-[repeat(auto-fill,minmax(168px,1fr))] gap-3">
             {bySame.map((o) => (
               <Link
