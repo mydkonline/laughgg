@@ -44,13 +44,14 @@ export function ExportPicker({
     <section>
       <div className="mb-1 flex flex-wrap items-baseline gap-x-2 gap-y-1">
         <h2 className="text-xs font-bold text-ink">{t("내보내기")}</h2>
-        <span className="text-xs text-faint">{t("엔진을 고르면 형식이 정해집니다")}</span>
+        <span className="text-xs text-faint">{t("대상을 고르면 형식이 정해집니다")}</span>
       </div>
 
-      {/* 엔진은 늘어나는 단일 선택이라 드롭다운으로 — 칩을 늘어놓으면 줄이 접혀
-          고르기 힘들다. 엔진을 고르면 형식이 아래에 정해진다. */}
+      {/* 대상은 늘어나는 단일 선택이라 드롭다운으로 — 칩을 늘어놓으면 줄이 접혀
+          고르기 힘들다. Unity 같은 엔진만이 아니라 웹·AR·2D·DCC 도 대상이라
+          라벨을 "엔진" 이 아닌 "대상" 으로 둔다. 고르면 형식이 아래에 정해진다. */}
       <label className="mt-3 flex items-center gap-2">
-        <span className="shrink-0 text-xs text-faint">{t("엔진")}</span>
+        <span className="shrink-0 text-xs text-faint">{t("대상")}</span>
         <select
           value={target}
           onChange={(e) => {

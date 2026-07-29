@@ -308,6 +308,8 @@ export const EN: Record<string, string> = {
   "에셋 컨셉 변환": "Concept conversion",
   "에셋 컨셉트 매핑": "Concept mapping",
   "엔진을 고르면 형식이 정해집니다": "Pick an engine and the format follows",
+  "대상을 고르면 형식이 정해집니다": "Pick a target and the format follows",
+  "대상": "Target",
   "연 환산": "Annualized",
   "올린 에셋 목록은 아직 준비 중입니다.": "Your uploads list is not ready yet.",
   "요금": "Pricing",
