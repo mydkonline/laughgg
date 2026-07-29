@@ -71,7 +71,10 @@ export function Market() {
 
   return (
     <main className="mx-auto max-w-[1240px] px-5 pt-8 pb-16">
-      <div className="sticky top-[97px] z-50 -mx-5 mb-6 bg-ground/95 px-5 py-4 backdrop-blur">
+      {/* 검색은 제자리에 둔다. sticky 로 띄우면 반투명 배경 뒤로 카드가 비치고,
+          그 박스 배경이 본문 그라데이션과 달라 이음매가 생겨 깨져 보였다. 스크롤
+          중 항상 필요한 건 분류 필터라, 그건 왼쪽 사이드바가 sticky 로 잡는다. */}
+      <div className="mb-6">
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
@@ -87,7 +90,7 @@ export function Market() {
           안 깨지고, 부차적 그룹은 접어 인지 부하를 낮춘다. 좁은 화면에서는 결과가
           먼저 오고 필터가 아래로 쌓인다. */}
       <div className="grid gap-x-8 gap-y-6 lg:grid-cols-[210px_minmax(0,1fr)]">
-        <aside className="order-2 lg:order-1 lg:sticky lg:top-[184px] lg:self-start">
+        <aside className="order-2 lg:order-1 lg:sticky lg:top-[100px] lg:self-start">
           {/* 형태 — 단품/패키지. 다른 필터의 켜짐을 가르는 축이라 맨 위 세그먼트로. */}
           <div className="mb-4 flex gap-1 rounded-full border border-line p-0.5">
             {(["단품", "패키지"] as const).map((k) => (

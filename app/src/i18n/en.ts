@@ -1238,4 +1238,6 @@ export const EN: Record<string, string> = {
   "체크박스·라디오 UI 킷. 설정과 옵션 화면에 씁니다.": "A checkbox/radio UI kit for settings and options screens.",
   "슬라이더·게이지 HUD UI 킷. 볼륨과 체력 바에 씁니다.": "A slider/gauge HUD UI kit for volume and health bars.",
   "전체 보기": "See all",
+  "블록 찾기": "Find a block",
+  "맞는 블록이 없습니다": "No matching blocks",
 };

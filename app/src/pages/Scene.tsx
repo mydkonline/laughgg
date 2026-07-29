@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
 import { SCENE_GAMES, type SceneGame } from "../data/scenes";
 import { GAME_LOGOS } from "../data/logos";
 import { SCENES_EN } from "../i18n/en/scenes";
@@ -28,8 +27,6 @@ const SCENE_AXES: [string, string][] = [
 
 export function Scene() {
   const [id, setId] = useState(SCENE_GAMES[0]!.id);
-  /* 맞추기 전과 후를 나란히 볼 수 있어야 이 제품이 무엇을 파는지 보인다. */
-  const [fit, setFit] = useState(true);
   const { ids: cartIds } = useCart();
   /* 검토 대상은 산 에셋이다. 장바구니가 비면 마켓 상위를 올려 둔다. */
   const owned = useMemo(() => {
@@ -207,55 +204,32 @@ export function Scene() {
                 {t("장르에서 추정한 값")}
               </span>
             )}
-            <span className="ml-auto flex overflow-hidden rounded-full border border-line">
-              {[
-                [false, t("원본 그대로")],
-                [true, t("이 게임에 맞춤")],
-              ].map(([v, label]) => (
-                <button
-                  key={String(v)}
-                  type="button"
-                  onClick={() => setFit(v as boolean)}
-                  aria-pressed={fit === v}
-                  className={[
-                    "cursor-pointer border-0 px-3 py-1 text-xs",
-                    fit === v ? "bg-ink font-bold text-ground" : "bg-transparent text-muted hover:text-ink",
-                  ].join(" ")}
-                >
-                  {label as string}
-                </button>
-              ))}
-            </span>
           </div>
 
-          <Stage game={game} fit={fit} hero={piece?.m} editable />
+          <Stage game={game} fit hero={piece?.m} editable />
 
-          {/* 어떤 에셋을 올려 볼지. 고른 것이 무대 앞자리에 선다. */}
-          <div className="mt-3 flex flex-wrap items-center gap-2">
-            <span className="text-xs text-faint">{t(cartIds.length ? "산 에셋" : "마켓 상위")}</span>
-            {owned.map((p) => (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => setPieceId(p.id)}
-                aria-pressed={p.id === piece.id}
-                className={[
-                  "cursor-pointer rounded-full border px-3 py-1 text-xs",
-                  p.id === piece.id
-                    ? "border-transparent bg-ink font-bold text-ground"
-                    : "border-line text-muted hover:border-accent hover:text-ink",
-                ].join(" ")}
-              >
-                {p.t}
-              </button>
-            ))}
-            {/* 확인 다음에 할 일. 없으면 이 화면이 막다른 길이 된다. */}
-            <Link
-              to={`/workshop?piece=${piece.id}`}
-              className="ml-auto text-xs font-semibold text-accent no-underline hover:underline"
-            >
-              {t("에디터에서 맞추기")}
-            </Link>
+          {/* 어떤 에셋을 올려 볼지. 고른 것이 무대 앞자리에 선다. 산 에셋이
+              많을 수 있어 줄바꿈 대신 한 줄 가로 스크롤로 둔다 — 늘어도 안 깨진다. */}
+          <div className="mt-3 flex items-center gap-2">
+            <span className="shrink-0 text-xs text-faint">{t(cartIds.length ? "산 에셋" : "마켓 상위")}</span>
+            <div className="flex min-w-0 gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {owned.map((p) => (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => setPieceId(p.id)}
+                  aria-pressed={p.id === piece.id}
+                  className={[
+                    "shrink-0 cursor-pointer whitespace-nowrap rounded-full border px-3 py-1 text-xs",
+                    p.id === piece.id
+                      ? "border-transparent bg-ink font-bold text-ground"
+                      : "border-line text-muted hover:border-accent hover:text-ink",
+                  ].join(" ")}
+                >
+                  {p.t}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* 궁합 한 줄. 무대는 "이 게임에 맞췄나"를 보여 주지만, 이 마켓의 진짜

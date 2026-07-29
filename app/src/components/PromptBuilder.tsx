@@ -70,14 +70,42 @@ export function PromptBuilder({
   onChange: (next: string[]) => void;
 }) {
   const [over, setOver] = useState(false);
-  /* 어느 축을 펴 둘 것인가. 첫 축을 열어 둔다 — 전부 닫아 두면 처음 온
-     사람에게는 빈 줄만 보이고, 무엇을 고를 수 있는지가 안 드러난다. */
-  const [openAxis, setAxis] = useState(BLOCK_GROUPS[0]?.[0] ?? "");
+  /* 키워드도 카테고리도 늘어날 수 있어 검색을 앞에 둔다. 비우면 카테고리별로
+     다 보이고, 치면 전 카테고리에서 맞는 블록만 뜬다. */
+  const [query, setQuery] = useState("");
 
   const add = (id: string) => {
     if (!picked.includes(id)) onChange([...picked, id]);
   };
   const remove = (id: string) => onChange(picked.filter((x) => x !== id));
+
+  /* 검색은 라벨(현재 언어와 원문)과 실제 들어가는 말 모두를 훑는다. */
+  const q = query.trim().toLowerCase();
+  const matches = q
+    ? ALL.filter((b) => `${t(b.label)} ${b.label} ${b.word}`.toLowerCase().includes(q))
+    : null;
+
+  /* 끌 수 있는 블록 하나. 검색 결과와 카테고리 목록이 같은 칩을 쓴다. */
+  const chip = (b: Block) => {
+    const on = picked.includes(b.id);
+    return (
+      <button
+        key={b.id}
+        type="button"
+        draggable
+        onDragStart={(e) => e.dataTransfer.setData("text/plain", b.id)}
+        onClick={() => (on ? remove(b.id) : add(b.id))}
+        aria-pressed={on}
+        title={t(b.word)}
+        className={[
+          "cursor-grab rounded-full border px-3 py-1.5 text-xs active:cursor-grabbing",
+          on ? "border-accent text-accent" : "border-line text-muted hover:border-accent hover:text-ink",
+        ].join(" ")}
+      >
+        {t(b.label)}
+      </button>
+    );
+  };
 
   return (
     <div>
@@ -123,68 +151,43 @@ export function PromptBuilder({
         })}
       </div>
 
-      {/* 재료.
-
-         일곱 축을 전부 펼쳐 두니 이 상자만 541px 이 됐다 — 뷰포트의 75%다.
-         오른쪽 칼럼 전체가 1,416px 이라 결과를 보려면 매번 스크롤해야 했다.
-
-         축을 탭으로 접는다. 한 번에 한 축의 칩만 보이므로 일곱 줄이 두 줄이
-         된다. 고른 게 있는 축에는 점을 찍어 둔다 — 접어 두면 어디에 뭘
-         골랐는지 안 보이는 게 접기의 대가라서, 그것만 돌려준다.
-
-         팔레트를 팝오버로 숨기는 방법도 있었는데 안 썼다. 여기는 끌어다
-         놓는 자리고, 팝오버가 열린 채로 드래그를 시작할 수가 없다. */}
-      <div className="mt-4 flex gap-1.5 overflow-x-auto pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {BLOCK_GROUPS.map(([axis, blocks]) => {
-          const n = blocks.filter((b) => picked.includes(b.id)).length;
-          return (
-            <button
-              key={axis}
-              type="button"
-              onClick={() => setAxis(axis)}
-              aria-pressed={axis === openAxis}
-              /* 스트로크로 구분한다. 지금 보는 축은 흰/검(ink) 테두리로
-                 또렷하게, 나머지는 흐린 테두리로. 강조색(보라)은 여기 안 쓴다
-                 — 그건 아래 블록에서 실제로 값을 고를 때 쓰는 색이라, 축을
-                 고르는 것과 값을 고르는 것을 색으로 갈라 둔다. 고른 값이 있는
-                 축에만 점을 찍어 표시한다. */
-              className={[
-                "flex shrink-0 cursor-pointer items-center gap-1 whitespace-nowrap rounded-lg border px-3 py-1.5 text-xs transition-colors",
-                axis === openAxis
-                  ? "border-ink font-bold text-ink"
-                  : "border-line text-muted hover:border-ink/50 hover:text-ink",
-              ].join(" ")}
-            >
-              {t(axis)}
-              {n > 0 && <b className="h-1.5 w-1.5 rounded-full bg-accent" />}
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="mt-3 flex min-h-[36px] flex-wrap gap-2">
-        {(BLOCK_GROUPS.find(([a]) => a === openAxis)?.[1] ?? []).map((b) => {
-          const on = picked.includes(b.id);
-          return (
-            <button
-              key={b.id}
-              type="button"
-              draggable
-              onDragStart={(e) => e.dataTransfer.setData("text/plain", b.id)}
-              onClick={() => (on ? remove(b.id) : add(b.id))}
-              aria-pressed={on}
-              title={t(b.word)}
-              className={[
-                "cursor-grab rounded-full border px-3 py-1.5 text-xs active:cursor-grabbing",
-                on
-                  ? "border-accent text-accent"
-                  : "border-line text-muted hover:border-accent hover:text-ink",
-              ].join(" ")}
-            >
-              {t(b.label)}
-            </button>
-          );
-        })}
+      {/* 재료 팔레트. 키워드도 카테고리도 늘어날 수 있어 검색을 앞에 둔다 —
+         커맨드 팔레트/이모지 피커 방식이다. 검색하면 전 카테고리에서 맞는 블록이
+         뜨고, 비우면 카테고리별로 묶어 보여 준다. 높이를 고정해 안에서만 스크롤
+         하므로 카테고리가 수십 개로 늘어도 이 상자가 화면을 삼키지 않는다. */}
+      <div className="mt-4 rounded-xl border border-line bg-ground p-2.5">
+        <input
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder={t("블록 찾기")}
+          className="w-full rounded-lg border border-line bg-surface-2 px-3 py-2 text-xs text-ink outline-none placeholder:text-faint focus:border-accent"
+        />
+        <div className="mt-2 max-h-[224px] overflow-y-auto pr-1 [scrollbar-width:thin]">
+          {matches ? (
+            <div className="flex flex-wrap gap-2 py-1">
+              {matches.length ? (
+                matches.map(chip)
+              ) : (
+                <span className="px-1 py-2 text-xs text-faint">{t("맞는 블록이 없습니다")}</span>
+              )}
+            </div>
+          ) : (
+            BLOCK_GROUPS.map(([axis, blocks]) => {
+              const n = blocks.filter((b) => picked.includes(b.id)).length;
+              return (
+                <div key={axis} className="mb-1">
+                  {/* 카테고리 머리는 스크롤 위에 붙어, 어느 축을 보는지 항상 보인다. */}
+                  <div className="sticky top-0 z-10 flex items-center gap-1.5 bg-ground py-1.5 text-[10px] font-bold tracking-wide text-faint">
+                    {t(axis)}
+                    {n > 0 && <b className="h-1.5 w-1.5 rounded-full bg-accent" />}
+                  </div>
+                  <div className="flex flex-wrap gap-2 pb-2">{blocks.map(chip)}</div>
+                </div>
+              );
+            })
+          )}
+        </div>
       </div>
     </div>
   );
