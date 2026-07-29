@@ -19,7 +19,7 @@ const rgb = (c: [number, number, number], a = 1) => `rgb(${c[0]} ${c[1]} ${c[2]}
 
 /* 무대 편집 툴바의 작은 버튼. 배경 위라 반투명 유리로 띄운다. */
 const CTRL =
-  "flex h-6 min-w-6 cursor-pointer items-center justify-center rounded-full border border-white/15 bg-white/10 px-1 leading-none text-white/90 transition-colors hover:bg-white/20";
+  "flex h-6 min-w-6 cursor-pointer items-center justify-center rounded-lg border border-white/15 bg-white/10 px-1 leading-none text-white/90 transition-colors hover:bg-white/20";
 
 /* 무대 한 판. 바탕 안개 → 광원 → 에셋 → 비네팅 순으로 쌓고,
    맨 위에 색 보정을 통째로 건다. 순서가 바뀌면 보정이 광원만 먹는다. */
@@ -150,7 +150,7 @@ export function Stage({
       {game.light.map((l, i) => (
         <span
           key={i}
-          className="pointer-events-none absolute rounded-full"
+          className="pointer-events-none absolute rounded-lg"
           style={{
             left: `${(l.x - l.r) * 100}%`,
             top: `${(l.y - l.r) * 100}%`,
@@ -196,7 +196,7 @@ export function Stage({
       {/* 고른 에셋의 크기·회전 툴바. 옮기기는 끌어서, 여기서는 나머지 두 축.
           배경 맵 위라 떠 보이게 유리 알약으로 가운데 아래에 띄운다. */}
       {editable && sel !== null && (
-        <div className="pointer-events-auto absolute bottom-14 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full border border-white/15 bg-black/60 px-2 py-1 text-[10px] text-white/90 backdrop-blur-sm">
+        <div className="pointer-events-auto absolute bottom-14 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-lg border border-white/15 bg-black/60 px-2 py-1 text-[10px] text-white/90 backdrop-blur-sm">
           <span className="pl-1 pr-0.5 text-white/55">크기</span>
           <button type="button" onClick={() => nudge(sel, "s", -0.12, 0.5, 1.6)} className={CTRL}>
             −

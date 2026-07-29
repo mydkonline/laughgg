@@ -91,7 +91,7 @@ export function Library() {
           {credits !== null && (
             <Link
               to="/billing"
-              className="rounded-full border border-line px-3.5 py-1.5 text-xs text-muted no-underline hover:border-accent hover:text-ink"
+              className="rounded-lg border border-line px-3.5 py-1.5 text-xs text-muted no-underline hover:border-accent hover:text-ink"
             >
               {t("크레딧")} <b className="num ml-1 text-ink">{credits}</b>
             </Link>
@@ -119,7 +119,7 @@ export function Library() {
             onClick={() => setParams(key === "owned" ? {} : { tab: key })}
             aria-pressed={tab === key}
             className={[
-              "cursor-pointer rounded-full border px-3.5 py-1.5 text-xs",
+              "cursor-pointer rounded-lg border px-3.5 py-1.5 text-xs",
               tab === key
                 ? "border-transparent bg-ink font-bold text-ground"
                 : "border-line text-muted hover:border-accent hover:text-ink",

@@ -95,7 +95,7 @@ function AudioThumb({ piece, pad }: { piece: Piece; pad: string }) {
           void new Audio(src).play().catch(() => {});
         }}
         aria-label="재생"
-        className="flex h-10 w-10 items-center justify-center rounded-full bg-accent pl-0.5 text-sm text-ground transition-transform hover:scale-105 active:scale-95"
+        className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent pl-0.5 text-sm text-ground transition-transform hover:scale-105 active:scale-95"
       >
         ▶
       </button>

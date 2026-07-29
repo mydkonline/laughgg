@@ -14,7 +14,7 @@ export function ReuseBadge({ cat, className = "" }: { cat: string; className?: s
   if (!a) return null;
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-1.5 py-0.5 text-[10px] leading-none ${TONE[a.risk]} ${className}`}
+      className={`inline-flex items-center rounded-lg border px-1.5 py-0.5 text-[10px] leading-none ${TONE[a.risk]} ${className}`}
     >
       {t(REUSE_LABEL[a.risk])}
     </span>

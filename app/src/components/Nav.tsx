@@ -285,7 +285,7 @@ export function Nav() {
             >
               <Icon name="cart" className="h-[15px] w-[15px]" />
               {count > 0 && (
-                <b className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#FF6B7A] px-1 text-[9px] font-extrabold text-white">
+                <b className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-lg bg-[#FF6B7A] px-1 text-[9px] font-extrabold text-white">
                   {count}
                 </b>
               )}

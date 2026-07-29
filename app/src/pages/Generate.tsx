@@ -115,7 +115,7 @@ export function Generate() {
         {credits !== null && (
           <Link
             to="/billing"
-            className="ml-auto rounded-full border border-line px-3.5 py-1.5 text-xs text-muted no-underline hover:border-accent hover:text-ink"
+            className="ml-auto rounded-lg border border-line px-3.5 py-1.5 text-xs text-muted no-underline hover:border-accent hover:text-ink"
           >
             {t("크레딧")} <b className="num ml-1 text-ink">{credits}</b>
           </Link>
@@ -149,7 +149,7 @@ export function Generate() {
               aria-pressed={quality === id}
               title={note}
               className={[
-                "cursor-pointer rounded-full border px-3.5 py-1.5 text-xs",
+                "cursor-pointer rounded-lg border px-3.5 py-1.5 text-xs",
                 quality === id
                   ? "border-transparent bg-ink font-bold text-ground"
                   : "border-line text-muted hover:border-accent hover:text-ink",
@@ -253,7 +253,7 @@ function Chips({
           onClick={() => onPick(key)}
           aria-pressed={value === key}
           className={[
-            "cursor-pointer rounded-full border px-3.5 py-1.5 text-xs",
+            "cursor-pointer rounded-lg border px-3.5 py-1.5 text-xs",
             value === key
               ? "border-transparent bg-ink font-bold text-ground"
               : "border-line text-muted hover:border-accent hover:text-ink",

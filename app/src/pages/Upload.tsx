@@ -191,7 +191,7 @@ export function Upload() {
         {stage.at === "hashing" ? (
           <div className="rounded-2xl border border-line bg-surface p-8 text-center">
             <p className="truncate text-xs text-ink">{stage.name}</p>
-            <div className="mx-auto mt-4 h-1 max-w-[280px] overflow-hidden rounded-full bg-surface-2">
+            <div className="mx-auto mt-4 h-1 max-w-[280px] overflow-hidden rounded-lg bg-surface-2">
               <span
                 className="block h-full bg-accent transition-[width]"
                 style={{ width: `${Math.round(stage.ratio * 100)}%` }}
@@ -305,7 +305,7 @@ export function Upload() {
               {animList.length > 0 ? (
                 <span className="flex flex-wrap gap-1">
                   {animList.map((a) => (
-                    <span key={a} className="rounded-full bg-surface-2 px-2 py-0.5 text-[10px] text-muted">
+                    <span key={a} className="rounded-lg bg-surface-2 px-2 py-0.5 text-[10px] text-muted">
                       {a}
                     </span>
                   ))}
@@ -613,7 +613,7 @@ function Chips({
           onClick={() => onPick(key)}
           aria-pressed={value === key}
           className={[
-            "cursor-pointer rounded-full border px-3.5 py-1.5 text-xs",
+            "cursor-pointer rounded-lg border px-3.5 py-1.5 text-xs",
             value === key
               ? "border-transparent bg-ink font-bold text-ground"
               : "border-line text-muted hover:border-accent hover:text-ink",

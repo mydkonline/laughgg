@@ -52,7 +52,7 @@ export function Feed() {
             onClick={() => setSort(k)}
             aria-pressed={sort === k}
             className={[
-              "cursor-pointer rounded-full border px-3.5 py-1.5 text-xs",
+              "cursor-pointer rounded-lg border px-3.5 py-1.5 text-xs",
               sort === k
                 ? "border-transparent bg-ink font-bold text-ground"
                 : "border-line text-muted hover:border-accent hover:text-ink",
@@ -251,7 +251,7 @@ function Knoblist({ knobs }: { knobs: Knobs }) {
         <div key={k} className="flex items-center justify-between gap-2">
           <dt className="text-xs text-faint">{t(KNOB_LABEL[k][0])}</dt>
           <dd className="m-0 flex flex-1 items-center gap-2">
-            <span className="block h-1 flex-1 overflow-hidden rounded-full bg-surface-2">
+            <span className="block h-1 flex-1 overflow-hidden rounded-lg bg-surface-2">
               <b className="block h-full bg-accent" style={{ width: `${knobs[k]}%` }} />
             </span>
             <span className="w-6 text-right text-xs tabular-nums text-muted">{knobs[k]}</span>

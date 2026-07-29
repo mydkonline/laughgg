@@ -317,7 +317,7 @@ export function Workshop() {
                     dropFile(p.id);
                     if (p.id === piece.id) setPieceId(PIECES[0]!.id);
                   }}
-                  className="absolute -top-1.5 -right-1.5 h-5 w-5 cursor-pointer rounded-full border border-line bg-ground text-[10px] text-faint hover:text-ink"
+                  className="absolute -top-1.5 -right-1.5 h-5 w-5 cursor-pointer rounded-lg border border-line bg-ground text-[10px] text-faint hover:text-ink"
                 >
                   ✕
                 </button>
@@ -421,7 +421,7 @@ export function Workshop() {
           <div>
             <div className="mb-3 flex flex-wrap items-center gap-3">
               <h2 className="text-xs font-bold text-ink">{t("프롬프트")}</h2>
-              <span className="flex overflow-hidden rounded-full border border-line">
+              <span className="flex overflow-hidden rounded-lg border border-line">
                 {[
                   [false, t("블록")],
                   [true, t("직접 입력")],
@@ -479,7 +479,7 @@ export function Workshop() {
                     onClick={() => setAsSprite(v)}
                     aria-pressed={sprite === v}
                     className={[
-                      "cursor-pointer rounded-full border px-3 py-1 text-xs disabled:cursor-not-allowed disabled:opacity-40",
+                      "cursor-pointer rounded-lg border px-3 py-1 text-xs disabled:cursor-not-allowed disabled:opacity-40",
                       sprite === v
                         ? "border-transparent bg-ink font-bold text-ground"
                         : "border-line text-muted hover:border-accent hover:text-ink",
@@ -577,7 +577,7 @@ export function Workshop() {
             <b className="text-base tabular-nums text-faint line-through">{piece.score}</b>
             <b className="num text-4xl text-ink">{after}</b>
           </div>
-          <span className="mt-2 flex w-fit items-center gap-1.5 rounded-full bg-accent-soft px-2.5 py-1 text-xs font-extrabold text-accent">
+          <span className="mt-2 flex w-fit items-center gap-1.5 rounded-lg bg-accent-soft px-2.5 py-1 text-xs font-extrabold text-accent">
             <RankIcon badge={badgeOf(after)} size={14} />
             {t(BADGE_LABEL[badgeOf(after)])}
           </span>

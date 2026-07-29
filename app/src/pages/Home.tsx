@@ -256,7 +256,7 @@ function HeroShot() {
       {/* 챌린저 칩 — 골드 그라디언트를 여기 한 곳에만 쓴다. 최고 등급의
           유일한 광채라, 색을 아낀 화면에서 이 하나가 눈에 든다. */}
       <div
-        className="absolute right-0 bottom-0 z-[3] flex items-center gap-2 rounded-full px-3 py-1.5 shadow-[0_2px_10px_rgba(242,192,102,0.3)]"
+        className="absolute right-0 bottom-0 z-[3] flex items-center gap-2 rounded-lg px-3 py-1.5 shadow-[0_2px_10px_rgba(242,192,102,0.3)]"
         style={{
           animation: "rise .6s ease both",
           animationDelay: "960ms",

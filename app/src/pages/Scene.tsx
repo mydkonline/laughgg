@@ -102,7 +102,7 @@ export function Scene() {
             onChange={(e) => setQ(e.target.value)}
             placeholder={t("게임 찾기")}
             aria-label={t("게임 검색")}
-            className="mb-4 w-full rounded-full border border-line-soft bg-surface-2 px-4 py-3 text-xs text-ink placeholder:text-muted shadow-[0_2px_6px_rgba(0,0,0,0.45)] outline-none transition-[box-shadow,border-color] focus:border-accent focus:shadow-[0_2px_10px_rgba(0,0,0,0.55)]"
+            className="mb-4 w-full rounded-lg border border-line-soft bg-surface-2 px-4 py-3 text-xs text-ink placeholder:text-muted shadow-[0_2px_6px_rgba(0,0,0,0.45)] outline-none transition-[box-shadow,border-color] focus:border-accent focus:shadow-[0_2px_10px_rgba(0,0,0,0.55)]"
           />
 
           {facets.map((f) => (
@@ -220,7 +220,7 @@ export function Scene() {
                   onClick={() => setPieceId(p.id)}
                   aria-pressed={p.id === piece.id}
                   className={[
-                    "shrink-0 cursor-pointer whitespace-nowrap rounded-full border px-3 py-1 text-xs",
+                    "shrink-0 cursor-pointer whitespace-nowrap rounded-lg border px-3 py-1 text-xs",
                     p.id === piece.id
                       ? "border-transparent bg-ink font-bold text-ground"
                       : "border-line text-muted hover:border-accent hover:text-ink",

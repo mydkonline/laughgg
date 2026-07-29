@@ -33,7 +33,7 @@ export function News() {
             onClick={() => setTag(k)}
             aria-pressed={tag === k}
             className={[
-              "cursor-pointer rounded-full border px-3.5 py-1.5 text-xs",
+              "cursor-pointer rounded-lg border px-3.5 py-1.5 text-xs",
               tag === k
                 ? "border-transparent bg-ink font-bold text-ground"
                 : "border-line text-muted hover:border-accent hover:text-ink",

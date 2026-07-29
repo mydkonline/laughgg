@@ -52,7 +52,7 @@ export function HomeStage() {
               onClick={() => setId(g.id)}
               aria-pressed={g.id === game.id}
               className={[
-                "flex cursor-pointer items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs",
+                "flex cursor-pointer items-center gap-2 rounded-lg border px-3.5 py-1.5 text-xs",
                 g.id === game.id
                   ? "border-transparent bg-ink font-bold text-ground"
                   : "border-line text-muted hover:border-accent hover:text-ink",
@@ -64,7 +64,7 @@ export function HomeStage() {
           ))}
 
           {/* 원본과 맞춤을 오갈 수 있어야 무엇이 달라졌는지 안다. */}
-          <span className="ml-auto flex overflow-hidden rounded-full border border-line">
+          <span className="ml-auto flex overflow-hidden rounded-lg border border-line">
             {[
               [false, "원본 그대로"],
               [true, "이 게임에 맞춤"],

@@ -114,7 +114,7 @@ export function ExportPicker({
                     aria-pressed={on}
                     title={t(f.caveat ?? f.holds)}
                     className={[
-                      "cursor-pointer rounded-full border px-2.5 py-0.5 text-xs",
+                      "cursor-pointer rounded-lg border px-2.5 py-0.5 text-xs",
                       on ? "border-accent text-accent" : "border-line text-muted hover:text-ink",
                     ].join(" ")}
                   >

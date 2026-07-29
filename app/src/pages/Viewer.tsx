@@ -76,7 +76,7 @@ export function Viewer() {
             onClick={() => setTab(t)}
             aria-pressed={tab === t}
             className={[
-              "cursor-pointer rounded-full border px-3.5 py-1.5 text-xs disabled:cursor-not-allowed disabled:opacity-40",
+              "cursor-pointer rounded-lg border px-3.5 py-1.5 text-xs disabled:cursor-not-allowed disabled:opacity-40",
               tab === t
                 ? "border-transparent bg-ink font-bold text-ground"
                 : "border-line text-muted hover:border-accent hover:text-ink",

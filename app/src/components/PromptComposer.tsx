@@ -158,7 +158,7 @@ export function PromptComposer({
                 type="button"
                 onClick={() => onDropRef(r.url)}
                 aria-label={t("{name} 빼기", { name: r.name })}
-                className="absolute -top-1.5 -right-1.5 h-5 w-5 cursor-pointer rounded-full border border-line bg-ground text-xs leading-none text-faint opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 hover:text-ink"
+                className="absolute -top-1.5 -right-1.5 h-5 w-5 cursor-pointer rounded-lg border border-line bg-ground text-xs leading-none text-faint opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 hover:text-ink"
               >
                 ×
               </button>
@@ -211,7 +211,7 @@ export function PromptComposer({
               <span className="text-accent">{t("아직 없습니다. 아래 블록의 말을 쓰면 걸립니다")}</span>
             ) : (
               readAxes.map((a) => (
-                <span key={a} className="rounded-full bg-accent-soft px-2 py-0.5 text-accent">
+                <span key={a} className="rounded-lg bg-accent-soft px-2 py-0.5 text-accent">
                   {t(a)}
                 </span>
               ))

@@ -92,7 +92,7 @@ export function PromptBuilder({
         aria-pressed={on}
         title={t(b.word)}
         className={[
-          "cursor-grab rounded-full border px-3 py-1.5 text-xs active:cursor-grabbing",
+          "cursor-grab rounded-lg border px-3 py-1.5 text-xs active:cursor-grabbing",
           on ? "border-accent text-accent" : "border-line text-muted hover:border-accent hover:text-ink",
         ].join(" ")}
       >
@@ -135,7 +135,7 @@ export function PromptBuilder({
               key={id}
               type="button"
               onClick={() => remove(id)}
-              className="flex cursor-pointer items-center gap-1.5 rounded-full border-0 bg-accent px-3 py-1 text-xs font-bold text-ground"
+              className="flex cursor-pointer items-center gap-1.5 rounded-lg border-0 bg-accent px-3 py-1 text-xs font-bold text-ground"
               aria-label={t("{label} 빼기", { label: t(b.label) })}
             >
               {t(b.label)}

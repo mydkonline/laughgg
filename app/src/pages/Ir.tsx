@@ -194,7 +194,7 @@ export function Ir() {
               onClick={() => setUsed(f)}
               aria-pressed={used === f}
               className={[
-                "cursor-pointer rounded-full border px-3.5 py-1.5 text-xs transition-colors",
+                "cursor-pointer rounded-lg border px-3.5 py-1.5 text-xs transition-colors",
                 used === f
                   ? "border-transparent bg-ink font-bold text-ground"
                   : "border-line text-muted hover:border-accent hover:text-ink",
@@ -218,7 +218,7 @@ export function Ir() {
               <blockquote className="m-0 flex-1 text-xs leading-relaxed text-muted">{t(r.body)}</blockquote>
               <figcaption className="mt-3 flex items-center gap-3">
                 {/* 사진을 안 쓴다. 실명과 얼굴은 본인이 직접 줘야 하는 것이다. */}
-                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-accent-soft text-xs font-bold text-accent">
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-accent-soft text-xs font-bold text-accent">
                   {r.initials}
                 </span>
                 <span className="min-w-0">
@@ -367,7 +367,7 @@ function Rollout() {
                     {/* 공급인지 수요인지가 이 표의 핵심이라 지역 바로 옆에 붙는다. */}
                     <span
                       className={[
-                        "rounded-full border px-1.5 py-px text-[10px]",
+                        "rounded-lg border px-1.5 py-px text-[10px]",
                         r.role === "공급" ? "border-accent text-accent" : "border-line text-muted",
                       ].join(" ")}
                     >
@@ -511,7 +511,7 @@ function Valuation() {
           {/* 축은 0 에서 9억. 굵은 띠가 p10–p90, 세로선이 중앙값이다. */}
           <div className="relative mt-8 h-1.5 rounded-full bg-line">
             <span
-              className="absolute inset-y-0 rounded-full bg-key/35 transition-[left,right] duration-700 ease-out motion-reduce:transition-none"
+              className="absolute inset-y-0 rounded-lg bg-key/35 transition-[left,right] duration-700 ease-out motion-reduce:transition-none"
               style={{ left: bandSeen ? "7.8%" : "50%", right: bandSeen ? "7.8%" : "50%" }}
             />
             <span className="absolute top-1/2 left-1/2 h-3.5 w-0.5 -translate-y-1/2 bg-key" />
@@ -586,7 +586,7 @@ function Streams() {
             onClick={() => setI(k)}
             aria-pressed={i === k}
             className={[
-              "flex cursor-pointer items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs",
+              "flex cursor-pointer items-center gap-2 rounded-lg border px-3.5 py-1.5 text-xs",
               i === k
                 ? "border-transparent bg-ink font-bold text-ground"
                 : "border-line text-muted hover:border-accent hover:text-ink",

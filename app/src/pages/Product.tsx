@@ -63,7 +63,7 @@ function Detail({ p }: { p: Piece }) {
       <Link
         to="/market"
         aria-label={t("마켓으로")}
-        className="mb-6 flex h-9 w-9 items-center justify-center rounded-full border border-line text-base text-muted no-underline hover:border-ink hover:text-ink"
+        className="mb-6 flex h-9 w-9 items-center justify-center rounded-lg border border-line text-base text-muted no-underline hover:border-ink hover:text-ink"
       >
         ←
       </Link>
@@ -127,7 +127,7 @@ function Detail({ p }: { p: Piece }) {
           <div className="mt-4 flex items-center gap-3">
             <b className="text-base text-ink">{stars}</b>
             <span className="text-xs text-faint">{t("리뷰 {n}개", { n: reviews })}</span>
-            <span className="ml-auto flex items-center gap-1.5 rounded-full bg-accent-soft px-2.5 py-1 text-xs font-extrabold text-accent">
+            <span className="ml-auto flex items-center gap-1.5 rounded-lg bg-accent-soft px-2.5 py-1 text-xs font-extrabold text-accent">
               <RankIcon badge={badge} size={14} />
               {t(BADGE_LABEL[badge])}
             </span>
@@ -189,7 +189,7 @@ function Detail({ p }: { p: Piece }) {
             {p.anim && p.anim.length ? (
               <span className="mt-2 flex flex-wrap gap-1">
                 {p.anim.map((a) => (
-                  <span key={a} className="rounded-full bg-surface px-2 py-0.5 text-[10px] text-muted">
+                  <span key={a} className="rounded-lg bg-surface px-2 py-0.5 text-[10px] text-muted">
                     {a}
                   </span>
                 ))}

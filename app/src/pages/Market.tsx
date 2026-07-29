@@ -80,7 +80,7 @@ export function Market() {
           onChange={(e) => setQ(e.target.value)}
           placeholder={t("에셋 검색")}
           aria-label={t("에셋 검색")}
-          className="w-full rounded-full border border-line-soft bg-surface-2 px-5 py-3.5 text-xs text-ink placeholder:text-muted shadow-[0_2px_6px_rgba(0,0,0,0.45)] outline-none transition-[box-shadow,border-color] focus:border-accent focus:shadow-[0_2px_10px_rgba(0,0,0,0.55)]"
+          className="w-full rounded-lg border border-line-soft bg-surface-2 px-5 py-3.5 text-xs text-ink placeholder:text-muted shadow-[0_2px_6px_rgba(0,0,0,0.45)] outline-none transition-[box-shadow,border-color] focus:border-accent focus:shadow-[0_2px_10px_rgba(0,0,0,0.55)]"
         />
       </div>
 
@@ -92,7 +92,7 @@ export function Market() {
       <div className="grid gap-x-8 gap-y-6 lg:grid-cols-[210px_minmax(0,1fr)]">
         <aside className="order-2 lg:order-1 lg:sticky lg:top-[100px] lg:self-start">
           {/* 형태 — 단품/패키지. 다른 필터의 켜짐을 가르는 축이라 맨 위 세그먼트로. */}
-          <div className="mb-4 flex gap-1 rounded-full border border-line p-0.5">
+          <div className="mb-4 flex gap-1 rounded-lg border border-line p-0.5">
             {(["단품", "패키지"] as const).map((k) => (
               <button
                 key={k}
@@ -100,7 +100,7 @@ export function Market() {
                 onClick={() => setKind(k)}
                 aria-pressed={kind === k}
                 className={[
-                  "flex-1 cursor-pointer rounded-full py-1.5 text-xs",
+                  "flex-1 cursor-pointer rounded-lg py-1.5 text-xs",
                   kind === k ? "bg-ink font-bold text-ground" : "text-muted hover:text-ink",
                 ].join(" ")}
               >
@@ -385,7 +385,7 @@ function ArrowBtn({ dir, disabled, onClick }: { dir: -1 | 1; disabled: boolean; 
       onClick={onClick}
       disabled={disabled}
       aria-label={dir < 0 ? t("이전") : t("다음")}
-      className="flex h-7 w-7 items-center justify-center rounded-full border border-line pb-0.5 text-sm text-muted transition-colors hover:border-ink hover:text-ink disabled:cursor-default disabled:border-line disabled:text-faint disabled:opacity-40 disabled:hover:text-faint"
+      className="flex h-7 w-7 items-center justify-center rounded-lg border border-line pb-0.5 text-sm text-muted transition-colors hover:border-ink hover:text-ink disabled:cursor-default disabled:border-line disabled:text-faint disabled:opacity-40 disabled:hover:text-faint"
     >
       {dir < 0 ? "‹" : "›"}
     </button>
