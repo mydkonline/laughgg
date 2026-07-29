@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { PIECES, CATS, ENGINES, ENGINE_NAME, type CatKey, type EngineKey, type Piece } from "../data/pieces";
 import { RankIcon, badgeOf } from "../components/Rank";
@@ -201,27 +201,13 @@ export function Market() {
             const items = list.filter((p) => p.cat === k);
             if (!items.length) return null;
             return (
-              <section key={k}>
-                <div className="mb-3 flex items-baseline justify-between gap-2">
-                  <h2 className="text-base font-bold text-ink">
-                    {t(name)} <span className="text-xs font-normal text-faint">{items.length}</span>
-                  </h2>
-                  {items.length > SHELF && (
-                    <button
-                      type="button"
-                      onClick={() => setCat(k)}
-                      className="shrink-0 cursor-pointer text-xs font-semibold text-accent hover:underline"
-                    >
-                      {t("전체 보기")}
-                    </button>
-                  )}
-                </div>
-                <div className="flex gap-3 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                  {items.slice(0, SHELF).map((p) => (
-                    <Card key={p.id} piece={p} className="w-[168px] shrink-0" />
-                  ))}
-                </div>
-              </section>
+              <Shelf
+                key={k}
+                title={t(name)}
+                total={items.length}
+                items={items.slice(0, SHELF)}
+                onSeeAll={items.length > SHELF ? () => setCat(k) : undefined}
+              />
             );
           })}
         </div>
@@ -294,6 +280,82 @@ function Chip({
       ].join(" ")}
     >
       {children} <span className={on ? "opacity-60" : "text-faint"}>{count}</span>
+    </button>
+  );
+}
+
+/* 분류 선반 하나. 상품이 늘면 선반이 화면보다 길어진다 — 스크롤바는 숨겨
+   깔끔하게 두되, 마우스로도 옆으로 넘길 수 있게 좌우 화살표를 얹는다. 끝에
+   닿으면 그쪽 화살표를 감춰 더 갈 곳이 없다는 걸 알린다. 트랙패드는 그냥 쓸면 된다. */
+function Shelf({
+  title,
+  total,
+  items,
+  onSeeAll,
+}: {
+  title: string;
+  total: number;
+  items: Piece[];
+  onSeeAll?: () => void;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [nav, setNav] = useState({ start: true, end: false });
+  const sync = () => {
+    const el = ref.current;
+    if (!el) return;
+    setNav({ start: el.scrollLeft <= 2, end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 2 });
+  };
+  useEffect(() => {
+    sync();
+  }, [items]);
+  const page = (dir: number) =>
+    ref.current?.scrollBy({ left: dir * ref.current.clientWidth * 0.85, behavior: "smooth" });
+
+  return (
+    <section>
+      <div className="mb-3 flex items-baseline justify-between gap-2">
+        <h2 className="text-base font-bold text-ink">
+          {title} <span className="text-xs font-normal text-faint">{total}</span>
+        </h2>
+        {onSeeAll && (
+          <button
+            type="button"
+            onClick={onSeeAll}
+            className="shrink-0 cursor-pointer text-xs font-semibold text-accent hover:underline"
+          >
+            {t("전체 보기")}
+          </button>
+        )}
+      </div>
+      <div className="relative">
+        <div
+          ref={ref}
+          onScroll={sync}
+          className="flex gap-3 overflow-x-auto scroll-smooth pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {items.map((p) => (
+            <Card key={p.id} piece={p} className="w-[168px] shrink-0" />
+          ))}
+        </div>
+        {!nav.start && <ShelfArrow dir={-1} onClick={() => page(-1)} />}
+        {!nav.end && <ShelfArrow dir={1} onClick={() => page(1)} />}
+      </div>
+    </section>
+  );
+}
+
+/* 선반 좌우 화살표. 카드 그림 높이의 가운데에 걸치고, 반투명 유리로 띄운다. */
+function ShelfArrow({ dir, onClick }: { dir: -1 | 1; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={dir < 0 ? t("이전") : t("다음")}
+      className={`absolute top-[84px] z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-ground/80 pb-0.5 text-lg text-ink shadow-[0_4px_12px_rgb(0_0_0/0.5)] backdrop-blur transition-colors hover:bg-surface-2 ${
+        dir < 0 ? "left-1" : "right-1"
+      }`}
+    >
+      {dir < 0 ? "‹" : "›"}
     </button>
   );
 }
