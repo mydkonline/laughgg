@@ -26,7 +26,18 @@ export function Thumb(props: {
   if (props.piece.audio) return <AudioThumb piece={props.piece} pad={props.pad ?? "10%"} />;
   if (props.piece.fx) return <FxThumb piece={props.piece} pad={props.pad ?? "10%"} />;
   if (props.piece.swatch) return <TexThumb piece={props.piece} />;
+  if (props.piece.ui) return <UiThumb piece={props.piece} pad={props.pad ?? "12%"} />;
   return <ModelThumb {...props} />;
+}
+
+/* UI 킷 상품. 목업 이미지를 도트처럼 뭉개지 않고 매끈하게 통째로 보여 준다. */
+function UiThumb({ piece, pad }: { piece: Piece; pad: string }) {
+  const src = `${import.meta.env.BASE_URL}assets/${piece.ui}`;
+  return (
+    <span className="absolute inset-0 grid place-items-center" style={{ padding: pad }}>
+      <img src={src} alt="" className="max-h-full max-w-full object-contain" />
+    </span>
+  );
 }
 
 /* 재질 상품. 텍스처를 카드 가득 채우는 머티리얼 스와치로, 도트처럼 뭉개지 않고

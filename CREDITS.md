@@ -4,7 +4,7 @@
 
 | 출처 | 내용 | 라이선스 |
 |---|---|---|
-| [Kenney](https://kenney.nl) | Mini Dungeon 3D 모델·스프라이트, Sci-fi RTS 스프라이트, 인터페이스 사운드([Calinou 패키징](https://github.com/Calinou/kenney-interface-sounds)), 파티클/VFX 스프라이트([Calinou 패키징](https://github.com/Calinou/kenney-particle-pack)), 뮤직 징글([Boyquotes 패키징](https://github.com/Boyquotes/kenney-music-jingles-for-godot)) | CC0 |
+| [Kenney](https://kenney.nl) | Mini Dungeon 3D 모델·스프라이트, Sci-fi RTS 스프라이트, 인터페이스 사운드([Calinou 패키징](https://github.com/Calinou/kenney-interface-sounds)), 파티클/VFX 스프라이트([Calinou 패키징](https://github.com/Calinou/kenney-particle-pack)), 뮤직 징글([Boyquotes 패키징](https://github.com/Boyquotes/kenney-music-jingles-for-godot)), UI Pack 스프라이트([ereborstudios 패키징](https://github.com/ereborstudios/kenney-ui-pack)) | CC0 |
 | [Cethiel — OpenGameArt](https://opengameart.org/content/dark-ruins-tilesets-isometric) | Dark Ruins 아이소메트릭 타일셋 | CC0 |
 | [Dungeon Crawl / Project Utumno — OpenGameArt](https://opengameart.org/content/dungeon-crawl-32x32-tiles) | 32×32 던전 타일·캐릭터·아이템 | CC0 |
 | [Poly Haven](https://polyhaven.com) | 폐허 환경 HDRI, 3D 소품 렌더, 타일링 PBR 텍스처(벽돌·자갈·나무·금속·데님·지면) | CC0 |

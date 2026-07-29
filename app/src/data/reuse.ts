@@ -39,4 +39,5 @@ export const REUSE_AXIS: Record<string, ReuseAxis> = {
   sfx: { axis: "돌려 쓰기 좋은가", note: "효과음은 어느 게임에나 재사용", risk: "낮음" },
   vfx: { axis: "돌려 쓰기 좋은가", note: "파티클은 플머가 만들기 어렵고 어디에나 재사용", risk: "낮음" },
   music: { axis: "돌려 쓰기 좋은가", note: "음악은 그냥 사서 어디에나 돌려 씀", risk: "낮음" },
+  ui: { axis: "스프라이트냐 스크립트냐", note: "그림 UI킷은 재사용 쉬움 (스크립트 킷은 장롱 주의)", risk: "낮음" },
 };

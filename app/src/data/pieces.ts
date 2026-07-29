@@ -14,6 +14,8 @@ export type Piece = {
   /** 재질 상품의 텍스처 스와치 경로(assets/ 아래). 카드를 꽉 채우는 매끈한
       머티리얼 스와치로 낸다. */
   swatch?: string;
+  /** UI 킷 상품의 목업 이미지 경로(assets/ 아래). 매끈하게 통째로 보여 준다. */
+  ui?: string;
   /** 도트 스프라이트. 3D 상품에는 없다. */
   img?: string;
   /** 올린 파일의 objectURL. 있으면 m/img 대신 이걸 쓴다. */
@@ -49,6 +51,7 @@ export const CATS = [
   ["sfx", "이펙트/사운드"],
   ["vfx", "VFX/파티클"],
   ["music", "음악/BGM"],
+  ["ui", "UI 킷"],
 ] as const;
 
 export type CatKey = (typeof CATS)[number][0];
@@ -194,4 +197,15 @@ export const PIECES: Piece[] = [
       desc:"타일링되는 데님 천 재질. 의상과 천 소품에 씁니다." },
     { id:56, swatch:"tex/dry_ground_rocks.jpg", t:"Rocky Ground Texture", by:"polyhaven", cat:"tex", eng:["unity","unreal","godot"], score:82, feel:80, price:6, dl:3900, days:9, tri:"—", tex:"1K",
       desc:"타일링되는 자갈 지면 재질. 야외 지형 바닥에 깝니다." },
+
+    // UI 킷 — 그림 UI 스프라이트(패널·버튼·체크박스). 스크립트 없는 아트라
+    // 재사용이 쉽다. 목업으로 통째로 보여 준다. Kenney UI Pack CC0.
+    { id:57, ui:"ui/ui_panel.png", t:"Panel & Button UI Kit", by:"kenney", cat:"ui", eng:["unity","unreal","godot"], score:88, feel:90, price:7, dl:8600, days:3, tri:"—", tex:"PNG",
+      desc:"창 패널과 버튼 UI 스프라이트 킷. 메뉴와 팝업을 바로 조립합니다." },
+    { id:58, ui:"ui/ui_dialog.png", t:"Dialog UI Kit", by:"kenney", cat:"ui", eng:["unity","unreal","godot"], score:86, feel:88, price:7, dl:6300, days:4, tri:"—", tex:"PNG",
+      desc:"확인·취소 다이얼로그 UI 킷. 경고와 확인 창에 씁니다." },
+    { id:59, ui:"ui/ui_check.png", t:"Checkbox UI Kit", by:"kenney", cat:"ui", eng:["unity","unreal","godot"], score:84, feel:86, price:7, dl:5100, days:5, tri:"—", tex:"PNG",
+      desc:"체크박스·라디오 UI 킷. 설정과 옵션 화면에 씁니다." },
+    { id:60, ui:"ui/ui_slider.png", t:"Slider HUD UI Kit", by:"kenney", cat:"ui", eng:["unity","unreal","godot"], score:82, feel:85, price:7, dl:4400, days:7, tri:"—", tex:"PNG",
+      desc:"슬라이더·게이지 HUD UI 킷. 볼륨과 체력 바에 씁니다." },
 ];

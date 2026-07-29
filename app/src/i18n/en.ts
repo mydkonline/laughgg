@@ -1228,4 +1228,13 @@ export const EN: Record<string, string> = {
   "타일링되는 금속 판 재질. 기계와 구조물 표면에 씁니다.": "A tiling metal-plate material for machinery and structure surfaces.",
   "타일링되는 데님 천 재질. 의상과 천 소품에 씁니다.": "A tiling denim-fabric material for clothing and cloth props.",
   "타일링되는 자갈 지면 재질. 야외 지형 바닥에 깝니다.": "A tiling rocky-ground material for outdoor terrain floors.",
+
+  // UI 킷
+  "UI 킷": "UI Kit",
+  "스프라이트냐 스크립트냐": "Sprites or scripts?",
+  "그림 UI킷은 재사용 쉬움 (스크립트 킷은 장롱 주의)": "Art UI kits reuse easily (scripted kits risk rotting)",
+  "창 패널과 버튼 UI 스프라이트 킷. 메뉴와 팝업을 바로 조립합니다.": "A window-panel and button UI sprite kit. Assemble menus and popups right away.",
+  "확인·취소 다이얼로그 UI 킷. 경고와 확인 창에 씁니다.": "A confirm/cancel dialog UI kit for alerts and confirmation windows.",
+  "체크박스·라디오 UI 킷. 설정과 옵션 화면에 씁니다.": "A checkbox/radio UI kit for settings and options screens.",
+  "슬라이더·게이지 HUD UI 킷. 볼륨과 체력 바에 씁니다.": "A slider/gauge HUD UI kit for volume and health bars.",
 };
