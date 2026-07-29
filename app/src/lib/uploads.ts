@@ -31,7 +31,7 @@ function toPiece(file: File, id: number): Upload | null {
     by: "내 파일",
     cat: "prop",
     eng: ["unity"],
-    /* 검수를 아직 안 돌렸다. 0 으로 두면 실버로 표시되니 중립값을 준다. */
+    /* 검수를 아직 안 돌렸다. 0 으로 두면 표준으로 표시되니 중립값을 준다. */
     score: 70,
     feel: 70,
     price: 0,

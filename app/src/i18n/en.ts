@@ -125,10 +125,10 @@ export const EN: Record<string, string> = {
   "코드 품질": "Code quality",
 
   // 배지
-  챌린저: "Challenger",
-  다이아: "Diamond",
-  플래티넘: "Platinum",
-  실버: "Silver",
+  최상: "Top",
+  우수: "Excellent",
+  양호: "Good",
+  표준: "Standard",
 
   // 에셋 올리기
   창작자: "Creator",
@@ -1059,7 +1059,7 @@ export const EN: Record<string, string> = {
 
   "광택을 올렸다가 점수가 18점 떨어진 경우": "Raising gloss cost us 18 points",
   "금속 질감을 강조하려고 광택을 끝까지 올렸습니다.": "We pushed gloss all the way up to bring out the metal.",
-  "그림은 화려해졌는데 런타임 점수가 크게 떨어져 배지가 실버로 내려갔습니다.": "It looked richer, but the runtime score dropped hard and the badge fell to Silver.",
+  "그림은 화려해졌는데 런타임 점수가 크게 떨어져 배지가 표준으로 내려갔습니다.": "It looked richer, but the runtime score dropped hard and the badge fell to Standard.",
   "광택 98은 셰이더 비용을 그대로 올린다": "Gloss at 98 raises shader cost one for one",
   "48까지 낮춰도 눈에 보이는 차이는 거의 없다": "Down at 48 there is almost no visible difference",
   "대신 채도를 올려 화려함을 보완한다": "Raise saturation instead to get the richness back",

@@ -63,14 +63,17 @@ export function RankDefs() {
 export const BADGES = ["chal", "dia", "plat", "silv"] as const;
 export type BadgeKey = (typeof BADGES)[number];
 
+/* 배지는 검수 점수 등급이다. 롤 랭크(챌린저/다이아…)처럼 읽히지 않게
+   품질 형용사로 둔다 — 등급이 좋고 나쁨을 이름만으로 알 수 있어야 한다.
+   내부 키(chal/dia/plat/silv)는 서버·아이콘과 묶여 있어 그대로 둔다. */
 export const BADGE_LABEL: Record<BadgeKey, string> = {
-  chal: "챌린저",
-  dia: "다이아",
-  plat: "플래티넘",
-  silv: "실버",
+  chal: "최상",
+  dia: "우수",
+  plat: "양호",
+  silv: "표준",
 };
 
-/** 점수에서 배지를 정한다. 90+ 챌린저, 80+ 다이아, 70+ 플래티넘, 그 아래 실버. */
+/** 점수에서 배지를 정한다. 90+ 최상, 80+ 우수, 70+ 양호, 그 아래 표준. */
 export function badgeOf(score: number): BadgeKey {
   return score >= 90 ? "chal" : score >= 80 ? "dia" : score >= 70 ? "plat" : "silv";
 }
@@ -86,7 +89,7 @@ const FROM_SERVER: Record<string, BadgeKey> = {
   silver: "silv",
 };
 
-/** 채점 전이면 배지가 없다. `null` 은 "실버" 가 아니라 "아직 없음" 이다. */
+/** 채점 전이면 배지가 없다. `null` 은 "표준" 이 아니라 "아직 없음" 이다. */
 export function badgeKeyOf(label: string | null | undefined): BadgeKey | null {
   return label ? (FROM_SERVER[label] ?? null) : null;
 }
