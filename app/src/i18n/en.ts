@@ -1237,4 +1237,5 @@ export const EN: Record<string, string> = {
   "확인·취소 다이얼로그 UI 킷. 경고와 확인 창에 씁니다.": "A confirm/cancel dialog UI kit for alerts and confirmation windows.",
   "체크박스·라디오 UI 킷. 설정과 옵션 화면에 씁니다.": "A checkbox/radio UI kit for settings and options screens.",
   "슬라이더·게이지 HUD UI 킷. 볼륨과 체력 바에 씁니다.": "A slider/gauge HUD UI kit for volume and health bars.",
+  "전체 보기": "See all",
 };

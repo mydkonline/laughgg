@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { PIECES, CATS, ENGINES, ENGINE_NAME, type CatKey, type EngineKey } from "../data/pieces";
+import { PIECES, CATS, ENGINES, ENGINE_NAME, type CatKey, type EngineKey, type Piece } from "../data/pieces";
 import { RankIcon, badgeOf } from "../components/Rank";
 import { BUNDLES, bundleItems, bundlePrice, bundleScore } from "../data/bundles";
 import { Pager } from "../components/Pager";
@@ -13,6 +13,8 @@ import { t } from "../lib/locale";
    어느 폭에서도 마지막 줄이 어색하게 남지 않는다. 패키지는 줄이 높아 10으로 둔다. */
 const PER_CARD = 24;
 const PER_BUNDLE = 10;
+/* 전체 화면에서 분류 선반 하나에 미리 보여 줄 개수. 넘치면 "전체 보기"로 넘긴다. */
+const SHELF = 12;
 
 type Sort = "score" | "dl" | "new" | "price";
 
@@ -190,40 +192,50 @@ export function Market() {
         <p className="rounded-2xl border border-line py-20 text-center text-base text-faint">
           {t("조건에 맞는 에셋이 없습니다. 점수 기준을 낮추거나 분류를 넓혀 보세요.")}
         </p>
+      ) : cat === "all" ? (
+        /* 전체는 유형을 한 격자에 뒤섞지 않는다 — 섞으면 3D·소리·재질·UI 가
+           제각각이라 지저분해진다. 에셋 스토어처럼 분류별 선반으로 나눠, 한 줄엔
+           같은 유형만 담고 넘치면 가로로 민다. 더 보려면 그 분류로 들어간다. */
+        <div className="mt-6 flex flex-col gap-9">
+          {CATS.filter(([k]) => k !== "all").map(([k, name]) => {
+            const items = list.filter((p) => p.cat === k);
+            if (!items.length) return null;
+            return (
+              <section key={k}>
+                <div className="mb-3 flex items-baseline justify-between gap-2">
+                  <h2 className="text-base font-bold text-ink">
+                    {t(name)} <span className="text-xs font-normal text-faint">{items.length}</span>
+                  </h2>
+                  {items.length > SHELF && (
+                    <button
+                      type="button"
+                      onClick={() => setCat(k)}
+                      className="shrink-0 cursor-pointer text-xs font-semibold text-accent hover:underline"
+                    >
+                      {t("전체 보기")}
+                    </button>
+                  )}
+                </div>
+                <div className="flex gap-3 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                  {items.slice(0, SHELF).map((p) => (
+                    <Card key={p.id} piece={p} className="w-[168px] shrink-0" />
+                  ))}
+                </div>
+              </section>
+            );
+          })}
+        </div>
       ) : (
         <div className="mt-6 grid grid-cols-[repeat(auto-fill,minmax(168px,1fr))] gap-3">
           {list.slice((page - 1) * PER_CARD, page * PER_CARD).map((p) => (
-            <Link
-              key={p.id}
-              to={`/market/${p.id}`}
-              className="group flex flex-col overflow-hidden rounded-xl border border-line bg-surface no-underline transition-[border-color,translate] hover:-translate-y-0.5 hover:border-accent"
-            >
-              {/* 그림 자리는 언제나 정사각이다. 피사체 모양이 달라도 칸이 안 흔들린다. */}
-              <div className="relative aspect-square bg-gradient-to-b from-surface-2 to-surface">
-                <span className="absolute top-2 left-2 z-10 flex items-center rounded bg-ground/70 p-0.5">
-                  <RankIcon badge={badgeOf(p.score)} size={14} />
-                </span>
-                {/* 재사용 난도. 이 마켓의 핵심 신호라 표지처럼 오른쪽 위에 올린다. */}
-                <span className="absolute top-2 right-2 z-10">
-                  <ReuseBadge cat={p.cat} className="bg-ground/70 backdrop-blur-sm" />
-                </span>
-                <Thumb piece={p} className="drop-shadow-[0_4px_10px_rgb(0_0_0/0.28)]" />
-              </div>
-              <div className="flex flex-1 flex-col gap-1 p-2.5">
-                <span className="truncate text-xs font-bold text-ink">{p.t}</span>
-                <div className="mt-auto flex items-baseline justify-between gap-2">
-                  <span className="text-xs font-bold text-ink">{won(p.price)}</span>
-                  <span className="truncate text-xs text-faint">
-                    {p.eng.map((e) => ENGINE_NAME[e]).join(", ")}
-                  </span>
-                </div>
-              </div>
-            </Link>
+            <Card key={p.id} piece={p} />
           ))}
         </div>
       )}
 
-      {kind === "단품" && <Pager total={list.length} page={page} perPage={PER_CARD} onGo={setPage} />}
+      {kind === "단품" && cat !== "all" && (
+        <Pager total={list.length} page={page} perPage={PER_CARD} onGo={setPage} />
+      )}
     </main>
   );
 }
@@ -283,5 +295,37 @@ function Chip({
     >
       {children} <span className={on ? "opacity-60" : "text-faint"}>{count}</span>
     </button>
+  );
+}
+
+/* 상품 카드 하나. 전체 화면의 분류 선반과 특정 분류의 격자가 같은 카드를 쓴다 —
+   한쪽만 바뀌면 두 화면이 어긋난다. 선반에서는 className 으로 고정 폭을 준다. */
+function Card({ piece: p, className = "" }: { piece: Piece; className?: string }) {
+  return (
+    <Link
+      to={`/market/${p.id}`}
+      className={`group flex flex-col overflow-hidden rounded-xl border border-line bg-surface no-underline transition-[border-color,translate] hover:-translate-y-0.5 hover:border-accent ${className}`}
+    >
+      {/* 그림 자리는 언제나 정사각이다. 피사체 모양이 달라도 칸이 안 흔들린다. */}
+      <div className="relative aspect-square bg-gradient-to-b from-surface-2 to-surface">
+        <span className="absolute top-2 left-2 z-10 flex items-center rounded bg-ground/70 p-0.5">
+          <RankIcon badge={badgeOf(p.score)} size={14} />
+        </span>
+        {/* 재사용 난도. 이 마켓의 핵심 신호라 표지처럼 오른쪽 위에 올린다. */}
+        <span className="absolute top-2 right-2 z-10">
+          <ReuseBadge cat={p.cat} className="bg-ground/70 backdrop-blur-sm" />
+        </span>
+        <Thumb piece={p} className="drop-shadow-[0_4px_10px_rgb(0_0_0/0.28)]" />
+      </div>
+      <div className="flex flex-1 flex-col gap-1 p-2.5">
+        <span className="truncate text-xs font-bold text-ink">{p.t}</span>
+        <div className="mt-auto flex items-baseline justify-between gap-2">
+          <span className="text-xs font-bold text-ink">{won(p.price)}</span>
+          <span className="truncate text-xs text-faint">
+            {p.eng.map((e) => ENGINE_NAME[e]).join(", ")}
+          </span>
+        </div>
+      </div>
+    </Link>
   );
 }
