@@ -396,33 +396,27 @@ export function Workshop() {
             뺐다 — 패널 안에서 또 굴리는 건 스크롤이 두 겹이라 헷갈린다.
             sticky 로 붙여 두기만 하면 왼쪽 그림 옆에 그대로 머문다. */}
         <aside className="flex flex-col gap-5 lg:sticky lg:top-[100px] lg:self-start">
-          {/* 컨셉이 먼저다. 대부분은 이것만 눌러 보고 끝낸다. */}
-          <div>
-            <div className="mb-2.5 flex flex-wrap items-baseline gap-3">
-              <h2 className="text-xs font-bold text-ink">{t("게임 컨셉")}</h2>
-              <p className="text-xs text-faint">
-                {t(CONCEPTS.find((c) => c.id === conceptId)?.note ?? "파라미터를 직접 조정한 상태입니다.")}
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
+          {/* 컨셉이 먼저다. 늘어나는 목록이라 칩을 늘어놓지 않고 드롭다운으로 —
+              시각 브라우즈는 왼쪽 "컨셉별로 미리 보기" 그리드가 맡는다. */}
+          <Group
+            title={t("게임 컨셉")}
+            hint={t(CONCEPTS.find((c) => c.id === conceptId)?.note ?? "파라미터를 직접 조정한 상태입니다.")}
+          >
+            <select
+              value={CONCEPTS.some((c) => c.id === conceptId) ? conceptId : "custom"}
+              onChange={(e) => e.target.value !== "custom" && applyConcept(e.target.value)}
+              className={SELECT}
+            >
               {CONCEPTS.map((c) => (
-                <button
-                  key={c.id}
-                  type="button"
-                  onClick={() => applyConcept(c.id)}
-                  aria-pressed={conceptId === c.id}
-                  className={[
-                    "cursor-pointer rounded-full border px-3 py-1 text-xs",
-                    conceptId === c.id
-                      ? "border-transparent bg-ink font-bold text-ground"
-                      : "border-line text-muted hover:border-accent hover:text-ink",
-                  ].join(" ")}
-                >
+                <option key={c.id} value={c.id}>
                   {t(c.name)}
-                </button>
+                </option>
               ))}
-            </div>
-          </div>
+              {!CONCEPTS.some((c) => c.id === conceptId) && (
+                <option value="custom">{t("직접 조정")}</option>
+              )}
+            </select>
+          </Group>
 
           <div>
             <div className="mb-3 flex flex-wrap items-center gap-3">
@@ -474,31 +468,39 @@ export function Workshop() {
               </p>
             )}
           </div>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-3 rounded-xl border border-line bg-surface px-4 py-3">
-        <Field label={t("출력 형식")}>
-          <div className="flex gap-1.5">
-            {([false, true] as const).map((v) => (
+          <Group title={t("출력 형식")}>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex gap-1.5">
+                {([false, true] as const).map((v) => (
+                  <button
+                    key={String(v)}
+                    type="button"
+                    disabled={spriteOnly && !v}
+                    onClick={() => setAsSprite(v)}
+                    aria-pressed={sprite === v}
+                    className={[
+                      "cursor-pointer rounded-full border px-3 py-1 text-xs disabled:cursor-not-allowed disabled:opacity-40",
+                      sprite === v
+                        ? "border-transparent bg-ink font-bold text-ground"
+                        : "border-line text-muted hover:border-accent hover:text-ink",
+                    ].join(" ")}
+                  >
+                    {t(v ? "2D 스프라이트" : "3D 모델")}
+                  </button>
+                ))}
+              </div>
               <button
-                key={String(v)}
                 type="button"
-                disabled={spriteOnly && !v}
-                onClick={() => setAsSprite(v)}
-                aria-pressed={sprite === v}
-                className={[
-                  "cursor-pointer rounded-full border px-3 py-1 text-xs disabled:cursor-not-allowed disabled:opacity-40",
-                  sprite === v
-                    ? "border-transparent bg-ink font-bold text-ground"
-                    : "border-line text-muted hover:border-accent hover:text-ink",
-                ].join(" ")}
+                onClick={() => setTuning((v) => !v)}
+                aria-expanded={tuning}
+                className="cursor-pointer rounded-lg border border-line bg-transparent px-3 py-1.5 text-xs text-muted hover:text-ink"
               >
-                {t(v ? "2D 스프라이트" : "3D 모델")}
+                {t(tuning ? "파라미터 직접 조정 닫기" : "파라미터 직접 조정 열기")}
               </button>
-            ))}
-          </div>
-        </Field>
+            </div>
 
         {sprite && (
-          <>
+            <div className="mt-3 flex flex-col gap-2.5 border-t border-line pt-3">
             <Field label={t("팔레트")} hint={palette?.from ? t(palette.from) : undefined}>
               <select
                 value={raster.palette}
@@ -558,18 +560,9 @@ export function Workshop() {
                 className="w-32 accent-[var(--accent)]"
               />
             </Field>
-          </>
+            </div>
         )}
-
-        <button
-          type="button"
-          onClick={() => setTuning((v) => !v)}
-          aria-expanded={tuning}
-          className="ml-auto cursor-pointer rounded-lg border border-line bg-transparent px-3 py-1.5 text-xs text-muted hover:text-ink"
-        >
-          {t(tuning ? "파라미터 직접 조정 닫기" : "파라미터 직접 조정 열기")}
-        </button>
-          </div>
+          </Group>
           <ExportPicker
             tex={piece.tex}
             target={target}
@@ -663,6 +656,24 @@ export function Workshop() {
       )}
 
           </main>
+  );
+}
+
+/* 오른쪽 조작 패널의 옵션 그룹. 라벨(굵게)+힌트(연하게)를 머리에 두고 컨트롤을
+   아래에 둔다 — 모든 그룹이 같은 머리 구조라 패널이 균일하게 읽힌다. 늘어나는
+   단일 선택(컨셉·엔진)은 칩을 늘어놓지 않고 이 SELECT 로 드롭다운을 쓴다. */
+const SELECT =
+  "w-full cursor-pointer rounded-lg border border-line bg-ground px-3 py-2 text-xs text-ink";
+
+function Group({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
+  return (
+    <section>
+      <div className="mb-2.5 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+        <h2 className="text-xs font-bold text-ink">{title}</h2>
+        {hint && <span className="text-xs text-faint">{hint}</span>}
+      </div>
+      {children}
+    </section>
   );
 }
 

@@ -41,36 +41,33 @@ export function ExportPicker({
     onPicks(picks.includes(ext) ? picks.filter((x) => x !== ext) : [...picks, ext]);
 
   return (
-    <div className="rounded-xl border border-line bg-surface p-4">
-      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+    <section>
+      <div className="mb-1 flex flex-wrap items-baseline gap-x-2 gap-y-1">
         <h2 className="text-xs font-bold text-ink">{t("내보내기")}</h2>
         <span className="text-xs text-faint">{t("엔진을 고르면 형식이 정해집니다")}</span>
       </div>
 
-      {/* 라벨이 먼저다. 칩만 늘어놓으면 이게 무엇을 고르는 줄인지 모른다. */}
-      <div className="mt-3 flex flex-wrap items-center gap-1.5">
-        <span className="mr-1 shrink-0 text-xs text-faint">{t("엔진")}</span>
-        {TARGETS.map((tg) => (
-          <button
-            key={tg.id}
-            type="button"
-            onClick={() => {
-              onTarget(tg.id);
-              onPicks(tg.picks);
-            }}
-            aria-pressed={target === tg.id}
-            title={t(tg.who)}
-            className={[
-              "cursor-pointer rounded-full border px-3 py-1 text-xs",
-              target === tg.id
-                ? "border-transparent bg-ink font-bold text-ground"
-                : "border-line text-muted hover:border-accent hover:text-ink",
-            ].join(" ")}
-          >
-            {t(tg.name)}
-          </button>
-        ))}
-      </div>
+      {/* 엔진은 늘어나는 단일 선택이라 드롭다운으로 — 칩을 늘어놓으면 줄이 접혀
+          고르기 힘들다. 엔진을 고르면 형식이 아래에 정해진다. */}
+      <label className="mt-3 flex items-center gap-2">
+        <span className="shrink-0 text-xs text-faint">{t("엔진")}</span>
+        <select
+          value={target}
+          onChange={(e) => {
+            const tg = TARGETS.find((x) => x.id === e.target.value);
+            if (!tg) return;
+            onTarget(tg.id);
+            onPicks(tg.picks);
+          }}
+          className="min-w-0 flex-1 cursor-pointer rounded-lg border border-line bg-ground px-3 py-2 text-xs text-ink"
+        >
+          {TARGETS.map((tg) => (
+            <option key={tg.id} value={tg.id}>
+              {t(tg.name)}
+            </option>
+          ))}
+        </select>
+      </label>
 
       {/* 고른 결과. 확장자와 용량이 보여야 무엇을 받는지 안다. */}
       <ul className="m-0 mt-3 flex list-none flex-col gap-1.5 border-t border-line p-0 pt-3">
@@ -129,6 +126,6 @@ export function ExportPicker({
           ))}
         </div>
       )}
-    </div>
+    </section>
   );
 }
