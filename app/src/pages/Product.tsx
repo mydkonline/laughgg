@@ -57,12 +57,13 @@ function Detail({ p }: { p: Piece }) {
     .slice(0, 4);
 
   return (
-    <main className="mx-auto max-w-[1240px] px-5 pb-20">
-      {/* 마켓으로 돌아가기 — 동그란 버튼 하나. 글자를 빼고 화살표만 둔다. */}
+    <main className="mx-auto max-w-[1240px] px-5 pt-8 pb-20">
+      {/* 마켓으로 돌아가기 — 동그란 버튼 하나. 글자를 빼고 화살표만 둔다.
+          상단 여백은 main 의 pt-8 이 주고, 버튼은 아래로만 간격을 둔다. */}
       <Link
         to="/market"
         aria-label={t("마켓으로")}
-        className="mt-4 flex h-8 w-8 items-center justify-center rounded-full border border-line text-base text-muted no-underline hover:border-ink hover:text-ink"
+        className="mb-6 flex h-9 w-9 items-center justify-center rounded-full border border-line text-base text-muted no-underline hover:border-ink hover:text-ink"
       >
         ←
       </Link>

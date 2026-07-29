@@ -70,7 +70,7 @@ export function Market() {
   };
 
   return (
-    <main className="mx-auto max-w-[1240px] px-5 pb-16">
+    <main className="mx-auto max-w-[1240px] px-5 pt-8 pb-16">
       <div className="sticky top-[97px] z-50 -mx-5 mb-6 bg-ground/95 px-5 py-4 backdrop-blur">
         <input
           value={q}
