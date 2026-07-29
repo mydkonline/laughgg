@@ -81,70 +81,102 @@ export function Market() {
         />
       </div>
 
-      <Row label={t("형태")}>
-        {(["단품", "패키지"] as const).map((k) => (
-          <Chip key={k} on={kind === k} onClick={() => setKind(k)} count={k === "단품" ? PIECES.length : BUNDLES.length}>
-            {t(k)}
-          </Chip>
-        ))}
-      </Row>
+      {/* 왼쪽 필터 사이드바 + 오른쪽 결과. 가로 칩 줄은 분류가 늘수록 접혀 지저분
+          하고 고르기 혼란스럽다 — 전자상거래 표준(Baymard)이자 이 앱 Scene 페이지와
+          같은 세로 패싯 사이드바로 간다. 세로 목록이라 분류가 수십 개로 늘어도
+          안 깨지고, 부차적 그룹은 접어 인지 부하를 낮춘다. 좁은 화면에서는 결과가
+          먼저 오고 필터가 아래로 쌓인다. */}
+      <div className="grid gap-x-8 gap-y-6 lg:grid-cols-[210px_minmax(0,1fr)]">
+        <aside className="order-2 lg:order-1 lg:sticky lg:top-[184px] lg:self-start">
+          {/* 형태 — 단품/패키지. 다른 필터의 켜짐을 가르는 축이라 맨 위 세그먼트로. */}
+          <div className="mb-4 flex gap-1 rounded-full border border-line p-0.5">
+            {(["단품", "패키지"] as const).map((k) => (
+              <button
+                key={k}
+                type="button"
+                onClick={() => setKind(k)}
+                aria-pressed={kind === k}
+                className={[
+                  "flex-1 cursor-pointer rounded-full py-1.5 text-xs",
+                  kind === k ? "bg-ink font-bold text-ground" : "text-muted hover:text-ink",
+                ].join(" ")}
+              >
+                {t(k)}{" "}
+                <span className={kind === k ? "opacity-60" : "text-faint"}>
+                  {k === "단품" ? PIECES.length : BUNDLES.length}
+                </span>
+              </button>
+            ))}
+          </div>
 
-      {kind === "패키지" ? null : <Row label={t("분류")} scroll>
-        {CATS.map(([k, name]) => (
-          <Chip key={k} on={cat === k} onClick={() => setCat(k)} count={catCount(k)}>
-            {t(name)}
-          </Chip>
-        ))}
-      </Row>}
+          {kind === "단품" && (
+            <>
+              <FacetGroup label={t("분류")}>
+                <FacetItem on={cat === "all"} count={catCount("all")} onClick={() => setCat("all")}>
+                  {t("전체")}
+                </FacetItem>
+                {CATS.filter(([k]) => k !== "all").map(([k, name]) => (
+                  <FacetItem key={k} on={cat === k} count={catCount(k)} onClick={() => setCat(k)}>
+                    {t(name)}
+                  </FacetItem>
+                ))}
+              </FacetGroup>
 
-      {kind === "패키지" ? null : <Row label={t("엔진")}>
-        <Chip on={engine === "any"} onClick={() => setEngine("any")} count={engCount("any")}>
-          {t("전체")}
-        </Chip>
-        {ENGINES.map((k) => (
-          <Chip key={k} on={engine === k} onClick={() => setEngine(k)} count={engCount(k)}>
-            {ENGINE_NAME[k]}
-          </Chip>
-        ))}
-      </Row>}
+              <FacetGroup label={t("엔진")}>
+                <FacetItem on={engine === "any"} count={engCount("any")} onClick={() => setEngine("any")}>
+                  {t("전체")}
+                </FacetItem>
+                {ENGINES.map((k) => (
+                  <FacetItem key={k} on={engine === k} count={engCount(k)} onClick={() => setEngine(k)}>
+                    {ENGINE_NAME[k]}
+                  </FacetItem>
+                ))}
+              </FacetGroup>
 
-      {kind === "패키지" ? null : <Row label={t("점수")}>
-        <input
-          type="range"
-          min={0}
-          max={95}
-          value={minScore}
-          onChange={(e) => setMinScore(+e.target.value)}
-          className="w-40 accent-[var(--accent)]"
-        />
-        <span className="text-xs text-faint">
-          <b className="tabular-nums text-ink">{minScore}</b> {t("이상")}
-        </span>
-      </Row>}
+              <FacetGroup label={t("점수")}>
+                <div className="flex items-center gap-2 pt-1">
+                  <input
+                    type="range"
+                    min={0}
+                    max={95}
+                    value={minScore}
+                    onChange={(e) => setMinScore(+e.target.value)}
+                    className="w-full accent-[var(--accent)]"
+                  />
+                  <span className="shrink-0 text-xs text-faint">
+                    <b className="tabular-nums text-ink">{minScore}</b> {t("이상")}
+                  </span>
+                </div>
+              </FacetGroup>
 
-      {kind === "패키지" ? null : <Row label={t("정렬")}>
-        <select
-          value={sort}
-          onChange={(e) => setSort(e.target.value as Sort)}
-          className="rounded-lg border border-line bg-surface px-3 py-2 text-xs text-ink"
-        >
-          {SORTS.map(([k, name]) => (
-            <option key={k} value={k}>
-              {t(name)}
-            </option>
-          ))}
-        </select>
-        <button
-          type="button"
-          onClick={reset}
-          className="ml-auto cursor-pointer rounded-lg border border-line bg-transparent px-3 py-2 text-xs text-faint hover:text-ink"
-        >
-          {t("필터 초기화")}
-        </button>
-      </Row>}
+              <FacetGroup label={t("정렬")}>
+                <select
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value as Sort)}
+                  className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2 text-xs text-ink"
+                >
+                  {SORTS.map(([k, name]) => (
+                    <option key={k} value={k}>
+                      {t(name)}
+                    </option>
+                  ))}
+                </select>
+              </FacetGroup>
 
+              <button
+                type="button"
+                onClick={reset}
+                className="mt-4 cursor-pointer text-xs text-faint hover:text-ink"
+              >
+                {t("필터 초기화")}
+              </button>
+            </>
+          )}
+        </aside>
+
+        <div className="order-1 min-w-0 lg:order-2">
       {kind === "패키지" ? (
-        <div className="mt-6 flex flex-col gap-4">
+        <div className="flex flex-col gap-4">
           {BUNDLES.slice((page - 1) * PER_BUNDLE, page * PER_BUNDLE).map((b) => {
             const items = bundleItems(b);
             const price = bundlePrice(b);
@@ -196,7 +228,7 @@ export function Market() {
         /* 전체는 유형을 한 격자에 뒤섞지 않는다 — 섞으면 3D·소리·재질·UI 가
            제각각이라 지저분해진다. 에셋 스토어처럼 분류별 선반으로 나눠, 한 줄엔
            같은 유형만 담고 넘치면 가로로 민다. 더 보려면 그 분류로 들어간다. */
-        <div className="mt-6 flex flex-col gap-9">
+        <div className="flex flex-col gap-9">
           {CATS.filter(([k]) => k !== "all").map(([k, name]) => {
             const items = list.filter((p) => p.cat === k);
             if (!items.length) return null;
@@ -212,51 +244,40 @@ export function Market() {
           })}
         </div>
       ) : (
-        <div className="mt-6 grid grid-cols-[repeat(auto-fill,minmax(168px,1fr))] gap-3">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(168px,1fr))] gap-3">
           {list.slice((page - 1) * PER_CARD, page * PER_CARD).map((p) => (
             <Card key={p.id} piece={p} />
           ))}
         </div>
       )}
 
-      {kind === "단품" && cat !== "all" && (
-        <Pager total={list.length} page={page} perPage={PER_CARD} onGo={setPage} />
-      )}
+          {kind === "단품" && cat !== "all" && (
+            <Pager total={list.length} page={page} perPage={PER_CARD} onGo={setPage} />
+          )}
+        </div>
+      </div>
     </main>
   );
 }
 
-/* 필터 한 줄. 분류처럼 개수가 늘어나는 축은 줄바꿈 대신 한 줄 가로 스크롤로
-   둔다 — 카테고리가 몇 개로 불어나도 줄이 2·3단으로 접혀 라벨과 어긋나는 일이
-   없다. 페이지 본문은 안 밀리게 컨테이너 안에서만 스크롤하고, 오른쪽 끝에
-   페이드를 둬 더 있다는 걸 알린다. */
-function Row({
-  label,
-  children,
-  scroll = false,
-}: {
-  label: string;
-  children: React.ReactNode;
-  scroll?: boolean;
-}) {
+/* 필터 패싯 그룹. 아코디언으로 접힌다 — 그룹이 늘어도 접어서 인지 부하를 낮춘다
+   (Baymard: 부차적 그룹은 접고 핵심은 편다). 기본은 펴 두고, 사용자가 접을 수 있다. */
+function FacetGroup({ label, children, open = true }: { label: string; children: React.ReactNode; open?: boolean }) {
   return (
-    <div className="mb-3 flex items-center gap-3">
-      <span className="w-10 flex-none text-xs text-faint">{label}</span>
-      {scroll ? (
-        <div className="relative min-w-0 flex-1">
-          <div className="flex items-center gap-1.5 overflow-x-auto pr-9 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {children}
-          </div>
-          <span className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-ground to-transparent" />
-        </div>
-      ) : (
-        <div className="flex flex-wrap items-center gap-1.5">{children}</div>
-      )}
-    </div>
+    <details className="group border-b border-line py-3" open={open}>
+      <summary className="flex cursor-pointer list-none items-center text-xs font-bold text-ink">
+        {label}
+        <span className="ml-auto text-[10px] text-faint group-open:hidden">+</span>
+        <span className="ml-auto hidden text-[10px] text-faint group-open:inline">−</span>
+      </summary>
+      <div className="mt-2 flex flex-col">{children}</div>
+    </details>
   );
 }
 
-function Chip({
+/* 패싯 한 줄. 세로 목록이라 개수가 늘어도 스캔하기 쉽고 안 깨진다. 오른쪽에
+   현재 조건 기준 개수를 붙여, 고르기 전에 몇 개인지 보인다. */
+function FacetItem({
   on,
   count,
   onClick,
@@ -273,13 +294,12 @@ function Chip({
       onClick={onClick}
       aria-pressed={on}
       className={[
-        "shrink-0 cursor-pointer whitespace-nowrap rounded-full border px-3.5 py-1.5 text-xs",
-        on
-          ? "border-transparent bg-ink font-bold text-ground"
-          : "border-line bg-transparent text-muted hover:border-accent hover:text-ink",
+        "flex w-full cursor-pointer items-center gap-2 py-1 text-left text-xs",
+        on ? "font-bold text-accent" : "text-muted hover:text-ink",
       ].join(" ")}
     >
-      {children} <span className={on ? "opacity-60" : "text-faint"}>{count}</span>
+      <span className="truncate">{children}</span>
+      <span className={`ml-auto shrink-0 tabular-nums ${on ? "text-accent" : "text-faint"}`}>{count}</span>
     </button>
   );
 }
