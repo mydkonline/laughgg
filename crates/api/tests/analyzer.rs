@@ -10,7 +10,7 @@ use laughgg_api::{analyzer::analyze_file, domain::Origin};
 마켓 화면이 이미 쓰는 파일을 그대로 가리킨다. 테스트 폴더에 복사본을
 두면 213KB 가 두 벌이 되고, 어느 쪽이 원본인지와 그 출처(Kenney, CC0 —
 CREDITS.md)가 흐려진다. */
-const SAMPLE: &[u8] = include_bytes!("../../../web/assets/dungeon/character-human.glb");
+const SAMPLE: &[u8] = include_bytes!("../../../assets/dungeon/character-human.glb");
 
 #[test]
 fn a_real_glb_is_read_without_guessing() {

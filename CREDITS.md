@@ -15,7 +15,7 @@
 ## 저장소에 포함되지 않은 것
 
 시연용으로 참조했던 **상용 게임 공식 스크린샷은 저작권 문제로 저장소에서 제외**했습니다
-(`.gitignore`의 `web/assets/gs-*`). 화풍 시연 기능은 CC0 배경만으로 동작합니다.
+(`.gitignore`의 `assets/gs-*`). 화풍 시연 기능은 CC0 배경만으로 동작합니다.
 
 ## Poly Haven (CC0)
 
@@ -88,7 +88,7 @@ Brown Photostudio 02 (HDRI 1k)
 
 ## Polygonal Mind — Tomb Chaser (CC0)
 
-Scene 페이지 Diablo IV 무대의 배경 맵(`web/assets/scenes/tomb-dungeon.jpg`)은
+Scene 페이지 Diablo IV 무대의 배경 맵(`assets/scenes/tomb-dungeon.jpg`)은
 [Polygonal Mind](https://github.com/ToxSam/open-source-3D-assets)가 CC0 로 공개한
 Tomb Chaser 무덤 에셋(신전 아치·기둥·아누비스 신상·카노푸스 항아리)을 던전 한 방으로
 three.js 에서 조립·조명한 뒤 구운 한 장입니다. 화풍 태그 공용 배경(SCENE_BG)과 달리

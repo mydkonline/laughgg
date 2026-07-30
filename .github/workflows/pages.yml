@@ -5,8 +5,8 @@ on:
     branches: [main]
     # 앱과 배포 설정이 바뀔 때만 돈다. Rust 쪽 커밋으로 사이트를 다시 올릴 이유가 없다.
     paths:
-      - "app/**"
-      - "web/assets/**"
+      - "frontend/**"
+      - "assets/**"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -31,37 +31,37 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: app/package-lock.json
+          cache-dependency-path: frontend/package-lock.json
 
-      # app/public/assets 는 web/assets 로 가는 심링크인데 .gitignore 에 걸려
+      # frontend/public/assets 는 루트 assets 로 가는 심링크인데 .gitignore 에 걸려
       # 있어 체크아웃에는 없다. 여기서 만들어 준다. 없어도 빌드는 통과하고
       # 이미지만 비므로, 만든 뒤에 실제로 파일이 보이는지까지 확인한다.
       - name: Link assets
-        working-directory: app
+        working-directory: frontend
         run: |
-          ln -sfn ../../web/assets public/assets
+          ln -sfn ../../assets public/assets
           test -n "$(ls -A public/assets)"
 
       - name: Install
-        working-directory: app
+        working-directory: frontend
         run: npm ci
 
       # build 스크립트가 tsc -b 를 먼저 돌린다. 타입이 깨지면 여기서 멈춘다.
       - name: Build
-        working-directory: app
+        working-directory: frontend
         run: npm run build
 
       # Pages 는 없는 경로에 404.html 을 준다. 같은 SPA 를 넣어 두면
       # /laughgg/ir 같은 직접 접속과 새로고침이 살아난다.
       - name: SPA fallback
-        run: cp app/dist/index.html app/dist/404.html
+        run: cp frontend/dist/index.html frontend/dist/404.html
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: app/dist
+          path: frontend/dist
 
   deploy:
     needs: build
