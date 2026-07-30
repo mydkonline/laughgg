@@ -30,19 +30,33 @@ cargo run -p laughgg-api             # http://127.0.0.1:8420
 자격증명(구글·Stripe·스토리지)이 없어도 서버는 뜨고, 무엇이 꺼졌는지 부팅
 로그에 남는다. 관리자 계정은 `ADMIN_EMAIL`·`ADMIN_PASSWORD` 로 정한다.
 
+프런트엔드는 별도 터미널에서 실행한다.
+
+```sh
+cd frontend
+npm install
+npm run dev                          # http://127.0.0.1:5173
+```
+
 ## 구조
 
 의존은 한 방향이다. `domain` 은 아무것도 모르고, `repo` 는 `domain` 만 알고,
 `http` 는 둘 다 안다. 핸들러가 SQL 을 직접 쓰기 시작하면 세 층이 하나로 붙는다.
 
 ```
-crates/api/
-  src/domain/   채점·배지·정산·금액·계정 규칙. 바깥을 모르는 값 객체와 순수 함수
-  src/repo/     Postgres 질의. domain 만 안다
-  src/http/     라우팅·직렬화·상태 코드. 둘 다 안다
-  migrations/   스키마 + 게임·스튜디오 시드
-  tests/        저장소·HTTP 통합 테스트 (#[sqlx::test])
-app/            React + Tailwind 프런트 (GitHub Pages 배포)
+crates/
+  api/                 Rust 백엔드
+    src/domain/        바깥을 모르는 값 객체와 순수 함수
+    src/repo/          Postgres 질의. domain 만 안다
+    src/http/          라우팅·직렬화·상태 코드. 둘 다 안다
+    migrations/        스키마 + 게임·스튜디오 시드
+    tests/             저장소·HTTP 통합 테스트
+frontend/              React + Tailwind 프런트 (GitHub Pages 배포)
+  src/
+  public/assets -> ../../assets
+assets/                프런트와 백엔드 테스트가 공유하는 정적 에셋
+docs/                  제품·기술 문서
+ops/                   Prometheus·Grafana 운영 설정
 ```
 
 돈은 `domain::Money` 정수 센트 하나로만 다룬다 — 달러 실수는 경계에서만 오간다.

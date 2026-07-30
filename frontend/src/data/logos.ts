@@ -1,4 +1,4 @@
-/* 로고 파일이 있는 게임 id. web/assets/logos/{id}.png 로 서빙된다.
+/* 로고 파일이 있는 게임 id. assets/logos/{id}.png 로 서빙된다.
    스크립트로 생성 — 로고를 더 채우면 다시 뽑는다. */
 export const GAME_LOGOS = new Set<string>([
   "60-seconds-reatomized",

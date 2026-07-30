@@ -131,7 +131,7 @@ pub fn router(state: AppState) -> Router {
         .nest("/api", api)
         // 지표를 여기서 센다. 핸들러마다 부르면 언젠가 한 곳을 빠뜨린다.
         .layer(axum::middleware::from_fn(measure))
-        .fallback_service(ServeDir::new("web").append_index_html_on_directories(true))
+        .fallback_service(ServeDir::new("frontend/dist").append_index_html_on_directories(true))
         .layer(cors(&origins))
         .layer(TraceLayer::new_for_http())
 }

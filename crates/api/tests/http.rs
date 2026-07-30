@@ -180,7 +180,7 @@ async fn analyzing_a_real_file_produces_the_badge(pool: PgPool) {
     let (_, created) = call_as(&pool, "POST", "/api/assets", Some(input), Some(&cookie)).await;
     let id = created["asset_id"].as_i64().expect("id");
 
-    let glb: &[u8] = include_bytes!("../../../web/assets/dungeon/character-human.glb");
+    let glb: &[u8] = include_bytes!("../../../assets/dungeon/character-human.glb");
     let res = router(AppState::bare(pool.clone()))
         .oneshot(
             Request::builder()
